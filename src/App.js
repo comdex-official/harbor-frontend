@@ -1,10 +1,12 @@
-import logo from "./logo.svg";
-import "./App.css";
+import Router from "./Router";
+import "./App.scss";
+import NavigationBar from "./containers/NavigationBar";
 
 function App() {
   return (
     <div className="App">
-      <h1>Stable Coin</h1>
+      <NavigationBar />
+      <Router />
     </div>
   );
 }
