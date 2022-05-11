@@ -54,7 +54,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
                 "tab " +
                 (item.path === "dashboard" && !route
                   ? "active_tab"
-                  : item.value === route
+                  : item.active === route
                   ? "active_tab"
                   : "")
               }

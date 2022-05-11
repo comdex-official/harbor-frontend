@@ -3,6 +3,7 @@ const variables = {
     // Sidebar menu
     dashboard: "Dashboard",
     positions: "MyPositions",
+    earn: "earn",
     balances: "Balances",
     c_swap: "cSwap",
     borrow: "Borrow",

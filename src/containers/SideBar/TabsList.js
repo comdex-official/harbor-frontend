@@ -4,6 +4,7 @@ export const tabsList = [
     value: "dashboard",
     langKey: "dashboard",
     path: "dashboard",
+    active: "dashboard",
     index: 0,
   },
   {
@@ -11,6 +12,7 @@ export const tabsList = [
     value: "home",
     langKey: "positions",
     path: "myPositions",
+    active: "myPositions",
     index: 2,
   },
   {
@@ -18,14 +20,23 @@ export const tabsList = [
     value: "borrow",
     langKey: "borrow",
     path: "borrow",
+    active: "borrow",
     index: 3,
+  },
+  {
+    name: "earn",
+    value: "earn",
+    langKey: "earn",
+    path: "earn",
+    active: "earn",
+    index: 4,
   },
   {
     name: "auction",
     value: "auction",
     langKey: "auction",
     path: "auctions",
-    index: 4,
+    active: "auctions",
+    index: 5,
   },
-
 ];
