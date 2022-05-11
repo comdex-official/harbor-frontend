@@ -10,8 +10,10 @@ $red: #ca2d2d;
 
 $dark-color: #040517;
 $primary-color: #0e7ac9; // primary color for all components
-$secondary-color: #fe4350;
-$secondary-color-hover: #c92f39;
+// $secondary-color: #fe4350;
+$secondary-color: #6aa288;
+$secondary-color-hover: #28292a;
+// $secondary-color-hover: #c92f39;
 $success-color: #00ce8e; // success state color
 $warning-color: #fdc011; // warning state color
 $error-color: #f5222d; // error state color
@@ -20,7 +22,8 @@ $purple-color: #7957e4;
 
 //body-bg
 $body-background-light: #f1f2f7;
-$body-background-dark: #040516;
+// $body-background-dark: #040516;
+$body-background-dark: #1c1c1e;
 
 // background
 $background-dark1: #030b1e;
@@ -56,7 +59,8 @@ $box-shadow-inner-light-hover: 3px 3px 10px rgba(174, 174, 192, 0.4),
 
 // Side bar
 $sidebar-bg-light: #f4f9fc;
-$sidebar-bg-dark: $background-dark1;
+// $sidebar-bg-dark: $background-dark1;
+$sidebar-bg-dark: #111013;
 $sidebar-menu-background-dark: #0c111e;
 $sidebar-menu-border-dark: #11264a;
 $menu-active-light: radial-gradient(
@@ -68,6 +72,7 @@ $menu-active-dark: $sidebar-menu-background-dark;
 $menu-icon-dark: #73aed2;
 
 $btn-bg-dark: $background-dark1;
+$sidebar-icon:#323134;
 
 $font-family: "Lexend Deca", sans-serif !important;
 $font-size-base: 14px;

@@ -24,9 +24,9 @@ const SideBar = () => {
     }
   };
 
-  const onTabClick = () =>{
+  const onTabClick = () => {
     setIsOpen(true);
-  }
+  };
 
   return (
     <>
@@ -66,8 +66,9 @@ const SideBar = () => {
                 })
               }
             >
-              <SvgIcon className="white" name="logo-colored" />
-              <SvgIcon className="blue" name="logo-colored-blue" />
+              {/* <SvgIcon className="white" name="logo-colored" />
+              <SvgIcon className="blue" name="logo-colored-blue" /> */}
+              <div className="sidebar-nav-heading">COMPOSITE</div>
             </div>
             <Scrollbars>
               <div className="side_bar_inner">
@@ -78,7 +79,9 @@ const SideBar = () => {
           </div>
         </Sider>
       </Layout>
-      <div onClick={toggle}>{isMobile && !isOpen && <div className="sidebar-overlay" />}</div>
+      <div onClick={toggle}>
+        {isMobile && !isOpen && <div className="sidebar-overlay" />}
+      </div>
     </>
   );
 };

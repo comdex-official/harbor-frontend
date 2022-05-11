@@ -127,6 +127,15 @@
         padding-left: 40px;
         padding-top: 12px;
       }
+      .sidebar-nav-heading {
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: 1.2;
+        color: $black;
+        .dark-mode & {
+          color: $white;
+        }
+      }
     }
 
     .side_bar_inner {
@@ -200,13 +209,15 @@
                 flex-direction: column;
                 justify-content: center;
                 width: 100%;
-                border-radius: $base-border-radius;
+                // border-radius: $base-border-radius;
                 background: $white;
                 height: 100%;
+                color: $sidebar-icon;
 
                 .dark-mode & {
                   // background: $sidebar-menu-background-dark;
                   background: transparent;
+                  // color: $sidebar-icon;
                 }
               }
 
@@ -225,7 +236,8 @@
               }
 
               .icon {
-                fill: #73aed2;
+                // fill: #73aed2;
+                fill: $sidebar-icon;
                 transition: all 300ms ease-in-out;
                 width: 21px;
                 margin-bottom: 5px;
@@ -239,6 +251,8 @@
 
               .dark-mode & {
                 // background: $primary-gradient;
+                background: $secondary-color-hover;
+                color: $secondary-color;
                 // box-shadow: 0 -1px 13px 6px #1d2336,
                 //   inset 0 4px 4px rgba(0, 0, 0, 0.25);
               }
@@ -247,6 +261,8 @@
                 .dark-mode & {
                   // background: $sidebar-menu-background-dark;
                   background: transparent;
+                  border-left: 5px solid $secondary-color;
+                  color: $secondary-color;
                 }
               }
 
@@ -256,16 +272,17 @@
             }
 
             &:hover {
-              color: $primary-color;
+              color: $secondary-color;
 
               .tab-inner {
                 .dark-mode & {
                   // background: $sidebar-menu-background-dark;
+                  color: $secondary-color;
                 }
               }
 
               .icon {
-                fill: $menu-icon-dark;
+                fill: $secondary-color;
               }
             }
           }
