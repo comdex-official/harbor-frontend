@@ -1,0 +1,7 @@
+import React from "react";
+
+const MyPosition = () => {
+  return <div>MyPosition</div>;
+};
+
+export default MyPosition;

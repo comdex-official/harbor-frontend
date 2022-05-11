@@ -2,6 +2,7 @@ const variables = {
   en: {
     // Sidebar menu
     dashboard: "Dashboard",
+    positions: "MyPositions",
     balances: "Balances",
     c_swap: "cSwap",
     borrow: "Borrow",
@@ -155,7 +156,7 @@ const variables = {
     unbond_token: "Unbond Token",
     unbond: "Unbond",
     bond: "Bond",
-    start_earning : "Start Earning",
+    start_earning: "Start Earning",
     bond_lptokens: "Bond LP Tokens",
     unbonding_period: "Unbonding Period",
     amount_to_unbond: "Amount to Unbond",
@@ -231,7 +232,7 @@ const variables = {
       "cSwap price calculated based on the pool price and spread",
     tooltip_tx_fee: "Fee paid to the protocol to execute this transaction",
     lq_ratio: "Liquidation Ratio",
-    debt: "Debt", 
+    debt: "Debt",
     casset: "cAsset",
     cswap_price: "cSwap Price",
     tooltip_burn_amount:

@@ -1,13 +1,22 @@
 import Router from "./Router";
 import "./App.scss";
 import NavigationBar from "./containers/NavigationBar";
+import SvgSprite from "./utils/SvgSpriteLoader";
+import svgFile from "./assets/images/svg/svg-sprite.svg";
+import SideBar from "./containers/SideBar";
 
 function App() {
   return (
-    <div className="App">
-      <NavigationBar />
-      <Router />
-    </div>
+    <>
+      <SvgSprite url={svgFile} />
+      <div className="main_wrapper">
+        <SideBar />
+        <div className="main-container">
+          <NavigationBar />
+          <Router />
+        </div>
+      </div>
+    </>
   );
 }
 
