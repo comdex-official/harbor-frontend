@@ -15,6 +15,7 @@ import { useLocation } from "react-router";
 import { decode } from "../../utils/string";
 import { queryVaultList } from "../../services/vault/query";
 import { setAccountVaults } from "../../actions/account";
+import Minting from "./minting";
 
 const { TabPane } = Tabs;
 
@@ -87,8 +88,8 @@ const Borrow = ({
 
   return (
     <div className="app-content-wrapper">
-      <div className="app-content-small">
-        <Row>
+      {/* <div className="app-content-small"> */}
+      {/* <Row>
           <Col>
             <Tabs
               className="comdex-tabs"
@@ -107,8 +108,10 @@ const Borrow = ({
               </TabPane>
             </Tabs>
           </Col>
-        </Row>
-      </div>
+        </Row> */}
+
+      <Minting />
+      {/* </div> */}
     </div>
   );
 };

@@ -4,7 +4,7 @@
   background: $background-light;
   padding: 35px;
   border-radius: $base-border-radius + 5;
-//   box-shadow: $box-shadow-inner-light;
+  //   box-shadow: $box-shadow-inner-light;
   position: relative;
   @media screen and (max-width: 767px) {
     padding: 25px 20px;
@@ -321,7 +321,19 @@
     }
   }
 }
+.mint-table {
+  .assets-withicon {
+    font-weight: 600;
+  }
 
+  .endtime-badge {
+    background: transparent;
+    color: #fff;
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 10px;
+  }
+}
 .close-tab-content {
   .dark-mode & {
     color: $text-color-label-dark;

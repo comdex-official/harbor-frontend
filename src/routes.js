@@ -1,7 +1,7 @@
 import Auctions from "./containers/Auctions";
-import Borrow from "./containers/Borrow";
 import Dashboard from "./containers/Dashboard";
 import Earn from "./containers/Earn";
+import BorrowTab from "./containers/Mint";
 import MyPosition from "./containers/MyPosition";
 
 const routes = [
@@ -15,7 +15,7 @@ const routes = [
   },
   {
     path: "/mint",
-    element: <Borrow />,
+    element: <BorrowTab />,
   },
   {
     path: "/earn",
