@@ -14,7 +14,7 @@ const routes = [
     element: <MyPosition />,
   },
   {
-    path: "/borrow",
+    path: "/mint",
     element: <Borrow />,
   },
   {

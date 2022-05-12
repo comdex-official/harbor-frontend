@@ -16,11 +16,11 @@ export const tabsList = [
     index: 2,
   },
   {
-    name: "borrow",
+    name: "mint",
     value: "borrow",
-    langKey: "borrow",
-    path: "borrow",
-    active: "borrow",
+    langKey: "mint",
+    path: "mint",
+    active: "mint",
     index: 3,
   },
   {

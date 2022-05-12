@@ -278,7 +278,7 @@
 
             &:hover {
               color: $secondary-color;
-
+              background: $secondary-color-light !important;
               .tab-inner {
                 .dark-mode & {
                   // background: $sidebar-menu-background-dark;
