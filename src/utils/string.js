@@ -89,6 +89,9 @@ export const iconNameFromDenom = (key) => {
     case "uosmo":
     case ibcDenoms["uosmo"]:
       return "osmosis-icon";
+    case "ucmst":
+    case ibcDenoms["ucmst"]:
+      return "cmst-icon";
     default:
       return "";
   }
@@ -157,23 +160,28 @@ export const uniqueDenoms = (list, type) => {
 export const uniqueLiquidityPairDenoms = (list, type) => {
   return [
     ...new Set(
-        list && list.length > 0
-            ? list.map((item) => (type === "in" ? item.baseCoinDenom : item.quoteCoinDenom))
-            : []
+      list && list.length > 0
+        ? list.map((item) =>
+            type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
+          )
+        : []
     ),
   ];
 };
 
 export const uniqueQuoteDenomsForBase = (list, type, denom) => {
-  const quoteList = list && list.length > 0
-      ? list.filter((item) => type=== "in" ?  item.baseCoinDenom === denom : item.quoteCoinDenom === denom)
+  const quoteList =
+    list && list.length > 0
+      ? list.filter((item) =>
+          type === "in"
+            ? item.baseCoinDenom === denom
+            : item.quoteCoinDenom === denom
+        )
       : [];
 
-  const quoteMap = quoteList.map( (item) => type === "in" ? item.quoteCoinDenom : item.baseCoinDenom);
+  const quoteMap = quoteList.map((item) =>
+    type === "in" ? item.quoteCoinDenom : item.baseCoinDenom
+  );
 
-  return [
-    ...new Set(
-        quoteMap
-    ),
-  ];
+  return [...new Set(quoteMap)];
 };

@@ -39,7 +39,8 @@ const Deposit = ({ lang, reverse, spotPrice }) => {
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        <SvgIcon name={iconNameFromDenom("ucmdx")} /> CMST
+                        <SvgIcon name={iconNameFromDenom("ucmst")} />{" "}
+                        <span> CMST</span>
                       </div>
                     </div>
                   </div>
