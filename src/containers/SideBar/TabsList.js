@@ -25,7 +25,7 @@ export const tabsList = [
   },
   {
     name: "earn",
-    value: "earn",
+    value: "earn-icon",
     langKey: "earn",
     path: "earn",
     active: "earn",
@@ -33,7 +33,7 @@ export const tabsList = [
   },
   {
     name: "auction",
-    value: "auction",
+    value: "auction-icon",
     langKey: "auction",
     path: "auctions",
     active: "auctions",
