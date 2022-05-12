@@ -88,30 +88,7 @@ const Borrow = ({
 
   return (
     <div className="app-content-wrapper">
-      {/* <div className="app-content-small"> */}
-      {/* <Row>
-          <Col>
-            <Tabs
-              className="comdex-tabs"
-              type="card"
-              onChange={setActiveKey}
-              activeKey={activeKey}
-            >
-              <TabPane tab={variables[lang].borrow} key="1">
-                <BorrowTab />
-              </TabPane>
-              <TabPane tab={variables[lang].edit} key="2" disabled={!vault.id}>
-                <EditTab />
-              </TabPane>
-              <TabPane tab={variables[lang].close} key="3" disabled={!vault.id}>
-                <CloseTab />
-              </TabPane>
-            </Tabs>
-          </Col>
-        </Row> */}
-
       <Minting />
-      {/* </div> */}
     </div>
   );
 };

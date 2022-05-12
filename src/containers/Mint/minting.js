@@ -7,6 +7,7 @@ import PlaceBidModal from "../Auctions/PlaceBidModal";
 import FilterModal from "../Auctions/FilterModal/FilterModal";
 import data from "./data";
 import "./index.scss";
+import { Link } from "react-router-dom";
 
 const Minting = (lang) => {
   const columns = [
@@ -52,7 +53,13 @@ const Minting = (lang) => {
       width: 140,
       render: () => (
         <>
-          <PlaceBidModal />
+          <div>
+            <Link to="/vault">
+              <Button type="primary" size="small" className="px-3 valult-mint-btn">
+                Mint
+              </Button>
+            </Link>
+          </div>
         </>
       ),
     },
@@ -63,16 +70,12 @@ const Minting = (lang) => {
       key: <>{item.key}</>,
       Vault: (
         <>
-          <div className="assets-withicon">
-            {item.valut}
-          </div>
+          <div className="assets-withicon">{item.valut}</div>
         </>
       ),
       collateral_ratio: (
         <>
-          <div className="assets-withicon">
-            {item.collateral}%
-          </div>
+          <div className="assets-withicon">{item.collateral}%</div>
         </>
       ),
       intrest_rate: (
