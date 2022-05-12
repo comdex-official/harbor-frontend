@@ -1,0 +1,335 @@
+@import "../../assets/scss/variables.scss";
+
+.borrw-content-card {
+  background: $background-light;
+  padding: 35px;
+  border-radius: $base-border-radius + 5;
+//   box-shadow: $box-shadow-inner-light;
+  position: relative;
+  @media screen and (max-width: 767px) {
+    padding: 25px 20px;
+  }
+  .dark-mode & {
+    background: $background-dark1;
+    border: 1px solid $border-dark;
+    // box-shadow: $box-shadow-inner-dark;
+  }
+  .borrow-tab-head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+    .head-icons {
+      width: 40px;
+      height: 40px;
+      border-radius: 40px;
+      padding: 1px;
+      background: $primary-gradient;
+      margin-right: 10px;
+      .head-icons-inner {
+        width: 100%;
+        height: 100%;
+        background: $background-light;
+        border-radius: 100%;
+        .dark-mode & {
+          background: $background-dark1;
+        }
+        .icon {
+          width: 100%;
+          height: 100%;
+          padding: 4px;
+        }
+      }
+    }
+    .righttext {
+      padding-left: 10px;
+      h3 {
+        margin-bottom: 4px;
+        font-weight: 300;
+        font-size: 1.2rem;
+        line-height: 1;
+        .dark-mode & {
+          color: $text-color-light;
+        }
+      }
+      p {
+        margin-bottom: 0;
+        font-size: $font-size-base - 1;
+        .dark-mode & {
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+.borrw-content-wapper {
+  .borrowcard-header {
+    background: $background-light;
+    padding: 15px;
+    border-radius: $base-border-radius;
+    box-shadow: $box-shadow-inner-light;
+    position: relative;
+    margin-bottom: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    .dark-mode & {
+      background: $background-dark1;
+      border: 1px solid $border-dark;
+      box-shadow: $box-shadow-inner-dark;
+    }
+    .head-colums {
+      text-align: center;
+      .head-icons {
+        width: 40px;
+        height: 40px;
+        border-radius: 40px;
+        padding: 1px;
+        background: $primary-gradient;
+        margin: auto;
+        .head-icons-inner {
+          width: 100%;
+          height: 100%;
+          background: $background-light;
+          border-radius: 100%;
+          text-align: center;
+          .dark-mode & {
+            background: $background-dark1;
+          }
+          .icon {
+            width: 100%;
+            height: 100%;
+            padding: 4px;
+            fill: $black;
+            .dark-mode & {
+              fill: $white;
+            }
+          }
+        }
+      }
+      &:nth-child(1),
+      &:nth-child(2) {
+        .head-icons {
+          .head-icons-inner {
+            .icon {
+              max-width: 80%;
+              margin: auto;
+            }
+          }
+        }
+      }
+      label {
+        font-size: $font-size-sm;
+        color: $text-color-light2;
+        margin-bottom: 0;
+        line-height: 1;
+        margin-top: 2px;
+        .dark-mode & {
+          color: $text-color-light;
+        }
+      }
+      p {
+        margin-bottom: 0;
+        line-height: 1;
+        font-size: $font-size-base;
+        .dark-mode & {
+          color: $white;
+        }
+      }
+    }
+  }
+  .borrowcard-content {
+    background: $background-light;
+    padding: 35px;
+    border-radius: $base-border-radius + 5;
+    box-shadow: $box-shadow-inner-light;
+    position: relative;
+    .dark-mode & {
+      background: $background-dark1;
+      border: 1px solid $border-dark;
+      box-shadow: $box-shadow-inner-dark;
+    }
+    .assets-select-card {
+      align-items: center;
+      .ant-select {
+        font-size: $font-size-lg + 1;
+      }
+    }
+    .assets-select-input {
+      margin-top: 0 !important;
+    }
+  }
+}
+
+.slider-numbers {
+  display: flex;
+  .comdex-slider {
+  }
+  .ant-input {
+    margin-bottom: 0;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 5px;
+    font-weight: 300;
+    margin-top: -14px;
+    max-width: 70px;
+    padding: 0 25px 0 10px;
+    text-align: center;
+    font-size: $font-size-lg + 3;
+    border: none;
+    background-color: $assets-bg-light;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+      margin: 0;
+    }
+    .dark-mode & {
+      background: #081938;
+      border-color: #18305a;
+      color: $white;
+    }
+  }
+  .collateral-percentage {
+    margin-left: -22px;
+    margin-top: -9px;
+    padding-right: 0;
+    position: relative;
+    font-size: 20px;
+    .dark-mode & {
+      color: $white;
+    }
+  }
+}
+
+.slider-bar {
+  label {
+    margin-bottom: 10px;
+    display: block;
+    .dark-mode & {
+      color: $text-color-label-dark;
+    }
+  }
+}
+
+.borrow-edit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 420px;
+  margin: auto;
+  .borrowedithead-colum {
+    label {
+      margin-bottom: 10px;
+      display: block;
+      font-size: $font-size-base + 1;
+      .dark-mode & {
+        color: $text-color-label-dark;
+      }
+    }
+    .assets-col {
+      display: flex;
+      align-items: center;
+      .assets-icons {
+        width: 30px;
+        height: 30px;
+        border-radius: 30px;
+        background: $primary-gradient;
+        padding: 0.65px;
+        .assets-icons-inner {
+          width: 100%;
+          height: 100%;
+          background: $white;
+          border-radius: 100%;
+          padding: 2px;
+          .dark-mode & {
+            background: $background-dark2;
+          }
+          .icon {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+      h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0;
+        font-weight: 400;
+        padding-left: 6px;
+        .dark-mode & {
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+.brrow-edit-form {
+  margin-top: 20px;
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  .slider-numbers {
+    h2 {
+      margin-top: -8px;
+    }
+  }
+  label {
+    padding-left: 8px;
+    margin-bottom: 5px;
+    display: block;
+    .dark-mode & {
+      color: $text-color-label-dark;
+    }
+  }
+  .ant-input {
+    border: 0.8px solid #123c73;
+    border-radius: 6px;
+    text-align: right;
+    height: 48px;
+    padding: 0 10px;
+    font-size: $font-size-lg + 4;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      display: none;
+      margin: 0;
+    }
+    .dark-mode & {
+      background: $background-dark1;
+      color: $white;
+    }
+  }
+  .label_max_button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -1px;
+    .maxhalf {
+      margin-top: -27px;
+      button {
+        background-color: $secondary-color;
+        color: $white;
+        border: none;
+        border-radius: 5px;
+        top: 10px;
+        height: 25px;
+        padding: 0 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.close-tab-content {
+  .dark-mode & {
+    color: $text-color-label-dark;
+  }
+  .close-tab-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+}

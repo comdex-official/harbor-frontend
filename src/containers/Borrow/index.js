@@ -1,9 +1,162 @@
-import React from 'react'
+import "./index.scss";
+import * as PropTypes from "prop-types";
+import { Col, Row } from "../../components/common";
+import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
+import variables from "../../utils/variables";
+import { Tabs, message } from "antd";
+import BorrowTab from "./BorrowTab";
+import EditTab from "./EditTab";
+import CloseTab from "./CloseTab";
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_NUMBER } from "../../constants/common";
+import { queryPairs } from "../../services/asset/query";
+import { setPairs } from "../../actions/asset";
+import { useLocation } from "react-router";
+import { decode } from "../../utils/string";
+import { queryVaultList } from "../../services/vault/query";
+import { setAccountVaults } from "../../actions/account";
 
-const Borrow = () => {
+const { TabPane } = Tabs;
+
+const Borrow = ({
+  lang,
+  address,
+  pairs,
+  setPairs,
+  vault,
+  setAccountVaults,
+}) => {
+  const [activeKey, setActiveKey] = useState("1");
+  const location = useLocation();
+  const type = decode(location.hash);
+
+  useEffect(() => {
+    if (type) {
+      setActiveKey("2");
+    }
+
+    if (!pairs.list.length) {
+      fetchPairs(
+        (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+        DEFAULT_PAGE_SIZE,
+        true,
+        false
+      );
+    }
+    getVaults();
+  }, [address]);
+
+  const fetchPairs = (offset, limit, countTotal, reverse) => {
+    queryPairs(offset, 100, countTotal, reverse, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      setPairs(data.pairsInfo, data.pagination);
+    });
+  };
+
+  const getVaults = () => {
+    fetchVaults(
+      address,
+      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+      DEFAULT_PAGE_SIZE,
+      true,
+      false
+    );
+  };
+
+  const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
+    queryVaultList(
+      address,
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        setAccountVaults(result?.vaultsInfo, result?.pagination);
+      }
+    );
+  };
+
   return (
-    <div>Borrow</div>
-  )
-}
+    <div className="app-content-wrapper">
+      <div className="app-content-small">
+        <Row>
+          <Col>
+            <Tabs
+              className="comdex-tabs"
+              type="card"
+              onChange={setActiveKey}
+              activeKey={activeKey}
+            >
+              <TabPane tab={variables[lang].borrow} key="1">
+                <BorrowTab />
+              </TabPane>
+              <TabPane tab={variables[lang].edit} key="2" disabled={!vault.id}>
+                <EditTab />
+              </TabPane>
+              <TabPane tab={variables[lang].close} key="3" disabled={!vault.id}>
+                <CloseTab />
+              </TabPane>
+            </Tabs>
+          </Col>
+        </Row>
+      </div>
+    </div>
+  );
+};
 
-export default Borrow
+Borrow.propTypes = {
+  setAccountVaults: PropTypes.func.isRequired,
+  setPairs: PropTypes.func.isRequired,
+  lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
+  pairs: PropTypes.shape({
+    list: PropTypes.arrayOf(
+      PropTypes.shape({
+        denomIn: PropTypes.string,
+        denomOut: PropTypes.string,
+        liquidationRatio: PropTypes.string,
+        id: PropTypes.shape({
+          high: PropTypes.number,
+          low: PropTypes.number,
+          unsigned: PropTypes.bool,
+        }),
+      })
+    ),
+  }),
+  vault: PropTypes.shape({
+    collateral: PropTypes.shape({
+      denom: PropTypes.string,
+    }),
+    debt: PropTypes.shape({
+      denom: PropTypes.string,
+    }),
+    id: PropTypes.shape({
+      low: PropTypes.number,
+    }),
+  }),
+};
+
+const stateToProps = (state) => {
+  return {
+    lang: state.language,
+    address: state.account.address,
+    pairs: state.asset.pairs,
+    vault: state.account.vault,
+  };
+};
+
+const actionToProps = {
+  setPairs,
+  setAccountVaults,
+};
+
+export default connect(stateToProps, actionToProps)(Borrow);

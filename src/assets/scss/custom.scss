@@ -160,6 +160,15 @@ button {
           max-width: 540px;
           margin: auto;
         }
+        .card-content-bg {
+          border-radius: $base-border-radius;
+          background: $background-light;
+          box-shadow: $box-shadow-inner-light;
+          .dark-mode & {
+            background-color: $secondary-color-light;
+            box-shadow: none;
+          }
+        }
       }
     }
   }
@@ -970,14 +979,14 @@ button {
   align-items: flex-start;
   justify-content: space-between;
   min-height: 110px;
-
   @media screen and (max-width: 480px) {
     display: block;
   }
 
   .dark-mode & {
     background: $background-dark2;
-    box-shadow: $box-shadow-inner-dark;
+    // box-shadow: $box-shadow-inner-dark;
+    box-shadow: none;
   }
 
   .assets-left {
@@ -991,6 +1000,32 @@ button {
 
       .dark-mode & {
         color: $text-color-label-dark;
+      }
+    }
+    .assets-select-wrapper {
+      height: 100%;
+      .farm-asset-icon-container {
+        height: 2.6rem;
+        .select-inner {
+          height: 100%;
+          .svg-icon {
+            height: 100%;
+            .svg-icon-inner {
+              height: 100%;
+              display: flex;
+              align-items: center;
+              font-weight: 600;
+              font-size: 16px;
+              .dark-mode & {
+                color: #f0f0f0;
+              }
+              .icon {
+                height: 100%;
+                width: 30px;
+              }
+            }
+          }
+        }
       }
     }
   }
