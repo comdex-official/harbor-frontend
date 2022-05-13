@@ -4,9 +4,8 @@ import "./index.scss";
 import { Col, Row } from "../../../components/common";
 import { Link } from "react-router-dom";
 import Mint from "./Mint";
-import EditTab from "../Vault/EditTab";
 import Close from "./Close";
-// import EditTab from "../Minting/EditTab/Tab";
+import EditTab from "./EditTab";
 
 const Vault = () => {
   const [activeKey, setActiveKey] = useState("1");

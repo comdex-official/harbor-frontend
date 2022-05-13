@@ -13,6 +13,14 @@ export const tabsList = [
     langKey: "positions",
     path: "myPositions",
     active: "myPositions",
+    index: 1,
+  },
+  {
+    name: "Assets",
+    value: "assets",
+    langKey: "assets",
+    path: "assets",
+    active: "assets",
     index: 2,
   },
   {
