@@ -12,59 +12,60 @@ const History = (lang) => {
       title: "Type",
       dataIndex: "type",
       key: "type",
-      width: 180
+      // width: 180
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      width: 150,
+      // width: 150,
       render: (date) => (
-        <div className="dates-col"><div className="dates">{date}</div>  <small>11:23 EST</small></div>
+        <div className="dates-col">
+          <div className="dates">{date}</div> <small>11:23 EST</small>
+        </div>
       ),
     },
     {
       title: "Block Height",
       dataIndex: "block_height",
       key: "block_height",
-      width: 150,
+      // width: 150,
     },
     {
       title: "Tnx Hash",
       dataIndex: "tnx_hash",
       key: "tnx_hash",
-      width: 300,
+      width: 150,
       render: (tnx_hash) => (
-        <div className="tnxshash-col">{tnx_hash} <Copy /></div>
+        <div className="tnxshash-col">
+          {tnx_hash} <Copy />
+        </div>
       ),
-    }
+    },
   ];
 
   const tableData = [
-    { 
+    {
       key: 1,
       type: "Deposit",
       date: "30 Jul 2022",
       block_height: "1234",
       tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
     },
-    { 
+    {
       key: 2,
       type: "Repay",
       date: "30 Jul 2022",
       block_height: "1234",
       tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
     },
-  ]
+  ];
 
   return (
     <div className="app-content-wrapper">
       <Row>
         <Col>
           <div className="commodo-card">
-            <div className="card-header">
-              TRANSACTION HISTORY
-            </div>
             <div className="card-content">
               <Table
                 className="custom-table"
@@ -91,7 +92,6 @@ const stateToProps = (state) => {
   };
 };
 
-const actionsToProps = {
-};
+const actionsToProps = {};
 
 export default connect(stateToProps, actionsToProps)(History);

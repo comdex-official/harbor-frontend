@@ -3,8 +3,8 @@ import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
 import variables from "../../utils/variables";
 import { Progress, Tabs, List } from "antd";
-import Deposit from "./Deposit";
-import Borrow from "./Borrow";
+import MyEarn from "./MyEarn";
+import Borrow from "./MyVault";
 import History from "./History";
 import "./index.scss";
 import { useState } from "react";
@@ -227,7 +227,7 @@ const MyPositions = (lang) => {
             onChange={callback}
           >
             <TabPane tab="Earn" key="1">
-              <Deposit />
+              <MyEarn />
             </TabPane>
             <TabPane tab="Vaults" key="2">
               <Borrow />

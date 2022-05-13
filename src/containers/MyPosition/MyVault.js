@@ -2,41 +2,45 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
 import variables from "../../utils/variables";
-import { Button, Table, Switch } from "antd";
+import { Button, Table, Progress } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
 
-function onChange(checked) {
-  console.log(`switch to ${checked}`);
-}
-
-const Deposit = (lang) => {
+const MyVault = (lang) => {
   const columns = [
     {
-      title: "Asset",
-      dataIndex: "asset",
-      key: "asset",
+      title: "Vault Type",
+      dataIndex: "vault",
+      key: "vault",
       width: 180,
     },
     {
-      title: "Balance",
-      dataIndex: "balance",
-      key: "balance",
+      title: "Debt",
+      dataIndex: "debt",
+      key: "debt",
       width: 150,
     },
     {
-      title: "APY",
+      title: "Interest Rate",
       dataIndex: "apy",
       key: "apy",
       width: 150,
       render: (apy) => <>{apy}%</>,
     },
     {
-      title: "Use as Collateral",
-      dataIndex: "useas_collateral",
-      key: "useas_collateral",
+      title: "Health Factor",
+      dataIndex: "health",
+      key: "health",
       width: 200,
-      render: (item) => <Switch onChange={() => onChange(item)} />,
+      align: "center",
+      render: () => (
+        <Progress
+          className="health-progress"
+          style={{ width: 130 }}
+          percent={30}
+          size="small"
+        />
+      ),
     },
     {
       title: "",
@@ -46,14 +50,11 @@ const Deposit = (lang) => {
       width: 200,
       render: () => (
         <>
-          <Link to="/deposit">
+          <Link to="/vault">
             <Button type="primary" className="btn-filled" size="small">
-              Diposit
+              Manage
             </Button>
           </Link>
-          <Button type="primary" size="small" className="ml-2">
-            Withdraw
-          </Button>
         </>
       ),
     },
@@ -62,32 +63,32 @@ const Deposit = (lang) => {
   const tableData = [
     {
       key: 1,
-      asset: (
+      vault: (
         <>
           <div className="assets-withicon">
-            <div className="assets-icon">
+            {/* <div className="assets-icon">
               <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div>
-            20
+            </div> */}
+            ATOM-A
           </div>
         </>
       ),
-      balance: "142",
+      debt: "142 CMST",
       apy: "20",
     },
     {
-      key: 2,
-      asset: (
+      key: 1,
+      vault: (
         <>
           <div className="assets-withicon">
-            <div className="assets-icon">
+            {/* <div className="assets-icon">
               <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div>
-            20
+            </div> */}
+            ATOM-B
           </div>
         </>
       ),
-      balance: "142",
+      debt: "90 CMST",
       apy: "20",
     },
   ];
@@ -96,8 +97,7 @@ const Deposit = (lang) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className="commodo-card ">
-            <div className="card-header">MY Deposited AssetS</div>
+          <div className="commodo-card">
             <div className="card-content">
               <Table
                 className="custom-table"
@@ -114,7 +114,7 @@ const Deposit = (lang) => {
   );
 };
 
-Deposit.propTypes = {
+MyVault.propTypes = {
   lang: PropTypes.string.isRequired,
 };
 
@@ -126,4 +126,4 @@ const stateToProps = (state) => {
 
 const actionsToProps = {};
 
-export default connect(stateToProps, actionsToProps)(Deposit);
+export default connect(stateToProps, actionsToProps)(MyVault);

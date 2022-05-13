@@ -575,7 +575,8 @@ button {
               padding: 10px 15px 0 15px;
               font-size: $font-size-sm + 3;
               color: $dark-color;
-              text-align: left !important;
+              // text-align: left !important;
+              text-align: center;
               .dark-mode & {
                 color: $text-color-white;
               }
@@ -615,13 +616,13 @@ button {
               line-height: 1;
               border-color: transparent;
               background: none;
-              text-align: left;
+              text-align: center;
               &:last-child {
                 text-align: right !important;
               }
               &:first-child {
                 border-radius: 15px 0 0 15px;
-
+                text-align: start;
                 .dark-mode & {
                   border-left: 1px solid $border-dark;
                 }
@@ -629,7 +630,7 @@ button {
 
               &:last-child {
                 border-radius: 0 15px 15px 0;
-
+                text-align: end;
                 .dark-mode & {
                   border-right: 1px solid $border-dark;
                 }
