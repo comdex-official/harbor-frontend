@@ -218,7 +218,11 @@
   justify-content: space-between;
   max-width: 420px;
   margin: auto;
+  .borrowedithead-colum:nth-child(2) {
+    padding-left: 10px;
+  }
   .borrowedithead-colum {
+    width: 100%;
     label {
       margin-bottom: 10px;
       display: block;
@@ -234,16 +238,16 @@
         width: 30px;
         height: 30px;
         border-radius: 30px;
-        background: $primary-gradient;
+        // background: $primary-gradient;
         padding: 0.65px;
         .assets-icons-inner {
           width: 100%;
           height: 100%;
-          background: $white;
+          background: $background-select-hover-dark;
           border-radius: 100%;
           padding: 2px;
           .dark-mode & {
-            background: $background-dark2;
+            background: $background-select-hover-dark;
           }
           .icon {
             width: 100%;

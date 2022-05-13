@@ -7,7 +7,7 @@ import variables from "../../utils/variables";
 import { Tabs, message } from "antd";
 import BorrowTab from "./BorrowTab";
 import EditTab from "./EditTab";
-import CloseTab from "./CloseTab";
+import CloseTab from "./Vault/Close/CloseTab";
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_NUMBER } from "../../constants/common";
 import { queryPairs } from "../../services/asset/query";
 import { setPairs } from "../../actions/asset";

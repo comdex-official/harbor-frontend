@@ -3,53 +3,44 @@ import { Tabs, message, Button } from "antd";
 import "./index.scss";
 import { Col, Row } from "../../../components/common";
 import { Link } from "react-router-dom";
+import Mint from "./Mint";
+import EditTab from "../Vault/EditTab";
+import Close from "./Close";
+// import EditTab from "../Minting/EditTab/Tab";
 
 const Vault = () => {
   const [activeKey, setActiveKey] = useState("1");
   const { TabPane } = Tabs;
 
+  const BackButton = {
+    right: (
+      <Link to="/mint">
+        <Button className="back-btn" type="primary">
+          Back
+        </Button>
+      </Link>
+    ),
+  };
   return (
     <>
-      <div className="app-content-wrapper vault-content-wrapper">
+      <div className="app-content-wrapper">
         <Row>
           <Col>
             <Tabs
               className="comdex-tabs"
-              type="card"
-              onChange={setActiveKey}
-              activeKey={activeKey}
+              defaultActiveKey="1"
+              tabBarExtraContent={BackButton}
             >
               <TabPane tab="Mint" key="1">
-                <h1>Tab 1</h1>
+                <Mint />
               </TabPane>
-              <TabPane
-                tab="Edit"
-                key="2"
-                // disabled={!vault.id}
-              >
-                <h1>Tab 2</h1>
+              <TabPane tab="Edit" key="2">
+                <EditTab />
               </TabPane>
-              <TabPane
-                tab="Close"
-                key="3"
-                // disabled={!vault.id}
-              >
-                <h1>Tab 3</h1>
+              <TabPane tab="Close" key="3">
+                <Close />
               </TabPane>
             </Tabs>
-          </Col>
-          <Col>
-            <div className="vault-back-btn">
-              <Link to="/mint">
-                <Button
-                  type="primary"
-                  size="small"
-                  className="px-3 valult-mint-btn"
-                >
-                  Back
-                </Button>
-              </Link>
-            </div>
           </Col>
         </Row>
       </div>

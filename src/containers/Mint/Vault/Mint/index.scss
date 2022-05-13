@@ -1,0 +1,67 @@
+@import "../../../../assets/scss/style.scss";
+.vault-mint-card {
+  .mint-title {
+    font-weight: 600;
+    font-size: 20px;
+    padding-bottom: 15px;
+    .dark-mode & {
+      color: #fff;
+    }
+  }
+}
+.earn-deposite-card {
+  .card-head {
+    .head-left {
+      font-weight: 600;
+      font-size: 15px;
+      .dark-mode & {
+        color: #fff;
+      }
+    }
+  }
+  .card-assets-container {
+    display: flex;
+    flex-direction: column;
+    .assets-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      .asset-name {
+        font-weight: 500;
+        .dark-mode & {
+          color: #fff;
+        }
+      }
+      .asset-value {
+        font-weight: 500;
+        .dark-mode & {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+.red-track {
+  .ant-slider-track {
+    background: $error-color !important;
+  }
+  .ant-slider-handle {
+    border-color: $error-color !important;
+  }
+}
+.orange-track {
+  .ant-slider-track {
+    background: orange !important;
+  }
+  .ant-slider-handle {
+    border-color: orange !important;
+  }
+}
+.green-track {
+  .ant-slider-track {
+    background: $success-color !important;
+  }
+  .ant-slider-handle {
+    border-color: $success-color !important;
+  }
+}

@@ -1,19 +1,19 @@
-import "./index.scss";
 import * as PropTypes from "prop-types";
 import { connect } from "react-redux";
 import React, { useState } from "react";
-import variables from "../../utils/variables";
+import variables from "../../../../utils/variables";
 import { Button, message } from "antd";
-import TooltipIcon from "../../components/TooltipIcon";
-import { denomConversion, getDenomBalance } from "../../utils/coin";
-import { amountConversion } from "../../utils/coin";
-import { signAndBroadcastTransaction } from "../../services/helper";
-import { defaultFee } from "../../services/transaction";
-import { marketPrice } from "../../utils/number";
+import TooltipIcon from "../../../../components/TooltipIcon";
+import { denomConversion, getDenomBalance } from "../../../../utils/coin";
+import { amountConversion } from "../../../../utils/coin";
+import { signAndBroadcastTransaction } from "../../../../services/helper";
+import { defaultFee } from "../../../../services/transaction";
+import { marketPrice } from "../../../../utils/number";
 import { useNavigate } from "react-router";
-import { setVault } from "../../actions/account";
-import { setBalanceRefresh } from "../../actions/account";
-import { DEFAULT_FEE, DOLLAR_DECIMALS } from "../../constants/common";
+import { setVault } from "../../../../actions/account";
+import { setBalanceRefresh } from "../../../../actions/account";
+import { DEFAULT_FEE, DOLLAR_DECIMALS } from "../../../../constants/common";
+import "./index.scss";
 
 const CloseTab = ({
   lang,
@@ -77,7 +77,7 @@ const CloseTab = ({
   };
 
   return (
-    <div className="borrw-content-card">
+    <div className="borrw-content-card ">
       <div className="close-tab-content">
         <div className="close-tab-row">
           <div className="text-left">
@@ -85,18 +85,8 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_burn_amount} />
           </div>
           <div className="text-right">
-            {amountConversion(vault?.debt?.amount)}{" "}
-            {denomConversion(vault?.debt?.denom)}
-          </div>
-        </div>
-        <div className="close-tab-row">
-          <div className="text-left">
-            {variables[lang].oracle_price}{" "}
-            <TooltipIcon text={variables[lang].oracle_price_tooltip} />
-          </div>
-          <div className="text-right">
-            {marketPrice(markets, vault?.debt?.denom)?.toFixed(DOLLAR_DECIMALS)}{" "}
-            {variables[lang].USD}
+            {amountConversion(vault?.debt?.amount || 10000000)} CMST
+            {/* {denomConversion(vault?.debt?.denom)} */}
           </div>
         </div>
         <div className="close-tab-row">
@@ -105,17 +95,8 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_withdraw_amount} />
           </div>
           <div className="text-right">
-            {amountConversion(vault?.collateral?.amount)}{" "}
-            {denomConversion(vault?.collateral?.denom)}
-          </div>
-        </div>
-        <div className="close-tab-row">
-          <div className="text-left">
-            {variables[lang].tx_fee}{" "}
-            <TooltipIcon text={variables[lang].tooltip_tx_fee}/>
-          </div>
-          <div className="text-right">
-            {amountConversion(DEFAULT_FEE)} {variables[lang].CMDX}
+            {amountConversion(vault?.collateral?.amount || 110000000)} ATOM
+            {/* {denomConversion(vault?.collateral?.denom)} */}
           </div>
         </div>
       </div>

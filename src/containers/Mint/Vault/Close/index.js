@@ -1,16 +1,15 @@
-import * as PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import CloseTab from "./CloseTab";
 import PricePool from "../Mint/PricePool";
 import VaultDetails from "../Mint/VaultDetails";
-import Edit from "./Tab";
 import "./index.scss";
-
-const EditTab = () => {
+const Close = () => {
   return (
     <>
-      <div className="details-wrapper">
+      {/* For max content height add class close-content-card */}
+      <div className="details-wrapper ">
         <div className="details-left farm-content-card earn-deposite-card vault-mint-card">
-          <Edit />
+          <CloseTab />
         </div>
         <div className="details-right">
           <PricePool />
@@ -21,4 +20,4 @@ const EditTab = () => {
   );
 };
 
-export default EditTab;
+export default Close;

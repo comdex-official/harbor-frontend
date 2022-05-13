@@ -68,7 +68,7 @@ const SideBar = () => {
             >
               {/* <SvgIcon className="white" name="logo-colored" />
               <SvgIcon className="blue" name="logo-colored-blue" /> */}
-              <div className="sidebar-nav-heading">COMPOSITE</div>
+              <div className="sidebar-nav-heading">HARBOR</div>
             </div>
             <Scrollbars>
               <div className="side_bar_inner">
