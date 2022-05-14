@@ -31,7 +31,8 @@ body {
   // }
 
   &.dark-mode {
-    background: $body-background-dark;
+    // background: $body-background-dark;
+    background: $primary-gradient;
     color: $white;
 
     // &::before {

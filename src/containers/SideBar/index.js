@@ -1,20 +1,23 @@
+import * as PropTypes from "prop-types";
 import "./index.scss";
 import { Layout } from "antd";
 import { SvgIcon } from "../../components/common";
 import { useMediaQuery } from "react-responsive";
 import Footer from "../Footer";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Tabs from "./Tabs";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useNavigate } from "react-router";
+import { connect } from "react-redux";
 
 const { Sider } = Layout;
 
-const SideBar = () => {
+const SideBar = ({ lang, isDarkMode }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 991px)" });
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(!!isMobile);
+
   const toggle = () => {
     setIsOpen(!isOpen);
     if (isOpen && isMobile) {
@@ -66,9 +69,11 @@ const SideBar = () => {
                 })
               }
             >
-              {/* <SvgIcon className="white" name="logo-colored" />
-              <SvgIcon className="blue" name="logo-colored-blue" /> */}
-              <div className="sidebar-nav-heading">HARBOR</div>
+              {isDarkMode ? (
+                <SvgIcon name="harbor-logo" />
+              ) : (
+                <SvgIcon name="harbor-logo-light" />
+              )}
             </div>
             <Scrollbars>
               <div className="side_bar_inner">
@@ -85,5 +90,18 @@ const SideBar = () => {
     </>
   );
 };
+SideBar.propTypes = {
+  isDarkMode: PropTypes.bool.isRequired,
 
-export default SideBar;
+  // lang: PropTypes.string.isRequired,
+};
+const stateToProps = (state) => {
+  return {
+    // lang: state.language,
+    isDarkMode: state.theme.theme.darkThemeEnabled,
+  };
+};
+
+const actionsToProps = {};
+
+export default connect(stateToProps, actionsToProps)(SideBar);

@@ -92,7 +92,7 @@ const MyPositions = (lang) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>$145,326</h3>
+              <h3>145,326</h3>
               <span></span>
             </div>
           )}
@@ -123,7 +123,7 @@ const MyPositions = (lang) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>$145,326</h3>
+              <h3>145,326</h3>
               <span>CMST</span>
             </div>
           )}
@@ -140,7 +140,7 @@ const MyPositions = (lang) => {
       title: (
         <>
           {earnTab && "Current Intrest Rate"}
-          {vaultTab && "Current Intrest Rate"}
+          {vaultTab && "Available To Borrow"}
           {historyTab && "Total Borrowed"}
         </>
       ),
@@ -154,8 +154,8 @@ const MyPositions = (lang) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>6%</h3>
-              <span></span>
+              <h3>3562</h3>
+              <span>CMST</span>
             </div>
           )}
           {historyTab && (
