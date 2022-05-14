@@ -17,7 +17,9 @@ const NavigationBar = () => {
     <nav className={isSetOnScroll ? "top_bar fixedHeaderOnScroll" : "top_bar"}>
       <ThemeToggle />
 
-      <div className="connect-button">{/* <ConnectButton /> */}</div>
+      <div className="connect-button">
+        <ConnectButton />
+      </div>
     </nav>
   );
 };
