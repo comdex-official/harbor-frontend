@@ -122,7 +122,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
             <div className="assets-icon">
               <SvgIcon name={iconNameFromDenom(comdex?.coinMinimalDenom)} />
             </div>{" "}
-            {denomConversion(comdex?.coinMinimalDenom)}{" "}
+            {denomConversion(comdex?.coinMinimalDenom)}
           </div>
         </>
       ),

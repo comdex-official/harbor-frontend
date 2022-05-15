@@ -90,7 +90,7 @@ export const iconNameFromDenom = (key) => {
     case ibcDenoms["uosmo"]:
       return "osmosis-icon";
     case "ucmst":
-    case ibcDenoms["ucmst"]:
+      // case ibcDenoms["ucmst"]:
       return "cmst-icon";
     default:
       return "";

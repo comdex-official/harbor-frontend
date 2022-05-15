@@ -5,9 +5,10 @@ export const comdex = {
   coinMinimalDenom: "ucmdx",
   coinDecimals: 6,
   prefix: "comdex",
-  rpc: "https://staging-cswap.comdex.one/vchain-rpc",
+  // rpc: "https://staging-cswap.comdex.one/vchain-rpc",
+  rpc: "http://api.zenscape.one/vchain-rpc",
   rest: "https://staging-cswap.comdex.one/vchain-rest",
-  explorerUrlToTx: `https://dev-explorer.comdex.one/transactions/{txHash}`
+  explorerUrlToTx: `https://dev-explorer.comdex.one/transactions/{txHash}`,
 };
 
 export const ibcDenoms = {
@@ -16,4 +17,4 @@ export const ibcDenoms = {
   uxprt: "ibc/F9DEC4F5FFE69B7B9A881D394A30D11DDE2C1FD1FF3941D7F9EBD7CF208BD61A",
   uosmo: "ibc/05AC4BBA78C5951339A47DD1BC1E7FC922A9311DF81C85745B1C162F516FF2F1",
   uluna: "ibc/A1E1A20C1E4F2F76F301DA625CC476FBD0FCD8CA94DAF60814CA5257B6CD3E3E",
-}
+};
