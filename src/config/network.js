@@ -4,10 +4,8 @@ export const comdex = {
   coinDenom: "CMDX",
   coinMinimalDenom: "ucmdx",
   coinDecimals: 6,
-  prefix: "comdex",
-  // rpc: "https://staging-cswap.comdex.one/vchain-rpc",
-  rpc: "http://api.zenscape.one/vchain-rpc",
-  rest: "https://staging-cswap.comdex.one/vchain-rest",
+  rpc: "http://65.21.177.16:26657",
+  rest: " http://65.21.177.16:1317",
   explorerUrlToTx: `https://dev-explorer.comdex.one/transactions/{txHash}`,
 };
 
