@@ -1,5 +1,7 @@
 export const embedChainInfo = [
   {
+    // rpc: "https://testrpc-commodo.comdex.one/vega",
+    // rest: "https://testrest-commodo.comdex.one/vega-rest",
     rpc: "https://dev-cassets.comdex.one/vega",
     rest: "https://dev-cassets.comdex.one/vega-rest",
     chainId: "theta-testnet-001",
@@ -44,7 +46,8 @@ export const embedChainInfo = [
     ],
     coinType: 118,
     features: ["ibc-transfer"],
-    explorerUrlToTx: "https://explorer.theta-testnet.polypore.xyz/transactions/{txHash}",
+    explorerUrlToTx:
+      "https://explorer.theta-testnet.polypore.xyz/transactions/{txHash}",
   },
   {
     rpc: "https://dev-cassets.comdex.one/terra",
@@ -162,20 +165,21 @@ export const embedChainInfo = [
       "https://test-core-1.explorer.persistence.one/transactions/{txHash}",
   },
   {
-		rpc: 'https://rpc.osmo-test.ccvalidators.com',
-		rest: 'https://lcd.osmo-test.ccvalidators.com',
-		chainId: 'osmo-test-4',
-		chainName: 'Osmosis-Test',
-		stakeCurrency: {
-			coinDenom: 'OSMO',
-			coinMinimalDenom: 'uosmo',
-			coinDecimals: 6,
-			coinGeckoId: 'osmosis',
-			coinImageUrl: window.location.origin + '/public/assets/tokens/osmosis.svg',
-		},
-		bip44: {
-			coinType: 118,
-		},
+    rpc: "https://rpc.osmo-test.ccvalidators.com",
+    rest: "https://lcd.osmo-test.ccvalidators.com",
+    chainId: "osmo-test-4",
+    chainName: "Osmosis-Test",
+    stakeCurrency: {
+      coinDenom: "OSMO",
+      coinMinimalDenom: "uosmo",
+      coinDecimals: 6,
+      coinGeckoId: "osmosis",
+      coinImageUrl:
+        window.location.origin + "/public/assets/tokens/osmosis.svg",
+    },
+    bip44: {
+      coinType: 118,
+    },
     bech32Config: {
       bech32PrefixAccAddr: "osmo",
       bech32PrefixAccPub: `osmopub`,
@@ -184,32 +188,35 @@ export const embedChainInfo = [
       bech32PrefixConsAddr: `osmovalcons`,
       bech32PrefixConsPub: `osmovalconspub`,
     },
-		currencies: [
-			{
-				coinDenom: 'OSMO',
-				coinMinimalDenom: 'uosmo',
-				coinDecimals: 6,
-				coinGeckoId: 'osmosis',
-				coinImageUrl: window.location.origin + '/public/assets/tokens/osmosis.svg',
-			},
-			{
-				coinDenom: 'ION',
-				coinMinimalDenom: 'uion',
-				coinDecimals: 6,
-				coinGeckoId: 'ion',
-				coinImageUrl: window.location.origin + '/public/assets/tokens/ion.png',
-			},
-		],
-		feeCurrencies: [
-			{
-				coinDenom: 'OSMO',
-				coinMinimalDenom: 'uosmo',
-				coinDecimals: 6,
-				coinGeckoId: 'osmosis',
-				coinImageUrl: window.location.origin + '/public/assets/tokens/osmosis.svg',
-			},
-		],
-		features: ['ibc-transfer'],
-		explorerUrlToTx: 'https://bigdipper.testnet.osmo.mp20.net/transactions/{txHash}',
-	},
+    currencies: [
+      {
+        coinDenom: "OSMO",
+        coinMinimalDenom: "uosmo",
+        coinDecimals: 6,
+        coinGeckoId: "osmosis",
+        coinImageUrl:
+          window.location.origin + "/public/assets/tokens/osmosis.svg",
+      },
+      {
+        coinDenom: "ION",
+        coinMinimalDenom: "uion",
+        coinDecimals: 6,
+        coinGeckoId: "ion",
+        coinImageUrl: window.location.origin + "/public/assets/tokens/ion.png",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "OSMO",
+        coinMinimalDenom: "uosmo",
+        coinDecimals: 6,
+        coinGeckoId: "osmosis",
+        coinImageUrl:
+          window.location.origin + "/public/assets/tokens/osmosis.svg",
+      },
+    ],
+    features: ["ibc-transfer"],
+    explorerUrlToTx:
+      "https://bigdipper.testnet.osmo.mp20.net/transactions/{txHash}",
+  },
 ];

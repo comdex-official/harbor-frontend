@@ -46,6 +46,7 @@ const Deposit = ({
 
   const showModal = () => {
     initializeIBCChain(chain.chainInfo, (error, account) => {
+      console.log(chain);
       if (error) {
         message.error(error);
         setInProgress(false);

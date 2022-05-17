@@ -16,7 +16,7 @@ import { ibcAssetsInfo } from "../../config/ibc";
 import { embedChainInfo } from "../../config/chain";
 import { message } from "antd";
 import { iconNameFromDenom } from "../../utils/string";
-import { comdex } from "../../config/network";
+import { cmst, comdex } from "../../config/network";
 import Lodash from "lodash";
 import { marketPrice } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
@@ -131,6 +131,25 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
         value: nativeCoinValue || 0,
       },
     },
+    {
+      key: comdex.chainId,
+      asset: (
+        <>
+          <div className="assets-withicon">
+            <div className="assets-icon">
+              <SvgIcon name={iconNameFromDenom(cmst?.coinMinimalDenom)} />
+            </div>{" "}
+            {denomConversion(cmst?.coinMinimalDenom)}
+          </div>
+        </>
+      ),
+      balances: {
+        amount: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
+        value: nativeCoinValue || 0,
+      },
+    },
+   
+
   ];
 
   const tableIBCData =
