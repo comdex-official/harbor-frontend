@@ -46,7 +46,7 @@ const Earn = () => {
                   <Deposit />
                 </TabPane>
                 <TabPane tab="Withdraw" key="2">
-                  <Withdraw/>
+                  <Withdraw />
                 </TabPane>
               </Tabs>
             </Col>

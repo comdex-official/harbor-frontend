@@ -20,7 +20,7 @@ import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
 import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist } from '../../../actions/locker'
 import "./index.scss";
 import { queryAssets } from "../../../services/asset/query";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../../constants/common";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, PRODUCT_ID } from "../../../constants/common";
 import { queryLockerWhiteListedAssetByProduct, queryLockerWhiteListedAssetByProductId, queryUserLockerByProductAssetId } from "../../../services/locker/query";
 import { queryAllBalances } from "../../../services/bank/query";
 import { comdex } from "../../../config/network";
@@ -94,8 +94,8 @@ const Deposit = ({
       true,
       false
     );
-    fetchWhiteListedAssetByid(1);
-    fetchOwnerLockerExistByAssetId(1, 3, address);
+    fetchWhiteListedAssetByid(PRODUCT_ID);
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, 3, address);
   }, [address]);
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
