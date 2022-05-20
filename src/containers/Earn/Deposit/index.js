@@ -1,4 +1,5 @@
 import { Button, Input, message, Select } from "antd";
+import Long from "long";
 import *  as PropTypes from 'prop-types';
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -15,14 +16,19 @@ import {
 import { iconNameFromDenom, toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import Info from "../Info";
-import { setAssets, setPair } from "../../../actions/asset";
-import { setWhiteListedAssets, setAllWhiteListedAssets } from '../../../actions/locker'
+import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
+import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist } from '../../../actions/locker'
 import "./index.scss";
 import { queryAssets } from "../../../services/asset/query";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../../constants/common";
-import { queryLockerWhiteListedAssetByProduct, queryLockerWhiteListedAssetByProductId } from "../../../services/locker/query";
+import { queryLockerWhiteListedAssetByProduct, queryLockerWhiteListedAssetByProductId, queryUserLockerByProductAssetId } from "../../../services/locker/query";
 import { queryAllBalances } from "../../../services/bank/query";
 import { comdex } from "../../../config/network";
+import Snack from "../../../components/common/Snack";
+import { signAndBroadcastTransaction } from "../../../services/helper";
+import { defaultFee, getTypeURL } from "../../../services/transaction";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Deposit = ({
   lang,
@@ -38,7 +44,10 @@ const Deposit = ({
   allWhiteListedAssets,
   whiteListedAsset,
 }) => {
-  const [firstInput, setFirstInput] = useState();
+  const dispatch = useDispatch();
+  const inAmount = useSelector((state) => state.asset.inAmount);
+  const isLockerExist = useSelector((state) => state.locker.isLockerExist);
+
   const [secondInput, setSecondInput] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
@@ -61,14 +70,11 @@ const Deposit = ({
           item.id.low === whiteListedAsset[index]?.low)
       })
     whiteListedAssetData.push(filterAssets);
-    console.log("Filter Assets", filterAssets);
   }
-
   const firstAssetAvailableBalance = getDenomBalance(balances, pair?.baseCoinDenom) || 0;
 
   const handleFirstInputChange = (value) => {
     value = toDecimals(value).toString().trim();
-
     setInputValidationError(
       ValidateInputNumber(
         Number(getAmount(value)),
@@ -76,23 +82,9 @@ const Deposit = ({
         "macro"
       )
     );
-
-    // const numberOfTokens = (value * getOutputPrice()).toFixed(6);
-    setFirstInput(value);
-
-    // setOutputValidationError(
-    //   ValidateInputNumber(
-    //     Number(getAmount(numberOfTokens)),
-    //     secondAssetAvailableBalance,
-    //     "macro"
-    //   )
-    // );
-    // isFinite(Number(numberOfTokens)) && setSecondInput(numberOfTokens);
+    dispatch(setAmountIn(value));
   };
 
-  const handleOfferCoinDenomChange = (value) => {
-
-  };
 
 
   useEffect(() => {
@@ -102,8 +94,8 @@ const Deposit = ({
       true,
       false
     );
-    // fetchWhiteListedAsset()
-    fetchWhiteListedAssetByid(1)
+    fetchWhiteListedAssetByid(1);
+    fetchOwnerLockerExistByAssetId(1, 3, address);
   }, [address]);
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -120,16 +112,6 @@ const Deposit = ({
     });
   };
 
-  // const fetchWhiteListedAsset = () => {
-  //   setInProgress(true);
-  //   queryLockerWhiteListedAssetByProduct((error, data) => {
-  //     if (error) {
-  //       message.error(error);
-  //       return;
-  //     }
-  //     setAllWhiteListedAssets(data.productToAllAsset[0].assets)
-  //   })
-  // }
 
   const fetchWhiteListedAssetByid = (productId) => {
     setInProgress(true);
@@ -138,16 +120,123 @@ const Deposit = ({
         message.error(error);
         return;
       }
-      console.log("Product Asset", data?.assetIds);
+      // console.log("Product Asset", data?.assetIds);
       setWhiteListedAssets(data?.assetIds)
     })
   }
 
+  const fetchOwnerLockerExistByAssetId = (productId, assetId, address) => {
+    queryUserLockerByProductAssetId(productId, assetId, address, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log(data);
+      let lockerExist = data?.lockerInfo?.length;
+      if (lockerExist > 0) {
+        dispatch(setIsLockerExist(true));
+      } else {
+        dispatch(setIsLockerExist(false));
+      }
+      console.log(lockerExist);
+    })
+  }
+  console.log(isLockerExist);
+
   const AvailableAssetBalance =
     getDenomBalance(balances, selectedAsset) || 0;
 
+  const handleSubmitCreateLocker = () => {
+    if (!address) {
+      message.error("Address not found, please connect to Keplr");
+      return;
+    }
+    setInProgress(true);
+    message.info("Transaction initiated");
+    signAndBroadcastTransaction(
+      {
+        message: {
+          typeUrl: "/comdex.locker.v1beta1.MsgCreateLockerRequest",
+          value: {
+            depositor: address,
+            amount: inAmount,
+            assetId: Long.fromNumber(3),
+            appMappingId: Long.fromNumber(1),
+          }
+        },
+        fee: defaultFee(),
+      },
+      address,
+      (error, result) => {
+        setInProgress(false);
+        if (error) {
+          // dispatch(setAmountIn(''));
+          message.error(error);
+          return;
+        }
+
+        if (result?.code) {
+          message.info(result?.rawLog);
+          return;
+        }
+        message.success(
+          <Snack
+            message={variables[lang].tx_success}
+            hash={result?.transactionHash}
+          />,
+          // dispatch(setAmountIn(''))
+        );
+      }
+    );
+
+  }
+  const handleSubmitAssetDepositLocker = () => {
+    if (!address) {
+      message.error("Address not found, please connect to Keplr");
+      return;
+    }
+    setInProgress(true);
+    message.info("Transaction initiated");
+    signAndBroadcastTransaction(
+      {
+        message: {
+          typeUrl: "/comdex.locker.v1beta1.MsgDepositAssetRequest",
+          value: {
+            depositor: address,
+            lockerId: "cmst1",
+            amount: inAmount,
+            assetId: Long.fromNumber(3),
+            appMappingId: Long.fromNumber(1),
+          }
+        },
+        fee: defaultFee(),
+      },
+      address,
+      (error, result) => {
+        setInProgress(false);
+        if (error) {
+          // dispatch(setAmountIn());
+          message.error(error);
+          return;
+        }
+
+        if (result?.code) {
+          message.info(result?.rawLog);
+          return;
+        }
+        message.success(
+          // dispatch(setAmountIn()),
+          <Snack
+            message={variables[lang].tx_success}
+            hash={result?.transactionHash}
+          />,
+        );
+      }
+    );
+
+  }
+
   getAssetDenom();
-  console.log("Single Asset", whiteListedAssetData[0][0]);
 
   return (
     <>
@@ -282,7 +371,7 @@ const Deposit = ({
               </div>
               <div className="input-select">
                 <CustomInput
-                  value={firstInput}
+                  value={inAmount}
                   onChange={(event) => {
                     // handleFirstInputChange(event.target.value)
                     handleFirstInputChange(event.target.value)
@@ -306,17 +395,25 @@ const Deposit = ({
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
-                // disabled={
-                //   inProgress ||
-                //   !pool?.id ||
-                //   !Number(firstInput) ||
-                //   !Number(secondInput) ||
-                //   inputValidationError?.message ||
-                //   outputValidationError?.message
-                // }
+                disabled={
+                  !inAmount
+                  //   inProgress ||
+                  //   !pool?.id ||
+                  //   !Number(firstInput) ||
+                  //   !Number(secondInput) ||
+                  //   inputValidationError?.message ||
+                  //   outputValidationError?.message
+                }
                 type="primary"
                 className="btn-filled"
-                onClick={() => console.log("Farm")}
+                onClick={() => {
+                  if (isLockerExist) {
+                    handleSubmitAssetDepositLocker()
+                  }
+                  else {
+                    handleSubmitCreateLocker()
+                  }
+                }}
               >
                 Deposit
               </Button>

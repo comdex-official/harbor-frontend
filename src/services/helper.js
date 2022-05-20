@@ -54,6 +54,7 @@ export const signAndBroadcastTransaction = async (
           transaction.memo
         )
         .then((result) => {
+
           callback(null, result);
         })
         .catch((error) => {
