@@ -1,0 +1,38 @@
+import Long from "long";
+import { createQueryClient } from "../helper";
+import { QueryServiceClientImpl } from 'comdex-codec/build/comdex//locker/v1beta1/querier'
+
+export const queryLockerWhiteListedAssetByProduct = (callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryServiceClientImpl(rpcClient)
+            .QueryWhiteListedAssetByAllProduct().then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                console.log(error);
+                callback(error?.message);
+            });
+    });
+};
+export const queryLockerWhiteListedAssetByProductId = (productId,callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryServiceClientImpl(rpcClient)
+            .QueryWhiteListedAssetIDsByProductID({
+                productId: Long.fromNumber(productId)
+            }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                console.log(error);
+                callback(error?.message);
+            });
+    });
+};

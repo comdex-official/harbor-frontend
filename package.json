@@ -29,7 +29,7 @@
     "babel-plugin-import": "^1.13.0",
     "classnames": "^2.3.1",
     "coingecko-api": "^1.0.10",
-    "comdex-codec": "https://github.com/comdex-official/exchange-clinet-proto-codec.git",
+    "comdex-codec": "comdex-official/proto-codecs#stable_token",
     "@cosmjs/crypto": "^0.28.0",
     "@cosmjs/encoding": "^0.28.0",
     "@cosmjs/math": "^0.28.0",

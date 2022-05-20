@@ -111,7 +111,12 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
   const nativeCoin = balances.filter(
     (item) => item.denom === comdex?.coinMinimalDenom
   )[0];
+  const cmstCoin = balances.filter(
+    (item) => item.denom === cmst?.coinMinimalDenom
+  )[0];
+
   const nativeCoinValue = getPrice(nativeCoin?.denom) * nativeCoin?.amount;
+  const cmstCoinValue = getPrice(cmstCoin?.denom) * cmstCoin?.amount;
 
   const currentChainData = [
     {
@@ -144,11 +149,11 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
         </>
       ),
       balances: {
-        amount: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
-        value: nativeCoinValue || 0,
+        amount: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
+        value: cmstCoinValue || 0,
       },
     },
-   
+
 
   ];
 

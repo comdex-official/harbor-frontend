@@ -51,11 +51,13 @@ const Minting = (lang) => {
       key: "action",
       align: "right",
       width: 140,
-      render: () => (
+      render: (vault) => (
         <>
           <div>
             <Link to="/vault">
-              <Button type="primary" size="small" className="px-3 valult-mint-btn">
+              <Button type="primary" size="small" className="px-3 valult-mint-btn" onClick={() => {
+                console.log(vault);
+              }}>
                 Mint
               </Button>
             </Link>
@@ -93,6 +95,7 @@ const Minting = (lang) => {
           <div className="assets-withicon">{item.closing}%</div>
         </>
       ),
+      action: item,
     };
   });
   return (

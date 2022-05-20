@@ -53,6 +53,8 @@ $text-color-white: #fff;
 $text-color-light: #73aed2;
 $text-color-dark: #585873;
 $text-color-label-dark: #acbfdb;
+$text-color-secondary-light: #74767a;
+$text-color-secondary-dark: #333;
 $text-color-dark2: #03253e;
 $text-color-light2: #747f86;
 $text-color-label-dark2: #2d3748;
@@ -80,8 +82,10 @@ $menu-active-light: radial-gradient(
 $menu-active-dark: $sidebar-menu-background-dark;
 $menu-icon-dark: #73aed2;
 
+$primary-light: rgba(14, 122, 201, 0.13);
 $btn-bg-dark: $background-dark1;
 $sidebar-icon: #535356;
+$dark-card-bg: #202020;
 
 $font-family: "Lexend Deca", sans-serif !important;
 $font-size-base: 14px;
@@ -98,6 +102,8 @@ $box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15); // major shadow for layers
 
 $form-input-bg-light: #f1f2f7;
 $form-input-bg-dark: #243333;
+$assets-select-bg-dark: #3c4f4f;
+$assets-select-bg-light: #d1d4e4;
 
 $tooltip-bg-dark: #464646;
 $tooltip-bg-light: #ececec;

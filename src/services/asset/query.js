@@ -34,7 +34,6 @@ export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
       callback(error);
       return;
     }
-
     new QueryServiceClientImpl(rpcClient)
       .QueryAssets({
         pagination: {
@@ -49,6 +48,7 @@ export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
         callback(null, result);
       })
       .catch((error) => {
+        console.log(error);
         callback(error?.message);
       });
   });

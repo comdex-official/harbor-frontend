@@ -3,7 +3,7 @@ import {
   MsgDeposit,
   MsgWithdraw,
   MsgLimitOrder,
-} from "comdex-codec/build/comdex/liquidity/v1beta1/msg";
+} from "comdex-codec/build/comdex/liquidity/v1beta1/tx";
 
 import { Registry } from "@cosmjs/proto-signing";
 import { defaultRegistryTypes } from "@cosmjs/stargate";
