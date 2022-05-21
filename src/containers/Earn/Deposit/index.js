@@ -16,7 +16,6 @@ import {
 } from "../../../utils/coin";
 import { iconNameFromDenom, toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
-import Info from "../Info";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
 import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist } from '../../../actions/locker'
 import "./index.scss";
@@ -52,6 +51,7 @@ const Deposit = ({
 
   const [secondInput, setSecondInput] = useState();
   const [inProgress, setInProgress] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
   const [outputValidationError, setOutputValidationError] = useState();
   const [poolBalance, setLocalPoolBalance] = useState([]);
@@ -75,7 +75,6 @@ const Deposit = ({
     // ************************************************
 
     // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
-
     assets?.map((item) => {
       if (item.name === "CMDX") {
         whiteListedAssetData.push(item);
@@ -116,6 +115,7 @@ const Deposit = ({
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     setInProgress(true);
+    setLoading(true)
     queryAssets(offset, limit, countTotal, reverse, (error, data) => {
       setInProgress(false);
       if (error) {
@@ -125,11 +125,13 @@ const Deposit = ({
       // console.log("All Assets", data.assets);
 
       setAssets(data.assets, data.pagination);
+      setLoading(false)
     });
   };
 
   const fetchWhiteListedAssetByid = (productId) => {
     setInProgress(true);
+    setLoading(true)
     queryLockerWhiteListedAssetByProductId(productId, (error, data) => {
       if (error) {
         message.error(error);
@@ -138,6 +140,7 @@ const Deposit = ({
       // console.log("Product Asset", data?.assetIds);
       let whiteListedAsset =
         setWhiteListedAssets(data?.assetIds)
+      setLoading(false)
     })
   }
 
@@ -342,7 +345,7 @@ const Deposit = ({
                     {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
                       return (
                         <React.Fragment key={index} >
-                          {inProgress ? <h1>Loading...</h1> :
+                          {loading ? <h1>Loading...</h1> :
                             <div className="farm-asset-icon-container" >
                               <div className="select-inner">
                                 <div className="svg-icon">

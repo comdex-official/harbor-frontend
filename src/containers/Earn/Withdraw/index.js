@@ -14,7 +14,6 @@ import {
 } from "../../../utils/coin";
 import { iconNameFromDenom, toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
-import Info from "../Info";
 import "./index.scss";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";

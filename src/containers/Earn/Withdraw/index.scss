@@ -40,3 +40,116 @@
     }
   }
 }
+.calculator-main-container {
+  margin-top: 50px;
+  .calculator-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2.1rem;
+    .content-container {
+      display: flex;
+      justify-content: space-between;
+      row-gap: 2rem;
+      align-items: center;
+      .left-container {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .right-container {
+        font-size: 14px;
+        font-weight: 600;
+        .input-container {
+          display: flex;
+          column-gap: 10px;
+          .year-container {
+            position: relative;
+            &::before {
+              content: "Years";
+              display: block;
+              top: -30%;
+              left: 0;
+              position: absolute;
+              font-size: 10px;
+              font-weight: 300;
+            }
+          }
+          .month-container {
+            position: relative;
+            &::before {
+              content: "Months";
+              display: block;
+              top: -30%;
+              left: 0;
+              position: absolute;
+              font-size: 10px;
+              font-weight: 300;
+            }
+          }
+          .day-container {
+            position: relative;
+            &::before {
+              content: "Days";
+              display: block;
+              top: -30%;
+              left: 0;
+              position: absolute;
+              font-size: 10px;
+              font-weight: 300;
+            }
+          }
+          .ant-input {
+            border: 0;
+            font-size: 1.3rem;
+            line-height: 1;
+            margin-top: 8px;
+            text-align: right;
+            max-width: 200px;
+            margin-bottom: 0;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            color: $text-color-dark2;
+            padding-right: 0;
+            max-width: 100px;
+            background: $background-dark1;
+
+            &::-webkit-placeholder {
+              color: $text-color-dark2;
+            }
+
+            &::placeholder {
+              color: $text-color-dark2;
+            }
+
+            &::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              -moz-appearance: none;
+            }
+
+            &::-webkit-outer-spin-button {
+              -webkit-appearance: none;
+              -moz-appearance: none;
+            }
+
+            &[type="number"] {
+              -moz-appearance: textfield;
+            }
+
+            .dark-mode & {
+              color: $white;
+              background-color: $background-dark2;
+
+              &::-webkit-placeholder {
+                color: $white;
+              }
+
+              &::placeholder {
+                color: $white;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

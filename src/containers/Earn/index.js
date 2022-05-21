@@ -7,6 +7,7 @@ import { Modal } from "antd";
 import { Tabs } from "antd";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
+import CustomInput from "../../components/CustomInput";
 
 const Earn = () => {
   const [inProgress, setInProgress] = useState(false);
@@ -32,26 +33,79 @@ const Earn = () => {
   return (
     <>
       <div className="app-content-wrapper">
-        <div className="app-content-small">
-          <Row>
-            <Col>
-              <Tabs
-                className="comdex-tabs"
-                type="card"
-                activeKey={defaultTabSelect}
-                onChange={callback}
-                className="comdex-tabs farm-modal-tab"
-              >
-                <TabPane tab="Deposit" key="1">
-                  <Deposit />
-                </TabPane>
-                <TabPane tab="Withdraw" key="2">
-                  <Withdraw />
-                </TabPane>
-              </Tabs>
-            </Col>
-          </Row>
-        </div>
+        <Row>
+          <Col>
+            <Tabs
+              className="comdex-tabs"
+              type="card"
+              activeKey={defaultTabSelect}
+              onChange={callback}
+              className="comdex-tabs farm-modal-tab"
+            >
+              <TabPane tab="Deposit" key="1">
+                <Deposit />
+              </TabPane>
+              <TabPane tab="Withdraw" key="2">
+                <Withdraw />
+              </TabPane>
+            </Tabs>
+          </Col>
+
+          <Col>
+            <div className="earn-deposite-card calculator-main-container">
+              <div className="calculator-container">
+                {/* <div className="title">Calculator</div> */}
+                <div className="content-container">
+                  <div className="left-container">Total Investment (CMST)</div>
+                  <div className="right-container">
+                    <div className="input-container">
+                      <CustomInput
+                        className=""
+                        placeholder=" "
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="content-container">
+                  <div className="left-container">Time Period</div>
+                  <div className="right-container">
+                    <div className="input-container">
+
+                      <div className="year-container">
+                        <CustomInput
+                          className=""
+                          placeholder=" "
+                        />
+                      </div>
+                      <div className="month-container">
+                        <CustomInput
+                          className=""
+                          placeholder=" "
+                        />
+                      </div>
+                      <div className="day-container">
+
+                        <CustomInput
+                          className=""
+                          placeholder=" "
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="content-container">
+                  <div className="left-container">Expected Interest</div>
+                  <div className="right-container">6%</div>
+                </div>
+                <div className="content-container">
+                  <div className="left-container">Total Value</div>
+                  <div className="right-container">2035 CMST</div>
+                </div>
+              </div>
+            </div>
+          </Col>
+
+        </Row>
       </div>
     </>
   );
