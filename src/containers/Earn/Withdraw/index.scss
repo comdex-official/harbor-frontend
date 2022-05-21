@@ -41,11 +41,14 @@
   }
 }
 .calculator-main-container {
-  margin-top: 50px;
+  margin-top: 55px;
+  padding: 10px 25px 25px 25px !important;
+  border: 0.5px solid $border-color-base;
+
   .calculator-container {
     display: flex;
     flex-direction: column;
-    row-gap: 2.1rem;
+    row-gap: 1.9rem;
     .content-container {
       display: flex;
       justify-content: space-between;

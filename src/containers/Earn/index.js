@@ -8,6 +8,7 @@ import { Tabs } from "antd";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import CustomInput from "../../components/CustomInput";
+// import './index.scss'
 
 const Earn = () => {
   const [inProgress, setInProgress] = useState(false);
@@ -53,8 +54,8 @@ const Earn = () => {
 
           <Col>
             <div className="earn-deposite-card calculator-main-container">
+              <div className="calculator-title">Calculator</div>
               <div className="calculator-container">
-                {/* <div className="title">Calculator</div> */}
                 <div className="content-container">
                   <div className="left-container">Total Investment (CMST)</div>
                   <div className="right-container">
@@ -121,3 +122,6 @@ const stateToProps = (state) => {
 };
 const actionsToProps = {};
 export default connect(stateToProps, actionsToProps)(Earn);
+
+
+

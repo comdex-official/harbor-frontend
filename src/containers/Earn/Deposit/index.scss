@@ -43,3 +43,27 @@
     border: none;
   }
 }
+.earn-main-deposite {
+  padding: 10px 25px 15px 25px !important;
+  border: 0.5px solid $border-color-base;
+}
+
+.locker-title {
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 0 0 15px 10px;
+  .dark-mode & {
+    color: #fff;
+  }
+}
+
+.calculator-title {
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 0 0 15px 0px;
+  .dark-mode & {
+    color: #fff;
+  }
+}

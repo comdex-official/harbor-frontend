@@ -191,7 +191,8 @@ const Withdraw = ({
   return (
     <>
       <Col>
-        <div className="farm-content-card earn-deposite-card">
+        <div className="farm-content-card earn-deposite-card earn-main-deposite">
+          <div className="locker-title">Locker</div>
           <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
