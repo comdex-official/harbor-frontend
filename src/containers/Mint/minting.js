@@ -82,7 +82,7 @@ const Minting = (lang) => {
       ),
       intrest_rate: (
         <>
-          <div className="assets-withicon">{item.intrest}%</div>
+          <div className="assets-withicon">{item.Interest}%</div>
         </>
       ),
       borrow_amount: (

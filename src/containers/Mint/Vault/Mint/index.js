@@ -345,7 +345,7 @@ const Mint = ({
             </div>
           </div>
 
-          <div className="intrest-rate-container mt-4">
+          <div className="Interest-rate-container mt-4">
             <Row>
               <div className="title">Set Collateral Ratio</div>
             </Row>

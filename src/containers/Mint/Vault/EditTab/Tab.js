@@ -149,7 +149,7 @@ const Edit = ({
                   <div className="maxhalf">
                     <button
                       className="ant-btn active"
-                      // onClick={() => handleMaxClick()}
+                    // onClick={() => handleMaxClick()}
                     >
                       Max
                     </button>
@@ -168,7 +168,7 @@ const Edit = ({
               </Col>
             </Row>
             {/* <Row> */}
-            <div className="intrest-rate-container mt-4">
+            <div className="Interest-rate-container mt-4">
               <Row>
                 <div className="title">Set Collateral Ratio</div>
               </Row>
@@ -179,10 +179,10 @@ const Edit = ({
                     (collateralRatio <= 150
                       ? " red-track"
                       : collateralRatio < 200
-                      ? " orange-track"
-                      : collateralRatio >= 200
-                      ? " green-track"
-                      : " ")
+                        ? " orange-track"
+                        : collateralRatio >= 200
+                          ? " green-track"
+                          : " ")
                   }
                   defaultValue={collateralRatio}
                   marks={marks}
@@ -216,7 +216,7 @@ const Edit = ({
               // }
               type="primary"
               className="btn-filled"
-              // onClick={() => setCautionNoticeValues(true, false)}
+            // onClick={() => setCautionNoticeValues(true, false)}
             >
               {editType}
             </Button>

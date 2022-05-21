@@ -7,7 +7,7 @@ const Banner = ({ lang }) => {
     <div className="dashboard-banner earn-deposite-card">
       <div className="banner-left">
         <h2>
-          Earn <span>stable income</span> on CMST <br /> at the intrest rate of{" "}
+          Earn <span>stable income</span> on CMST <br /> at the Interest rate of{" "}
           <span>4%</span> {variables[lang].platform}{" "}
         </h2>
         <Button type="primary">

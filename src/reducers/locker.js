@@ -1,4 +1,4 @@
-import { SET_ALL_WHITELISTED_ASSET, SET_ISLOCKER_EXIST, SET_WHITELISTED_ASSET } from "../constants/locker";
+import { SET_ALL_WHITELISTED_ASSET, SET_ISLOCKER_EXIST, SET_USER_LOCKED_VALUE, SET_WHITELISTED_ASSET } from "../constants/locker";
 import { combineReducers } from "redux";
 
 const _ = (
@@ -39,8 +39,15 @@ const isLockerExist = (state = "false", action) => {
     }
     return state;
 };
+const userLockedAmountInLocker = (state = "", action) => {
+    if (action.type === SET_USER_LOCKED_VALUE) {
+        return action.value;
+    }
+    return state;
+};
 export default combineReducers({
     _,
     whiteListedAssetById,
     isLockerExist,
+    userLockedAmountInLocker,
 });

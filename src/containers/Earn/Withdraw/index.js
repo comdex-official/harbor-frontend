@@ -6,6 +6,7 @@ import { Col, Row, SvgIcon } from "../../../components/common";
 import CustomInput from "../../../components/CustomInput";
 import TooltipIcon from "../../../components/TooltipIcon";
 import {
+  amountConversion,
   amountConversionWithComma,
   denomConversion,
   getAmount,
@@ -19,12 +20,13 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { ValidateInputNumber } from "../../../config/_validation";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
-import { queryUserLockerByProductAssetId } from "../../../services/locker/query";
-import { setIsLockerExist } from "../../../actions/locker";
+import { queryUserLockedValueInLocker, queryUserLockerByProductAssetId } from "../../../services/locker/query";
+import { setIsLockerExist, setUserLockedValue } from "../../../actions/locker";
 import { defaultFee } from "../../../services/transaction";
 import Long from "long";
 import { signAndBroadcastTransaction } from "../../../services/helper";
 import Snack from "../../../components/common/Snack";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
 
 const Withdraw = ({
   lang,
@@ -32,12 +34,16 @@ const Withdraw = ({
   reverse,
   pair,
   spotPrice,
-  balances
+  setAssets,
+  assets,
+  balances,
+  refreshBalance,
+  userLockedAmountInLocker,
+  setUserLockedValue
 }) => {
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
   const isLockerExist = useSelector((state) => state.locker.isLockerExist);
-
 
   const [firstInput, setFirstInput] = useState();
   const [secondInput, setSecondInput] = useState();
@@ -45,37 +51,81 @@ const Withdraw = ({
   const [inputValidationError, setInputValidationError] = useState();
   const [outputValidationError, setOutputValidationError] = useState();
 
-  const AssetAvailableBalance = getDenomBalance(balances, pair?.baseCoinDenom) || 0;
+  const whiteListedAssetData = [];
+  const resetValues = () => {
+    dispatch(setAmountIn(0));
+  };
+
+  const getAssetDenom = () => {
+    // When we get multiple whiteListed Asset
+    // ************************************************
+    // let filterAssets = assets?.filter((item, index) => {
+    //   return (
+    //     item.id.low === whiteListedAsset[index]?.low
+    //   )
+    // })
+    // whiteListedAssetData.push(filterAssets);
+    // ************************************************
+
+    // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
+
+    assets?.map((item) => {
+      if (item.name === "CMDX") {
+        whiteListedAssetData.push(item);
+      }
+    })
+  }
 
   const handleInputChange = (value) => {
     value = toDecimals(value).toString().trim();
     setInputValidationError(
       ValidateInputNumber(
         Number(getAmount(value)),
-        AssetAvailableBalance,
+        userLockedAmountInLocker,
         "macro"
       )
     );
     dispatch(setAmountIn(value));
   };
+  const showInDollarValue = () => {
+    const total = inAmount;
+
+    return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
+      DOLLAR_DECIMALS
+    )}`;
+  };
   useEffect(() => {
+    resetValues();
     fetchOwnerLockerExistByAssetId(1, 3, address);
   }, [address]);
 
+  useEffect(() => {
+    fetchOwnerLockerBalance(PRODUCT_ID, 3, address);
+  }, [address, refreshBalance]);
+
+  const fetchOwnerLockerBalance = (productId, assetId, owner) => {
+    setInProgress(true);
+    queryUserLockedValueInLocker(productId, assetId, owner, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setUserLockedValue((data?.lockerInfo[0]?.netBalance))
+      setInProgress(false);
+    })
+  }
   const fetchOwnerLockerExistByAssetId = (productId, assetId, address) => {
     queryUserLockerByProductAssetId(productId, assetId, address, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      console.log(data);
       let lockerExist = data?.lockerInfo?.length;
       if (lockerExist > 0) {
         dispatch(setIsLockerExist(true));
       } else {
         dispatch(setIsLockerExist(false));
       }
-      console.log(lockerExist);
     })
   }
   const handleSubmitAssetWithdrawLocker = () => {
@@ -90,14 +140,9 @@ const Withdraw = ({
         message: {
           typeUrl: "/comdex.locker.v1beta1.MsgWithdrawAssetRequest",
           value: {
-            // depositor: address,
-            // lockerId: "cmst1",
-            // amount: inAmount,
-            // assetId: Long.fromNumber(3),
-            // appMappingId: Long.fromNumber(1),
             depositor: address,
             lockerId: "cmst1",
-            amount: inAmount,
+            amount: getAmount(inAmount),
             assetId: Long.fromNumber(3),
             appMappingId: Long.fromNumber(1),
           }
@@ -108,7 +153,6 @@ const Withdraw = ({
       (error, result) => {
         setInProgress(false);
         if (error) {
-          // dispatch(setAmountIn());
           console.log(error);
           message.error(error);
           return;
@@ -119,21 +163,31 @@ const Withdraw = ({
           return;
         }
         message.success(
-          // dispatch(setAmountIn()),
           <Snack
             message={variables[lang].tx_success}
             hash={result?.transactionHash}
           />,
         );
+        resetValues()
+        dispatch({
+          type: "BALANCE_REFRESH_SET",
+          value: refreshBalance + 1,
+        });
       }
     );
 
   }
-  const getOutputPrice = () => {
-    return reverse ? spotPrice : 1 / spotPrice; // calculating price from pool
-  };
-  const AvailableAssetBalance =
-    getDenomBalance(balances, "ucmdx") || 0;
+  const handleInputMax = () => {
+    if (Number(userLockedAmountInLocker) > DEFAULT_FEE) {
+      return (
+        dispatch(setAmountIn(amountConversion(userLockedAmountInLocker - DEFAULT_FEE)))
+
+      )
+    } else {
+      return null
+    }
+  }
+  getAssetDenom();
 
   return (
     <>
@@ -145,8 +199,7 @@ const Withdraw = ({
                 Withdraw <TooltipIcon />
               </label>
               <div className="assets-select-wrapper">
-                {/* Icon Container Start  */}
-                <div className="farm-asset-icon-container">
+                {/* <div className="farm-asset-icon-container">
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
@@ -155,30 +208,40 @@ const Withdraw = ({
                       </div>
                     </div>
                   </div>
-                </div>
-                {/* Icon Container End  */}
+                </div> */}
+
+                {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
+                  return (
+                    <React.Fragment key={index} >
+                      {inProgress ? <h1>Loading...</h1> :
+                        <div className="farm-asset-icon-container" >
+                          <div className="select-inner">
+                            <div className="svg-icon">
+                              <div className="svg-icon-inner">
+                                <SvgIcon name={iconNameFromDenom(item.denom)} />
+                                <span> {item.name}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </React.Fragment>
+                  )
+                })}
+
               </div>
             </div>
             <div className="assets-right">
               <div className="label-right">
                 Balance
                 <span className="ml-1">
-                  {amountConversionWithComma(AvailableAssetBalance)}
+                  {amountConversionWithComma(userLockedAmountInLocker)}
                   {denomConversion('ucmdx')}
                 </span>
                 <div className="maxhalf">
                   <Button
                     className="active"
-                    onClick={() =>
-                      //   handleFirstInputMax(
-                      //     Number(firstAssetAvailableBalance) > DEFAULT_FEE
-                      //       ? amountConversion(
-                      //           firstAssetAvailableBalance - DEFAULT_FEE
-                      //         )
-                      //       : null
-                      //   )
-                      console.log("max button click")
-                    }
+                    onClick={() => handleInputMax()}
                   >
                     max
                   </Button>
@@ -188,31 +251,24 @@ const Withdraw = ({
                 <CustomInput
                   value={inAmount}
                   onChange={(event) =>
-                    // handleFirstInputChange(event.target.value)
                     handleInputChange(event.target.value)
-
                   }
                   validationError={inputValidationError}
                 />
-                <small>$ 0.00</small>
+                <small>{showInDollarValue()}</small>
               </div>
             </div>
           </div>
 
-          {/* <Info /> */}
           <div className="assets PoolSelect-btn">
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
                 disabled={
                   !isLockerExist ||
-                  !inAmount
-                  //   inProgress ||
-                  //   !pool?.id ||
-                  //   !Number(firstInput) ||
-                  //   !Number(secondInput) ||
-                  //   inputValidationError?.message ||
-                  //   outputValidationError?.message
+                  !inAmount ||
+                  inProgress ||
+                  inputValidationError?.message
                 }
                 type="primary"
                 className="btn-filled"
@@ -230,26 +286,49 @@ const Withdraw = ({
 
 Withdraw.propTypes = {
   address: PropTypes.string.isRequired,
+  assets: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.shape({
+        low: PropTypes.number,
+        high: PropTypes.number,
+        inSigned: PropTypes.number,
+      }),
+      name: PropTypes.string.isRequired,
+      denom: PropTypes.string.isRequired,
+      decimals: PropTypes.shape({
+        low: PropTypes.number,
+        high: PropTypes.number,
+        inSigned: PropTypes.number,
+      })
+    })
+  ),
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
       amount: PropTypes.string,
     })
   ),
+  refreshBalance: PropTypes.number.isRequired,
+  userLockedAmountInLocker: PropTypes.string.isRequired,
+
 
 }
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    assets: state.asset._.list,
     balances: state.account.balances.list,
     pair: state.asset.pair,
-
+    refreshBalance: state.account.refreshBalance,
+    userLockedAmountInLocker: state.locker.userLockedAmountInLocker,
 
   };
 };
 const actionsToProps = {
   setPair,
+  setUserLockedValue,
+  setAssets,
 };
 
 export default connect(stateToProps, actionsToProps)(Withdraw);

@@ -783,425 +783,424 @@ button {
   }
 }
 
-// .assets-select-wrapper {
-//   position: relative;
-//   margin-top: 10px;
-
-//   .ant-select {
-//     background: none;
-
-//     &.assets-select {
-//       .ant-select-selection-placeholder {
-//         display: flex;
-//         align-items: center;
-
-//         .select-placeholder {
-//           display: flex;
-//           align-items: center;
-//           font-size: $font-size-lg + 1;
-
-//           .circle-icon {
-//             width: 40px;
-//             height: 40px;
-//             border-radius: 40px;
-//             padding: 1px;
-//             background: $primary-gradient;
-//             margin-right: 12px;
-
-//             .circle-icon-inner {
-//               background: $white;
-//               width: 100%;
-//               height: 100%;
-//               border-radius: 100%;
-//               .dark-mode & {
-//                 background: $background-dark1;
-//               }
-//             }
-//           }
-
-//         }
-//       }
-
-//       .ant-select-selector {
-//         background: none !important;
-//         border: 0 !important;
-//         height: 40px;
-//         min-width: 140px;
-//         padding-left: 0;
-//         box-shadow: none !important;
-
-//         .ant-select-selection-item {
-//           display: flex;
-//           align-items: center;
-//           color: $text-color-dark2;
-
-//           .dark-mode & {
-//             color: $white;
-//           }
-
-//           .select-inner {
-//             display: flex;
-//             align-items: center;
-
-//             .svg-icon {
-//               width: 40px;
-//               height: 40px;
-//               border-radius: 40px;
-//               background: $primary-gradient;
-//               padding: 1px;
-//               margin-right: 15px;
-
-//               .svg-icon-inner {
-//                 width: 100%;
-//                 height: 100%;
-//                 border-radius: 100%;
-//                 display: flex;
-//                 align-items: center;
-//                 justify-content: center;
-//                 padding: 6px;
-//                 background: $white;
-//                 .dark-mode & {
-//                   background: $background-dark1;
-//                 }
-//                 .icon {
-//                   width: 100%;
-//                   height: 100%;
-//                   fill: $background-dark1;
-//                   .dark-mode & {
-//                     fill: $white;
-//                   }
-//                 }
-//               }
-//             }
-
-//             .name {
-//               .dark-mode & {
-//                 color: $white;
-//                 font-size: $font-size-lg + 1;
-//               }
-//             }
-//           }
-//         }
-//       }
-
-//       .ant-select-arrow {
-//         right: 0;
-
-//         svg {
-//           fill: $border-light;
-//           width: 13px;
-//           height: 16px;
-//         }
-//       }
-//     }
-
-//     &.center-select-text {
-//       .ant-select-selection-item {
-//         justify-content: center;
-//       }
-//     }
-//   }
-// }
-
 .assets-select-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: $form-input-bg-light;
-  border-radius: $base-border-radius;
-  padding: 6px;
-  .dark-mode & {
-    background-color: $form-input-bg-dark;
-  }
-  .assets-select-input {
-    height: 44px;
-    font-size: $font-size-lg + 2;
-    color: $text-color-secondary-dark;
-    padding-right: 20px;
-    border-style: none;
-    text-align: right;
-    box-shadow: none;
-    .dark-mode & {
-      color: $white;
-    }
-    &.with-select {
-      border-radius: $base-border-radius;
-      & + .assets-select {
-        & .ant-select-selector {
-          background: darken($form-input-bg-light, 10%);
-          border-radius: 0 $base-border-radius $base-border-radius 0;
-          .dark-mode & {
-            background: $assets-select-bg-dark;
-          }
-        }
-      }
-    }
-    &::placeholder {
-      color: $text-color-secondary-dark;
-      .dark-mode & {
-        color: $text-color-secondary-light;
-      }
-    }
-  }
-  .assets-select {
-    width: 100%;
-    max-width: 130px;
-    border-radius: 0 $base-border-radius $base-border-radius 0;
-    .ant-select-arrow {
-      top: 46%;
-      .icon {
-        fill: $text-color-secondary-dark;
-        width: 8px;
-        height: 18px;
-        .dark-mode & {
-          fill: $white;
-        }
-      }
-    }
-    .ant-select-selection-placeholder {
-      display: flex;
-      align-items: center;
+  position: relative;
+  margin-top: 10px;
 
-      .select-placeholder {
+  .ant-select {
+    background: none;
+
+    &.assets-select {
+      .ant-select-selection-placeholder {
         display: flex;
         align-items: center;
-        font-size: $font-size-lg + 1;
 
-        .circle-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 40px;
-          padding: 1px;
-          background: $primary-gradient;
-          margin-right: 12px;
+        .select-placeholder {
+          display: flex;
+          align-items: center;
+          font-size: $font-size-lg + 1;
 
-          .circle-icon-inner {
-            background: $white;
-            width: 100%;
-            height: 100%;
-            border-radius: 100%;
-            .dark-mode & {
-              background: $background-dark1;
+          .circle-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 40px;
+            padding: 1px;
+            background: $primary-gradient;
+            margin-right: 12px;
+
+            .circle-icon-inner {
+              background: $white;
+              width: 100%;
+              height: 100%;
+              border-radius: 100%;
+              .dark-mode & {
+                background: $background-dark1;
+              }
             }
           }
         }
       }
-    }
-    .ant-select-selector {
-      background: $form-input-bg-light;
-      border: 0;
-      height: 44px;
-      padding-right: 0;
-      padding-left: 0;
-      border-radius: $base-border-radius;
-      .dark-mode & {
-        background-color: $form-input-bg-dark;
-      }
-      .ant-select-selection-item {
-        padding-right: 0;
-        text-align: center;
-        line-height: 45px;
-        border-radius: $base-border-radius;
-        background: $assets-select-bg-light;
-        .dark-mode & {
-          background: $assets-select-bg-dark;
-        }
-        .select-inner {
+
+      .ant-select-selector {
+        background: none !important;
+        border: 0 !important;
+        height: 40px;
+        min-width: 140px;
+        padding-left: 0;
+        box-shadow: none !important;
+
+        .ant-select-selection-item {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          height: 100%;
-          color: $white;
-          .select-right {
-            height: 100%;
-            width: 100%;
-            background: transparent;
+          color: $text-color-dark2;
+
+          .dark-mode & {
+            color: $white;
+          }
+
+          .select-inner {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            padding-right: 14px;
-            padding-left: 15px;
-            .select-right-inner {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              color: $text-color-secondary-dark;
-              .dark-mode & {
-                color: $white;
-              }
-              .name {
-                display: none;
-              }
-              .title {
-                text-transform: uppercase;
-              }
-              & .svg-icon {
+
+            .svg-icon {
+              width: 40px;
+              height: 40px;
+              border-radius: 40px;
+              background: $primary-gradient;
+              padding: 1px;
+              margin-right: 15px;
+
+              .svg-icon-inner {
+                width: 100%;
+                height: 100%;
+                border-radius: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-right: 8px;
-                width: 25px;
-                height: 25px;
-                & .icon {
-                  max-width: 100%;
-                  max-height: 100%;
+                padding: 6px;
+                background: $white;
+                .dark-mode & {
+                  background: $background-dark1;
+                }
+                .icon {
                   width: 100%;
                   height: 100%;
+                  fill: $background-dark1;
+                  .dark-mode & {
+                    fill: $white;
+                  }
                 }
               }
             }
-          }
-        }
-      }
-    }
-  }
-}
-.asset-select-dropdown {
-  border-radius: 0;
-  padding: 0;
-  color: $text-color-secondary-dark;
-  border: 1px solid rgb(231, 227, 235);
-  background-color: $white;
-  .dark-mode & {
-    color: $white;
-    background-color: $dark-card-bg;
-    border-color: #1d1d21;
-  }
-  .ant-select-item {
-    height: 46px;
-    color: $text-color-secondary-dark;
-    display: flex;
-    align-items: center;
-    .dark-mode & {
-      color: $white;
-    }
-    &.ant-select-item-option-selected {
-      background-color: $primary-light !important;
-    }
-    .ant-select-item-option-content {
-      .select-inner {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 100%;
-        color: inherit;
-        .select-right {
-          height: 100%;
-          width: 110px;
-          display: flex;
-          align-items: center;
-          justify-content: flex-start;
-          .select-right-inner {
-            display: flex;
-            align-items: center;
-            line-height: 1;
-            justify-content: space-between;
+
             .name {
-              color: inherit;
-              font-size: $font-size-base - 2;
-              display: block;
-              margin-top: 2px;
-            }
-            .title {
-              text-transform: uppercase;
-            }
-            & .svg-icon {
-              display: flex;
-              align-items: center;
-              padding: 4px;
-              justify-content: center;
-              margin-right: 8px;
-              width: 25px;
-              height: 25px;
-              & .icon {
-                max-width: 100%;
-                max-height: 100%;
+              .dark-mode & {
+                color: $white;
+                font-size: $font-size-lg + 1;
               }
             }
           }
         }
       }
+
+      .ant-select-arrow {
+        right: 0;
+
+        svg {
+          fill: $border-light;
+          width: 13px;
+          height: 16px;
+        }
+      }
     }
-    &.ant-select-item-option-active {
-      font-weight: normal;
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-    &.ant-select-item-option-selected {
-      font-weight: normal;
-      background-color: rgba(0, 0, 0, 0.5);
+
+    &.center-select-text {
+      .ant-select-selection-item {
+        justify-content: center;
+      }
     }
   }
 }
 
-// .ant-select-dropdown {
-//   &.asset-select-dropdown {
-//     background: $background-light2;
-//     border-radius: 4px;
-
+// .assets-select-wrapper {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   background-color: $form-input-bg-light;
+//   border-radius: $base-border-radius;
+//   padding: 6px;
+//   .dark-mode & {
+//     background-color: $form-input-bg-dark;
+//   }
+//   .assets-select-input {
+//     height: 44px;
+//     font-size: $font-size-lg + 2;
+//     color: $text-color-secondary-dark;
+//     padding-right: 20px;
+//     border-style: none;
+//     text-align: right;
+//     box-shadow: none;
 //     .dark-mode & {
-//       background: $background-dark2;
+//       color: $white;
 //     }
-
-//     .ant-select-item {
-//       .ant-select-item-option-content {
-//         .dark-mode & {
-//           color: $white;
+//     &.with-select {
+//       border-radius: $base-border-radius;
+//       & + .assets-select {
+//         & .ant-select-selector {
+//           background: darken($form-input-bg-light, 10%);
+//           border-radius: 0 $base-border-radius $base-border-radius 0;
+//           .dark-mode & {
+//             background: $assets-select-bg-dark;
+//           }
 //         }
 //       }
+//     }
+//     &::placeholder {
+//       color: $text-color-secondary-dark;
+//       .dark-mode & {
+//         color: $text-color-secondary-light;
+//       }
+//     }
+//   }
+//   .assets-select {
+//     width: 100%;
+//     max-width: 130px;
+//     border-radius: 0 $base-border-radius $base-border-radius 0;
+//     .ant-select-arrow {
+//       top: 46%;
+//       .icon {
+//         fill: $text-color-secondary-dark;
+//         width: 8px;
+//         height: 18px;
+//         .dark-mode & {
+//           fill: $white;
+//         }
+//       }
+//     }
+//     .ant-select-selection-placeholder {
+//       display: flex;
+//       align-items: center;
 
-//       .select-inner {
+//       .select-placeholder {
 //         display: flex;
 //         align-items: center;
+//         font-size: $font-size-lg + 1;
 
-//         .svg-icon {
-//           width: 32px;
-//           height: 32px;
-//           min-width: 32px;
-//           border-radius: 32px;
-//           background: $primary-gradient;
+//         .circle-icon {
+//           width: 40px;
+//           height: 40px;
+//           border-radius: 40px;
 //           padding: 1px;
-//           margin-right: 15px;
+//           background: $primary-gradient;
+//           margin-right: 12px;
 
-//           .svg-icon-inner {
+//           .circle-icon-inner {
+//             background: $white;
 //             width: 100%;
 //             height: 100%;
-//             background: $background-light2;
 //             border-radius: 100%;
-//             display: flex;
-//             align-items: center;
-//             justify-content: center;
-
 //             .dark-mode & {
 //               background: $background-dark1;
 //             }
-
-//             .icon {
-//               width: 22px;
-//               height: 22px;
-//             }
-//           }
-//         }
-
-//         .name {
-//           .dark-mode & {
-//             color: $white;
-//             font-size: $font-size-lg + 1;
 //           }
 //         }
 //       }
-
-//       &.ant-select-item-option-selected,
-//       &.ant-select-item-option-active {
-//         background: $background-light;
-//         font-weight: normal;
-
+//     }
+//     .ant-select-selector {
+//       background: $form-input-bg-light;
+//       border: 0;
+//       height: 44px;
+//       padding-right: 0;
+//       padding-left: 0;
+//       border-radius: $base-border-radius;
+//       .dark-mode & {
+//         background-color: $form-input-bg-dark;
+//       }
+//       .ant-select-selection-item {
+//         padding-right: 0;
+//         text-align: center;
+//         line-height: 45px;
+//         border-radius: $base-border-radius;
+//         background: $assets-select-bg-light;
 //         .dark-mode & {
-//           background: $background-select-hover-dark;
+//           background: $assets-select-bg-dark;
+//         }
+//         .select-inner {
+//           display: flex;
+//           align-items: center;
+//           justify-content: space-between;
+//           height: 100%;
+//           color: $white;
+//           .select-right {
+//             height: 100%;
+//             width: 100%;
+//             background: transparent;
+//             display: flex;
+//             align-items: center;
+//             justify-content: flex-start;
+//             padding-right: 14px;
+//             padding-left: 15px;
+//             .select-right-inner {
+//               display: flex;
+//               align-items: center;
+//               justify-content: space-between;
+//               color: $text-color-secondary-dark;
+//               .dark-mode & {
+//                 color: $white;
+//               }
+//               .name {
+//                 display: none;
+//               }
+//               .title {
+//                 text-transform: uppercase;
+//               }
+//               & .svg-icon {
+//                 display: flex;
+//                 align-items: center;
+//                 justify-content: center;
+//                 margin-right: 8px;
+//                 width: 25px;
+//                 height: 25px;
+//                 & .icon {
+//                   max-width: 100%;
+//                   max-height: 100%;
+//                   width: 100%;
+//                   height: 100%;
+//                 }
+//               }
+//             }
+//           }
 //         }
 //       }
 //     }
 //   }
 // }
+// .asset-select-dropdown {
+//   border-radius: 0;
+//   padding: 0;
+//   color: $text-color-secondary-dark;
+//   border: 1px solid rgb(231, 227, 235);
+//   background-color: $white;
+//   .dark-mode & {
+//     color: $white;
+//     background-color: $dark-card-bg;
+//     border-color: #1d1d21;
+//   }
+//   .ant-select-item {
+//     height: 46px;
+//     color: $text-color-secondary-dark;
+//     display: flex;
+//     align-items: center;
+//     .dark-mode & {
+//       color: $white;
+//     }
+//     &.ant-select-item-option-selected {
+//       background-color: $primary-light !important;
+//     }
+//     .ant-select-item-option-content {
+//       .select-inner {
+//         display: flex;
+//         align-items: center;
+//         justify-content: space-between;
+//         height: 100%;
+//         color: inherit;
+//         .select-right {
+//           height: 100%;
+//           width: 110px;
+//           display: flex;
+//           align-items: center;
+//           justify-content: flex-start;
+//           .select-right-inner {
+//             display: flex;
+//             align-items: center;
+//             line-height: 1;
+//             justify-content: space-between;
+//             .name {
+//               color: inherit;
+//               font-size: $font-size-base - 2;
+//               display: block;
+//               margin-top: 2px;
+//             }
+//             .title {
+//               text-transform: uppercase;
+//             }
+//             & .svg-icon {
+//               display: flex;
+//               align-items: center;
+//               padding: 4px;
+//               justify-content: center;
+//               margin-right: 8px;
+//               width: 25px;
+//               height: 25px;
+//               & .icon {
+//                 max-width: 100%;
+//                 max-height: 100%;
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//     &.ant-select-item-option-active {
+//       font-weight: normal;
+//       background-color: rgba(0, 0, 0, 0.2);
+//     }
+//     &.ant-select-item-option-selected {
+//       font-weight: normal;
+//       background-color: rgba(0, 0, 0, 0.5);
+//     }
+//   }
+// }
+
+.ant-select-dropdown {
+  &.asset-select-dropdown {
+    background: $background-light2;
+    border-radius: 4px;
+
+    .dark-mode & {
+      background: $background-dark2;
+    }
+
+    .ant-select-item {
+      .ant-select-item-option-content {
+        .dark-mode & {
+          color: $white;
+        }
+      }
+
+      .select-inner {
+        display: flex;
+        align-items: center;
+
+        .svg-icon {
+          width: 32px;
+          height: 32px;
+          min-width: 32px;
+          border-radius: 32px;
+          background: $primary-gradient;
+          padding: 1px;
+          margin-right: 15px;
+
+          .svg-icon-inner {
+            width: 100%;
+            height: 100%;
+            background: $background-light2;
+            border-radius: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .dark-mode & {
+              background: $background-dark1;
+            }
+
+            .icon {
+              width: 22px;
+              height: 22px;
+            }
+          }
+        }
+
+        .name {
+          .dark-mode & {
+            color: $white;
+            font-size: $font-size-lg + 1;
+          }
+        }
+      }
+
+      &.ant-select-item-option-selected,
+      &.ant-select-item-option-active {
+        background: $background-light;
+        font-weight: normal;
+
+        .dark-mode & {
+          background: $background-select-hover-dark;
+        }
+      }
+    }
+  }
+}
 
 .assets-select-card {
   background: $assets-bg-light;
