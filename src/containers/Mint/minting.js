@@ -2,14 +2,19 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
 import { Button, Table } from "antd";
+import { useNavigate } from "react-router";
 import "./index.scss";
 import PlaceBidModal from "../Auctions/PlaceBidModal";
 import FilterModal from "../Auctions/FilterModal/FilterModal";
 import data from "./data";
 import "./index.scss";
 import { Link } from "react-router-dom";
+import { iconNameFromDenom } from "../../utils/string";
+import TooltipIcon from "../../components/TooltipIcon";
 
 const Minting = (lang) => {
+  const navigate = useNavigate();
+
   const columns = [
     {
       title: "Vault",
@@ -66,7 +71,6 @@ const Minting = (lang) => {
       ),
     },
   ];
-
   const tableData = data.map((item, index) => {
     return {
       key: <>{item.key}</>,
@@ -98,24 +102,241 @@ const Minting = (lang) => {
       action: item,
     };
   });
+
+  const navigateToMint = () => {
+    console.log("Clicked");
+    navigate({
+      pathname: `/vault`,
+    });
+  }
+
+
   return (
-    <div className="app-content-wrapper">
-      <Row>
-        <Col>
+    <div className="app-content-wrapper vault-mint-main-container">
+      {/* <Row> */}
+      {/* <Col>
           <div className="commodo-card py-3">
             <div className="card-content">
               <Table
                 className="custom-table liquidation-table mint-table"
                 dataSource={tableData}
                 columns={columns}
-                // pagination={{ defaultPageSize: 10 }}
                 pagination={false}
                 scroll={{ x: "100%" }}
               />
             </div>
           </div>
-        </Col>
-      </Row>
+        </Col> */}
+      <div className="card-main-container">
+        <div className="card-container " onClick={() => {
+          navigateToMint()
+        }}>
+          <div className="up-container">
+            <div className="icon-container">
+              <SvgIcon name={iconNameFromDenom("uatom")} />
+            </div>
+            <div className="vault-name-container">
+              <div className="vault-name">ATOM-A</div>
+              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+            </div>
+          </div>
+          <div className="bottom-container">
+            <div className="contenet-container">
+              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+              <div className="value">170%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+              <div className="value">0.25%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Stability Fee <TooltipIcon text="" /></div>
+              <div className="value">3%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card-container  ">
+          <div className="up-container">
+            <div className="icon-container">
+              <SvgIcon name={iconNameFromDenom("uatom")} />
+            </div>
+            <div className="vault-name-container">
+              <div className="vault-name">ATOM-A</div>
+              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+            </div>
+          </div>
+          <div className="bottom-container">
+            <div className="contenet-container">
+              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+              <div className="value">170%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+              <div className="value">0.25%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Stability Fee <TooltipIcon text="" /></div>
+              <div className="value">3%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card-container  ">
+          <div className="up-container">
+            <div className="icon-container">
+              <SvgIcon name={iconNameFromDenom("uatom")} />
+            </div>
+            <div className="vault-name-container">
+              <div className="vault-name">ATOM-A</div>
+              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+            </div>
+          </div>
+          <div className="bottom-container">
+            <div className="contenet-container">
+              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+              <div className="value">170%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+              <div className="value">0.25%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Stability Fee <TooltipIcon text="" /></div>
+              <div className="value">3%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card-container  ">
+          <div className="up-container">
+            <div className="icon-container">
+              <SvgIcon name={iconNameFromDenom("uatom")} />
+            </div>
+            <div className="vault-name-container">
+              <div className="vault-name">ATOM-A</div>
+              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+            </div>
+          </div>
+          <div className="bottom-container">
+            <div className="contenet-container">
+              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+              <div className="value">170%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+              <div className="value">0.25%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Stability Fee <TooltipIcon text="" /></div>
+              <div className="value">3%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card-container  ">
+          <div className="up-container">
+            <div className="icon-container">
+              <SvgIcon name={iconNameFromDenom("uatom")} />
+            </div>
+            <div className="vault-name-container">
+              <div className="vault-name">ATOM-A</div>
+              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+            </div>
+          </div>
+          <div className="bottom-container">
+            <div className="contenet-container">
+              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+              <div className="value">170%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+              <div className="value">0.25%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Stability Fee <TooltipIcon text="" /></div>
+              <div className="value">3%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card-container  ">
+          <div className="up-container">
+            <div className="icon-container">
+              <SvgIcon name={iconNameFromDenom("uatom")} />
+            </div>
+            <div className="vault-name-container">
+              <div className="vault-name">ATOM-A</div>
+              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+            </div>
+          </div>
+          <div className="bottom-container">
+            <div className="contenet-container">
+              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+              <div className="value">170%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+              <div className="value">0.25%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Stability Fee <TooltipIcon text="" /></div>
+              <div className="value">3%</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+            <div className="contenet-container">
+              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+              <div className="value">0CMST</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* </Row> */}
     </div>
   );
 };
