@@ -40,7 +40,8 @@ const Withdraw = ({
   userLockedAmountInLocker,
   setUserLockedValue,
   sliderTooltipVisible,
-  setSliderTooltipVisible
+  setSliderTooltipVisible,
+  whiteListedAsset,
 }) => {
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
@@ -51,11 +52,10 @@ const Withdraw = ({
   const [inProgress, setInProgress] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
   const [outputValidationError, setOutputValidationError] = useState();
+  const [userDeposite, setuserDeposite] = useState();
+  const [lockerId, setLockerId] = useState();
+  const [reward, setReward] = useState();
 
-  const marks = {
-    0: "0%",
-    500: "100%",
-  };
   const whiteListedAssetData = [];
   const resetValues = () => {
     dispatch(setAmountIn(0));
@@ -75,7 +75,7 @@ const Withdraw = ({
     // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
 
     assets?.map((item) => {
-      if (item.name === "CMDX") {
+      if (item.name === "cmdx") {
         whiteListedAssetData.push(item);
       }
     })
@@ -111,31 +111,39 @@ const Withdraw = ({
   };
   useEffect(() => {
     resetValues();
-    fetchOwnerLockerExistByAssetId(1, 3, address);
-  }, [address]);
+    fetchOwnerLockerExistByAssetId(1, whiteListedAssetId, address);
+  }, [address, userDeposite]);
 
   useEffect(() => {
-    fetchOwnerLockerBalance(PRODUCT_ID, 3, address);
-  }, [address, refreshBalance]);
+    fetchOwnerLockerBalance(PRODUCT_ID, whiteListedAssetId, address);
+  }, [address, refreshBalance, userDeposite]);
 
-  const fetchOwnerLockerBalance = (productId, assetId, owner) => {
+  const whiteListedAssetId = whiteListedAsset[0]?.low;
+
+  const fetchOwnerLockerBalance = (productId, lockerId, owner) => {
     setInProgress(true);
-    queryUserLockedValueInLocker(productId, assetId, owner, (error, data) => {
+    queryUserLockedValueInLocker(productId, lockerId, owner, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      setUserLockedValue((data?.lockerInfo[0]?.netBalance))
+      let balance;
+      balance = (data?.lockerInfo[0]?.netBalance || "0") / 1000000;
+      setuserDeposite(balance)
+      setUserLockedValue((data?.lockerInfo[0]?.netBalance || "0"))
       setInProgress(false);
     })
   }
-  const fetchOwnerLockerExistByAssetId = (productId, assetId, address) => {
-    queryUserLockerByProductAssetId(productId, assetId, address, (error, data) => {
+  const fetchOwnerLockerExistByAssetId = (productId, lockerId, address) => {
+    queryUserLockerByProductAssetId(productId, lockerId, address, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
       let lockerExist = data?.lockerInfo?.length;
+      // console.log(data?.lockerInfo[0]?.returnsAccumulated);
+      setLockerId(data?.lockerInfo[0]?.lockerId);
+      setReward(data?.lockerInfo[0]?.returnsAccumulated);
       if (lockerExist > 0) {
         dispatch(setIsLockerExist(true));
       } else {
@@ -156,9 +164,9 @@ const Withdraw = ({
           typeUrl: "/comdex.locker.v1beta1.MsgWithdrawAssetRequest",
           value: {
             depositor: address,
-            lockerId: "cmst1",
+            lockerId: lockerId,
             amount: getAmount(inAmount),
-            assetId: Long.fromNumber(3),
+            assetId: Long.fromNumber(whiteListedAssetId),
             appMappingId: Long.fromNumber(1),
           }
         },
@@ -202,6 +210,11 @@ const Withdraw = ({
       return null
     }
   }
+  const marks = {
+    0: "0%",
+    userDeposite: "100%",
+  };
+
   getAssetDenom();
 
   return (
@@ -269,11 +282,13 @@ const Withdraw = ({
               <div className="withdraw-stats-container">
                 <div className="withdraw-stats">
                   <div className="stats-title">Intrest</div>
-                  <div className="stats-value">1234 CMST</div>
+                  <div className="stats-value">{reward} {denomConversion(whiteListedAssetData[0]?.denom)} </div>
                 </div>
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
-                  <div className="stats-value">1234 CMST</div>
+                  <div className="stats-value">
+                    {amountConversionWithComma(userLockedAmountInLocker)} {denomConversion('ucmdx')}
+                  </div>
                 </div>
                 <div className="withdraw-stats">
                   <div className="stats-title">Lorem</div>
@@ -304,7 +319,7 @@ const Withdraw = ({
                     }
                     marks={marks}
                     value={inAmount}
-                    max={500}
+                    max={userDeposite || 100}
                     onChange={handleSliderChange}
                     min={0}
                     tooltipVisible={sliderTooltipVisible}
@@ -357,6 +372,17 @@ Withdraw.propTypes = {
       })
     })
   ),
+  whiteListedAsset: PropTypes.arrayOf(
+    PropTypes.shape({
+      list: PropTypes.shape({
+        id: PropTypes.shape({
+          low: PropTypes.number,
+          high: PropTypes.number,
+          inSigned: PropTypes.number,
+        })
+      })
+    })
+  ),
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -378,6 +404,8 @@ const stateToProps = (state) => {
     refreshBalance: state.account.refreshBalance,
     userLockedAmountInLocker: state.locker.userLockedAmountInLocker,
     sliderTooltipVisible: state.locker.sliderTooltipVisible,
+    whiteListedAsset: state.locker.whiteListedAssetById.list,
+
   };
 };
 const actionsToProps = {

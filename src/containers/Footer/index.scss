@@ -20,6 +20,10 @@
       width: 100%;
       .icon {
         width: 20px;
+        fill: $sidebar-icon;
+        .dark-mode & {
+          fill: #fff;
+        }
       }
     }
   }

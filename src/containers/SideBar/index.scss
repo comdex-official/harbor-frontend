@@ -248,7 +248,7 @@
               }
 
               .tab-inner {
-                background: $secondary-color-light;
+                background: #665aa670;
                 color: $secondary-color;
                 border-left: 5px solid $secondary-color;
                 .dark-mode & {
@@ -268,7 +268,11 @@
 
             &:hover {
               color: $secondary-color;
-              background: $secondary-color-light !important;
+              // background: $secondary-color-light !important;
+              background: #665aa670;
+              .dark-mode & {
+                background: $secondary-color-light;
+              }
               .tab-inner {
                 color: $secondary-color;
                 .dark-mode & {

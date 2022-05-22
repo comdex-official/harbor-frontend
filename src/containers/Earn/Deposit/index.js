@@ -77,7 +77,7 @@ const Deposit = ({
 
     // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
     assets?.map((item) => {
-      if (item.name === "CMDX") {
+      if (item.name === "cmdx") {
         whiteListedAssetData.push(item);
       }
     })
@@ -111,7 +111,7 @@ const Deposit = ({
       false
     );
     fetchWhiteListedAssetByid(PRODUCT_ID);
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, 3, address);
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
   }, [address]);
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -124,7 +124,6 @@ const Deposit = ({
         message.error(error);
         return;
       }
-
       setAssets(data.assets, data.pagination);
     });
   };
@@ -137,9 +136,7 @@ const Deposit = ({
         message.error(error);
         return;
       }
-      // console.log("Product Asset", data?.assetIds);
-      let whiteListedAsset =
-        setWhiteListedAssets(data?.assetIds)
+      setWhiteListedAssets(data?.assetIds)
       setLoading(false)
     })
   }
@@ -162,6 +159,8 @@ const Deposit = ({
   getAssetDenom();
 
   const AvailableAssetBalance = getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
+
+  const whiteListedAssetId = whiteListedAsset[0]?.low;
 
   const handleInputMax = () => {
     if (Number(AvailableAssetBalance) > DEFAULT_FEE) {
@@ -187,7 +186,7 @@ const Deposit = ({
           value: {
             depositor: address,
             amount: getAmount(inAmount),
-            assetId: Long.fromNumber(3),
+            assetId: Long.fromNumber(whiteListedAssetId),
             appMappingId: Long.fromNumber(1),
           }
         },
@@ -211,6 +210,7 @@ const Deposit = ({
             hash={result?.transactionHash}
           />,
         );
+        resetValues()
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
@@ -267,7 +267,6 @@ const Deposit = ({
     );
 
   }
-
 
   return (
     <>

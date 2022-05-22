@@ -76,3 +76,4 @@ export const queryUserLockedValueInLocker = (productId, assetId, owner,callback)
             });
     });
 };
+

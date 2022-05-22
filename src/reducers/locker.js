@@ -39,10 +39,11 @@ const isLockerExist = (state = "false", action) => {
     }
     return state;
 };
-const userLockedAmountInLocker = (state = "", action) => {
+const userLockedAmountInLocker = (state = "0", action) => {
     if (action.type === SET_USER_LOCKED_VALUE) {
         return action.value;
     }
+
     return state;
 };
 const sliderTooltipVisible = (state = false, action) => {
