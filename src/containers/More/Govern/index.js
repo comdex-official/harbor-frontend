@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import variables from "../../../utils/variables";
 import { Button, List, Select, Progress } from "antd";
 import "./index.scss";
@@ -27,10 +27,17 @@ const Govern = (lang) => {
   const navigate = useNavigate();
   return (
     <div className="app-content-wrapper">
+      <div className="back-btn-container">
+        <Link to="/more">
+          <Button className="back-btn" type="primary">
+            Back
+          </Button>
+        </Link>
+      </div>
       <Row>
         <Col>
-          <div className="commodo-card earn-deposite-card myhome-upper d-block">
-            <div className="myhome-upper-left w-100">
+          <div className="commodo-card earn-deposite-card myhome-upper d-block ">
+            <div className="myhome-upper-left w-100 ">
               <List
                 grid={{
                   gutter: 16,
@@ -46,7 +53,7 @@ const Govern = (lang) => {
                   <List.Item>
                     <div>
                       <p>{item.title}</p>
-                      <h3>{item.counts}</h3>
+                      <h3 className="claim-drop-amount">{item.counts}</h3>
                     </div>
                   </List.Item>
                 )}
@@ -57,12 +64,12 @@ const Govern = (lang) => {
       </Row>
       <Row className="mt-3">
         <Col>
-          <div className="comdex-card govern-card earn-deposite-card">
-            <div className="governcard-head">
+          <div className="comdex-card govern-card earn-deposite-card ">
+            <div className="governcard-head ">
               <Button type="primary" className="btn-filled">New Proposal</Button>
               <Button type="primary" className="btn-filled">Forum</Button>
-              <Select defaultValue="lucy" className="select-primary  ml-2" suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
-                <Option value="jack">Jack</Option>
+              <Select defaultValue="Filter" className="select-primary   ml-2" suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
+                <Option value="jack" className="govern-select-option">Jack</Option>
                 <Option value="lucy">Lucy</Option>
                 <Option value="Yiminghe">yiminghe</Option>
               </Select>

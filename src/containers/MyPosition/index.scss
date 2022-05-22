@@ -94,12 +94,20 @@
   align-items: center;
   padding: 48px 40px 40px 35px;
   margin-bottom: 2rem;
-  height: 12rem;
+  // height: 12rem;
   .dark-mode & {
   }
   .myhome-upper-left {
     width: 60%;
     width: 100%;
+    .claim-drop-amount {
+      color: #000;
+      font-size: 1.4rem;
+      font-weight: 600;
+      .dark-mode & {
+        color: #fff;
+      }
+    }
     .ant-list {
       .ant-list-item {
         margin: 5px 0;

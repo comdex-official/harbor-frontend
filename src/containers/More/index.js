@@ -8,7 +8,7 @@ import { Button } from "antd";
 // import AuctionImg from "../../assets/images/auctionAsset 1comdex.svg";
 import { useNavigate } from "react-router";
 
-const More = ({}) => {
+const More = ({ }) => {
   const navigate = useNavigate();
 
   const handleRouteChange = (path) => {
@@ -24,18 +24,20 @@ const More = ({}) => {
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
-                <h2>Staking and Governance</h2>
+                <h2> Governance</h2>
                 <p>
                   Stake your CMDX tokens to earn rewards and participate in
                   governance proposals
                 </p>
-                <Button
-                  type="primary"
-                  className="btn-filled"
-                  onClick={() => handleRouteChange("/govern")}
-                >
-                  Manage Stake
-                </Button>
+                <div className="button-container">
+                  <Button
+                    type="primary"
+                    className="btn-filled"
+                    onClick={() => handleRouteChange("/govern")}
+                  >
+                    Govern
+                  </Button>
+                </div>
               </div>
               {/* <img src={StackImg} alt={StackImg} /> */}
             </div>
@@ -45,22 +47,24 @@ const More = ({}) => {
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
-                <h2>Participate in Auctions</h2>
+                <h2>Airdrop</h2>
                 <p>
                   Auction between bidders to capitalize on the liquidation of
                   assets and acquire assets at a discounted rate
                 </p>
-                <Button
-                  type="primary"
-                  className="btn-filled"
-                  onClick={() => handleRouteChange("/auction")}
-                >
-                  Enter Now
-                </Button>
+                <div className="button-container">
+                  <Button
+                    type="primary"
+                    className="btn-filled"
+                    onClick={() => handleRouteChange("/airdrop")}
+                  >
+                    Enter Now
+                  </Button>
+                </div>
               </div>
-              <div className="morecard-right">
-                {/* <img src={AuctionImg} alt={AuctionImg} /> */}
-              </div>
+              {/* <div className="morecard-right">
+                <img src={AuctionImg} alt={AuctionImg} />
+              </div> */}
             </div>
           </div>
         </Col>

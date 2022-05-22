@@ -9,6 +9,7 @@ import Assets from "./containers/Assets";
 import More from './containers/More'
 import Govern from './containers/More/Govern'
 import GovernDetails from './containers/More/Govern/Details'
+import Airdrop from "./containers/More/Airdrop";
 // import Balances from "./containers/MyPositions";
 
 const routes = [
@@ -51,7 +52,11 @@ const routes = [
   {
     path: "/govern-details",
     element: <GovernDetails />,
-  }
+  },
+  {
+    path: "/airdrop",
+    element: <Airdrop />,
+  },
 ];
 
 export default routes;

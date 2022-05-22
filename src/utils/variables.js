@@ -2,7 +2,7 @@ const variables = {
   en: {
     // Sidebar menu
     dashboard: "Dashboard",
-    positions: "MyPositions",
+    positions: "My Positions",
     earn: "earn",
     balances: "Balances",
     c_swap: "cSwap",

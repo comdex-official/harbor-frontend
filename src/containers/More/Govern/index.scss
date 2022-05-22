@@ -82,3 +82,12 @@
     }
   }
 }
+.ant-select-dropdown {
+  background: $secondary-color !important;
+}
+
+.govern-select-option {
+  &:hover {
+    background-color: $secondary-color !important;
+  }
+}

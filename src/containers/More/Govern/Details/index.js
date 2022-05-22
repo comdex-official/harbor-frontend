@@ -138,7 +138,7 @@ const GovernDetails = (lang) => {
                   <List.Item>
                     <div>
                       <p>{item.title}</p>
-                      <h3>{item.counts}</h3>
+                      <h3 className="claim-drop-amount">{item.counts}</h3>
                     </div>
                   </List.Item>
                 )}
