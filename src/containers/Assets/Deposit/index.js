@@ -270,3 +270,4 @@ const actionsToProps = {
 };
 
 export default connect(stateToProps, actionsToProps)(Deposit);
+
