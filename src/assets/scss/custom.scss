@@ -179,7 +179,6 @@ button {
   .ant-tooltip-arrow {
     .ant-tooltip-arrow-content {
       background: $tooltip-bg-light;
-
       .dark-mode & {
         background: $tooltip-bg-light;
       }
@@ -419,22 +418,28 @@ button {
 
 .ant-slider-tooltip {
   .ant-tooltip-content {
-    transform: translateY(60px);
+    transform: translateY();
     font-size: $font-size-base - 4;
-
     .ant-tooltip-arrow {
       display: none;
     }
-
     .ant-tooltip-inner {
-      background: $primary-color;
+      background: $secondary-color;
       display: flex;
       align-items: center;
       justify-content: center;
       color: $white;
-
+      font-size: 13px;
+      font-weight: 500;
       .dark-mode & {
         color: $white;
+      }
+    }
+    .ant-tooltip-arrow {
+      display: block;
+      .ant-tooltip-arrow-content {
+        transform: translateY(-13px) rotate(223deg);
+        background: $secondary-color;
       }
     }
   }
@@ -1785,5 +1790,4 @@ button {
       background: $background-select-hover-dark;
     }
   }
-  
 }

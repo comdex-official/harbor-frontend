@@ -1,4 +1,4 @@
-import { Button, message } from "antd";
+import { Button, message, Slider } from "antd";
 import *  as PropTypes from 'prop-types';
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import { ValidateInputNumber } from "../../../config/_validation";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
 import { queryUserLockedValueInLocker, queryUserLockerByProductAssetId } from "../../../services/locker/query";
-import { setIsLockerExist, setUserLockedValue } from "../../../actions/locker";
+import { setIsLockerExist, setUserLockedValue, setSliderTooltipVisible } from "../../../actions/locker";
 import { defaultFee } from "../../../services/transaction";
 import Long from "long";
 import { signAndBroadcastTransaction } from "../../../services/helper";
@@ -38,7 +38,9 @@ const Withdraw = ({
   balances,
   refreshBalance,
   userLockedAmountInLocker,
-  setUserLockedValue
+  setUserLockedValue,
+  sliderTooltipVisible,
+  setSliderTooltipVisible
 }) => {
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
@@ -50,6 +52,10 @@ const Withdraw = ({
   const [inputValidationError, setInputValidationError] = useState();
   const [outputValidationError, setOutputValidationError] = useState();
 
+  const marks = {
+    0: "0%",
+    500: "100%",
+  };
   const whiteListedAssetData = [];
   const resetValues = () => {
     dispatch(setAmountIn(0));
@@ -86,6 +92,16 @@ const Withdraw = ({
     );
     dispatch(setAmountIn(value));
   };
+
+  const handleSliderChange = (value) => {
+    setSliderTooltipVisible(true)
+    dispatch(setAmountIn(value));
+    setTimeout(() => {
+      setSliderTooltipVisible(false)
+    }, 2000);
+  };
+  const formatter = () => `${inAmount}`;
+
   const showInDollarValue = () => {
     const total = inAmount;
 
@@ -191,25 +207,14 @@ const Withdraw = ({
   return (
     <>
       <Col>
-        <div className="farm-content-card earn-deposite-card earn-main-deposite">
-          <div className="locker-title">Locker</div>
-          <div className="assets-select-card">
+        <div className="farm-content-card earn-deposite-card earn-main-deposite locker-withdraw">
+          <div className="withdraw-title">Withdraw</div>
+          {/* <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
                 Withdraw <TooltipIcon />
               </label>
               <div className="assets-select-wrapper">
-                {/* <div className="farm-asset-icon-container">
-                  <div className="select-inner">
-                    <div className="svg-icon">
-                      <div className="svg-icon-inner">
-                        <SvgIcon name={iconNameFromDenom("ucmdx")} />{" "}
-                        <span>CMDX</span>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
-
                 {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
                   return (
                     <React.Fragment key={index} >
@@ -228,7 +233,6 @@ const Withdraw = ({
                     </React.Fragment>
                   )
                 })}
-
               </div>
             </div>
             <div className="assets-right">
@@ -256,6 +260,57 @@ const Withdraw = ({
                   validationError={inputValidationError}
                 />
                 <small>{showInDollarValue()}</small>
+              </div>
+            </div>
+          </div> */}
+
+          <div className="withdraw-main-container">
+            <div className="withdraw-content-container">
+              <div className="withdraw-stats-container">
+                <div className="withdraw-stats">
+                  <div className="stats-title">Intrest</div>
+                  <div className="stats-value">1234 CMST</div>
+                </div>
+                <div className="withdraw-stats">
+                  <div className="stats-title">Balance</div>
+                  <div className="stats-value">1234 CMST</div>
+                </div>
+                <div className="withdraw-stats">
+                  <div className="stats-title">Lorem</div>
+                  <div className="stats-value">1234 CMST</div>
+                </div>
+              </div>
+              <div className="available-container">
+                <div className="available-title">Available to Withdraw</div>
+                <div className="available-input">
+                  <div className="input-select ">
+                    <CustomInput
+                      className="ant-input"
+                      value={inAmount}
+                      onChange={(event) =>
+                        handleInputChange(event.target.value)
+                      }
+                      validationError={inputValidationError}
+                    />
+                    <span className="denom-name">CMST</span>
+                  </div>
+                </div>
+              </div>
+              <div className="withdraw-slider">
+                <div className="slider-numbers mt-3">
+                  <Slider
+                    className={
+                      "comdex-slider "
+                    }
+                    marks={marks}
+                    value={inAmount}
+                    max={500}
+                    onChange={handleSliderChange}
+                    min={0}
+                    tooltipVisible={sliderTooltipVisible}
+                    tipFormatter={formatter}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -310,7 +365,7 @@ Withdraw.propTypes = {
   ),
   refreshBalance: PropTypes.number.isRequired,
   userLockedAmountInLocker: PropTypes.string.isRequired,
-
+  sliderTooltipVisible: PropTypes.bool.isRequired,
 
 }
 const stateToProps = (state) => {
@@ -322,13 +377,14 @@ const stateToProps = (state) => {
     pair: state.asset.pair,
     refreshBalance: state.account.refreshBalance,
     userLockedAmountInLocker: state.locker.userLockedAmountInLocker,
-
+    sliderTooltipVisible: state.locker.sliderTooltipVisible,
   };
 };
 const actionsToProps = {
   setPair,
   setUserLockedValue,
   setAssets,
+  setSliderTooltipVisible,
 };
 
 export default connect(stateToProps, actionsToProps)(Withdraw);
