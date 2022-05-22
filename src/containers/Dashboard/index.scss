@@ -234,7 +234,7 @@
   background-position: center;
   .dark-mode & {
     background: $background-dark1;
-    border: 1px solid $border-dark;
+    // border: 1px solid $border-dark;
     box-shadow: $box-shadow-inner-dark;
     background-image: url("../../assets/images/dashboard-banner.svg");
     background-size: 100%;

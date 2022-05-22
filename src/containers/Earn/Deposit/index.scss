@@ -5,6 +5,8 @@
   border-radius: $base-border-radius;
   background: $background-light;
   box-shadow: $box-shadow-inner-light;
+  border: 0.5px solid $border-color-base;
+
   .dark-mode & {
     background-color: $secondary-color-light;
     box-shadow: none;
@@ -45,7 +47,6 @@
 }
 .earn-main-deposite {
   padding: 10px 25px 15px 25px !important;
-  border: 0.5px solid $border-color-base;
 }
 
 .locker-title {

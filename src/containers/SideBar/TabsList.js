@@ -47,4 +47,12 @@ export const tabsList = [
     active: "auctions",
     index: 5,
   },
+  {
+    name: "more",
+    value: "more",
+    langKey: "more",
+    path: "more",
+    active: "more",
+    index: 6,
+  },
 ];

@@ -6,6 +6,9 @@ import Vault from "./containers/Mint/Vault";
 import MyPositions from "./containers/MyPosition";
 // import MyPositions from "./containers/MyHome";
 import Assets from "./containers/Assets";
+import More from './containers/More'
+import Govern from './containers/More/Govern'
+import GovernDetails from './containers/More/Govern/Details'
 // import Balances from "./containers/MyPositions";
 
 const routes = [
@@ -37,6 +40,18 @@ const routes = [
     path: "/auctions",
     element: <Auctions />,
   },
+  {
+    path: "/more",
+    element: <More />,
+  },
+  {
+    path: "/govern",
+    element: <Govern />,
+  },
+  {
+    path: "/govern-details",
+    element: <GovernDetails />,
+  }
 ];
 
 export default routes;

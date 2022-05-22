@@ -8,16 +8,20 @@ import { Tabs } from "antd";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import CustomInput from "../../components/CustomInput";
+import { useDispatch } from "react-redux";
+import { setAmountIn } from "../../actions/asset";
 // import './index.scss'
 
 const Earn = () => {
+  const dispatch = useDispatch();
   const [inProgress, setInProgress] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(true);
   const [defaultTabSelect, setDefaultTabSelect] = useState("1");
   const { TabPane } = Tabs;
 
   const callback = (key) => {
-    setDefaultTabSelect(key);
+    dispatch(setAmountIn(0))
+    setDefaultTabSelect(key)
   };
   const showModal = (pool) => {
     setDefaultTabSelect("1");

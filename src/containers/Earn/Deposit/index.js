@@ -119,14 +119,13 @@ const Deposit = ({
     setLoading(true)
     queryAssets(offset, limit, countTotal, reverse, (error, data) => {
       setInProgress(false);
+      setLoading(false)
       if (error) {
         message.error(error);
         return;
       }
-      // console.log("All Assets", data.assets);
 
       setAssets(data.assets, data.pagination);
-      setLoading(false)
     });
   };
 
@@ -344,10 +343,11 @@ const Deposit = ({
 
 
                     {/* For Single Asset */}
+                    {loading ? <h1>Loading...</h1> : null}
                     {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
                       return (
                         <React.Fragment key={index} >
-                          {loading ? <h1>Loading...</h1> :
+                          {loading ? null :
                             <div className="farm-asset-icon-container" >
                               <div className="select-inner">
                                 <div className="svg-icon">
