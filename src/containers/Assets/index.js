@@ -120,7 +120,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
 
   const currentChainData = [
     {
-      key: comdex.chainId,
+      key: comdex.coinDenom,
       asset: (
         <>
           <div className="assets-withicon">
