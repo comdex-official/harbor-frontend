@@ -672,7 +672,7 @@ button {
               }
               &:hover {
                 box-shadow: $box-shadow-inner-light;
-
+                background: $secondary-color;
                 .dark-mode & {
                   box-shadow: none;
                 }
@@ -684,11 +684,12 @@ button {
               box-shadow: $box-shadow-inner-light;
 
               .dark-mode & {
-                background: $background-dark2;
+                background: $background-dark1;
                 box-shadow: none;
               }
               &:hover {
                 box-shadow: $box-shadow-inner-light-hover;
+                background: $secondary-color;
 
                 .dark-mode & {
                   box-shadow: none;

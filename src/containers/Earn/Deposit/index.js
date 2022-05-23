@@ -111,7 +111,7 @@ const Deposit = ({
       false
     );
     fetchWhiteListedAssetByid(PRODUCT_ID);
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, 1, address);
   }, [address]);
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -148,6 +148,7 @@ const Deposit = ({
         return;
       }
       let lockerExist = data?.lockerInfo?.length;
+      console.log(data);
       if (lockerExist > 0) {
         dispatch(setIsLockerExist(true));
       } else {
@@ -232,9 +233,9 @@ const Deposit = ({
           typeUrl: "/comdex.locker.v1beta1.MsgDepositAssetRequest",
           value: {
             depositor: address,
-            lockerId: "cmst1",
+            lockerId: "hbr1",
             amount: getAmount(inAmount),
-            assetId: Long.fromNumber(3),
+            assetId: Long.fromNumber(whiteListedAssetId),
             appMappingId: Long.fromNumber(1),
           }
         },

@@ -22,7 +22,7 @@ import {
 } from "../../actions/account";
 import { queryAllBalances } from "../../services/bank/query";
 import Lodash from "lodash";
-import { queryVaultList } from "../../services/vault/query";
+// import { queryVaultList } from "../../services/vault/query";
 import { setAccountVaults } from "../../actions/account";
 import ConnectModal from "../Modal";
 import { marketPrice } from "../../utils/number";
@@ -54,7 +54,7 @@ const ConnectButton = ({
     const userAddress = savedAddress ? decode(savedAddress) : address;
 
     fetchMarkets();
-    getVaults();
+    // getVaults();
 
     if (userAddress) {
       setAccountAddress(userAddress);
@@ -78,7 +78,7 @@ const ConnectButton = ({
   }, [markets]);
 
   useEffect(() => {
-    getVaults();
+    // getVaults();
   }, [pools]);
 
   const fetchBalances = (address) => {
@@ -140,35 +140,35 @@ const ConnectButton = ({
     setAssetBalance(Lodash.sum(value));
   };
 
-  const getVaults = () => {
-    fetchVaults(
-      address,
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
-      true,
-      false
-    );
-  };
+  // const getVaults = () => {
+  //   fetchVaults(
+  //     address,
+  //     (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+  //     DEFAULT_PAGE_SIZE,
+  //     true,
+  //     false
+  //   );
+  // };
 
-  const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
-    queryVaultList(
-      address,
-      offset,
-      limit,
-      isTotal,
-      isReverse,
-      (error, result) => {
-        if (error) {
-          message.error(error);
-          return;
-        }
+  // const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
+  //   queryVaultList(
+  //     address,
+  //     offset,
+  //     limit,
+  //     isTotal,
+  //     isReverse,
+  //     (error, result) => {
+  //       if (error) {
+  //         message.error(error);
+  //         return;
+  //       }
 
-        setAccountVaults(result?.vaultsInfo, result?.pagination);
+  //       setAccountVaults(result?.vaultsInfo, result?.pagination);
 
-        calculateMintBalance(result?.vaultsInfo);
-      }
-    );
-  };
+  //       calculateMintBalance(result?.vaultsInfo);
+  //     }
+  //   );
+  // };
 
   const calculateMintBalance = (vaults) => {
     const userVaults = vaults.filter((item) => item.owner === address);

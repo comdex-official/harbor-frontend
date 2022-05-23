@@ -1,4 +1,4 @@
-import { SET_ALL_WHITELISTED_ASSET, SET_ISLOCKER_EXIST, SET_SLIDER_TOOLTIP_VISIBLE, SET_USER_LOCKED_VALUE, SET_WHITELISTED_ASSET } from "../constants/locker";
+import { SET_ALL_WHITELISTED_ASSET, SET_EXTENDED_PAIR_ID, SET_ISLOCKER_EXIST, SET_SLIDER_TOOLTIP_VISIBLE, SET_USER_LOCKED_VALUE, SET_WHITELISTED_ASSET } from "../constants/locker";
 import { combineReducers } from "redux";
 
 const _ = (
@@ -52,10 +52,17 @@ const sliderTooltipVisible = (state = false, action) => {
     }
     return state;
 };
+const extededPairId = (state = "", action) => {
+    if (action.type === SET_EXTENDED_PAIR_ID) {
+        return action.value;
+    }
+    return state;
+};
 export default combineReducers({
     _,
     whiteListedAssetById,
     isLockerExist,
     userLockedAmountInLocker,
     sliderTooltipVisible,
+    extededPairId,
 });

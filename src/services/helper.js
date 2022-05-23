@@ -17,7 +17,6 @@ export const newQueryClientRPC = (rpc, callback) => {
     })
     .catch((error) => {
       console.log('the err', error);
-
       callback(error?.message);
     });
 };

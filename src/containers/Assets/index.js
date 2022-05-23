@@ -29,10 +29,22 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       key: "asset",
     },
     {
-      title: "Balances",
-      dataIndex: "balances",
-      key: "balances",
-      align: "right",
+      title: "No. of Tokens",
+      dataIndex: "noOfTokens",
+      key: "noOfTokens",
+      align: "center",
+    },
+    {
+      title: "Oracle Price",
+      dataIndex: "oraclePrice",
+      key: "oraclePrice",
+      align: "center",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      align: "center",
       render: (balance) => (
         <>
           <p>{balance?.amount || 0}</p>
@@ -47,7 +59,8 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       title: "IBC Deposit",
       dataIndex: "ibcdeposit",
       key: "ibcdeposit",
-      // width: 110,
+      align: "center",
+      // width: 210,
       render: (value) => {
         if (value) {
           return <Deposit chain={value} />;
@@ -131,8 +144,9 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
           </div>
         </>
       ),
-      balances: {
-        amount: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
+      noOfTokens: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
+      oraclePrice: 123,
+      amount: {
         value: nativeCoinValue || 0,
       },
     },
@@ -148,8 +162,9 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
           </div>
         </>
       ),
-      balances: {
-        amount: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
+      noOfTokens: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
+      oraclePrice: 123,
+      amount: {
         value: cmstCoinValue || 0,
       },
     },
@@ -174,7 +189,9 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
             </div>
           </>
         ),
-        balances: item.balance,
+        noOfTokens: 1,
+        oraclePrice: 123,
+        amount: item.balance,
         ibcdeposit: item,
         ibcwithdraw: item,
       };

@@ -11,7 +11,7 @@ import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
 import { getTypeURL } from "../../../../services/transaction";
-import { queryVault } from "../../../../services/vault/query";
+// import { queryVault } from "../../../../services/vault/query";
 import CustomInput from "../../../../components/CustomInput";
 import { decimalConversion, marketPrice } from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";

@@ -7,11 +7,11 @@ import variables from "../../utils/variables";
 import { Tabs, message } from "antd";
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_NUMBER } from "../../constants/common";
 import { queryPairs } from "../../services/asset/query";
-import { setPairs } from "../../actions/asset";
 import { useLocation } from "react-router";
 import { decode } from "../../utils/string";
 import { queryVaultList } from "../../services/vault/query";
 import { setAccountVaults } from "../../actions/account";
+import { setAllExtendedPair } from "../../actions/asset";
 import Minting from "./minting";
 
 const { TabPane } = Tabs;
@@ -19,10 +19,11 @@ const { TabPane } = Tabs;
 const Borrow = ({
   lang,
   address,
+  vault,
   pairs,
   setPairs,
-  vault,
   setAccountVaults,
+
 }) => {
   const [activeKey, setActiveKey] = useState("1");
   const location = useLocation();
@@ -33,55 +34,53 @@ const Borrow = ({
       setActiveKey("2");
     }
 
-    if (!pairs.list.length) {
-      fetchPairs(
-        (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-        DEFAULT_PAGE_SIZE,
-        true,
-        false
-      );
-    }
-    getVaults();
+    // if (!pairs.list.length) {
+    //   fetchPairs(
+    //     (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+    //     DEFAULT_PAGE_SIZE,
+    //     true,
+    //     false
+    //   );
+    // }
+    // getVaults();
   }, [address]);
 
-  const fetchPairs = (offset, limit, countTotal, reverse) => {
-    queryPairs(offset, 100, countTotal, reverse, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
+  // const fetchPairs = (offset, limit, countTotal, reverse) => {
+  //   queryPairs(offset, 100, countTotal, reverse, (error, data) => {
+  //     if (error) {
+  //       message.error(error);
+  //       return;
+  //     }
+  //   });
+  // };
 
-      setPairs(data.pairsInfo, data.pagination);
-    });
-  };
+  // const getVaults = () => {
+  //   fetchVaults(
+  //     address,
+  //     (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+  //     DEFAULT_PAGE_SIZE,
+  //     true,
+  //     false
+  //   );
+  // };
 
-  const getVaults = () => {
-    fetchVaults(
-      address,
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
-      true,
-      false
-    );
-  };
+  // const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
+  //   queryVaultList(
+  //     address,
+  //     offset,
+  //     limit,
+  //     isTotal,
+  //     isReverse,
+  //     (error, result) => {
+  //       if (error) {
+  //         message.error(error);
+  //         return;
+  //       }
 
-  const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
-    queryVaultList(
-      address,
-      offset,
-      limit,
-      isTotal,
-      isReverse,
-      (error, result) => {
-        if (error) {
-          message.error(error);
-          return;
-        }
-
-        setAccountVaults(result?.vaultsInfo, result?.pagination);
-      }
-    );
-  };
+  //       setAccountVaults(result?.vaultsInfo, result?.pagination);
+  //     }
+  //   );
+  // };
 
   return (
     <div className="app-content-wrapper">
@@ -92,7 +91,6 @@ const Borrow = ({
 
 Borrow.propTypes = {
   setAccountVaults: PropTypes.func.isRequired,
-  setPairs: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   address: PropTypes.string,
   pairs: PropTypes.shape({
@@ -126,14 +124,13 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
-    pairs: state.asset.pairs,
     vault: state.account.vault,
   };
 };
 
 const actionToProps = {
-  setPairs,
   setAccountVaults,
+  // setAllExtendedPair,
 };
 
 export default connect(stateToProps, actionToProps)(Borrow);

@@ -115,6 +115,7 @@ const Mint = ({
     // return reverse ? spotPrice : 1 / spotPrice;
     // calculating price from pool
   };
+
   const handleSliderChange = (value) => {
     setCollateralRatio(value);
     setAmountOut(
@@ -126,6 +127,7 @@ const Mint = ({
       )
     );
   };
+
   const handleMaxClick = () => {
     if (pair?.denomIn === comdex.coinMinimalDenom) {
       return Number(collateralAssetBalance) > DEFAULT_FEE
@@ -242,8 +244,8 @@ const Mint = ({
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        <SvgIcon name={iconNameFromDenom("uatom")} />{" "}
-                        <span> ATOM</span>
+                        <SvgIcon name={iconNameFromDenom("ucmdx")} />{" "}
+                        <span> CMDX</span>
                       </div>
                     </div>
                   </div>
@@ -255,7 +257,8 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(collateralAssetBalance)} ATOM
+                  {/* {amountConversionWithComma(collateralAssetBalance)} CMDX */}
+                  {amountConversionWithComma(collateralAssetBalance)} CMDX
                 </span>
                 <div className="maxhalf">
                   <Button
