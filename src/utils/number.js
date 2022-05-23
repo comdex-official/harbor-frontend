@@ -1,6 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { DOLLAR_DECIMALS } from "../constants/common";
-import { denomToSymbol } from "./string";
+import { minimalDenomToDenom } from "./string";
 
 export const formatNumber = (number) => {
   if (number >= 1000 && number < 1000000) {
@@ -28,10 +28,10 @@ export const decimalConversion = (data) => {
 };
 
 export const marketPrice = (array, denom) => {
-  const value = array.filter((item) => item.symbol === denomToSymbol(denom));
+  const value = array.filter((item) => item.symbol === minimalDenomToDenom(denom));
 
   if (value && value[0]) {
-    return value[0] && value[0].rates / 1000000;
+    return value[0] && value[0].current_price;
   }
 
   return 1; // returning 1 as we are using ust.

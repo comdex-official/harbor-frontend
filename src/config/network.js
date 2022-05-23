@@ -31,3 +31,7 @@ export const ibcDenoms = {
   uosmo: "ibc/13B2C536BB057AC79D5616B8EA1B9540EC1F2170718CAFF6F0083C966FFFED0B",
   uluna: "ibc/A1E1A20C1E4F2F76F301DA625CC476FBD0FCD8CA94DAF60814CA5257B6CD3E3E",
 };
+
+
+export const tokenCoinGeckoIds = ["cosmos","terra-luna","ki","comdex","kava","sentinel","osmosis","juno-network","akash-network",
+  "umee","mantle", "persistence","chihuahua-token","secret","injective-protocol"];

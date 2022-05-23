@@ -29,7 +29,8 @@ import { marketPrice } from "../../utils/number";
 import { queryMarketList } from "../../services/oracle/query";
 import { setMarkets } from "../../actions/oracle";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { comdex } from "../../config/network";
+import {comdex, tokenCoinGeckoIds} from "../../config/network";
+import {fetchCoinPrices} from "../../actions/dashboard";
 
 const ConnectButton = ({
   setAccountAddress,
@@ -93,15 +94,15 @@ const ConnectButton = ({
       calculatePoolBalance(result.balances);
     });
   };
-
-  const fetchMarkets = (offset, limit, isTotal, isReverse) => {
-    queryMarketList(offset, limit, isTotal, isReverse, (error, result) => {
-      if (error) {
-        return;
+  
+  const fetchMarkets = () => {
+    fetchCoinPrices(tokenCoinGeckoIds, (error, result) => {
+      if(error){
+        return
       }
 
-      setMarkets(result.markets, result.pagination);
-    });
+      setMarkets(result);
+    })
   };
 
   const calculatecAssetBalance = (balances) => {

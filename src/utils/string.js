@@ -62,6 +62,26 @@ export const denomToSymbol = (key) => {
   }
 };
 
+export const minimalDenomToDenom = (key) => {
+  switch (key) {
+    case "uatom":
+    case ibcDenoms["uatom"]:
+      return "atom";
+    case "udvpn":
+      return "dvpn";
+    case "uxprt":
+    case ibcDenoms["uxprt"]:
+      return "xprt";
+    case "uosmo":
+    case ibcDenoms["uosmo"]:
+      return "osmo";
+    case "ucmdx":
+      return "cmdx";
+    default:
+      return "";
+  }
+};
+
 export const iconNameFromDenom = (key) => {
   switch (key) {
     case "ucgold":
