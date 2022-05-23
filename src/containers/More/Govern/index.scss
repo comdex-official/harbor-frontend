@@ -52,12 +52,12 @@
           }
 
           .ant-progress-inner {
-            background: $bg-progress;
+            background: $slider-empty-bg;
             height: 15px;
             overflow: inherit;
 
             .ant-progress-bg {
-              background: $warning-color;
+              background: $secondary-color;
               min-height: 100%;
               position: relative;
             }

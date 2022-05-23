@@ -79,10 +79,10 @@ const MyEarn = (lang) => {
   ];
 
   return (
-    <div className="app-content-wrapper">
+    <div className="app-content-wrappers earn-table-container">
       <Row>
         <Col>
-          <div className="commodo-card ">
+          <div className="commodo-card">
             <div className="card-content">
               <Table
                 className="custom-table"

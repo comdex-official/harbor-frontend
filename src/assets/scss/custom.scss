@@ -611,7 +611,6 @@ button {
               .ant-btn-sm {
                 padding: 0 22px;
               }
-
               color: $text-color-light2;
               border-top: 1px solid;
               border-bottom: 1px solid;
@@ -675,7 +674,7 @@ button {
                 box-shadow: $box-shadow-inner-light;
 
                 .dark-mode & {
-                  box-shadow: $box-shadow-inner-dark;
+                  box-shadow: none;
                 }
               }
             }
@@ -692,7 +691,7 @@ button {
                 box-shadow: $box-shadow-inner-light-hover;
 
                 .dark-mode & {
-                  box-shadow: $box-shadow-inner-dark;
+                  box-shadow: none;
                 }
               }
             }
@@ -1726,7 +1725,7 @@ button {
         .ant-list-item {
           margin: 15px 0;
           color: $text-color-dark2;
-          border-left: 4px solid $success-color;
+          border-left: 4px solid $secondary-color;
           padding-left: 15px;
           .dark-mode & {
             color: $white;

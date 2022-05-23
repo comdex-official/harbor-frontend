@@ -239,13 +239,13 @@ const Dashboard = ({ lang, isDarkMode }) => {
                 <div className="col1">
                   <small>CMST Price</small>
                   <h4>
-                    $12.20 <span>2.41%</span>
+                    $1.01 <span>2.41%</span>
                   </h4>
                 </div>
                 <div className="col2">
                   <small>Circulating Supply</small>
                   <p>
-                    12,500,000 <span>CMDO</span>
+                    12,500,000 <span>CMST</span>
                   </p>
                 </div>
                 <div className="col3">
@@ -269,7 +269,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
                   <div className="col2">
                     <small>Circulating Supply</small>
                     <p>
-                      12,500,000 <span>CMDO</span>
+                      12,500,000 <span>CMST</span>
                     </p>
                   </div>
                   <div className="col3">

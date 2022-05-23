@@ -27,11 +27,11 @@
 .ant-progress {
   &.health-progress {
     .ant-progress-inner {
-      background: $bg-progress;
+      background: $slider-empty-bg;
       height: 7px;
       overflow: inherit;
       .ant-progress-bg {
-        background: $warning-color;
+        background: $secondary-color;
         min-height: 100%;
         position: relative;
         &::after {
@@ -77,6 +77,165 @@
       fill: $background-light;
     }
   }
+}
+.earn-table-container {
+  .custom-table {
+    .ant-table {
+      background: none;
+
+      .ant-table-content {
+        table {
+          border-collapse: separate;
+          border-spacing: 0 0.65em;
+
+          .ant-table-thead {
+            tr {
+              th {
+                background: none;
+                font-weight: 300;
+                border: 0;
+                padding: 10px 15px 0 15px;
+                font-size: $font-size-sm + 3;
+                color: $dark-color;
+                // text-align: left !important;
+                text-align: center;
+                .dark-mode & {
+                  color: $text-color-white;
+                }
+              }
+              th:nth-child(1) {
+                text-align: left !important;
+              }
+              th:last-child {
+                text-align: right !important;
+              }
+            }
+          }
+
+          .ant-table-tbody {
+            .ant-table-placeholder {
+              .ant-empty {
+                .dark-mode & {
+                  color: $text-color-light;
+                }
+              }
+            }
+            tr {
+              border-radius: 15px;
+
+              td {
+                .ant-btn-sm {
+                  padding: 0 22px;
+                }
+
+                color: $text-color-light2;
+                border-top: 1px solid;
+                border-bottom: 1px solid;
+                border-left: 0;
+                border-right: 0;
+                padding: 15px 15px;
+                font-size: $font-size-lg - 1;
+                line-height: 1;
+                border-color: transparent;
+                background: none;
+                text-align: center;
+                &:last-child {
+                  text-align: right !important;
+                }
+                &:first-child {
+                  border-radius: 15px 0 0 15px;
+                  text-align: start;
+                  .dark-mode & {
+                    border-left: 1px solid $border-dark;
+                  }
+                }
+
+                &:last-child {
+                  border-radius: 0 15px 15px 0;
+                  text-align: end;
+                  .dark-mode & {
+                    border-right: 1px solid $border-dark;
+                  }
+                }
+
+                .dark-mode & {
+                  color: $white;
+                  border-color: $border-dark;
+                }
+              }
+
+              p {
+                margin-bottom: 0;
+                line-height: 1;
+                font-size: $font-size-base + 3;
+              }
+
+              small {
+                font-size: $font-size-sm;
+                line-height: 1;
+
+                .dark-mode & {
+                  color: $text-color-light;
+                }
+              }
+
+              &:nth-child(odd) {
+                background: $background-light;
+                box-shadow: $box-shadow-inner-light;
+
+                .dark-mode & {
+                  background: $background-dark1;
+                  box-shadow: none;
+                }
+                &:hover {
+                  box-shadow: $box-shadow-inner-light;
+
+                  .dark-mode & {
+                    box-shadow: $box-shadow-inner-dark;
+                    box-shadow: none;
+                  }
+                }
+              }
+
+              &:nth-child(even) {
+                background: $background-light;
+                box-shadow: $box-shadow-inner-light;
+
+                .dark-mode & {
+                  background: $background-dark2;
+                  box-shadow: none;
+                }
+                &:hover {
+                  box-shadow: $box-shadow-inner-light-hover;
+
+                  .dark-mode & {
+                    box-shadow: $box-shadow-inner-dark;
+                    box-shadow: none;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // .ant-table {
+  // .ant-table-content {
+  //   table {
+  //     .ant-table-tbody {
+  //       tr {
+  //         td {
+  //           padding: 15px 15px !important;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  // td {
+  //   padding: 15px 15px !important;
+  // }
+  // }
 }
 
 .custom-table {
@@ -175,11 +334,11 @@
             padding: 0;
           }
           .ant-progress-inner {
-            background: $bg-progress;
+            background: $slider-empty-bg;
             height: 20px;
             overflow: inherit;
             .ant-progress-bg {
-              background: $warning-color;
+              background: $secondary-color;
               min-height: 100%;
               position: relative;
             }
