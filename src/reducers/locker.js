@@ -1,4 +1,4 @@
-import { SET_ALL_WHITELISTED_ASSET, SET_EXTENDED_PAIR_ID, SET_ISLOCKER_EXIST, SET_SLIDER_TOOLTIP_VISIBLE, SET_USER_LOCKED_VALUE, SET_WHITELISTED_ASSET } from "../constants/locker";
+import { SET_ALL_WHITELISTED_ASSET, SET_CURRENT_PAIR_ID, SET_EXTENDED_PAIR_ID, SET_EXTENDED_PAIR_VAULT_DATA_BY_ID, SET_ISLOCKER_EXIST, SET_SELECT_EXTENTED_PAIR_VAULT, SET_SLIDER_TOOLTIP_VISIBLE, SET_USER_LOCKED_VALUE, SET_WHITELISTED_ASSET } from "../constants/locker";
 import { combineReducers } from "redux";
 
 const _ = (
@@ -52,17 +52,46 @@ const sliderTooltipVisible = (state = false, action) => {
     }
     return state;
 };
-const extededPairId = (state = "", action) => {
+const extenedPairVaultList = (state = [], action) => {
     if (action.type === SET_EXTENDED_PAIR_ID) {
-        return action.value;
+        return [
+            action.value
+        ];
     }
     return state;
 };
+const extenedPairVaultListData = (state = [], action) => {
+    if (action.type === SET_EXTENDED_PAIR_VAULT_DATA_BY_ID) {
+        return [
+            action.value
+        ];
+    }
+    return state;
+};
+const selectedExtentedPairVault = (state = [], action) => {
+    if (action.type === SET_SELECT_EXTENTED_PAIR_VAULT) {
+        return [
+            action.value
+        ];
+    }
+    return state;
+};
+const currentPairId = (state = "", action) => {
+    if (action.type === SET_CURRENT_PAIR_ID) {
+        return action.value
+
+    }
+    return state;
+};
+
 export default combineReducers({
     _,
     whiteListedAssetById,
     isLockerExist,
     userLockedAmountInLocker,
     sliderTooltipVisible,
-    extededPairId,
+    extenedPairVaultList,
+    extenedPairVaultListData,
+    selectedExtentedPairVault,
+    currentPairId,
 });

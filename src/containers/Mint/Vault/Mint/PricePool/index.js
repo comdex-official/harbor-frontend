@@ -21,7 +21,7 @@ const PricePool = ({ lang, poolBalance, markets }) => {
     },
     {
       title: "Oracle Price",
-      counts: "30.45%",
+      counts: "$30.45",
     },
     {
       title: "Withdrawn",

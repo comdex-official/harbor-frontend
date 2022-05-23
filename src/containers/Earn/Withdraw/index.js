@@ -281,7 +281,7 @@ const Withdraw = ({
             <div className="withdraw-content-container">
               <div className="withdraw-stats-container">
                 <div className="withdraw-stats">
-                  <div className="stats-title">Intrest</div>
+                  <div className="stats-title">interest</div>
                   <div className="stats-value">{reward} {denomConversion(whiteListedAssetData[0]?.denom)} </div>
                 </div>
                 <div className="withdraw-stats">

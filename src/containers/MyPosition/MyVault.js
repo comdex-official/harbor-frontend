@@ -28,7 +28,7 @@ const MyVault = (lang) => {
       render: (apy) => <>{apy}%</>,
     },
     {
-      title: "Health Factor",
+      title: "Collateralization ratio",
       dataIndex: "health",
       key: "health",
       width: 200,

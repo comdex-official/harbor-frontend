@@ -93,3 +93,23 @@ export const queryPairVault = (pairId, callback) => {
       });
   });
 };
+
+export const queryPairVaults = (pairId, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryServiceClientImpl(rpcClient)
+      .QueryPairVaults({
+        id: Long.fromNumber(pairId),
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};

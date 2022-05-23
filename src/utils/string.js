@@ -58,7 +58,7 @@ export const denomToSymbol = (key) => {
     case "ucoil":
       return "OIL";
     default:
-      return "cosmos";
+      return "CMDX";
   }
 };
 

@@ -11,7 +11,7 @@ import {
   getAmount,
   getDenomBalance,
 } from "../../../../utils/coin";
-import { iconNameFromDenom, toDecimals } from "../../../../utils/string";
+import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/string";
 import variables from "../../../../utils/variables";
 import "./index.scss";
 import PricePool from "./PricePool";
@@ -38,6 +38,8 @@ import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { getTypeURL } from "../../../../services/transaction";
 import Snack from "../../../../components/common/Snack";
 import { useSelector } from "react-redux";
+import Long from "long";
+import { CMDX_PRICE, CMST_PRICE } from "../../../../services/oracle/price";
 
 const Mint = ({
   lang,
@@ -68,6 +70,7 @@ const Mint = ({
   const [outputValidationError, setOutputValidationError] = useState();
 
   const dispatch = useDispatch();
+  const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
 
   const marks = {
     0: "0%",
@@ -75,6 +78,20 @@ const Mint = ({
     200: "Safe: 200%",
   };
 
+  const returnDenom = () => {
+    let assetPair = selectedExtentedPairVault && selectedExtentedPairVault[0]?.pairName;
+    if (assetPair === "cmdx-cmst") {
+      console.log("yes");
+    }
+    switch (assetPair) {
+      case "cmdx-cmst":
+        return "ucmdx";
+      case "osmo-cmst":
+        return "uosmo";
+      default:
+        return "ucmdx";
+    }
+  }
   const onChange = (value) => {
     value = toDecimals(value).toString().trim();
     handleAmountInChange(value);
@@ -88,16 +105,22 @@ const Mint = ({
     );
     setAmountIn(value);
     setAmountOut(
+      // calculateAmountOut(
+      //   value,
+      //   selectedTokenPrice,
+      //   collateralRatio / 100,
+      //   marketPrice(markets, pair && pair.denomOut)
+      // )
       calculateAmountOut(
         value,
-        selectedTokenPrice,
+        CMDX_PRICE,
         collateralRatio / 100,
-        marketPrice(markets, pair && pair.denomOut)
+        CMST_PRICE
       )
     );
   };
 
-  const collateralAssetBalance = getDenomBalance(balances, pair && pair.denomIn) || 0;
+  const collateralAssetBalance = getDenomBalance(balances, returnDenom()) || 0;
 
   const calculateAmountOut = (
     inAmount,
@@ -109,7 +132,7 @@ const Mint = ({
     return ((isFinite(amount) && amount) || 0).toFixed(6);
   };
 
-  const selectedTokenPrice = marketPrice(markets, pair && pair.denomIn);
+  const selectedTokenPrice = marketPrice(markets, returnDenom());
 
   const getOutputPrice = () => {
     // return reverse ? spotPrice : 1 / spotPrice;
@@ -123,13 +146,13 @@ const Mint = ({
         inAmount,
         selectedTokenPrice,
         value / 100,
-        marketPrice(markets, pair && pair.denomOut)
+        marketPrice(markets, returnDenom())
       )
     );
   };
 
   const handleMaxClick = () => {
-    if (pair?.denomIn === comdex.coinMinimalDenom) {
+    if (returnDenom() === comdex.coinMinimalDenom) {
       return Number(collateralAssetBalance) > DEFAULT_FEE
         ? handleAmountInChange(
           amountConversion(collateralAssetBalance - DEFAULT_FEE)
@@ -164,9 +187,10 @@ const Mint = ({
           typeUrl: getTypeURL("create"),
           value: {
             from: address,
+            appMappingId: Long.fromNumber(1),
+            extendedPairVaultId: Long.fromNumber(1),
             amountIn: getAmount(inAmount),
             amountOut: getAmount(outAmount),
-            pairId: pair?.id,
           },
         },
         fee: {
@@ -224,8 +248,12 @@ const Mint = ({
       counts: "$30.45",
     },
   ];
+
+
+  returnDenom()
   useEffect(() => {
     setCollateralRatio(200);
+    resetValues();
   }, []);
 
   return (
@@ -244,8 +272,8 @@ const Mint = ({
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        <SvgIcon name={iconNameFromDenom("ucmdx")} />{" "}
-                        <span> CMDX</span>
+                        <SvgIcon name={iconNameFromDenom(returnDenom())} />{" "}
+                        <span> {denomToSymbol(returnDenom())}</span>
                       </div>
                     </div>
                   </div>
@@ -257,21 +285,13 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {/* {amountConversionWithComma(collateralAssetBalance)} CMDX */}
-                  {amountConversionWithComma(collateralAssetBalance)} CMDX
+                  {amountConversionWithComma(collateralAssetBalance)} {denomToSymbol(returnDenom())}
                 </span>
                 <div className="maxhalf">
                   <Button
                     className="active"
                     onClick={() =>
-                      //   handleFirstInputMax(
-                      //     Number(firstAssetAvailableBalance) > DEFAULT_FEE
-                      //       ? amountConversion(
-                      //           firstAssetAvailableBalance - DEFAULT_FEE
-                      //         )
-                      //       : null
-                      //   )
-                      console.log("max button click")
+                      handleMaxClick()
                     }
                   >
                     max
@@ -282,7 +302,6 @@ const Mint = ({
                 <CustomInput
                   value={inAmount}
                   onChange={(event) =>
-                    // handleFirstInputChange(event.target.value)
                     onChange(event.target.value)
                   }
                   validationError={validationError}
@@ -322,15 +341,7 @@ const Mint = ({
                   <Button
                     className="active"
                     onClick={() => {
-                      //   handleFirstInputMax(
-                      //     Number(firstAssetAvailableBalance) > DEFAULT_FEE
-                      //       ? amountConversion(
-                      //           firstAssetAvailableBalance - DEFAULT_FEE
-                      //         )
-                      //       : null
-                      //   )
                       handleMaxClick()
-                      console.log("max button click")
                     }
                     }
                   >

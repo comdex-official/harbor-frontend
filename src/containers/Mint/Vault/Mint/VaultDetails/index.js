@@ -13,7 +13,7 @@ const VaultDetails = () => {
             <div className="asset-value">-</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Intrest Rate</div>
+            <div className="asset-name">interest Rate</div>
             <div className="asset-value">0.25%</div>
           </div>
           <div className="assets-row">

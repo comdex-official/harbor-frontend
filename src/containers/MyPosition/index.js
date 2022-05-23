@@ -24,7 +24,7 @@ const { TabPane } = Tabs;
 //     ),
 //   },
 //   {
-//     title: "Total Intrest Earned",
+//     title: "Total interest Earned",
 //     counts: (
 //       <>
 //         <div className="stats-values">
@@ -35,7 +35,7 @@ const { TabPane } = Tabs;
 //     ),
 //   },
 //   {
-//     title: "Current Intrest Rate",
+//     title: "Current interest Rate",
 //     counts: (
 //       <>
 //         <div className="stats-values">
@@ -108,8 +108,8 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {earnTab && "Total Intrest Earned"}
-          {vaultTab && "Total Borrowed"}
+          {earnTab && "Total interest Earned"}
+          {vaultTab && "Total Debt"}
           {historyTab && "Collateral Locked"}
         </>
       ),
@@ -139,7 +139,7 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {earnTab && "Current Intrest Rate"}
+          {earnTab && "Current interest Rate"}
           {vaultTab && "Available To Borrow"}
           {historyTab && "Total Borrowed"}
         </>
@@ -198,13 +198,13 @@ const MyPositions = (lang) => {
 
             {vaultTab && (
               <div className="myhome-upper-right">
-                <div className="mb-3">Your Borrow Limit</div>
+                {/* <div className="mb-3">Your Borrow Limit</div> */}
                 <div className="borrow-limit-bar">
                   <div className="borrow-limit-upper">
                     <div>
                       <h4>0.00%</h4>
                     </div>
-                    <div className="small-text">Borrow Limit :$0.00</div>
+                    {/* <div className="small-text">Borrow Limit :$0.00</div> */}
                   </div>
                   <div className="borrow-limit-middle">
                     <Progress percent={30} size="small" />

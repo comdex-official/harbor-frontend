@@ -399,6 +399,9 @@
         .vault-name-container {
           flex-basis: 80%;
           .vault-name {
+            text-transform: uppercase;
+            font-size: 1.3rem;
+            font-weight: 600;
           }
           .vault-desc {
           }
