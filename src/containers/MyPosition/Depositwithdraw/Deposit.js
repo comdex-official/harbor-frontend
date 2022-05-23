@@ -28,7 +28,7 @@ const DepositTab = (lang) => {
   ];
   return (
     <div className="details-wrapper">
-      <div className="details-left commodo-card">
+      <div className="details-left composite-card">
         <div className="deposit-head">
           <div className="deposit-head-left">
             <div className="assets-col">
@@ -165,7 +165,7 @@ const DepositTab = (lang) => {
         </div>
       </div>
       <div className="details-right">
-        <div className="commodo-card">
+        <div className="composite-card">
           <div className="card-head">
             <div className="head-left">
               <div className="assets-col">
@@ -175,7 +175,7 @@ const DepositTab = (lang) => {
                 USCX
               </div>
               <span className="percent-badge">
-                +6.18 <SvgIcon name="commodo-icon" />
+                +6.18 <SvgIcon name="composite-icon" />
               </span>
             </div>
             <div className="head-right">
@@ -195,15 +195,15 @@ const DepositTab = (lang) => {
             dataSource={data}
             renderItem={item => (
               <List.Item>
-                  <div>
-                    <p>{item.title}</p>
-                    <h3>{item.counts}</h3>
-                  </div>
+                <div>
+                  <p>{item.title}</p>
+                  <h3>{item.counts}</h3>
+                </div>
               </List.Item>
             )}
           />
         </div>
-        <div className="commodo-card">
+        <div className="composite-card">
           <div className="card-head">
             <div className="head-left">
               <div className="assets-col">
@@ -213,7 +213,7 @@ const DepositTab = (lang) => {
                 USCX
               </div>
               <span className="percent-badge">
-                +6.18 <SvgIcon name="commodo-icon" />
+                +6.18 <SvgIcon name="composite-icon" />
               </span>
             </div>
             <div className="head-right">
@@ -233,16 +233,16 @@ const DepositTab = (lang) => {
             dataSource={data}
             renderItem={item => (
               <List.Item>
-                  <div>
-                    <p>{item.title}</p>
-                    <h3>{item.counts}</h3>
-                  </div>
+                <div>
+                  <p>{item.title}</p>
+                  <h3>{item.counts}</h3>
+                </div>
               </List.Item>
             )}
           />
         </div>
       </div>
-  </div>
+    </div>
   );
 };
 

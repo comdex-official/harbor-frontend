@@ -172,7 +172,7 @@ const MyPositions = (lang) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className="commodo-card myhome-upper earn-deposite-card">
+          <div className="composite-card myhome-upper earn-deposite-card">
             <div className="myhome-upper-left">
               <List
                 grid={{

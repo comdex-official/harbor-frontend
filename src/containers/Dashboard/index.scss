@@ -5,13 +5,14 @@
   .dashboard-upper-left {
     width: 50%;
     // padding-right: 20px;
-    .commodo-card {
+    .composite-card {
       height: 97%;
       padding: 32px 40px;
     }
     .totalvalues {
       display: flex;
       align-items: center;
+      column-gap: 25px;
       .totalvalues-chart {
         width: 50%;
         text-align: left;
@@ -115,7 +116,7 @@
 
 .dashboard-bottom {
   margin-top: 20px;
-  .commodo-card {
+  .composite-card {
     padding: 15px 20px;
     .bottom-chart {
       display: flex;
@@ -212,7 +213,7 @@
   }
 }
 .total-dashboard-stats {
-  border-left: 5px solid #e2f7e5;
+  border-left: 5px solid #ffceff;
 }
 .others-dashboard-stats {
   border-left: 5px solid #373549;
@@ -221,20 +222,16 @@
 .dashboard-banner {
   background: $background-light;
   padding: 10px 25px 5px 25px;
-  //   border-radius: $base-border-radius;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 1rem;
-  //   box-shadow: $box-shadow-inner-light;
-  //   background-image: url("../../assets/images/banner_bg.svg");
   background-size: 100%;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   .dark-mode & {
     background: $background-dark1;
-    // border: 1px solid $border-dark;
     box-shadow: $box-shadow-inner-dark;
     background-image: url("../../assets/images/dashboard-banner.svg");
     background-size: 100%;
@@ -243,13 +240,13 @@
     background-position: center;
   }
   .banner-left {
-    // text-align: center;
     width: 100%;
-    // padding: 2rem;
     h2 {
-      font-size: 1.7rem;
+      font-size: 2rem;
       line-height: 1.2;
       color: #222a49;
+      font-weight: 900;
+      letter-spacing: 1.1px;
       @media screen and (max-width: 1120px) {
         font-size: 1.3rem;
       }

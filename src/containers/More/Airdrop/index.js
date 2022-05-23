@@ -37,7 +37,7 @@ const Airdrop = (lang) => {
       </div>
       <Row>
         <Col>
-          <div className="commodo-card myhome-upper earn-deposite-card d-block">
+          <div className="composite-card myhome-upper earn-deposite-card d-block">
             <div className="card-header w-100 mb-2">
               CLAIM AIRDROP
             </div>
@@ -68,7 +68,7 @@ const Airdrop = (lang) => {
       </Row>
       <Row>
         <Col>
-          <div className="commodo-card earn-deposite-card">
+          <div className="composite-card earn-deposite-card">
             <div className="card-header">
               MY PROGRESS
             </div>
@@ -135,7 +135,7 @@ const Airdrop = (lang) => {
       </Row>
       <Row className="mt-2">
         <Col>
-          <div className="commodo-card earn-deposite-card">
+          <div className="composite-card earn-deposite-card">
             <ul className="airdrop-progresslist">
               <li>
                 <div className="progresslist-left">

@@ -207,7 +207,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
       <Row>
         <Col className="dashboard-upper ">
           <div className="dashboard-upper-left ">
-            <div className="commodo-card  earn-deposite-card">
+            <div className="composite-card  earn-deposite-card">
               <div className="dashboard-statics">
                 <p>Total Value Locked</p>
                 <h2>$15,690.00</h2>
@@ -218,11 +218,11 @@ const Dashboard = ({ lang, isDarkMode }) => {
                 </div>
                 <div className="totalvalues-right">
                   <div className="dashboard-statics mb-5">
-                    <p>Total Deposited</p>
+                    <p>ATOM</p>
                     <h3>$12,345.00</h3>
                   </div>
                   <div className="dashboard-statics mb-5 total-dashboard-stats">
-                    <p>Total Collateral</p>
+                    <p>CMDX</p>
                     <h3>$2,345.00</h3>
                   </div>
                   <div className="dashboard-statics mb-0 others-dashboard-stats">
@@ -234,7 +234,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
             </div>
           </div>
           <div className="dashboard-upper-right  ">
-            <div className="commodo-card dashboardupper-chart earn-deposite-card ">
+            <div className="composite-card dashboardupper-chart earn-deposite-card ">
               <div className="dashboardupperchart-head">
                 <div className="col1">
                   <small>CMST Price</small>
@@ -257,8 +257,8 @@ const Dashboard = ({ lang, isDarkMode }) => {
                 <HighchartsReact highcharts={Highcharts} options={PriceChart} />
               </div>
             </div>
-            <div className="commodo-card ">
-              <div className="commodo-card dashboardupper-chart earn-deposite-card ">
+            <div className="composite-card ">
+              <div className="composite-card dashboardupper-chart earn-deposite-card ">
                 <div className="dashboardupperchart-head">
                   <div className="col1">
                     <small>HARBOR Price</small>
@@ -269,7 +269,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
                   <div className="col2">
                     <small>Circulating Supply</small>
                     <p>
-                      12,500,000 <span>CMST</span>
+                      12,500,000 <span>HARBOR</span>
                     </p>
                   </div>
                   <div className="col3">

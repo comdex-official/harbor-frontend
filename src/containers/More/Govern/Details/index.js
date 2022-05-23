@@ -118,7 +118,7 @@ const GovernDetails = (lang) => {
       </Row>
       <Row>
         <Col>
-          <div className="commodo-card myhome-upper earn-deposite-card d-block">
+          <div className="composite-card myhome-upper earn-deposite-card d-block">
             <div className="card-header">
               PROPOSAL DETAILS
             </div>
@@ -149,7 +149,7 @@ const GovernDetails = (lang) => {
       </Row>
       <Row>
         <Col md="6">
-          <div className="commodo-card govern-card2 earn-deposite-card h-100">
+          <div className="composite-card govern-card2 earn-deposite-card h-100">
             <Row>
               <Col>
                 <h3>#2</h3>
@@ -167,7 +167,7 @@ const GovernDetails = (lang) => {
           </div>
         </Col>
         <Col md="6">
-          <div className="commodo-card govern-card2 earn-deposite-card">
+          <div className="composite-card govern-card2 earn-deposite-card">
             <Row>
               <Col className="text-right">
                 <VoteNowModal />

@@ -3,7 +3,7 @@ import React from 'react'
 const VaultDetails = () => {
   return (
     <>
-      <div className="commodo-card farm-content-card earn-deposite-card ">
+      <div className="composite-card farm-content-card earn-deposite-card ">
         <div className="card-head">
           <div className="head-left">Vault Details</div>
         </div>

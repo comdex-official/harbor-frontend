@@ -82,7 +82,7 @@ const MyEarn = (lang) => {
     <div className="app-content-wrappers earn-table-container">
       <Row>
         <Col>
-          <div className="commodo-card">
+          <div className="composite-card">
             <div className="card-content">
               <Table
                 className="custom-table"

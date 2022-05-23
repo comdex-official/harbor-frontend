@@ -30,7 +30,7 @@ const PricePool = ({ lang, poolBalance, markets }) => {
   ];
   return (
     <>
-      <div className="commodo-card farm-content-card earn-deposite-card ">
+      <div className="composite-card farm-content-card earn-deposite-card ">
         <div className="card-head"></div>
         <List
           grid={{

@@ -1,7 +1,7 @@
 export const embedChainInfo = [
   {
-    // rpc: "https://testrpc-commodo.comdex.one/vega",
-    // rest: "https://testrest-commodo.comdex.one/vega-rest",
+    // rpc: "https://testrpc-composite.comdex.one/vega",
+    // rest: "https://testrest-composite.comdex.one/vega-rest",
     rpc: "https://dev-cassets.comdex.one/vega",
     rest: "https://dev-cassets.comdex.one/vega-rest",
     chainId: "theta-testnet-001",

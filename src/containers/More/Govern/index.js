@@ -36,7 +36,7 @@ const Govern = (lang) => {
       </div>
       <Row>
         <Col>
-          <div className="commodo-card earn-deposite-card myhome-upper d-block ">
+          <div className="composite-card earn-deposite-card myhome-upper d-block ">
             <div className="myhome-upper-left w-100 ">
               <List
                 grid={{

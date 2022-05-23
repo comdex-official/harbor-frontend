@@ -1,18 +1,18 @@
 @import "../../../../assets/scss/custom.scss";
 
-.commodo-card {
+.composite-card {
   &.govern-card2 {
     padding: 26px;
 
     h3 {
       .dark-mode & {
-        color:$white;
+        color: $white;
       }
     }
 
     h2 {
       .dark-mode & {
-        color:$white;
+        color: $white;
       }
     }
 
@@ -29,17 +29,17 @@
         .ant-list {
           .ant-list-item {
             margin: 5px 0;
-            color:$text-color-dark2;
+            color: $text-color-dark2;
             border-left: 1px solid$success-color;
             padding-left: 15px;
 
             .dark-mode & {
-              color:$white;
+              color: $white;
             }
 
             p {
               margin-bottom: 0;
-              font-size:$font-size-base;
+              font-size: $font-size-base;
             }
 
             h3 {
@@ -50,7 +50,7 @@
               margin-top: 8px;
 
               .dark-mode & {
-                color:$white;
+                color: $white;
               }
             }
           }
@@ -90,25 +90,25 @@
 
             &:nth-child(1) {
               .icon {
-                fill: #52B788;
+                fill: #52b788;
               }
             }
 
             &:nth-child(2) {
               .icon {
-                fill: #F76872;
+                fill: #f76872;
               }
             }
 
             &:nth-child(3) {
               .icon {
-                fill: #AACBB9;
+                fill: #aacbb9;
               }
             }
 
             &:nth-child(4) {
               .icon {
-                fill: #6A7B6C;
+                fill: #6a7b6c;
               }
             }
           }

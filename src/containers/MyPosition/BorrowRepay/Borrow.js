@@ -28,7 +28,7 @@ const BorrowTab = (lang) => {
   ];
   return (
     <div className="details-wrapper">
-      <div className="details-left commodo-card">
+      <div className="details-left composite-card">
         <div className="assets-select-card mb-4">
           <div className="assets-left">
             <label className="leftlabel">
@@ -142,7 +142,7 @@ const BorrowTab = (lang) => {
             </Row>
             <Row className="py-2">
               <Col>
-                <Progress className="commodo-progress" percent={30} />
+                <Progress className="composite-progress" percent={30} />
               </Col>
             </Row>
             <Row className="mt-2">
@@ -181,7 +181,7 @@ const BorrowTab = (lang) => {
         </div>
       </div>
       <div className="details-right">
-        <div className="commodo-card">
+        <div className="composite-card">
           <div className="card-head">
             <div className="head-left">
               <div className="assets-col">
@@ -191,7 +191,7 @@ const BorrowTab = (lang) => {
                 USCX
               </div>
               <span className="percent-badge">
-                +6.18 <SvgIcon name="commodo-icon" />
+                +6.18 <SvgIcon name="composite-icon" />
               </span>
             </div>
             <div className="head-right">
@@ -211,15 +211,15 @@ const BorrowTab = (lang) => {
             dataSource={data}
             renderItem={item => (
               <List.Item>
-                  <div>
-                    <p>{item.title}</p>
-                    <h3>{item.counts}</h3>
-                  </div>
+                <div>
+                  <p>{item.title}</p>
+                  <h3>{item.counts}</h3>
+                </div>
               </List.Item>
             )}
           />
         </div>
-        <div className="commodo-card">
+        <div className="composite-card">
           <div className="card-head">
             <div className="head-left">
               <div className="assets-col">
@@ -229,7 +229,7 @@ const BorrowTab = (lang) => {
                 USCX
               </div>
               <span className="percent-badge">
-                +6.18 <SvgIcon name="commodo-icon" />
+                +6.18 <SvgIcon name="composite-icon" />
               </span>
             </div>
             <div className="head-right">
@@ -249,16 +249,16 @@ const BorrowTab = (lang) => {
             dataSource={data}
             renderItem={item => (
               <List.Item>
-                  <div>
-                    <p>{item.title}</p>
-                    <h3>{item.counts}</h3>
-                  </div>
+                <div>
+                  <p>{item.title}</p>
+                  <h3>{item.counts}</h3>
+                </div>
               </List.Item>
             )}
           />
         </div>
       </div>
-  </div>
+    </div>
   );
 };
 

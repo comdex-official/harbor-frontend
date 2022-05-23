@@ -47,7 +47,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       title: "IBC Deposit",
       dataIndex: "ibcdeposit",
       key: "ibcdeposit",
-      width: 110,
+      // width: 110,
       render: (value) => {
         if (value) {
           return <Deposit chain={value} />;
@@ -184,7 +184,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
 
   return (
     <div className="app-content-wrapper">
-      <div className="app-content-small assets-section">
+      <div className=" assets-section">
         <Row>
           <Col>
             <div className="assets-head">

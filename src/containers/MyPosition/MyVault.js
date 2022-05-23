@@ -97,7 +97,7 @@ const MyVault = (lang) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className="commodo-card">
+          <div className="composite-card">
             <div className="card-content">
               <Table
                 className="custom-table"

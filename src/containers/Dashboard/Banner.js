@@ -1,5 +1,6 @@
 import { Button } from "antd";
 import * as PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import variables from "../../utils/variables";
 
 const Banner = ({ lang }) => {
@@ -7,19 +8,13 @@ const Banner = ({ lang }) => {
     <div className="dashboard-banner earn-deposite-card">
       <div className="banner-left">
         <h2>
-          Earn <span>stable income</span> on CMST <br /> at the Interest rate of{" "}
-          <span>4%</span> {variables[lang].platform}{" "}
+          Borrow by <span>Composite</span>  depositing<br /> your IBC enabled assets
         </h2>
-        <Button type="primary">
-          <a
-            href="https://comdex.one"
-            aria-label="Website"
-            rel="noreferrer"
-            target="_blank"
-          >
+        <Link to='/mint'>
+          <Button type="primary">
             Take me there!
-          </a>
-        </Button>
+          </Button>
+        </Link>
       </div>
     </div>
   );

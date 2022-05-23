@@ -115,7 +115,7 @@ const Minting = (lang) => {
     <div className="app-content-wrapper vault-mint-main-container">
       {/* <Row> */}
       {/* <Col>
-          <div className="commodo-card py-3">
+          <div className="composite-card py-3">
             <div className="card-content">
               <Table
                 className="custom-table liquidation-table mint-table"
