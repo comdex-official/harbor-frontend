@@ -352,7 +352,7 @@ const Deposit = ({
                                 <div className="svg-icon">
                                   <div className="svg-icon-inner">
                                     <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                    <span> {item.name}</span>
+                                    <span style={{ textTransform: "uppercase" }}> {item.name}</span>
                                   </div>
                                 </div>
                               </div>
