@@ -250,7 +250,7 @@ button {
     &.btn-filled {
       background-color: $secondary-color;
       color: $white;
-
+      text-transform: capitalize;
       &:hover:not(&[disabled]),
       &:active,
       &:focus {

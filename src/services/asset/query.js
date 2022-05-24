@@ -94,7 +94,7 @@ export const queryPairVault = (pairId, callback) => {
   });
 };
 
-export const queryPairVaults = (pairId, callback) => {
+export const queryPairVaults = ( callback) => {
   createQueryClient((error, rpcClient) => {
     if (error) {
       callback(error);
@@ -103,7 +103,6 @@ export const queryPairVaults = (pairId, callback) => {
 
     new QueryServiceClientImpl(rpcClient)
       .QueryPairVaults({
-        id: Long.fromNumber(pairId),
       })
       .then((result) => {
         callback(null, result);

@@ -124,15 +124,15 @@ const Minting = ({
     };
   });
 
-  const navigateToMint = () => {
+  const navigateToMint = (path) => {
     navigate({
-      pathname: `/vault`,
+      pathname: `/vault/${path}`,
     });
   }
 
   useEffect(() => {
     fetchExtendexPairList(PRODUCT_ID);
-    fetchQueryPairValut(1);
+    fetchQueryPairValuts();
   }, [address])
 
   // *******Get Vault Query *********
@@ -145,18 +145,21 @@ const Minting = ({
         message.error(error);
         return;
       }
+      console.log(data);
       dispatch(setAllExtendedPair(data?.extendedPairIds));
       setLoading(false)
 
     })
   }
-  const fetchQueryPairValut = (extendexPairId) => {
+
+  const fetchQueryPairValuts = () => {
     setLoading(true)
-    queryPairVaults(extendexPairId, (error, data) => {
+    queryPairVaults((error, data) => {
       if (error) {
         message.error(error);
         return;
       }
+      console.log(data);
       dispatch(setExtendedPairVaultListData(data))
       setLoading(false)
     })
@@ -176,7 +179,7 @@ const Minting = ({
                 <div className="card-container " onClick={() => {
                   dispatch(setCurrentPairID(item?.pairId?.low))
                   dispatch(setSelectedExtentedPairvault(item));
-                  navigateToMint()
+                  navigateToMint(item?.pairId?.low)
                 }}>
                   <div className="up-container">
                     <div className="icon-container">

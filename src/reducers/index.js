@@ -11,6 +11,7 @@ import theme from "./theme";
 import oracle from "./oracle";
 import order from './order';
 import locker from './locker'
+import mint from './mint'
 
 const app = combineReducers({
   language,
@@ -22,6 +23,7 @@ const app = combineReducers({
   liquidity,
   auction,
   theme,
+  mint,
   oracle,
   order,
   locker,

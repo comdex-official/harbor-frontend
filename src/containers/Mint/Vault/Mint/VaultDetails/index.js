@@ -1,6 +1,6 @@
 import React from 'react'
 
-const VaultDetails = () => {
+const VaultDetails = ({ item }) => {
   return (
     <>
       <div className="composite-card farm-content-card earn-deposite-card ">
@@ -14,15 +14,15 @@ const VaultDetails = () => {
           </div>
           <div className="assets-row">
             <div className="asset-name">interest Rate</div>
-            <div className="asset-value">0.25%</div>
+            <div className="asset-value">{((item?.stabilityFee) / 10 ** 16) || "-"} %</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Closing Fee</div>
-            <div className="asset-value">3%</div>
+            <div className="asset-value">{((item?.stabilityFee) / 10 ** 16) || "-"} %</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Liquidation Ratio</div>
-            <div className="asset-value">170%</div>
+            <div className="asset-value">{((item?.liquidationRatio) / 10 ** 16) || "-"} %</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Vault Opening date</div>

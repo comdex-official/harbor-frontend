@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import CustomInput from "../../../../components/CustomInput";
 import TooltipIcon from "../../../../components/TooltipIcon";
+import { useParams } from "react-router";
 import {
   amountConversion,
   amountConversionWithComma,
@@ -40,6 +41,8 @@ import Snack from "../../../../components/common/Snack";
 import { useSelector } from "react-redux";
 import Long from "long";
 import { CMDX_PRICE, CMST_PRICE } from "../../../../services/oracle/price";
+import { queryPairVault } from "../../../../services/asset/query";
+import { setExtendedPairVaultListData } from "../../../../actions/locker";
 
 const Mint = ({
   lang,
@@ -63,14 +66,18 @@ const Mint = ({
   vault,
   refreshBalance,
 }) => {
+  const { pathVaultId } = useParams();
   const [firstInput, setFirstInput] = useState();
   const [secondInput, setSecondInput] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [validationError, setValidationError] = useState();
   const [outputValidationError, setOutputValidationError] = useState();
+  const [loading, setLoading] = useState(false);
+  const [currentExtentedVaultdata, setCurrentExtentedVaultdata] = useState();
 
   const dispatch = useDispatch();
-  const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
+  // const selectedExtentedPairVaultListDate = useSelector((state) => state.locker.selectedExtentedPairVaultListDate);
+  const selectedExtentedPairVaultListDate = useSelector((state) => state.locker.extenedPairVaultListData);
 
   const marks = {
     0: "0%",
@@ -79,17 +86,16 @@ const Mint = ({
   };
 
   const returnDenom = () => {
-    let assetPair = selectedExtentedPairVault && selectedExtentedPairVault[0]?.pairName;
-    if (assetPair === "cmdx-cmst") {
-      console.log("yes");
-    }
+    let assetPair = selectedExtentedPairVaultListDate && selectedExtentedPairVaultListDate[0]?.pairName;
     switch (assetPair) {
       case "cmdx-cmst":
         return "ucmdx";
       case "osmo-cmst":
         return "uosmo";
+
+
       default:
-        return "ucmdx";
+        return "Loading...";
     }
   }
   const onChange = (value) => {
@@ -121,6 +127,7 @@ const Mint = ({
   };
 
   const collateralAssetBalance = getDenomBalance(balances, returnDenom()) || 0;
+  const stableAssetBalance = getDenomBalance(balances, 'ucmst') || 0;
 
   const calculateAmountOut = (
     inAmount,
@@ -228,6 +235,23 @@ const Mint = ({
     );
   };
 
+  useEffect(() => {
+    fetchQueryPairValut(pathVaultId);
+  }, [address])
+
+
+  const fetchQueryPairValut = (productId) => {
+    setLoading(true)
+    queryPairVault(productId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setCurrentExtentedVaultdata(data?.pairVault)
+      dispatch(setExtendedPairVaultListData(data?.pairVault))
+      setLoading(false)
+    })
+  }
 
   const { Option } = Select;
   const data = [
@@ -256,11 +280,14 @@ const Mint = ({
     resetValues();
   }, []);
 
+  // if (loading) {
+  //   return <h1>Loading...</h1>
+  // }
   return (
     <>
       <div className="details-wrapper">
         <div className="details-left farm-content-card earn-deposite-card vault-mint-card">
-          <div className="mint-title">Configure Your Valut</div>
+          <div className="mint-title">Configure Your Vault</div>
           <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
@@ -273,7 +300,7 @@ const Mint = ({
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
                         <SvgIcon name={iconNameFromDenom(returnDenom())} />{" "}
-                        <span> {denomToSymbol(returnDenom())}</span>
+                        <span> {!loading ? denomToSymbol(returnDenom()) : "Loading..."}</span>
                       </div>
                     </div>
                   </div>
@@ -333,9 +360,9 @@ const Mint = ({
             </div>
             <div className="assets-right">
               <div className="label-right">
-                Available
+                Withdrawable
                 <span className="ml-1">
-                  {amountConversionWithComma("000000")} CMST
+                  {amountConversionWithComma(stableAssetBalance)} CMST
                 </span>
                 <div className="maxhalf">
                   <Button
@@ -421,7 +448,7 @@ const Mint = ({
 
         <div className="details-right ">
           <PricePool />
-          <VaultDetails />
+          <VaultDetails item={currentExtentedVaultdata} />
         </div>
       </div>
     </>

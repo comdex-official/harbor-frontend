@@ -1,10 +1,10 @@
 import * as PropTypes from "prop-types";
-import { connect } from "react-redux";
-import React, { useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import variables from "../../../../utils/variables";
 import { Button, message } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { denomConversion, getDenomBalance } from "../../../../utils/coin";
+import { amountConversionWithComma, denomConversion, getDenomBalance } from "../../../../utils/coin";
 import { amountConversion } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
@@ -14,6 +14,10 @@ import { setVault } from "../../../../actions/account";
 import { setBalanceRefresh } from "../../../../actions/account";
 import { DEFAULT_FEE, DOLLAR_DECIMALS } from "../../../../constants/common";
 import "./index.scss";
+import { denomToSymbol } from "../../../../utils/string";
+import { queryVaultByOwner, queryVaults } from "../../../../services/Mint/query";
+import { setUserLockedVaultData } from "../../../../actions/mint";
+import Long from "long";
 
 const CloseTab = ({
   lang,
@@ -25,9 +29,48 @@ const CloseTab = ({
   setBalanceRefresh,
   balances,
 }) => {
+  const dispatch = useDispatch();
+
+  const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
+  const userVault = useSelector((state) => state.mint.userLockedVaultData.vault)
+
   const [inProgress, setInProgress] = useState(false);
   const navigate = useNavigate();
 
+  const returnDenom = () => {
+    let assetPair = selectedExtentedPairVault && selectedExtentedPairVault[0]?.pairName;
+    if (assetPair === "cmdx-cmst") {
+      console.log("yes");
+    }
+    switch (assetPair) {
+      case "cmdx-cmst":
+        return "ucmdx";
+      case "osmo-cmst":
+        return "uosmo";
+      default:
+        return "ucmdx";
+    }
+  }
+  const collateralAssetBalance = getDenomBalance(balances, returnDenom()) || 0;
+
+  useEffect(() => {
+    queryUserVault('hbr2')
+  }, [address])
+
+
+
+  const queryUserVault = (id) => {
+    setInProgress(true);
+    queryVaults(id, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log("User vault", data);
+      dispatch(setUserLockedVaultData(data))
+      setInProgress(false)
+    })
+  }
   const handleClick = () => {
     setInProgress(true);
 
@@ -46,7 +89,9 @@ const CloseTab = ({
           typeUrl: "/comdex.vault.v1beta1.MsgCloseRequest",
           value: {
             from: address,
-            id: vault?.id,
+            appMappingId: Long.fromNumber(1),
+            extendedPairVaultId: Long.fromNumber(1),
+            userVaultid: "hbr2",
           },
         },
         fee: defaultFee(),
@@ -68,10 +113,7 @@ const CloseTab = ({
         setVault({}); // clearing local vault as it is closed.
         setBalanceRefresh(refreshBalance + 1);
         message.success("success");
-        navigate({
-          pathname: `/home`,
-          hash: "2",
-        });
+
       }
     );
   };
@@ -85,7 +127,7 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_burn_amount} />
           </div>
           <div className="text-right">
-            {amountConversion(vault?.debt?.amount || 10000000)} CMST
+            {amountConversion(userVault?.amountIn || 0)} {denomToSymbol(returnDenom())}
             {/* {denomConversion(vault?.debt?.denom)} */}
           </div>
         </div>
@@ -95,7 +137,7 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_withdraw_amount} />
           </div>
           <div className="text-right">
-            {amountConversion(vault?.collateral?.amount || 110000000)} ATOM
+            {amountConversion(userVault?.amountOut || 0)} {denomToSymbol(returnDenom())}
             {/* {denomConversion(vault?.collateral?.denom)} */}
           </div>
         </div>

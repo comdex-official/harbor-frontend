@@ -30,7 +30,7 @@ const routes = [
     element: <BorrowTab />,
   },
   {
-    path: "/vault",
+    path: "/vault/:pathVaultId",
     element: <Vault />,
   },
   {
