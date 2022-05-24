@@ -164,7 +164,6 @@ const Minting = ({
       setLoading(false)
     })
   }
-  console.log(extenedPairVaultListData);
   if (loading) {
     return <h1>Loading...</h1>
   }

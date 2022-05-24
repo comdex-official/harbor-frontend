@@ -30,7 +30,7 @@ import { useDispatch } from "react-redux";
 import { setUserLockedVaultData } from "../../../../actions/mint";
 import { setBalanceRefresh } from "../../../../actions/account";
 
-import { Navigate } from "react-router";
+import { Navigate, useParams } from "react-router";
 import Long from "long";
 
 const Option = Select.Option;
@@ -51,6 +51,8 @@ const Edit = ({
   refreshBalance,
 }) => {
   const dispatch = useDispatch();
+  const { pathVaultId } = useParams();
+
   const vault = useSelector((state) => state.account.vault)
   const userVault = useSelector((state) => state.mint.userLockedVaultData.vault)
   const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
@@ -67,9 +69,8 @@ const Edit = ({
   const [draw, setDraw] = useState();
 
 
-  
 
-  console.log(vault);
+
   const marks = {
     0: "0%",
     150: "Min - 150%",
@@ -103,7 +104,7 @@ const Edit = ({
     setInputValidationError();
     setInputAmount();
   };
-  
+
   //   const collateralAssetBalance =
   //   getDenomBalance(balances, vault?.collateral?.denom) || 0;
 
@@ -164,7 +165,7 @@ const Edit = ({
         message.error(error);
         return;
       }
-      console.log("User vault Id", data);
+      // console.log("User vault Id", data);
       dispatch(setVault(data?.vaultIds))
     })
   }
@@ -176,7 +177,7 @@ const Edit = ({
         message.error(error);
         return;
       }
-      console.log("User vault", data);
+      // console.log("User vault", data);
       dispatch(setUserLockedVaultData(data))
     })
   }
@@ -192,7 +193,7 @@ const Edit = ({
             from: address,
             appMappingId: Long.fromNumber(1),
             extendedPairVaultId: Long.fromNumber(1),
-            userVaultid: "hbr2",
+            userVaultid: vault[pathVaultId - 1],
             amount: getAmount(inputAmount),
           },
         },

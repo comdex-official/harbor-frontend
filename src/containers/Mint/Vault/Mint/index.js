@@ -34,7 +34,7 @@ import { ValidateInputNumber } from "../../../../config/_validation";
 import { setComplete } from "../../../../actions/swap";
 import { setVault } from "../../../../actions/account";
 import { comdex } from "../../../../config/network";
-import { DEFAULT_FEE } from "../../../../constants/common";
+import { DEFAULT_FEE, PRODUCT_ID } from "../../../../constants/common";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { getTypeURL } from "../../../../services/transaction";
 import Snack from "../../../../components/common/Snack";
@@ -66,7 +66,9 @@ const Mint = ({
   vault,
   refreshBalance,
 }) => {
+  // pathVaultId ----> extentedPairvaultId
   const { pathVaultId } = useParams();
+
   const [firstInput, setFirstInput] = useState();
   const [secondInput, setSecondInput] = useState();
   const [inProgress, setInProgress] = useState(false);
@@ -194,8 +196,8 @@ const Mint = ({
           typeUrl: getTypeURL("create"),
           value: {
             from: address,
-            appMappingId: Long.fromNumber(1),
-            extendedPairVaultId: Long.fromNumber(1),
+            appMappingId: Long.fromNumber(PRODUCT_ID),
+            extendedPairVaultId: Long.fromNumber(pathVaultId),
             amountIn: getAmount(inAmount),
             amountOut: getAmount(outAmount),
           },
@@ -211,11 +213,13 @@ const Mint = ({
         if (error) {
           console.log(error);
           message.error(error);
+          resetValues();
           return;
         }
 
         if (result?.code) {
           message.info(result?.rawLog);
+          resetValues();
           return;
         }
 
@@ -236,6 +240,7 @@ const Mint = ({
   };
 
   useEffect(() => {
+    resetValues()
     fetchQueryPairValut(pathVaultId);
   }, [address])
 

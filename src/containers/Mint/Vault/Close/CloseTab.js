@@ -9,10 +9,10 @@ import { amountConversion } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { marketPrice } from "../../../../utils/number";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { setVault } from "../../../../actions/account";
 import { setBalanceRefresh } from "../../../../actions/account";
-import { DEFAULT_FEE, DOLLAR_DECIMALS } from "../../../../constants/common";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import { denomToSymbol } from "../../../../utils/string";
 import { queryVaultByOwner, queryVaults } from "../../../../services/Mint/query";
@@ -30,10 +30,12 @@ const CloseTab = ({
   balances,
 }) => {
   const dispatch = useDispatch();
+  const { pathVaultId } = useParams();
 
   const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
   const userVault = useSelector((state) => state.mint.userLockedVaultData.vault)
-
+  // console.log("vault", vault);
+  // console.log("vault", userVault?.id);
   const [inProgress, setInProgress] = useState(false);
   const navigate = useNavigate();
 
@@ -89,9 +91,9 @@ const CloseTab = ({
           typeUrl: "/comdex.vault.v1beta1.MsgCloseRequest",
           value: {
             from: address,
-            appMappingId: Long.fromNumber(1),
-            extendedPairVaultId: Long.fromNumber(1),
-            userVaultid: "hbr2",
+            appMappingId: Long.fromNumber(PRODUCT_ID),
+            extendedPairVaultId: Long.fromNumber(pathVaultId),
+            userVaultid: userVault?.id,
           },
         },
         fee: defaultFee(),
@@ -127,8 +129,7 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_burn_amount} />
           </div>
           <div className="text-right">
-            {amountConversion(userVault?.amountIn || 0)} {denomToSymbol(returnDenom())}
-            {/* {denomConversion(vault?.debt?.denom)} */}
+            {amountConversion(userVault?.amountOut || 0)} CMST
           </div>
         </div>
         <div className="close-tab-row">
@@ -137,8 +138,8 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_withdraw_amount} />
           </div>
           <div className="text-right">
-            {amountConversion(userVault?.amountOut || 0)} {denomToSymbol(returnDenom())}
-            {/* {denomConversion(vault?.collateral?.denom)} */}
+
+            {amountConversion(userVault?.amountIn || 0)} {denomToSymbol(returnDenom())}
           </div>
         </div>
       </div>
@@ -210,3 +211,5 @@ const actionsToProps = {
 };
 
 export default connect(stateToProps, actionsToProps)(CloseTab);
+
+// panic message redacted to hide potentially sensitive system info: panic
