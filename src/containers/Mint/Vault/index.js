@@ -6,10 +6,18 @@ import { Link } from "react-router-dom";
 import Mint from "./Mint";
 import Close from "./Close";
 import EditTab from "./EditTab";
+import { useSelector } from "react-redux";
 
 const Vault = () => {
   const [activeKey, setActiveKey] = useState("1");
   const { TabPane } = Tabs;
+  const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
+
+  useEffect(() => {
+    if (ownerVaultId) {
+      setActiveKey("2");
+    }
+  }, [ownerVaultId]);
 
   const BackButton = {
     right: (
@@ -27,16 +35,17 @@ const Vault = () => {
           <Col>
             <Tabs
               className="comdex-tabs"
-              defaultActiveKey="1"
+              onChange={setActiveKey}
+              activeKey={activeKey}
               tabBarExtraContent={BackButton}
             >
-              <TabPane tab="Mint" key="1">
+              <TabPane tab="Mint" key="1" disabled={ownerVaultId}>
                 <Mint />
               </TabPane>
-              <TabPane tab="Edit" key="2">
+              <TabPane tab="Edit" key="2" disabled={!ownerVaultId}>
                 <EditTab />
               </TabPane>
-              <TabPane tab="Close" key="3">
+              <TabPane tab="Close" key="3" disabled={!ownerVaultId}>
                 <Close />
               </TabPane>
             </Tabs>
