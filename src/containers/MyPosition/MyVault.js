@@ -5,6 +5,7 @@ import variables from "../../utils/variables";
 import { Button, Table, Progress } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
+import TooltipIcon from "../../components/TooltipIcon";
 
 const MyVault = (lang) => {
   const columns = [
@@ -15,20 +16,28 @@ const MyVault = (lang) => {
       width: 180,
     },
     {
-      title: "Debt",
+      title: <>
+        Debt <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+      </>,
       dataIndex: "debt",
       key: "debt",
       width: 150,
     },
     {
-      title: "Interest Rate",
+      title: <>
+        Interest Rate <TooltipIcon text="Current annual interest rate of Vault" />
+      </>,
       dataIndex: "apy",
       key: "apy",
       width: 150,
       render: (apy) => <>{apy}%</>,
     },
     {
-      title: "Collateralization ratio",
+      title:
+        <>
+          Collateralization ratio <TooltipIcon text="The collateral ratio of the vault which is equal to collateral deposited by composite borrowed" />
+        </>
+      ,
       dataIndex: "health",
       key: "health",
       width: 200,
@@ -66,9 +75,6 @@ const MyVault = (lang) => {
       vault: (
         <>
           <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
             ATOM-A
           </div>
         </>
@@ -81,9 +87,6 @@ const MyVault = (lang) => {
       vault: (
         <>
           <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
             ATOM-B
           </div>
         </>
@@ -94,7 +97,7 @@ const MyVault = (lang) => {
   ];
 
   return (
-    <div className="app-content-wrapper">
+    <div className="app-content-wrapper vaults-table-container">
       <Row>
         <Col>
           <div className="composite-card">

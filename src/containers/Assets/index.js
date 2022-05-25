@@ -2,7 +2,7 @@ import "./index.scss";
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
-import React, { useEffect } from "react";
+import React from "react";
 import { Table } from "antd";
 import variables from "../../utils/variables";
 import Deposit from "./Deposit";

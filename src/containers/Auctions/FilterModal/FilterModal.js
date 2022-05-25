@@ -2,7 +2,6 @@ import "./index.scss";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Checkbox, Slider } from "antd";
-import variables from "../../../utils/variables";
 import CustomInput from "../../../components/CustomInput";
 import {
   DEFAULT_PAGE_NUMBER,

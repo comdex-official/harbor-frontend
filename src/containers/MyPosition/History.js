@@ -15,6 +15,12 @@ const History = (lang) => {
       // width: 180
     },
     {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      // width: 150,
+    },
+    {
       title: "Date",
       dataIndex: "date",
       key: "date",
@@ -48,6 +54,7 @@ const History = (lang) => {
     {
       key: 1,
       type: "Deposit",
+      amount: 8,
       date: "30 Jul 2022",
       block_height: "1234",
       tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
@@ -55,6 +62,7 @@ const History = (lang) => {
     {
       key: 2,
       type: "Repay",
+      amount: 13,
       date: "30 Jul 2022",
       block_height: "1234",
       tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",

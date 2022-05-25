@@ -3,6 +3,7 @@
 COMDEX
 *                                                           
 */
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Montserrat:wght@200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 $white: #fff;
 $black: #000;
@@ -15,6 +16,7 @@ $primary-color: #0e7ac9; // primary color for all components
 $secondary-color: #665aa6;
 // $secondary-color-light: #3e4b45;
 $secondary-color-light: #232231;
+
 $secondary-color-hover: #28292a;
 // $secondary-color-hover: #c92f39;
 $success-color: #00ce8e; // success state color
@@ -24,7 +26,7 @@ $silver-color: #c0c0c0;
 $purple-color: #7957e4;
 
 //body-bg
-$body-background-light: #f1f2f7;
+$body-background-light: #f8f3fb;
 // $body-background-dark: #040516;
 $body-background-dark: #1c1c1e;
 
@@ -87,7 +89,7 @@ $btn-bg-dark: $background-dark1;
 $sidebar-icon: #535356;
 $dark-card-bg: #202020;
 
-$font-family: "Lexend Deca", sans-serif !important;
+$font-family: "Poppins", sans-serif !important;
 $font-size-base: 14px;
 $font-size-xlg: $font-size-base + 4px; //18px
 $font-size-lg: $font-size-base + 2px; //16px

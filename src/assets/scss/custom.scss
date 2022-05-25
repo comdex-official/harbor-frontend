@@ -16,7 +16,7 @@ body {
   font-feature-settings: normal !important;
   font-variant: normal !important;
   font-weight: 300;
-  background: $body-background-light;
+  background: $body-background-light !important;
   height: auto !important;
 
   // &::before {
@@ -32,7 +32,7 @@ body {
 
   &.dark-mode {
     // background: $body-background-dark;
-    background: $primary-gradient;
+    background: $primary-gradient !important;
     color: $white;
 
     // &::before {
@@ -540,6 +540,7 @@ button {
 .tooltip-icon {
   width: 10px;
   height: 10px;
+  fill: #486480;
 }
 
 .ant-tooltip {
@@ -606,6 +607,7 @@ button {
           }
           tr {
             border-radius: 15px;
+            border: 0.5px solid $border-color-base;
 
             td {
               .ant-btn-sm {
@@ -614,6 +616,7 @@ button {
               color: $text-color-light2;
               border-top: 1px solid;
               border-bottom: 1px solid;
+              border: 1.5px solid $border-color-base;
               border-left: 0;
               border-right: 0;
               padding: 8px 15px;
@@ -672,8 +675,9 @@ button {
               }
               &:hover {
                 box-shadow: $box-shadow-inner-light;
-                background: $secondary-color;
+                background: rgba($secondary-color, 0.3);
                 .dark-mode & {
+                  background: $secondary-color;
                   box-shadow: none;
                 }
               }
@@ -689,9 +693,10 @@ button {
               }
               &:hover {
                 box-shadow: $box-shadow-inner-light-hover;
-                background: $secondary-color;
+                background: rgba($secondary-color, 0.3);
 
                 .dark-mode & {
+                  background: $secondary-color;
                   box-shadow: none;
                 }
               }
@@ -1524,6 +1529,11 @@ button {
       .icon {
         width: 10px;
       }
+    }
+  }
+  .balance__value__data {
+    .dark-mode & {
+      color: #fff;
     }
   }
 }

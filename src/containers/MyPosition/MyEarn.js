@@ -5,6 +5,7 @@ import variables from "../../utils/variables";
 import { Button, Table, Switch } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
+import TooltipIcon from "../../components/TooltipIcon";
 
 function onChange(checked) {
   console.log(`switch to ${checked}`);
@@ -19,10 +20,11 @@ const MyEarn = (lang) => {
       width: 300,
     },
     {
-      title: "Type of Transaction",
+      title: <>
+        Transaction Type <TooltipIcon text="Type of transaction ( Withdraw or Deposit)" />
+      </>,
       dataIndex: "transaction",
       key: "balance",
-      // width: 150,
       width: 300,
     },
     {
@@ -30,16 +32,14 @@ const MyEarn = (lang) => {
       dataIndex: "date",
       key: "date",
       width: 300,
-      // width: 150,
-      // render: (apy) => <>{apy}%</>,
     },
     {
-      title: "Balance",
+      title: <>
+        Balance <TooltipIcon text="Balance after transaction" />
+      </>,
       dataIndex: "balance",
       key: "balance",
       width: 300,
-      // width: 200,
-      // render: (item) => <Switch onChange={() => onChange(item)} />,
     },
   ];
 
@@ -49,10 +49,7 @@ const MyEarn = (lang) => {
       amount: (
         <>
           <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
-            20
+            20 CMST
           </div>
         </>
       ),
@@ -65,10 +62,7 @@ const MyEarn = (lang) => {
       amount: (
         <>
           <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
-            123
+            123 CMST
           </div>
         </>
       ),
