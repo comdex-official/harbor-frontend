@@ -1,16 +1,16 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { Col, Row } from "../../components/common";
 import Copy from "../../components/Copy";
 import { connect } from "react-redux";
-import variables from "../../utils/variables";
 import { Table, message } from "antd";
 import { setTransactionHistory } from "../../actions/account";
 import React, { useEffect, useState } from "react";
 import { comdex } from "../../config/network";
 import { decodeTxRaw } from "@cosmjs/proto-signing";
 import { fetchTxHistory, messageTypeToText } from "../../services/transaction";
-import { generateHash , truncateString} from "../../utils/string";
-import moment from "moment";
+import { generateHash, truncateString } from "../../utils/string";
+import Date from "./Date";
+
 import "./index.scss";
 
 const History = (props) => {
@@ -35,6 +35,7 @@ const History = (props) => {
     });
   };
 
+  console.log("history", props.history);
   const tableData =
     props.history &&
     props.history.list &&
@@ -55,11 +56,12 @@ const History = (props) => {
             target="_blank"
           >
             {" "}
-            {truncateString(hash, 6, 6)}         
-             </a>
+            {truncateString(hash, 6, 6)}
+          </a>
         ),
         type: messageTypeToText(decodedTransaction.body.messages[0].typeUrl),
         block_height: item.height,
+        date: item.height,
       };
     });
 
@@ -87,11 +89,7 @@ const History = (props) => {
       dataIndex: "date",
       key: "date",
       // width: 150,
-      render: (date) => (
-        <div className="dates-col">
-          <div className="dates">{date}</div> <small>11:23 EST</small>
-        </div>
-      ),
+      render: (height) => <Date height={height} />,
     },
     {
       title: "Block Height",
@@ -112,23 +110,6 @@ const History = (props) => {
     },
   ];
 
-  // const tableData = [
-  //   {
-  //     key: 1,
-  //     type: "Deposit",
-  //     date: "30 Jul 2022",
-  //     block_height: "1234",
-  //     tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
-  //   },
-  //   {
-  //     key: 2,
-  //     type: "Repay",
-  //     date: "30 Jul 2022",
-  //     block_height: "1234",
-  //     tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
-  //   },
-  // ];
-
   return (
     <div className="app-content-wrapper">
       <Row>
@@ -140,15 +121,15 @@ const History = (props) => {
                 dataSource={tableData}
                 columns={columns}
                 scroll={{ x: "100%" }}
-              loading={inProgress}
-              pagination={{
-                total: props.history && props.history.count,
-                showSizeChanger: true,
-                defaultPageSize: 5,
-                pageSizeOptions: ["5", "10", "20", "50"],
-              }}
-              total={props.history && props.history.count}
-              onChange={(event) => handleChange(event)}
+                loading={inProgress}
+                pagination={{
+                  total: props.history && props.history.count,
+                  showSizeChanger: true,
+                  defaultPageSize: 5,
+                  pageSizeOptions: ["5", "10", "20", "50"],
+                }}
+                total={props.history && props.history.count}
+                onChange={(event) => handleChange(event)}
               />
             </div>
           </div>
