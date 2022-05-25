@@ -18,7 +18,7 @@ import {
 import { iconNameFromDenom, toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
-import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist } from '../../../actions/locker'
+import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist, setOwnerVaultInfo } from '../../../actions/locker'
 import "./index.scss";
 import { queryAssets } from "../../../services/asset/query";
 import { DEFAULT_FEE, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
@@ -45,6 +45,8 @@ const Deposit = ({
   setAllWhiteListedAssets,
   allWhiteListedAssets,
   whiteListedAsset,
+  ownerLockerInfo,
+  setOwnerVaultInfo,
 }) => {
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
@@ -58,12 +60,14 @@ const Deposit = ({
   const [poolBalance, setLocalPoolBalance] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState();
 
+
   const whiteListedAssetData = [];
   const { Option } = Select;
 
   const resetValues = () => {
     dispatch(setAmountIn(0));
   };
+
   const getAssetDenom = () => {
     // When we get multiple whiteListed Asset
     // ************************************************
@@ -76,9 +80,9 @@ const Deposit = ({
     // ************************************************
 
     // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
+
     assets?.map((item) => {
-      console.log("Asset", assets);
-      if (item.name === "cmst") {
+      if (item.id.low === whiteListedAsset[0]?.low) {
         whiteListedAssetData.push(item);
       }
     })
@@ -112,8 +116,12 @@ const Deposit = ({
       false
     );
     fetchWhiteListedAssetByid(PRODUCT_ID);
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, 4, address);
   }, [address]);
+
+  useEffect(() => {
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+  }, [whiteListedAsset])
+
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     setInProgress(true);
@@ -137,7 +145,6 @@ const Deposit = ({
         message.error(error);
         return;
       }
-      console.log(data);
       setWhiteListedAssets(data?.assetIds)
       setLoading(false)
     })
@@ -150,7 +157,7 @@ const Deposit = ({
         return;
       }
       let lockerExist = data?.lockerInfo?.length;
-      console.log(data);
+      setOwnerVaultInfo(data?.lockerInfo)
       if (lockerExist > 0) {
         dispatch(setIsLockerExist(true));
       } else {
@@ -160,10 +167,10 @@ const Deposit = ({
   }
 
   getAssetDenom();
+  
   const AvailableAssetBalance = getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
-
   const whiteListedAssetId = whiteListedAsset[0]?.low;
-  console.log(whiteListedAssetId);
+  const lockerId = ownerLockerInfo[0]?.lockerId;
 
   const handleInputMax = () => {
     if (Number(AvailableAssetBalance) > DEFAULT_FEE) {
@@ -235,9 +242,9 @@ const Deposit = ({
           typeUrl: "/comdex.locker.v1beta1.MsgDepositAssetRequest",
           value: {
             depositor: address,
-            lockerId: "Harbor1",
+            lockerId: lockerId,
             amount: getAmount(inAmount),
-            assetId: Long.fromNumber(4),
+            assetId: Long.fromNumber(whiteListedAssetId),
             appMappingId: Long.fromNumber(PRODUCT_ID),
           }
         },
@@ -493,6 +500,7 @@ Deposit.propTypes = {
     denom: PropTypes.string,
   }),
   refreshBalance: PropTypes.number.isRequired,
+  ownerLockerInfo: PropTypes.array,
 
 }
 const stateToProps = (state) => {
@@ -505,7 +513,7 @@ const stateToProps = (state) => {
     allWhiteListedAssets: state.locker._.list,
     whiteListedAsset: state.locker.whiteListedAssetById.list,
     refreshBalance: state.account.refreshBalance,
-
+    ownerLockerInfo: state.locker.ownerVaultInfo
   };
 };
 
@@ -514,6 +522,7 @@ const actionsToProps = {
   setAssets,
   setAllWhiteListedAssets,
   setWhiteListedAssets,
+  setOwnerVaultInfo,
 };
 export default connect(stateToProps, actionsToProps)(Deposit);
 

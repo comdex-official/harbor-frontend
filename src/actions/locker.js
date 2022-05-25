@@ -69,3 +69,9 @@ export const setOwnerVaultInfo = (value) => {
         value,
     };
 };
+// export const setOwnerVaultInfo = (value) => {
+//     return {
+//         type: SET_OWNER_VAULT_INFO,
+//         value,
+//     };
+// };

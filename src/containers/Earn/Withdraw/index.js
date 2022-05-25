@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import { ValidateInputNumber } from "../../../config/_validation";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
 import { queryUserLockedValueInLocker, queryUserLockerByProductAssetId } from "../../../services/locker/query";
-import { setIsLockerExist, setUserLockedValue, setSliderTooltipVisible } from "../../../actions/locker";
+import { setIsLockerExist, setUserLockedValue, setSliderTooltipVisible, setOwnerVaultInfo, setWhiteListedAssets } from "../../../actions/locker";
 import { defaultFee } from "../../../services/transaction";
 import Long from "long";
 import { signAndBroadcastTransaction } from "../../../services/helper";
@@ -42,6 +42,8 @@ const Withdraw = ({
   sliderTooltipVisible,
   setSliderTooltipVisible,
   whiteListedAsset,
+  ownerLockerInfo,
+  setOwnerVaultInfo,
 }) => {
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
@@ -53,7 +55,6 @@ const Withdraw = ({
   const [inputValidationError, setInputValidationError] = useState();
   const [outputValidationError, setOutputValidationError] = useState();
   const [userDeposite, setuserDeposite] = useState();
-  const [lockerId, setLockerId] = useState();
   const [reward, setReward] = useState();
 
   const whiteListedAssetData = [];
@@ -75,7 +76,7 @@ const Withdraw = ({
     // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
 
     assets?.map((item) => {
-      if (item.name === "cmdx") {
+      if (item.id.low === whiteListedAsset[0]?.low) {
         whiteListedAssetData.push(item);
       }
     })
@@ -104,14 +105,14 @@ const Withdraw = ({
 
   const showInDollarValue = () => {
     const total = inAmount;
-
     return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
       DOLLAR_DECIMALS
     )}`;
   };
+
   useEffect(() => {
     resetValues();
-    fetchOwnerLockerExistByAssetId(1, whiteListedAssetId, address);
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
   }, [address, userDeposite]);
 
   useEffect(() => {
@@ -119,6 +120,8 @@ const Withdraw = ({
   }, [address, refreshBalance, userDeposite]);
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
+  const lockerId = ownerLockerInfo[0]?.lockerId;
+  const returnsAccumulated = ownerLockerInfo[0]?.returnsAccumulated;
 
   const fetchOwnerLockerBalance = (productId, lockerId, owner) => {
     setInProgress(true);
@@ -129,6 +132,8 @@ const Withdraw = ({
       }
       let balance;
       balance = (data?.lockerInfo[0]?.netBalance || "0") / 1000000;
+      setOwnerVaultInfo(data?.lockerInfo)
+      setReward(data?.lockerInfo[0]?.returnsAccumulated);
       setuserDeposite(balance)
       setUserLockedValue((data?.lockerInfo[0]?.netBalance || "0"))
       setInProgress(false);
@@ -141,9 +146,6 @@ const Withdraw = ({
         return;
       }
       let lockerExist = data?.lockerInfo?.length;
-      // console.log(data?.lockerInfo[0]?.returnsAccumulated);
-      setLockerId(data?.lockerInfo[0]?.lockerId);
-      setReward(data?.lockerInfo[0]?.returnsAccumulated);
       if (lockerExist > 0) {
         dispatch(setIsLockerExist(true));
       } else {
@@ -164,7 +166,7 @@ const Withdraw = ({
           typeUrl: "/comdex.locker.v1beta1.MsgWithdrawAssetRequest",
           value: {
             depositor: address,
-            lockerId: "Harbor1",
+            lockerId: lockerId,
             amount: getAmount(inAmount),
             assetId: Long.fromNumber(whiteListedAssetId),
             appMappingId: Long.fromNumber(PRODUCT_ID),
@@ -222,68 +224,12 @@ const Withdraw = ({
       <Col>
         <div className="farm-content-card earn-deposite-card earn-main-deposite locker-withdraw">
           <div className="withdraw-title">Withdraw</div>
-          {/* <div className="assets-select-card">
-            <div className="assets-left">
-              <label className="leftlabel">
-                Withdraw <TooltipIcon />
-              </label>
-              <div className="assets-select-wrapper">
-                {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
-                  return (
-                    <React.Fragment key={index} >
-                      {inProgress ? <h1>Loading...</h1> :
-                        <div className="farm-asset-icon-container" >
-                          <div className="select-inner">
-                            <div className="svg-icon">
-                              <div className="svg-icon-inner">
-                                <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                <span> {item.name}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      }
-                    </React.Fragment>
-                  )
-                })}
-              </div>
-            </div>
-            <div className="assets-right">
-              <div className="label-right">
-                Balance
-                <span className="ml-1">
-                  {amountConversionWithComma(userLockedAmountInLocker)}
-                  {denomConversion('ucmdx')}
-                </span>
-                <div className="maxhalf">
-                  <Button
-                    className="active"
-                    onClick={() => handleInputMax()}
-                  >
-                    max
-                  </Button>
-                </div>
-              </div>
-              <div className="input-select">
-                <CustomInput
-                  value={inAmount}
-                  onChange={(event) =>
-                    handleInputChange(event.target.value)
-                  }
-                  validationError={inputValidationError}
-                />
-                <small>{showInDollarValue()}</small>
-              </div>
-            </div>
-          </div> */}
-
           <div className="withdraw-main-container">
             <div className="withdraw-content-container">
               <div className="withdraw-stats-container">
                 <div className="withdraw-stats">
-                  <div className="stats-title">interest</div>
-                  {/* <div className="stats-value">{reward} {denomConversion(whiteListedAssetData[0]?.denom)} </div> */}
-                  <div className="stats-value">{reward || 0} CMST </div>
+                  <div className="stats-title">Interest</div>
+                  <div className="stats-value">{returnsAccumulated || 0} {denomConversion(whiteListedAssetData[0]?.denom)}  </div>
                 </div>
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
@@ -335,12 +281,12 @@ const Withdraw = ({
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
-                // disabled={
-                //   !isLockerExist ||
-                //   !inAmount ||
-                //   inProgress ||
-                //   inputValidationError?.message
-                // }
+                disabled={
+                  isLockerExist ||
+                  !inAmount ||
+                  inProgress ||
+                  inputValidationError?.message
+                }
                 type="primary"
                 className="btn-filled"
                 onClick={() => handleSubmitAssetWithdrawLocker()}
@@ -393,7 +339,7 @@ Withdraw.propTypes = {
   refreshBalance: PropTypes.number.isRequired,
   userLockedAmountInLocker: PropTypes.string.isRequired,
   sliderTooltipVisible: PropTypes.bool.isRequired,
-
+  ownerLockerInfo: PropTypes.array,
 }
 const stateToProps = (state) => {
   return {
@@ -406,7 +352,7 @@ const stateToProps = (state) => {
     userLockedAmountInLocker: state.locker.userLockedAmountInLocker,
     sliderTooltipVisible: state.locker.sliderTooltipVisible,
     whiteListedAsset: state.locker.whiteListedAssetById.list,
-
+    ownerLockerInfo: state.locker.ownerVaultInfo
   };
 };
 const actionsToProps = {
@@ -414,6 +360,7 @@ const actionsToProps = {
   setUserLockedValue,
   setAssets,
   setSliderTooltipVisible,
+  setOwnerVaultInfo,
 };
 
 export default connect(stateToProps, actionsToProps)(Withdraw);
