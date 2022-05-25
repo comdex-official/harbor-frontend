@@ -478,8 +478,7 @@ const Edit = ({
               disabled={
                 inProgress ||
                 inputValidationError?.message ||
-                !Number(inputAmount) ||
-                Number(newCollateralRatio) < 150 
+                !Number(inputAmount) 
               }
               // onClick={() => setCautionNoticeValues(true, false)}
               onClick={() => handleSubmit()}
