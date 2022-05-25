@@ -45,6 +45,10 @@ export const messageTypeToText = (type) => {
       return "IBC-Transfer";
     case "/comdex.auction.v1beta1.MsgPlaceBidRequest":
       return "PlaceBid";
+    case "/comdex.locker.v1beta1.MsgWithdrawAssetRequest":
+      return "WithdrawAsset";
+    case "/comdex.locker.v1beta1.MsgCreateLockerRequest":
+    return "CreateLocker";
     default:
       return type;
   }
