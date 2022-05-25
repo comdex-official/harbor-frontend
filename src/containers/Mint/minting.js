@@ -110,7 +110,7 @@ const Minting = ({
                         <div className="value">{(item?.liquidationRatio) / 10 ** 16} %</div>
                       </div>
                       <div className="contenet-container">
-                        <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+                        <div className="name">Min. Collateralization Ratio <TooltipIcon text="" /></div>
                         <div className="value">{(item?.minCr) / 10 ** 16} %</div>
                       </div>
                       <div className="contenet-container">

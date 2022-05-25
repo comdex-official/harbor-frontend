@@ -2,7 +2,7 @@ import "./index.scss";
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
-import React from "react";
+import React, { useEffect } from "react";
 import { Table } from "antd";
 import variables from "../../utils/variables";
 import Deposit from "./Deposit";
@@ -16,12 +16,12 @@ import { ibcAssetsInfo } from "../../config/ibc";
 import { embedChainInfo } from "../../config/chain";
 import { message } from "antd";
 import { iconNameFromDenom } from "../../utils/string";
-import { cmst, comdex } from "../../config/network";
+import { cmst, comdex, harbor } from "../../config/network";
 import Lodash from "lodash";
 import { marketPrice } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
 
-const Assets = ({ lang, assetBalance, balances, markets }) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
   const columns = [
     {
       title: "Asset",
@@ -47,11 +47,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       align: "center",
       render: (balance) => (
         <>
-          <p>{balance?.amount || 0}</p>
-          <small>
-            {amountConversion(balance?.value, DOLLAR_DECIMALS)}{" "}
-            {variables[lang].USD}
-          </small>
+          <p>${amountConversion(balance?.value, DOLLAR_DECIMALS) || 0}</p>
         </>
       ),
     },
@@ -120,16 +116,20 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       currency: originCurrency,
     };
   });
-
   const nativeCoin = balances.filter(
     (item) => item.denom === comdex?.coinMinimalDenom
   )[0];
   const cmstCoin = balances.filter(
     (item) => item.denom === cmst?.coinMinimalDenom
   )[0];
+  const harborCoin = balances.filter(
+    (item) => item.denom === harbor?.coinMinimalDenom
+  )[0];
 
   const nativeCoinValue = getPrice(nativeCoin?.denom) * nativeCoin?.amount;
   const cmstCoinValue = getPrice(cmstCoin?.denom) * cmstCoin?.amount;
+  const harborCoinValue = getPrice(harborCoin?.denom) * harborCoin?.amount;
+
 
   const currentChainData = [
     {
@@ -168,6 +168,24 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
         value: cmstCoinValue || 0,
       },
     },
+    {
+      key: comdex.chainId,
+      asset: (
+        <>
+          <div className="assets-withicon">
+            <div className="assets-icon">
+              <SvgIcon name={iconNameFromDenom(harbor?.coinMinimalDenom)} />
+            </div>{" "}
+            {denomConversion(harbor?.coinMinimalDenom)}
+          </div>
+        </>
+      ),
+      noOfTokens: harborCoin?.amount ? amountConversion(harborCoin.amount) : 0,
+      oraclePrice: 123,
+      amount: {
+        value: harborCoinValue || 0,
+      },
+    },
 
 
   ];
@@ -189,7 +207,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
             </div>
           </>
         ),
-        noOfTokens: 1,
+        noOfTokens: item?.balance?.amount,
         oraclePrice: 123,
         amount: item.balance,
         ibcdeposit: item,
@@ -235,6 +253,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
 Assets.propTypes = {
   lang: PropTypes.string.isRequired,
   assetBalance: PropTypes.number,
+  refreshBalance: PropTypes.number.isRequired,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -260,6 +279,7 @@ const stateToProps = (state) => {
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
     markets: state.oracle.market.list,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 

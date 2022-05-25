@@ -2,7 +2,7 @@ import "./index.scss";
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Modal, message, Spin } from "antd";
 import { aminoSignIBCTx } from "../../../services/helper";
 import { initializeIBCChain } from "../../../services/keplr";
@@ -43,6 +43,9 @@ const Deposit = ({
       ValidateInputNumber(getAmount(value), availableBalance?.amount)
     );
   };
+
+ 
+
 
   const showModal = () => {
     initializeIBCChain(chain.chainInfo, (error, account) => {
@@ -208,8 +211,8 @@ const Deposit = ({
                           setAmount(
                             availableBalance?.amount > DEFAULT_FEE
                               ? amountConversion(
-                                  availableBalance?.amount - DEFAULT_FEE
-                                )
+                                availableBalance?.amount - DEFAULT_FEE
+                              )
                               : amountConversion(availableBalance?.amount)
                           );
                         }}

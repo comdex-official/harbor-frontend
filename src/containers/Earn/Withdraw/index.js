@@ -57,6 +57,8 @@ const Withdraw = ({
   const [userDeposite, setuserDeposite] = useState();
   const [reward, setReward] = useState();
 
+  console.log(isLockerExist);
+
   const whiteListedAssetData = [];
   const resetValues = () => {
     dispatch(setAmountIn(0));
@@ -282,7 +284,7 @@ const Withdraw = ({
               <Button
                 loading={inProgress}
                 disabled={
-                  isLockerExist ||
+                  !isLockerExist ||
                   !inAmount ||
                   inProgress ||
                   inputValidationError?.message

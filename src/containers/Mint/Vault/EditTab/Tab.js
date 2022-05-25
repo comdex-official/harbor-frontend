@@ -282,7 +282,7 @@ const Edit = ({
             <Row>
               <Col sm="6" className="mb-3">
                 <label>
-                  Deposite
+                  Deposit
                   <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                 </label>
                 <CustomInput
