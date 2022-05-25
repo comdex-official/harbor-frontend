@@ -15,9 +15,11 @@ import { setBalanceRefresh } from "../../../../actions/account";
 import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import { denomToSymbol } from "../../../../utils/string";
-import { queryVaultByOwner, queryVaults } from "../../../../services/Mint/query";
+import { queryOwnerVaults, queryOwnerVaultsInfo } from "../../../../services/Mint/query";
 import { setUserLockedVaultData } from "../../../../actions/mint";
 import Long from "long";
+import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
+import { queryPairVault } from "../../../../services/asset/query";
 
 const CloseTab = ({
   lang,
@@ -28,14 +30,16 @@ const CloseTab = ({
   refreshBalance,
   setBalanceRefresh,
   balances,
+  ownerVaultId,
+  ownerVaultInfo,
+  setOwnerVaultId,
+  setOwnerVaultInfo,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
 
   const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
-  const userVault = useSelector((state) => state.mint.userLockedVaultData.vault)
-  // console.log("vault", vault);
-  // console.log("vault", userVault?.id);
+  const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const [inProgress, setInProgress] = useState(false);
   const navigate = useNavigate();
 
@@ -56,23 +60,60 @@ const CloseTab = ({
   const collateralAssetBalance = getDenomBalance(balances, returnDenom()) || 0;
 
   useEffect(() => {
-    queryUserVault('hbr2')
+    fetchQueryPairValut(pathVaultId)
   }, [address])
 
+  useEffect(() => {
+    if (address && selectedExtentedPairVaultListData[0]?.id?.low) {
+      getOwnerVaultId(PRODUCT_ID, address, selectedExtentedPairVaultListData[0]?.id?.low);
+    }
+  }, [address, vault])
+
+  useEffect(() => {
+    if (ownerVaultId) {
+      getOwnerVaultInfoByVaultId(ownerVaultId)
+    }
+  }, [address, ownerVaultId])
 
 
-  const queryUserVault = (id) => {
-    setInProgress(true);
-    queryVaults(id, (error, data) => {
+  // ******* Get Vault Query *********
+
+  // *----------Get the owner vaultId by productId, pairId , and address----------
+
+  const getOwnerVaultId = (productId, address, extentedPairId) => {
+    queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      console.log("User vault", data);
-      dispatch(setUserLockedVaultData(data))
-      setInProgress(false)
+      setOwnerVaultId(data?.vaultId)
     })
   }
+
+  // *----------Get pair vault data by extended pairVault Id----------
+  const fetchQueryPairValut = (pairVaultId) => {
+    queryPairVault(pairVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log("Query pair vaults", data);
+      dispatch(setExtendedPairVaultListData(data?.pairVault))
+    })
+  }
+
+  // *----------Get the owner vaultDetails by ownervaultId----------
+
+  const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
+    queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setOwnerVaultInfo(data.vault)
+    })
+  }
+
   const handleClick = () => {
     setInProgress(true);
 
@@ -92,8 +133,8 @@ const CloseTab = ({
           value: {
             from: address,
             appMappingId: Long.fromNumber(PRODUCT_ID),
-            extendedPairVaultId: Long.fromNumber(pathVaultId),
-            userVaultid: userVault?.id,
+            extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
+            userVaultid: ownerVaultId,
           },
         },
         fee: defaultFee(),
@@ -129,7 +170,7 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_burn_amount} />
           </div>
           <div className="text-right">
-            {amountConversion(userVault?.amountOut || 0)} CMST
+            {amountConversion(ownerVaultInfo?.amountOut || 0)} CMST
           </div>
         </div>
         <div className="close-tab-row">
@@ -138,8 +179,7 @@ const CloseTab = ({
             <TooltipIcon text={variables[lang].tooltip_withdraw_amount} />
           </div>
           <div className="text-right">
-
-            {amountConversion(userVault?.amountIn || 0)} {denomToSymbol(returnDenom())}
+            {amountConversion(ownerVaultInfo?.amountIn || 0)} {denomToSymbol(returnDenom())}
           </div>
         </div>
       </div>
@@ -192,6 +232,8 @@ CloseTab.propTypes = {
       low: PropTypes.number,
     }),
   }),
+  ownerVaultId: PropTypes.string,
+  ownerVaultInfo: PropTypes.array,
 };
 
 const stateToProps = (state) => {
@@ -202,12 +244,16 @@ const stateToProps = (state) => {
     markets: state.oracle.market.list,
     refreshBalance: state.account.refreshBalance,
     balances: state.account.balances.list,
+    ownerVaultId: state.locker.ownerVaultId,
+    ownerVaultInfo: state.locker.ownerVaultInfo
   };
 };
 
 const actionsToProps = {
   setVault,
   setBalanceRefresh,
+  setOwnerVaultId,
+  setOwnerVaultInfo,
 };
 
 export default connect(stateToProps, actionsToProps)(CloseTab);

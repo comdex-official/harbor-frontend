@@ -21,8 +21,8 @@ const VaultDetails = ({
 
 
   useEffect(() => {
-    if (address && item?.id?.low) {
-      getOwnerVaultId(PRODUCT_ID, address, item?.id?.low);
+    if (address && selectedExtentedPairVaultListData?.id?.low) {
+      getOwnerVaultId(PRODUCT_ID, address, selectedExtentedPairVaultListData?.id?.low);
     }
   }, [address, item])
 

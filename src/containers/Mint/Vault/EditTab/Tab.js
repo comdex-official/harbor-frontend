@@ -12,15 +12,14 @@ import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
 import { getTypeURL } from "../../../../services/transaction";
-// import { queryVault } from "../../../../services/vault/query";
 import CustomInput from "../../../../components/CustomInput";
 import { decimalConversion, marketPrice } from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import { comdex } from "../../../../config/network";
 import Snack from "../../../../components/common/Snack";
-import { setWhiteListedAssets } from "../../../../actions/locker";
-import { queryVaultByOwner, queryVaults, userVaultInfo } from "../../../../services/Mint/query";
+import { setExtendedPairVaultListData, setWhiteListedAssets } from "../../../../actions/locker";
+import { queryOwnerVaults, queryOwnerVaultsInfo, queryVaultByOwner, queryVaults, userVaultInfo } from "../../../../services/Mint/query";
 import { connect } from "react-redux";
 import { setPairs } from "../../../../actions/asset";
 import { setAccountVaults } from "../../../../actions/account";
@@ -29,9 +28,10 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setUserLockedVaultData } from "../../../../actions/mint";
 import { setBalanceRefresh } from "../../../../actions/account";
-
+import { setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
 import { Navigate, useParams } from "react-router";
 import Long from "long";
+import { queryPairVault } from "../../../../services/asset/query";
 
 const Option = Select.Option;
 
@@ -45,8 +45,13 @@ const Edit = ({
   lang,
   address,
   vaults,
+  pair,
   markets,
   balances,
+  ownerVaultId,
+  ownerVaultInfo,
+  setOwnerVaultId,
+  setOwnerVaultInfo,
   setBalanceRefresh,
   refreshBalance,
 }) => {
@@ -56,6 +61,7 @@ const Edit = ({
   const vault = useSelector((state) => state.account.vault)
   const userVault = useSelector((state) => state.mint.userLockedVaultData.vault)
   const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
+  const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
 
   const [inProgress, setInProgress] = useState(false);
   const [inputAmount, setInputAmount] = useState();
@@ -68,41 +74,37 @@ const Edit = ({
   const [repay, setRepay] = useState();
   const [draw, setDraw] = useState();
 
-
-
-
   const marks = {
     0: "0%",
     150: "Min - 150%",
     200: "Safe: 200%",
   };
 
-  useEffect(() => {
-    queryUserVaultsId(address);
+  console.log(pair);
 
+  useEffect(() => {
+    fetchQueryPairValut(pathVaultId)
   }, [address])
 
   useEffect(() => {
-    queryUserVault('hbr2')
+    if (address && selectedExtentedPairVaultListData[0]?.id?.low) {
+      getOwnerVaultId(PRODUCT_ID, address, selectedExtentedPairVaultListData[0]?.id?.low);
+    }
   }, [address, vault])
 
-  const returnDenom = () => {
-    let assetPair = selectedExtentedPairVault && selectedExtentedPairVault[0]?.pairName;
-    if (assetPair === "cmdx-cmst") {
-      console.log("yes");
+  useEffect(() => {
+    if (ownerVaultId) {
+      getOwnerVaultInfoByVaultId(ownerVaultId)
     }
-    switch (assetPair) {
-      case "cmdx-cmst":
-        return "ucmdx";
-      case "osmo-cmst":
-        return "uosmo";
-      default:
-        return "ucmdx";
-    }
-  }
+  }, [address, ownerVaultId])
+
   const resetValues = () => {
     setInputValidationError();
     setInputAmount();
+    setDeposit();
+    setWithdraw();
+    setRepay();
+    setDraw();
   };
 
   //   const collateralAssetBalance =
@@ -158,27 +160,42 @@ const Edit = ({
   //   }
   // };
 
-  const queryUserVaultsId = (address) => {
-    setInProgress(true);
-    queryVaultByOwner(address, (error, data) => {
+
+  // ******* Get Vault Query *********
+
+  // *----------Get the owner vaultId by productId, pairId , and address----------
+
+  const getOwnerVaultId = (productId, address, extentedPairId) => {
+    queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      // console.log("User vault Id", data);
-      dispatch(setVault(data?.vaultIds))
+      setOwnerVaultId(data?.vaultId)
     })
   }
 
-  const queryUserVault = (id) => {
-    setInProgress(true);
-    queryVaults(id, (error, data) => {
+  // *----------Get pair vault data by extended pairVault Id----------
+  const fetchQueryPairValut = (pairVaultId) => {
+    queryPairVault(pairVaultId, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      // console.log("User vault", data);
-      dispatch(setUserLockedVaultData(data))
+      dispatch(setExtendedPairVaultListData(data?.pairVault))
+    })
+  }
+
+  // *----------Get the owner vaultDetails by ownervaultId----------
+
+  const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
+    queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setOwnerVaultInfo(data.vault)
+
     })
   }
 
@@ -191,9 +208,9 @@ const Edit = ({
           typeUrl: getTypeURL(editType),
           value: {
             from: address,
-            appMappingId: Long.fromNumber(1),
-            extendedPairVaultId: Long.fromNumber(1),
-            userVaultid: vault[pathVaultId - 1],
+            appMappingId: Long.fromNumber(PRODUCT_ID),
+            extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
+            userVaultid: ownerVaultId,
             amount: getAmount(inputAmount),
           },
         },
@@ -219,7 +236,7 @@ const Edit = ({
         message.success("success");
 
         // Add Query vault data
-
+        getOwnerVaultInfoByVaultId(ownerVaultId)
         // if (vault?.id) {
         //   fetchVault(vault?.id);
         // }
@@ -233,8 +250,6 @@ const Edit = ({
   };
 
 
-
-
   return (
     <>
       <div className="edit-tab-card">
@@ -245,10 +260,10 @@ const Edit = ({
               <div className="assets-col">
                 <div className="assets-icons">
                   <div className="assets-icons-inner">
-                    <SvgIcon name={iconNameFromDenom(returnDenom())} />
+                    <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                   </div>
                 </div>
-                <h2>{amountConversion(userVault?.amountIn || 0)}</h2>
+                <h2>{amountConversion(ownerVaultInfo?.amountIn || 0)}</h2>
               </div>
             </div>
             <div className="borrowedithead-colum">
@@ -259,7 +274,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom("ucmst")} />
                   </div>
                 </div>
-                <h2>{amountConversion(userVault?.amountOut || 0)}</h2>
+                <h2>{amountConversion(ownerVaultInfo?.amountOut || 0)}</h2>
               </div>
             </div>
           </div>
@@ -347,7 +362,6 @@ const Edit = ({
                 />
               </Col>
             </Row>
-            {/* <Row> */}
             <div className="Interest-rate-container mt-4">
               <Row>
                 <div className="title">Set Collateral Ratio</div>
@@ -383,11 +397,9 @@ const Edit = ({
                 <span className="collateral-percentage">%</span>
               </div>
             </div>
-            {/* </Row> */}
           </div>
           <div className="assets-form-btn">
             <Button
-
               type="primary"
               className="btn-filled"
               // onClick={() => setCautionNoticeValues(true, false)}
@@ -409,6 +421,10 @@ Edit.propTypes = {
   setBalanceRefresh: PropTypes.func.isRequired,
   refreshBalance: PropTypes.number.isRequired,
   address: PropTypes.string,
+  pair: PropTypes.shape({
+    denomIn: PropTypes.string,
+    denomOut: PropTypes.string,
+  }),
   pairs: PropTypes.shape({
     list: PropTypes.arrayOf(
       PropTypes.shape({
@@ -429,16 +445,21 @@ Edit.propTypes = {
       message: PropTypes.string.isRequired,
     }),
   ]),
+  ownerVaultId: PropTypes.string,
+  ownerVaultInfo: PropTypes.array,
 
 };
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    pair: state.asset.pair,
     pairs: state.asset.pairs,
     refreshBalance: state.account.refreshBalance,
     markets: state.oracle.market.list,
     balances: state.account.balances.list,
+    ownerVaultId: state.locker.ownerVaultId,
+    ownerVaultInfo: state.locker.ownerVaultInfo
   };
 };
 
@@ -446,5 +467,7 @@ const actionsToProps = {
   setPairs,
   setAccountVaults,
   setBalanceRefresh,
+  setOwnerVaultId,
+  setOwnerVaultInfo,
 };
 export default connect(stateToProps, actionsToProps)(Edit);

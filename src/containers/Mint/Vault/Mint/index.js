@@ -16,8 +16,6 @@ import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/
 import variables from "../../../../utils/variables";
 import "./index.scss";
 import PricePool from "./PricePool";
-
-import { List, Select, Input, Progress, Switch } from "antd";
 import {
   setPair,
   setAssetIn,
@@ -78,10 +76,9 @@ const Mint = ({
   const [currentExtentedVaultdata, setCurrentExtentedVaultdata] = useState();
 
   const dispatch = useDispatch();
-  // const selectedExtentedPairVaultListData = useSelector((state) => state.locker.selectedExtentedPairVaultListData);
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
-  // console.log(" pair vault data from reducer", pair);
+  
   const marks = {
     0: "0%",
     150: "Min - 150%",
@@ -266,7 +263,6 @@ const Mint = ({
         message.error(error);
         return;
       }
-      // console.log("Query pair vaults", data);
       setCurrentExtentedVaultdata(data?.pairVault)
       dispatch(setExtendedPairVaultListData(data?.pairVault))
       setLoading(false)
@@ -283,31 +279,8 @@ const Mint = ({
         return;
       }
       setPair(data?.pairInfo)
-      // console.log("Asset data by id", data);
     })
   }
-  const { Option } = Select;
-
-  const data = [
-    {
-      title: "Liquidation Price",
-      counts: "$1,234.20",
-    },
-    {
-      title: "Collateral Deposited",
-      counts: "$1,234.20",
-    },
-    {
-      title: "Oracle Price",
-      counts: "30.45%",
-    },
-    {
-      title: "Withdrawn",
-      counts: "$30.45",
-    },
-  ];
-
-
 
   useEffect(() => {
     setCollateralRatio(200);
@@ -331,7 +304,7 @@ const Mint = ({
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />{" "}
+                        <SvgIcon name={!loading ? iconNameFromDenom(pair && pair?.denomIn) : ""} />{" "}
                         <span> {!loading ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}</span>
                       </div>
                     </div>
