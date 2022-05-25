@@ -51,13 +51,49 @@ export const queryVaults = (id, callback) => {
             callback(error)
         }
         new QueryServiceClientImpl(rpcClient)
-        .QueryVault({
-            id: id
-        }).then((result) => {
-            callback(null, result);
-        })
+            .QueryVault({
+                id: id
+            }).then((result) => {
+                callback(null, result);
+            })
             .catch((error) => {
                 callback(error?.message);
+            });
+    })
+}
+export const queryOwnerVaults = (productId, address, extentedPairId, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error)
+        }
+        new QueryServiceClientImpl(rpcClient)
+            .QueryVaultOfOwnerByPair({
+                productId: Long.fromNumber(productId),
+                owner: address,
+                extendedPairId: Long.fromNumber(extentedPairId),
+            }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                // callback(error?.message);
+                // callback("Vault does't exist");
+            });
+    })
+}
+export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error)
+        }
+        new QueryServiceClientImpl(rpcClient)
+            .QueryVault({
+                id: ownerVaultId,
+            }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+
             });
     })
 }

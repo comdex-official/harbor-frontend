@@ -164,10 +164,10 @@ const Withdraw = ({
           typeUrl: "/comdex.locker.v1beta1.MsgWithdrawAssetRequest",
           value: {
             depositor: address,
-            lockerId: lockerId,
+            lockerId: "Harbor1",
             amount: getAmount(inAmount),
             assetId: Long.fromNumber(whiteListedAssetId),
-            appMappingId: Long.fromNumber(1),
+            appMappingId: Long.fromNumber(PRODUCT_ID),
           }
         },
         fee: defaultFee(),
@@ -282,12 +282,13 @@ const Withdraw = ({
               <div className="withdraw-stats-container">
                 <div className="withdraw-stats">
                   <div className="stats-title">interest</div>
-                  <div className="stats-value">{reward} {denomConversion(whiteListedAssetData[0]?.denom)} </div>
+                  {/* <div className="stats-value">{reward} {denomConversion(whiteListedAssetData[0]?.denom)} </div> */}
+                  <div className="stats-value">{reward || 0} CMST </div>
                 </div>
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
                   <div className="stats-value">
-                    {amountConversionWithComma(userLockedAmountInLocker)} {denomConversion('ucmdx')}
+                    {amountConversionWithComma(userLockedAmountInLocker)} {denomConversion('ucmst')}
                   </div>
                 </div>
                 <div className="withdraw-stats">
@@ -334,12 +335,12 @@ const Withdraw = ({
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
-                disabled={
-                  !isLockerExist ||
-                  !inAmount ||
-                  inProgress ||
-                  inputValidationError?.message
-                }
+                // disabled={
+                //   !isLockerExist ||
+                //   !inAmount ||
+                //   inProgress ||
+                //   inputValidationError?.message
+                // }
                 type="primary"
                 className="btn-filled"
                 onClick={() => handleSubmitAssetWithdrawLocker()}

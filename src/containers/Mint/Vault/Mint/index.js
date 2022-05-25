@@ -34,14 +34,14 @@ import { ValidateInputNumber } from "../../../../config/_validation";
 import { setComplete } from "../../../../actions/swap";
 import { setVault } from "../../../../actions/account";
 import { comdex } from "../../../../config/network";
-import { DEFAULT_FEE, PRODUCT_ID } from "../../../../constants/common";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { getTypeURL } from "../../../../services/transaction";
 import Snack from "../../../../components/common/Snack";
 import { useSelector } from "react-redux";
 import Long from "long";
 import { CMDX_PRICE, CMST_PRICE } from "../../../../services/oracle/price";
-import { queryPairVault } from "../../../../services/asset/query";
+import { queryPair, queryPairVault } from "../../../../services/asset/query";
 import { setExtendedPairVaultListData } from "../../../../actions/locker";
 
 const Mint = ({
@@ -78,28 +78,17 @@ const Mint = ({
   const [currentExtentedVaultdata, setCurrentExtentedVaultdata] = useState();
 
   const dispatch = useDispatch();
-  // const selectedExtentedPairVaultListDate = useSelector((state) => state.locker.selectedExtentedPairVaultListDate);
-  const selectedExtentedPairVaultListDate = useSelector((state) => state.locker.extenedPairVaultListData);
-
+  // const selectedExtentedPairVaultListData = useSelector((state) => state.locker.selectedExtentedPairVaultListData);
+  const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
+  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
+  // console.log(" pair vault data from reducer", pair);
   const marks = {
     0: "0%",
     150: "Min - 150%",
     200: "Safe: 200%",
   };
 
-  const returnDenom = () => {
-    let assetPair = selectedExtentedPairVaultListDate && selectedExtentedPairVaultListDate[0]?.pairName;
-    switch (assetPair) {
-      case "cmdx-cmst":
-        return "ucmdx";
-      case "osmo-cmst":
-        return "uosmo";
 
-
-      default:
-        return "Loading...";
-    }
-  }
   const onChange = (value) => {
     value = toDecimals(value).toString().trim();
     handleAmountInChange(value);
@@ -107,6 +96,8 @@ const Mint = ({
       ValidateInputNumber(getAmount(value), collateralAssetBalance)
     );
   };
+
+  // !change cmdx price value here for get actual oracle price 
   const handleAmountInChange = (value) => {
     setValidationError(
       ValidateInputNumber(getAmount(value), collateralAssetBalance)
@@ -128,7 +119,7 @@ const Mint = ({
     );
   };
 
-  const collateralAssetBalance = getDenomBalance(balances, returnDenom()) || 0;
+  const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
   const stableAssetBalance = getDenomBalance(balances, 'ucmst') || 0;
 
   const calculateAmountOut = (
@@ -141,7 +132,25 @@ const Mint = ({
     return ((isFinite(amount) && amount) || 0).toFixed(6);
   };
 
-  const selectedTokenPrice = marketPrice(markets, returnDenom());
+  const selectedTokenPrice = marketPrice(markets, pair && pair?.denomIn);
+
+  const showInAssetValue = () => {
+    const oralcePrice = marketPrice(markets, pair?.denomIn);
+    const total = oralcePrice * inAmount;
+
+    return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
+      DOLLAR_DECIMALS
+    )}`;
+  };
+
+  const showOutAssetValue = () => {
+    const oralcePrice = marketPrice(markets, pair?.denomOut);
+    const total = oralcePrice * outAmount;
+
+    return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
+      DOLLAR_DECIMALS
+    )}`;
+  };
 
   const getOutputPrice = () => {
     // return reverse ? spotPrice : 1 / spotPrice;
@@ -155,13 +164,13 @@ const Mint = ({
         inAmount,
         selectedTokenPrice,
         value / 100,
-        marketPrice(markets, returnDenom())
+        marketPrice(markets, pair && pair?.denomIn)
       )
     );
   };
 
   const handleMaxClick = () => {
-    if (returnDenom() === comdex.coinMinimalDenom) {
+    if (pair && pair?.denomIn === comdex.coinMinimalDenom) {
       return Number(collateralAssetBalance) > DEFAULT_FEE
         ? handleAmountInChange(
           amountConversion(collateralAssetBalance - DEFAULT_FEE)
@@ -242,23 +251,43 @@ const Mint = ({
   useEffect(() => {
     resetValues()
     fetchQueryPairValut(pathVaultId);
-  }, [address])
+    if (pairId) {
+      getAssetDataByPairId(pairId);
+    }
+  }, [address, pairId])
 
+  // *******Get Vault Query *********
 
-  const fetchQueryPairValut = (productId) => {
+  // *----------Get pair vault data by extended pairVault Id----------
+  const fetchQueryPairValut = (pairVaultId) => {
     setLoading(true)
-    queryPairVault(productId, (error, data) => {
+    queryPairVault(pairVaultId, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
+      // console.log("Query pair vaults", data);
       setCurrentExtentedVaultdata(data?.pairVault)
       dispatch(setExtendedPairVaultListData(data?.pairVault))
       setLoading(false)
     })
   }
 
+  // *----------Get the asset data by pairId----------
+
+  const getAssetDataByPairId = (pairId) => {
+    setLoading(true)
+    queryPair(pairId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setPair(data?.pairInfo)
+      // console.log("Asset data by id", data);
+    })
+  }
   const { Option } = Select;
+
   const data = [
     {
       title: "Liquidation Price",
@@ -279,15 +308,13 @@ const Mint = ({
   ];
 
 
-  returnDenom()
+
   useEffect(() => {
     setCollateralRatio(200);
     resetValues();
   }, []);
 
-  // if (loading) {
-  //   return <h1>Loading...</h1>
-  // }
+
   return (
     <>
       <div className="details-wrapper">
@@ -304,8 +331,8 @@ const Mint = ({
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        <SvgIcon name={iconNameFromDenom(returnDenom())} />{" "}
-                        <span> {!loading ? denomToSymbol(returnDenom()) : "Loading..."}</span>
+                        <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />{" "}
+                        <span> {!loading ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}</span>
                       </div>
                     </div>
                   </div>
@@ -317,7 +344,7 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(collateralAssetBalance)} {denomToSymbol(returnDenom())}
+                  {amountConversionWithComma(collateralAssetBalance)} {denomToSymbol(pair && pair?.denomIn)}
                 </span>
                 <div className="maxhalf">
                   <Button
@@ -338,7 +365,8 @@ const Mint = ({
                   }
                   validationError={validationError}
                 />
-                <small>$ 0.00</small>
+                {/* <small>$ 0.00</small> */}
+                <small>$ {showInAssetValue()}</small>
               </div>
             </div>
           </div>
@@ -386,7 +414,8 @@ const Mint = ({
                   value={outAmount}
                   disabled
                 />
-                <small>$ 0.00</small>
+                {/* <small>$ 0.00</small> */}
+                <small>$ {showOutAssetValue()}</small>
               </div>
             </div>
           </div>
@@ -434,10 +463,10 @@ const Mint = ({
                 loading={inProgress}
                 disabled={
                   inProgress ||
-                  // !pair ||
+                  !pair ||
                   !Number(inAmount) ||
                   !Number(outAmount) ||
-                  // validationError?.message ||
+                  validationError?.message ||
                   Number(collateralRatio) < 150
                 }
                 loading={inProgress}
@@ -459,6 +488,7 @@ const Mint = ({
     </>
   );
 };
+
 Mint.prototype = {
   lang: PropTypes.string.isRequired,
   setAmountIn: PropTypes.func.isRequired,

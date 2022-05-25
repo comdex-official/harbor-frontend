@@ -1,4 +1,4 @@
-import { SET_ALL_WHITELISTED_ASSET, SET_CURRENT_PAIR_ID, SET_EXTENDED_PAIR_ID, SET_EXTENDED_PAIR_VAULT_DATA_BY_ID, SET_ISLOCKER_EXIST, SET_SELECT_EXTENTED_PAIR_VAULT, SET_SLIDER_TOOLTIP_VISIBLE, SET_USER_LOCKED_VALUE, SET_WHITELISTED_ASSET } from "../constants/locker";
+import { SET_ALL_WHITELISTED_ASSET, SET_CURRENT_PAIR_ID, SET_EXTENDED_PAIR_ID, SET_EXTENDED_PAIR_VAULT_DATA_BY_ID, SET_ISLOCKER_EXIST, SET_OWNER_VAULT_ID, SET_OWNER_VAULT_INFO, SET_SELECT_EXTENTED_PAIR_VAULT, SET_SLIDER_TOOLTIP_VISIBLE, SET_USER_LOCKED_VALUE, SET_WHITELISTED_ASSET } from "../constants/locker";
 import { combineReducers } from "redux";
 
 const _ = (
@@ -83,6 +83,20 @@ const currentPairId = (state = "", action) => {
     }
     return state;
 };
+const ownerVaultId = (state = "", action) => {
+    if (action.type === SET_OWNER_VAULT_ID) {
+        return action.value
+
+    }
+    return state;
+};
+const ownerVaultInfo = (state = "", action) => {
+    if (action.type === SET_OWNER_VAULT_INFO) {
+        return action.value
+
+    }
+    return state;
+};
 
 export default combineReducers({
     _,
@@ -94,4 +108,6 @@ export default combineReducers({
     extenedPairVaultListData,
     selectedExtentedPairVault,
     currentPairId,
+    ownerVaultId,
+    ownerVaultInfo,
 });

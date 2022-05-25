@@ -35,6 +35,8 @@ const Minting = ({
   const extenedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData[0]);
   const currentPairId = useSelector((state) => state.locker.currentPairId);
 
+  // console.log("Extended pair list from reducer", extenedPairVaultListData);
+
   const [loading, setLoading] = useState(false);
   const columns = [
     {
@@ -137,6 +139,7 @@ const Minting = ({
 
   // *******Get Vault Query *********
 
+  // *----------Get list of all extended pair vaults Id's across product id----------*
 
   const fetchExtendexPairList = (productId) => {
     setLoading(true)
@@ -145,12 +148,14 @@ const Minting = ({
         message.error(error);
         return;
       }
-      console.log(data);
+      // console.log("Extented pair List", data);
       dispatch(setAllExtendedPair(data?.extendedPairIds));
       setLoading(false)
 
     })
   }
+
+  // *----------Get list of all extended pair vaults----------*
 
   const fetchQueryPairValuts = () => {
     setLoading(true)
@@ -159,11 +164,12 @@ const Minting = ({
         message.error(error);
         return;
       }
-      console.log(data);
+      // console.log("Pair vaults list", data);
       dispatch(setExtendedPairVaultListData(data))
       setLoading(false)
     })
   }
+
   if (loading) {
     return <h1>Loading...</h1>
   }
@@ -172,49 +178,98 @@ const Minting = ({
 
       <div className="card-main-container">
         {extenedPairVaultListData?.pairVault?.length > 0 && extenedPairVaultListData?.pairVault.map((item, index) => {
-          return (
-            <React.Fragment key={index}>
-              {item && !item.isPsmPair && (
-                <div className="card-container " onClick={() => {
-                  dispatch(setCurrentPairID(item?.pairId?.low))
-                  dispatch(setSelectedExtentedPairvault(item));
-                  navigateToMint(item?.pairId?.low)
-                }}>
-                  <div className="up-container">
-                    <div className="icon-container">
-                      <SvgIcon name={iconNameFromDenom("ucmdx")} />
+          if (item && !item.isPsmPair && item.appMappingId.low === PRODUCT_ID) {
+            return (
+              <React.Fragment key={index}>
+                {item && !item.isPsmPair && item.appMappingId.low === PRODUCT_ID && (
+                  <div className="card-container " onClick={() => {
+                    dispatch(setCurrentPairID(item?.pairId?.low))
+                    dispatch(setSelectedExtentedPairvault(item));
+                    navigateToMint(item?.id?.low)
+                  }}>
+                    <div className="up-container">
+                      <div className="icon-container">
+                        <SvgIcon name={iconNameFromDenom("ucmdx")} />
+                      </div>
+                      <div className="vault-name-container">
+                        <div className="vault-name">{item?.pairName}</div>
+                        <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+                      </div>
                     </div>
-                    <div className="vault-name-container">
-                      <div className="vault-name">{item?.pairName}</div>
-                      <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+                    <div className="bottom-container">
+                      <div className="contenet-container">
+                        <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+                        <div className="value">{(item?.liquidationRatio) / 10 ** 16} %</div>
+                      </div>
+                      <div className="contenet-container">
+                        <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+                        <div className="value">{(item?.minCr) / 10 ** 16} %</div>
+                      </div>
+                      <div className="contenet-container">
+                        <div className="name">Stability Fee <TooltipIcon text="" /></div>
+                        <div className="value">{(item?.stabilityFee) / 10 ** 16} %</div>
+                      </div>
+                      <div className="contenet-container">
+                        <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+                        <div className="value"> {amountConversion(item?.debtFloor)} CMST</div>
+                      </div>
+                      <div className="contenet-container">
+                        <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+                        <div className="value"> {amountConversion(item?.debtCeiling)} CMST</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="bottom-container">
-                    <div className="contenet-container">
-                      <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
-                      <div className="value">{(item?.liquidationRatio) / 10 ** 16} %</div>
-                    </div>
-                    <div className="contenet-container">
-                      <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
-                      <div className="value">{(item?.minCr) / 10 ** 16} %</div>
-                    </div>
-                    <div className="contenet-container">
-                      <div className="name">Stability Fee <TooltipIcon text="" /></div>
-                      <div className="value">{(item?.stabilityFee) / 10 ** 16} %</div>
-                    </div>
-                    <div className="contenet-container">
-                      <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
-                      <div className="value"> {amountConversion(item?.debtFloor)} CMST</div>
-                    </div>
-                    <div className="contenet-container">
-                      <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
-                      <div className="value"> {amountConversion(item?.debtCeiling)} CMST</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </React.Fragment>
-          )
+                )}
+              </React.Fragment>
+            )
+          }
+          // return (
+          //   <React.Fragment key={index}>
+          //     {item && !item.isPsmPair && item.appMappingId.low === PRODUCT_ID && (
+          //       <div className="card-container " onClick={() => {
+          //         dispatch(setCurrentPairID(item?.pairId?.low))
+          //         dispatch(setSelectedExtentedPairvault(item));
+          //         console.log(item);
+          //         navigateToMint(item?.pairId?.low)
+          //       }}>
+          //         <div className="up-container">
+          //           <div className="icon-container">
+          //             <SvgIcon name={iconNameFromDenom("ucmdx")} />
+          //           </div>
+          //           <div className="vault-name-container">
+          //             <div className="vault-name">{item?.pairName}</div>
+          //             <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+          //           </div>
+          //         </div>
+          //         <div className="bottom-container">
+          //           <div className="contenet-container">
+          //             <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
+          //             <div className="value">{(item?.liquidationRatio) / 10 ** 16} %</div>
+          //           </div>
+          //           <div className="contenet-container">
+          //             <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
+          //             <div className="value">{(item?.minCr) / 10 ** 16} %</div>
+          //           </div>
+          //           <div className="contenet-container">
+          //             <div className="name">Stability Fee <TooltipIcon text="" /></div>
+          //             <div className="value">{(item?.stabilityFee) / 10 ** 16} %</div>
+          //           </div>
+          //           <div className="contenet-container">
+          //             <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
+          //             <div className="value"> {amountConversion(item?.debtFloor)} CMST</div>
+          //           </div>
+          //           <div className="contenet-container">
+          //             <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
+          //             <div className="value"> {amountConversion(item?.debtCeiling)} CMST</div>
+          //           </div>
+          //         </div>
+          //       </div>
+          //     )}
+          //   </React.Fragment>
+          // )
+
+
+
         })}
       </div>
     </div>

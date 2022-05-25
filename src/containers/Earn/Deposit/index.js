@@ -77,7 +77,8 @@ const Deposit = ({
 
     // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
     assets?.map((item) => {
-      if (item.name === "cmdx") {
+      console.log("Asset", assets);
+      if (item.name === "cmst") {
         whiteListedAssetData.push(item);
       }
     })
@@ -111,7 +112,7 @@ const Deposit = ({
       false
     );
     fetchWhiteListedAssetByid(PRODUCT_ID);
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, 1, address);
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, 4, address);
   }, [address]);
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -136,6 +137,7 @@ const Deposit = ({
         message.error(error);
         return;
       }
+      console.log(data);
       setWhiteListedAssets(data?.assetIds)
       setLoading(false)
     })
@@ -161,6 +163,7 @@ const Deposit = ({
   const AvailableAssetBalance = getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
+  console.log(whiteListedAssetId);
 
   const handleInputMax = () => {
     if (Number(AvailableAssetBalance) > DEFAULT_FEE) {
@@ -187,7 +190,7 @@ const Deposit = ({
             depositor: address,
             amount: getAmount(inAmount),
             assetId: Long.fromNumber(whiteListedAssetId),
-            appMappingId: Long.fromNumber(1),
+            appMappingId: Long.fromNumber(PRODUCT_ID),
           }
         },
         fee: defaultFee(),
@@ -232,10 +235,10 @@ const Deposit = ({
           typeUrl: "/comdex.locker.v1beta1.MsgDepositAssetRequest",
           value: {
             depositor: address,
-            lockerId: "hbr1",
+            lockerId: "Harbor1",
             amount: getAmount(inAmount),
-            assetId: Long.fromNumber(whiteListedAssetId),
-            appMappingId: Long.fromNumber(1),
+            assetId: Long.fromNumber(4),
+            appMappingId: Long.fromNumber(PRODUCT_ID),
           }
         },
         fee: defaultFee(),
