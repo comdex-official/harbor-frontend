@@ -103,7 +103,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
         },
       },
       gridLineWidth: 1,
-      gridLineColor: isDarkMode ? "#FFCEFF" : "#FFCEFF",
+      gridLineColor: isDarkMode ? "#6C597B" : "#FFCEFF",
       categories: [
         "JAN",
         "FEB",
@@ -170,7 +170,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
         },
       },
       gridLineWidth: 1,
-      gridLineColor: isDarkMode ? "#FFCEFF" : "#FFCEFF",
+      gridLineColor: isDarkMode ? "#6C597B" : "#FFCEFF",
       categories: [
         "JAN",
         "FEB",
