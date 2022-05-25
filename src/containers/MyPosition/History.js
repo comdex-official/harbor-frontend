@@ -77,6 +77,12 @@ const History = (props) => {
       // width: 180
     },
     {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      // width: 150,
+    },
+    {
       title: "Date",
       dataIndex: "date",
       key: "date",

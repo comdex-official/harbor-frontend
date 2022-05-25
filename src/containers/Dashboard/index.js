@@ -10,7 +10,6 @@ import "./index.scss";
 import Banner from "./Banner";
 
 const Dashboard = ({ lang, isDarkMode }) => {
-  // let isDarkMode = localStorage.getItem("isDarkMode");
   const Options = {
     chart: {
       type: "pie",
@@ -49,19 +48,20 @@ const Dashboard = ({ lang, isDarkMode }) => {
         name: "",
         data: [
           {
-            name: "Total Deposited",
+            name: "ATOM",
             y: 60,
-            color: "#665aa6",
+            color: "#665AA6",
+            // color: isDarkMode ? "#373549" : "#E0E0E0",
           },
           {
-            name: "Total Collateral",
+            name: "CMDX",
             y: 40,
             color: "#BFA9D7",
           },
           {
-            name: "Othere",
+            name: "Others",
             y: 30,
-            color: "#373549",
+            color: isDarkMode ? "#373549" : "#E0E0E0",
           },
         ],
       },
@@ -203,13 +203,13 @@ const Dashboard = ({ lang, isDarkMode }) => {
   };
 
   return (
-    <div className="app-content-wrapper">
+    <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>
         <Col className="dashboard-upper ">
           <div className="dashboard-upper-left ">
             <div className="composite-card  earn-deposite-card">
               <div className="dashboard-statics">
-                <p>Total Value Locked</p>
+                <p className="total-value">Total Value Locked <TooltipIcon text={variables[lang].tooltip_total_value_locked} /></p>
                 <h2>$15,690.00</h2>
               </div>
               <div className="totalvalues">
@@ -239,17 +239,17 @@ const Dashboard = ({ lang, isDarkMode }) => {
                 <div className="col1">
                   <small>CMST Price</small>
                   <h4>
-                    $1.01 <span>2.41%</span>
+                    $1.00 <span>0.00%</span>
                   </h4>
                 </div>
                 <div className="col2">
-                  <small>Circulating Supply</small>
+                  <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply} /></small>
                   <p>
                     12,500,000 <span>CMST</span>
                   </p>
                 </div>
                 <div className="col3">
-                  <small>Market Cap</small>
+                  <small>Market Cap <TooltipIcon text={variables[lang].tooltip_market_cap} /></small>
                   <p>$72,125,000</p>
                 </div>
               </div>
@@ -267,13 +267,13 @@ const Dashboard = ({ lang, isDarkMode }) => {
                     </h4>
                   </div>
                   <div className="col2">
-                    <small>Circulating Supply</small>
+                    <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply} /></small>
                     <p>
                       12,500,000 <span>HARBOR</span>
                     </p>
                   </div>
                   <div className="col3">
-                    <small>Market Cap</small>
+                    <small>Market Cap <TooltipIcon text={variables[lang].tooltip_market_cap} /></small>
                     <p>$72,125,000</p>
                   </div>
                 </div>
