@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { comdex } from "../../config/network";
 import { decodeTxRaw } from "@cosmjs/proto-signing";
 import { fetchTxHistory, messageTypeToText } from "../../services/transaction";
-import { generateHash } from "../../utils/string";
+import { generateHash , truncateString} from "../../utils/string";
 import moment from "moment";
 import "./index.scss";
 
@@ -35,7 +35,8 @@ const History = (props) => {
     });
   };
 
-  const tableData1 =
+  console.log("history...", props.history);
+  const tableData =
     props.history &&
     props.history.list &&
     props.history.list.length > 0 &&
@@ -55,12 +56,11 @@ const History = (props) => {
             target="_blank"
           >
             {" "}
-            {hash}
-          </a>
+            {truncateString(hash, 6, 6)}         
+             </a>
         ),
         type: messageTypeToText(decodedTransaction.body.messages[0].typeUrl),
         block_height: item.height,
-        date: moment(),
       };
     });
 
@@ -107,22 +107,22 @@ const History = (props) => {
     },
   ];
 
-  const tableData = [
-    {
-      key: 1,
-      type: "Deposit",
-      date: "30 Jul 2022",
-      block_height: "1234",
-      tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
-    },
-    {
-      key: 2,
-      type: "Repay",
-      date: "30 Jul 2022",
-      block_height: "1234",
-      tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
-    },
-  ];
+  // const tableData = [
+  //   {
+  //     key: 1,
+  //     type: "Deposit",
+  //     date: "30 Jul 2022",
+  //     block_height: "1234",
+  //     tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
+  //   },
+  //   {
+  //     key: 2,
+  //     type: "Repay",
+  //     date: "30 Jul 2022",
+  //     block_height: "1234",
+  //     tnx_hash: "0x6696672B38cF38e5521c8C6e3A902EF4e2F78736",
+  //   },
+  // ];
 
   return (
     <div className="app-content-wrapper">
@@ -132,7 +132,7 @@ const History = (props) => {
             <div className="card-content">
               <Table
                 className="custom-table"
-                dataSource={tableData1}
+                dataSource={tableData}
                 columns={columns}
                 scroll={{ x: "100%" }}
               loading={inProgress}
