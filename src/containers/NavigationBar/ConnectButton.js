@@ -29,7 +29,7 @@ import { marketPrice } from "../../utils/number";
 import { queryMarketList } from "../../services/oracle/query";
 import { setMarkets } from "../../actions/oracle";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { comdex } from "../../config/network";
+import { cmst, comdex, harbor } from "../../config/network";
 
 const ConnectButton = ({
   setAccountAddress,
@@ -130,7 +130,9 @@ const ConnectButton = ({
     const assetBalances = balances.filter(
       (item) =>
         item.denom.substr(0, 4) === "ibc/" ||
-        item.denom === comdex.coinMinimalDenom
+        item.denom === comdex.coinMinimalDenom ||
+        item.denom === cmst.coinMinimalDenom ||
+        item.denom === harbor.coinMinimalDenom
     );
 
     const value = assetBalances.map((item) => {
