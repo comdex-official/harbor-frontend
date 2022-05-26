@@ -101,7 +101,7 @@ const Minting = ({
                       </div>
                       <div className="vault-name-container">
                         <div className="vault-name">{item?.pairName}</div>
-                        <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
+                        <div className="vault-desc"/>
                       </div>
                     </div>
                     <div className="bottom-container">

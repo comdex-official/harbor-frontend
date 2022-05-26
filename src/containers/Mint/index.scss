@@ -358,13 +358,10 @@
 
 .vault-mint-main-container {
   .card-main-container {
-    // display: grid;
-    // grid-template-columns: repeat(3, minmax(20rem, 1fr));
-    // grid-template-rows: repeat(auto, 1fr);
-    // gap: 12px;
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
+    cursor: pointer;
     .card-container {
       background: $assets-bg-light;
       padding: 25px 25px;
@@ -395,7 +392,6 @@
       .up-container {
         display: flex;
         column-gap: 10px;
-        margin-bottom: 20px;
         .icon-container {
           flex-basis: 20%;
           height: 5rem;
