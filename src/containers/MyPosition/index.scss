@@ -178,64 +178,12 @@
                   color: $text-color-light;
                 }
               }
-
-              // &:nth-child(odd) {
-              //   background: $background-light;
-              //   box-shadow: $box-shadow-inner-light;
-
-              //   .dark-mode & {
-              //     background: $background-dark1;
-              //     box-shadow: none;
-              //   }
-              //   &:hover {
-              //     box-shadow: $box-shadow-inner-light;
-
-              //     .dark-mode & {
-              //       box-shadow: $box-shadow-inner-dark;
-              //       box-shadow: none;
-              //     }
-              //   }
-              // }
-
-              // &:nth-child(even) {
-              //   background: $background-light;
-              //   box-shadow: $box-shadow-inner-light;
-
-              //   .dark-mode & {
-              //     background: $background-dark2;
-              //     box-shadow: none;
-              //   }
-              //   &:hover {
-              //     box-shadow: $box-shadow-inner-light-hover;
-
-              //     .dark-mode & {
-              //       box-shadow: $box-shadow-inner-dark;
-              //       box-shadow: none;
-              //     }
-              //   }
-              // }
             }
           }
         }
       }
     }
   }
-  // .ant-table {
-  // .ant-table-content {
-  //   table {
-  //     .ant-table-tbody {
-  //       tr {
-  //         td {
-  //           padding: 15px 15px !important;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-  // td {
-  //   padding: 15px 15px !important;
-  // }
-  // }
 }
 
 .vaults-table-container {
@@ -360,6 +308,9 @@
   padding: 48px 40px 40px 35px;
   margin-bottom: 2rem;
   // height: 12rem;
+  @media only screen and (max-width: 850px) {
+    flex-direction: column;
+  }
   .dark-mode & {
   }
   .myhome-upper-left {
@@ -386,6 +337,12 @@
         p {
           margin-bottom: 0;
           font-size: $font-size-base;
+          @media only screen and (min-width: 850px) and (max-width: 1065px) {
+            font-size: 12px;
+          }
+          @media only screen and (min-width: 500px) and (max-width: 530px) {
+            font-size: 12px;
+          }
         }
         .stats-values {
           display: flex;
@@ -410,10 +367,27 @@
           }
         }
       }
+      .ant-row {
+        @media only screen and (max-width: 760px) {
+          row-gap: 12px;
+        }
+        @media only screen and (min-width: 500px) and (max-width: 570px) {
+          justify-content: space-between;
+          & div:nth-child(1) {
+            flex-basis: 35%;
+          }
+          & div:nth-child(2) {
+            flex-basis: 45%;
+          }
+        }
+      }
     }
   }
   .myhome-upper-right {
     width: 40%;
+    @media only screen and (max-width: 765px) {
+      width: 100%;
+    }
     .borrow-limit-bar {
       .small-text {
         font-size: $font-size-base - 1;

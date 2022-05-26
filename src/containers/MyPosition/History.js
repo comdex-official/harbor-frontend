@@ -59,6 +59,7 @@ const History = (props) => {
             {truncateString(hash, 6, 6)}
           </a>
         ),
+        amount: 1,
         type: messageTypeToText(decodedTransaction.body.messages[0].typeUrl),
         block_height: item.height,
         date: item.height,
@@ -76,26 +77,30 @@ const History = (props) => {
       title: "Type",
       dataIndex: "type",
       key: "type",
-      // width: 180
+      width: 100
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      // width: 150,
+      render: (value) => (
+        <div>
+          <span>{value}</span>
+        </div>
+      )
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      // width: 150,
+      width: 250,
       render: (height) => <Date height={height} />,
     },
     {
       title: "Block Height",
       dataIndex: "block_height",
       key: "block_height",
-      // width: 150,
+      width: 150,
     },
     {
       title: "Tnx Hash",
@@ -104,7 +109,7 @@ const History = (props) => {
       width: 150,
       render: (tnx_hash) => (
         <div className="tnxshash-col">
-          {tnx_hash} <Copy />
+          <span > {tnx_hash} </span><Copy />
         </div>
       ),
     },

@@ -460,7 +460,10 @@ button {
         border-radius: 20px;
         border: 1px solid $background-light;
         padding: 5px;
-
+        background: $background-light;
+        .dark-mode & {
+          background: transparent;
+        }
         .ant-tabs-ink-bar {
           display: none;
         }
@@ -647,6 +650,12 @@ button {
               .dark-mode & {
                 color: $white;
                 border-color: $border-dark;
+              }
+              a {
+                color: $text-color-light2;
+                .dark-mode & {
+                  color: white;
+                }
               }
             }
 
@@ -1610,10 +1619,16 @@ button {
 
 .details-wrapper {
   display: flex;
+  @media only screen and (max-width: 870px) {
+    flex-direction: column;
+  }
   .details-left {
     width: 50%;
     margin-right: 25px;
     padding: 35px 40px;
+    @media only screen and (max-width: 870px) {
+      width: 100%;
+    }
     .deposit-head {
       display: flex;
       align-items: flex-end;
@@ -1653,6 +1668,7 @@ button {
       }
       .deposit-head-right {
         padding-bottom: 20px;
+
         .ant-switch {
           margin-left: 10px;
         }
@@ -1665,6 +1681,11 @@ button {
   .details-right {
     width: 50%;
     padding-left: 25px;
+    @media only screen and (max-width: 870px) {
+      width: 100%;
+      padding-left: 0;
+      padding-top: 28px;
+    }
     .composite-card {
       padding: 20px 25px;
       margin-bottom: 35px;
