@@ -6,6 +6,7 @@ import { Button, Table, Progress } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
 import TooltipIcon from "../../components/TooltipIcon";
+import Item from "antd/lib/list/Item";
 
 const MyVault = (lang) => {
   const columns = [
@@ -57,9 +58,9 @@ const MyVault = (lang) => {
       key: "action",
       align: "right",
       width: 200,
-      render: () => (
+      render: (item) => (
         <>
-          <Link to="/vault">
+          <Link to="/vault/1">
             <Button type="primary" className="btn-filled" size="small">
               Manage
             </Button>
@@ -93,6 +94,7 @@ const MyVault = (lang) => {
       ),
       debt: "90 CMST",
       apy: "20",
+      action: "item",
     },
   ];
 

@@ -1,9 +1,9 @@
 import * as PropTypes from "prop-types";
 import { Button, Input, Modal } from "antd";
-import { Row, Col } from "../../../components/common";
+import { Row, Col } from "../../../../components/common";
 import { connect } from "react-redux";
 import React, { useState } from "react";
-import variables from "../../../utils/variables";
+import variables from "../../../../utils/variables";
 import "./index.scss";
 
 const PlaceBidModal = () => {
@@ -29,16 +29,34 @@ const PlaceBidModal = () => {
       </Button>
       <Modal
         centered={true}
-        className="palcebid-modal"
+        className="palcebid-modal auction-placebid-modal"
         footer={null}
         header={null}
         visible={isModalVisible}
         width={550}
         closable={false}
         onOk={handleOk}
+        onCancel={handleCancel}
         closeIcon={null}
       >
         <div className="palcebid-modal-inner">
+          <Row>
+            <Col sm="6">
+              <p>Remaning Time </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>0:00:00</label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Quantity </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>-</label>
+            </Col>
+          </Row>
+
           <Row>
             <Col sm="6">
               <p>Opening Bid</p>
@@ -65,7 +83,7 @@ const PlaceBidModal = () => {
           </Row>
           <Row>
             <Col sm="6">
-              <p>Auction Discount</p>
+              <p>Auction Price</p>
             </Col>
             <Col sm="6" className="text-right">
               <label>5 %</label>
