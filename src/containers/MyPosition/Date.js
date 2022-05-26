@@ -20,11 +20,10 @@ const Date = ({ height }) => {
   };
 
   return (
-    <div className="dates-col">
+    <div className="dates-col" style={{ width: "240px" }}>
       <div className="dates">
-        {moment.utc(timestamp).local().startOf("seconds").fromNow()}
+        {moment(timestamp).format("DD/MM/YYYY")}
       </div>
-      <small>{moment(timestamp).format("MMM DD, YYYY HH:mm")}</small>
     </div>
   );
 };
