@@ -8,7 +8,7 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 
-const SerplusAuctions = (lang, setPairs) => {
+const SerplusAuctions = ({setPairs}) => {
   const columns = [
     {
       title: "Auctioned Asset",
@@ -45,7 +45,7 @@ const SerplusAuctions = (lang, setPairs) => {
     {
       title: (
         <>
-          <FilterModal />
+          <FilterModal setPairs={setPairs}/>
         </>
       ),
       dataIndex: "action",

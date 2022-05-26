@@ -8,7 +8,7 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 
-const CollateralAuctions = (lang, setPairs) => {
+const CollateralAuctions = ({setPairs}) => {
     const columns = [
         {
             title: "Auctioned Asset",
