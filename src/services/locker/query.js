@@ -18,7 +18,7 @@ export const queryLockerWhiteListedAssetByProduct = (callback) => {
             });
     });
 };
-export const queryLockerWhiteListedAssetByProductId = (productId,callback) => {
+export const queryLockerWhiteListedAssetByProductId = (productId, callback) => {
     createQueryClient((error, rpcClient) => {
         if (error) {
             callback(error);
@@ -36,7 +36,7 @@ export const queryLockerWhiteListedAssetByProductId = (productId,callback) => {
             });
     });
 };
-export const queryUserLockerByProductAssetId = (productId, assetId, owner,callback) => {
+export const queryUserLockerByProductAssetId = (productId, assetId, owner, callback) => {
     createQueryClient((error, rpcClient) => {
         if (error) {
             callback(error);
@@ -46,7 +46,7 @@ export const queryUserLockerByProductAssetId = (productId, assetId, owner,callba
             .QueryOwnerLockerByProductToAssetID({
                 productId: Long.fromNumber(productId),
                 assetId: Long.fromNumber(assetId),
-                owner:owner
+                owner: owner
             }).then((result) => {
                 callback(null, result);
             })
@@ -56,7 +56,7 @@ export const queryUserLockerByProductAssetId = (productId, assetId, owner,callba
             });
     });
 };
-export const queryUserLockedValueInLocker = (productId, assetId, owner,callback) => {
+export const queryUserLockedValueInLocker = (productId, assetId, owner, callback) => {
     createQueryClient((error, rpcClient) => {
         if (error) {
             callback(error);
@@ -66,7 +66,7 @@ export const queryUserLockedValueInLocker = (productId, assetId, owner,callback)
             .QueryOwnerLockerByProductToAssetID({
                 productId: Long.fromNumber(productId),
                 assetId: Long.fromNumber(assetId),
-                owner:owner
+                owner: owner
             }).then((result) => {
                 callback(null, result);
             })
@@ -77,3 +77,21 @@ export const queryUserLockedValueInLocker = (productId, assetId, owner,callback)
     });
 };
 
+export const queryLockerLookupTableByApp = (productId, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryServiceClientImpl(rpcClient)
+            .QueryLockerLookupTableByApp({
+                appId: Long.fromNumber(productId),
+            }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                console.log(error);
+                callback(error?.message);
+            })
+    });
+};
