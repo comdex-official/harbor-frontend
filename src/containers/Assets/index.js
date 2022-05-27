@@ -148,7 +148,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
 
   const currentChainData = [
     {
-      key: comdex.coinDenom,
+      key: comdex.coinMinimalDenom,
       asset: (
         <>
           <div className="assets-withicon">
@@ -166,7 +166,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
       },
     },
     {
-      key: comdex.chainId,
+      key: cmst?.coinMinimalDenom,
       asset: (
         <>
           <div className="assets-withicon">
@@ -184,7 +184,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
       },
     },
     {
-      key: comdex.chainId,
+      key: harbor?.coinMinimalDenom,
       asset: (
         <>
           <div className="assets-withicon">
