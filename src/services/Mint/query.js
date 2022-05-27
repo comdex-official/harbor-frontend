@@ -23,6 +23,28 @@ export const queryExtendedPairVault = (productId, callback) => {
 };
 
 
+export const queryVaultByProductId = (
+    product,
+    callback
+) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryServiceClientImpl(rpcClient)
+            .QueryAllVaultsByProduct({
+                appId: Long.fromNumber(product)
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};
+
 export const queryVaultByOwner = (
     owner,
     callback
@@ -88,6 +110,23 @@ export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
         new QueryServiceClientImpl(rpcClient)
             .QueryVault({
                 id: ownerVaultId,
+            }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+
+            });
+    })
+}
+export const queryAllVaultByProduct = (productId, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error)
+        }
+        new QueryServiceClientImpl(rpcClient)
+            .QueryVaultByProduct({
+                productId: Long.fromNumber(productId),
             }).then((result) => {
                 callback(null, result);
             })

@@ -225,14 +225,11 @@ const Withdraw = ({
     <>
       <Col>
         <div className="farm-content-card earn-deposite-card earn-main-deposite locker-withdraw">
-          <div className="withdraw-title">Withdraw</div>
+          <div className="withdraw-title">Locker</div>
           <div className="withdraw-main-container">
             <div className="withdraw-content-container">
               <div className="withdraw-stats-container">
-                <div className="withdraw-stats">
-                  <div className="stats-title">Interest</div>
-                  <div className="stats-value">{returnsAccumulated || 0} {denomConversion(whiteListedAssetData[0]?.denom)}  </div>
-                </div>
+
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
                   <div className="stats-value">
@@ -240,8 +237,8 @@ const Withdraw = ({
                   </div>
                 </div>
                 <div className="withdraw-stats">
-                  <div className="stats-title">Lorem</div>
-                  <div className="stats-value">1234 CMST</div>
+                  <div className="stats-title">Interest</div>
+                  <div className="stats-value">{returnsAccumulated || 0} {denomConversion(whiteListedAssetData[0]?.denom)}  </div>
                 </div>
               </div>
               <div className="available-container">
@@ -251,6 +248,7 @@ const Withdraw = ({
                     <CustomInput
                       className="ant-input"
                       value={inAmount}
+                      placeholder="0.00"
                       onChange={(event) =>
                         handleInputChange(event.target.value)
                       }

@@ -38,3 +38,9 @@ export const marketPrice = (array, denom) => {
   // return 1; // returning 1 as we are using ust.
   return CMDX_PRICE; // returning 1 as we are using ust.
 };
+
+export const calculateROI = (principal,interestRate, years, months, days) => {
+  const earns = Number(principal) * (1+(Number(interestRate)/100)) ** (Number(years)+Number(months)/12+Number(days)/365);
+
+  return earns.toFixed(DOLLAR_DECIMALS)
+}

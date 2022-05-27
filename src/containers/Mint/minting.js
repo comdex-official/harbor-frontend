@@ -11,7 +11,7 @@ import "./index.scss";
 import { Link } from "react-router-dom";
 import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryExtendedPairVault } from "../../services/Mint/query";
+import { queryAllVaultByProduct, queryExtendedPairVault, queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
 import { PRODUCT_ID } from "../../constants/common";
 import { queryPairVaults } from "../../services/asset/query";
@@ -42,12 +42,12 @@ const Minting = ({
 
   useEffect(() => {
     fetchExtendexPairList(PRODUCT_ID);
-    fetchQueryPairValuts();
+    fetchQueryPairValuts(PRODUCT_ID);
   }, [address])
 
   // *******Get Vault Query *********
 
-  // *----------Get list of all extended pair vaults Id's across product id----------*
+  // *----------Get list of all extended pair vaults Id's across product id----------* From asset module 
 
   const fetchExtendexPairList = (productId) => {
     setLoading(true)
@@ -56,7 +56,7 @@ const Minting = ({
         message.error(error);
         return;
       }
-      // console.log("Extented pair List", data);
+      console.log("Extented pair List", data);
       dispatch(setAllExtendedPair(data?.extendedPairIds));
       setLoading(false)
 
@@ -65,14 +65,26 @@ const Minting = ({
 
   // *----------Get list of all extended pair vaults----------*
 
-  const fetchQueryPairValuts = () => {
+  // const fetchQueryPairValuts = () => {
+  //   setLoading(true)
+  //   queryPairVaults((error, data) => {
+  //     if (error) {
+  //       message.error(error);
+  //       return;
+  //     }
+  //     console.log("Pair vaults list", data);
+  //     dispatch(setExtendedPairVaultListData(data))
+  //     setLoading(false)
+  //   })
+  // }
+  const fetchQueryPairValuts = (productId) => {
     setLoading(true)
-    queryPairVaults((error, data) => {
+    queryVaultByProductId(productId, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      // console.log("Pair vaults list", data);
+      console.log("Pair vaults list", data);
       dispatch(setExtendedPairVaultListData(data))
       setLoading(false)
     })
