@@ -8,7 +8,7 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 
-const SerplusAuctions = ({setPairs}) => {
+const SurplusAuction = ({setPairs}) => {
   const columns = [
     {
       title: "Auctioned Asset",
@@ -188,7 +188,7 @@ const SerplusAuctions = ({setPairs}) => {
   );
 };
 
-SerplusAuctions.propTypes = {
+SurplusAuction.propTypes = {
   lang: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
 };
@@ -203,4 +203,4 @@ const actionsToProps = {
   setPairs,
 };
 
-export default connect(stateToProps, actionsToProps)(SerplusAuctions);
+export default connect(stateToProps, actionsToProps)(SurplusAuction);

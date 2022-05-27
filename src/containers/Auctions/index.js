@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Tabs, message, Button } from "antd";
 import { connect } from 'react-redux';
 import { Col, Row } from "../../components/common";
-import SerplusAuction from "./Serplus Auction";
+import SurplusAuction from "./SurplusAuction";
 import DebtAuction from "./Debt Auction";
 import CollateralAuction from "./Collateral Auction";
 import { setPairs } from "../../actions/asset";
@@ -30,8 +30,8 @@ const Auctions = ({ lang, setPairs }) => {
                                 <CollateralAuction />
 
                             </TabPane>
-                            <TabPane tab="Serplus" key="2" >
-                                <SerplusAuction />
+                            <TabPane tab="Surplus" key="2" >
+                                <SurplusAuction />
 
                             </TabPane>
                             <TabPane tab="Debt" key="3" >

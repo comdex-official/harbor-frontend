@@ -12,7 +12,8 @@ const CustomInput = ({
   onChange,
   onFocus,
   validationError,
-    decimals,
+  decimals,
+  min,
 }) => {
   const isError = validationError?.message?.length > 0;
 
@@ -23,15 +24,19 @@ const CustomInput = ({
         value={value || ""}
         className={className}
         disabled={disabled}
-        placeholder={placeholder || Number().toFixed(decimals || comdex.coinDecimals)}
+        placeholder={
+          placeholder || Number().toFixed(decimals || comdex.coinDecimals)
+        }
         onChange={onChange}
         onFocus={onFocus}
+        min={min || 0}
+        // Restricting user from entering negative numbers
       />
-      {isError ?
+      {isError ? (
         <div className={isError ? "alert-label" : "alert-label alert-hidden"}>
           {validationError?.message}
         </div>
-        : null}
+      ) : null}
     </>
   );
 };
