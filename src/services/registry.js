@@ -1,8 +1,6 @@
 import {
-  MsgCreatePool,
   MsgDeposit,
   MsgWithdraw,
-  MsgLimitOrder,
 } from "comdex-codec/build/comdex/liquidity/v1beta1/tx";
 import { MsgCreateLockerRequest, MsgDepositAssetRequest, MsgWithdrawAssetRequest } from 'comdex-codec/build/comdex/locker/v1beta1/msg';
 import { MsgCreateRequest, MsgDepositRequest, MsgWithdrawRequest, MsgDrawRequest, MsgRepayRequest, MsgCloseRequest } from 'comdex-codec/build/comdex/vault/v1beta1/msg'
