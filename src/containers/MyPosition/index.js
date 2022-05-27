@@ -3,7 +3,7 @@ import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
 import variables from "../../utils/variables";
 import { Progress, Tabs, List, Tooltip } from "antd";
-import MyEarn from "./MyEarn";
+import MyEarn from "./MyLocker";
 import Borrow from "./MyVault";
 import History from "./History";
 import "./index.scss";
@@ -81,16 +81,16 @@ const MyPositions = (lang) => {
           {/* {earnTab && "Current Balance"} */}
           {earnTab &&
             <>
-            Current Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
+              Current Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
             </>}
           {vaultTab && <>
             Collateral Locked <TooltipIcon text="Total amount of collateral locked across all vaults" />
           </>}
-          {historyTab && 
-          <>
-            Current CMST Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
-          </>
-         }
+          {historyTab &&
+            <>
+              Current CMST Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
+            </>
+          }
         </>
       ),
       counts: (
@@ -119,11 +119,11 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {earnTab && 
-          <>
-            Total interest Earned <TooltipIcon text="Total interest accumulated till date from Locker" />
-          </>
-         }
+          {earnTab &&
+            <>
+              Total interest Earned <TooltipIcon text="Total interest accumulated till date from Locker" />
+            </>
+          }
           {vaultTab && <>
             Total Due <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
           </>
@@ -131,7 +131,7 @@ const MyPositions = (lang) => {
           {historyTab && <>
             Collateral Locked <TooltipIcon text="Total amount of collateral locked across all vaults" />
           </>
-           }
+          }
         </>
       ),
       counts: (
@@ -160,17 +160,17 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {earnTab && 
-          <>
-            Current interest Rate <TooltipIcon text="Current annual interest rate of Locker" />
-          </>
-        }
-          {vaultTab && 
-          <>
-            Available To Borrow <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
-          </>
+          {earnTab &&
+            <>
+              Current interest Rate <TooltipIcon text="Current annual interest rate of Locker" />
+            </>
           }
-          {historyTab &&  <>
+          {vaultTab &&
+            <>
+              Available To Borrow <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
+            </>
+          }
+          {historyTab && <>
             Total Borrowed <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
           </>
           }

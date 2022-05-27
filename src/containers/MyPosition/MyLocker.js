@@ -2,10 +2,13 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
 import variables from "../../utils/variables";
-import { Button, Table, Switch } from "antd";
+import { Button, Table, Switch, message } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
 import TooltipIcon from "../../components/TooltipIcon";
+import { queryLockerLookupTableByApp } from "../../services/locker/query";
+import { useEffect } from "react";
+import { PRODUCT_ID } from "../../constants/common";
 
 function onChange(checked) {
   console.log(`switch to ${checked}`);
@@ -71,6 +74,27 @@ const MyEarn = (lang) => {
       balance: "20 CMST",
     },
   ];
+  useEffect(() => {
+    fetchLookUpTableByProductId(PRODUCT_ID);
+  }, [])
+
+  // *******Get Vault Query *********
+
+  // *----------Get ...... product id----------* From asset module 
+  const fetchLookUpTableByProductId = (productId) => {
+    // setLoading(true);
+    queryLockerLookupTableByApp(productId, (error, data) => {
+      // setLoading(false);
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log("Lookup table data", data);
+    });
+  };
+
+
+
 
   return (
     <div className="app-content-wrappers earn-table-container">

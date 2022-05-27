@@ -7,8 +7,9 @@ import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
+import Bidding from "./Bidding";
 
-const CollateralAuctions = (lang, setPairs) => {
+const CollateralAuctions = ({ setPairs }) => {
     const columns = [
         {
             title: "Auctioned Asset",
@@ -180,6 +181,12 @@ const CollateralAuctions = (lang, setPairs) => {
                                 pagination={false}
                                 scroll={{ x: "100%" }}
                             />
+                        </div>
+                    </div>
+                    <div className="more-bottom">
+                        <h3>Your Bidding</h3>
+                        <div className="more-bottom-card">
+                            <Bidding />
                         </div>
                     </div>
                 </Col>

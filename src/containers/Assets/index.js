@@ -20,8 +20,9 @@ import { cmst, comdex, harbor } from "../../config/network";
 import Lodash from "lodash";
 import { marketPrice } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
+import { commaSeparator } from "../../utils/number";
 
-const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
   const columns = [
     {
       title: "Asset",
@@ -33,12 +34,22 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
       dataIndex: "noOfTokens",
       key: "noOfTokens",
       align: "center",
+      render: (tokens) => (
+        <>
+          <p>${commaSeparator(Number(tokens || 0))}</p>
+        </>
+      ),
     },
     {
       title: "Oracle Price",
       dataIndex: "oraclePrice",
       key: "oraclePrice",
       align: "center",
+      render: (price) => (
+        <>
+          <p>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</p>
+        </>
+      ),
     },
     {
       title: "Amount",
@@ -47,7 +58,12 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
       align: "center",
       render: (balance) => (
         <>
-          <p>${amountConversion(balance?.value, DOLLAR_DECIMALS) || 0}</p>
+          <p>
+            $
+            {commaSeparator(
+              amountConversion(balance?.value || 0, DOLLAR_DECIMALS)
+            )}
+          </p>
         </>
       ),
     },
@@ -130,7 +146,6 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
   const cmstCoinValue = getPrice(cmstCoin?.denom) * cmstCoin?.amount;
   const harborCoinValue = getPrice(harborCoin?.denom) * harborCoin?.amount;
 
-
   const currentChainData = [
     {
       key: comdex.coinDenom,
@@ -145,7 +160,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
         </>
       ),
       noOfTokens: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
-      oraclePrice: 123,
+      oraclePrice: getPrice(comdex?.coinMinimalDenom),
       amount: {
         value: nativeCoinValue || 0,
       },
@@ -163,7 +178,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
         </>
       ),
       noOfTokens: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
-      oraclePrice: 123,
+      oraclePrice: getPrice(cmst?.coinMinimalDenom),
       amount: {
         value: cmstCoinValue || 0,
       },
@@ -181,13 +196,12 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
         </>
       ),
       noOfTokens: harborCoin?.amount ? amountConversion(harborCoin.amount) : 0,
-      oraclePrice: 123,
+      oraclePrice: getPrice(harbor?.coinMinimalDenom),
+
       amount: {
         value: harborCoinValue || 0,
       },
     },
-
-
   ];
 
   const tableIBCData =
@@ -208,7 +222,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, }) => {
           </>
         ),
         noOfTokens: item?.balance?.amount,
-        oraclePrice: 123,
+        oraclePrice: getPrice(item.currency?.coinMinimalDenom),
         amount: item.balance,
         ibcdeposit: item,
         ibcwithdraw: item,

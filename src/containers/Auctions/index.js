@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Tabs, message, Button } from "antd";
 import { connect } from 'react-redux';
 import { Col, Row } from "../../components/common";
-import SurplusAuction from "./Serplus Auction";
+import SurplusAuction from "./SurplusAuction";
 import DebtAuction from "./Debt Auction";
 import CollateralAuction from "./Collateral Auction";
 import { setPairs } from "../../actions/asset";

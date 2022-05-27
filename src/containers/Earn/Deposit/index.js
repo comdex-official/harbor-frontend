@@ -162,7 +162,7 @@ const Deposit = ({
   }
 
   getAssetDenom();
-  
+
   const AvailableAssetBalance = getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo[0]?.lockerId;

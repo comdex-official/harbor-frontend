@@ -243,7 +243,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
                   </h4>
                 </div>
                 <div className="col2">
-                  <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply} /></small>
+                  <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply_CMST} /></small>
                   <p>
                     12,500,000 <span>CMST</span>
                   </p>
@@ -267,7 +267,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
                     </h4>
                   </div>
                   <div className="col2">
-                    <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply} /></small>
+                    <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply_HARBOR} /></small>
                     <p>
                       12,500,000 <span>HARBOR</span>
                     </p>
