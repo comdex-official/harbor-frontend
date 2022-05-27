@@ -1,7 +1,6 @@
 import { Button } from "antd";
 import * as PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import variables from "../../utils/variables";
 
 const Banner = ({ lang }) => {
   return (
