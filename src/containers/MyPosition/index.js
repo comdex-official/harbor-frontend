@@ -1,8 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
-import variables from "../../utils/variables";
-import { Progress, Tabs, List, Tooltip } from "antd";
+import { Progress, Tabs, List} from "antd";
 import MyEarn from "./MyLocker";
 import Borrow from "./MyVault";
 import History from "./History";
@@ -12,43 +11,7 @@ import TooltipIcon from "../../components/TooltipIcon";
 
 const { TabPane } = Tabs;
 
-// const data = [
-//   {
-//     title: "Current Balance",
-//     counts: (
-//       <>
-//         <div className="stats-values">
-//           <h3>1.040,456</h3>
-//           <span>CMST</span>
-//         </div>
-//       </>
-//     ),
-//   },
-//   {
-//     title: "Total interest Earned",
-//     counts: (
-//       <>
-//         <div className="stats-values">
-//           <h3>21,456</h3>
-//           <span>CMST</span>
-//         </div>
-//       </>
-//     ),
-//   },
-//   {
-//     title: "Current interest Rate",
-//     counts: (
-//       <>
-//         <div className="stats-values">
-//           <h3>6%</h3>
-//           <span></span>
-//         </div>
-//       </>
-//     ),
-//   },
-// ];
-
-const MyPositions = (lang) => {
+const MyPositions = () => {
   const [earnTab, setEarnTab] = useState(true);
   const [vaultTab, setVaultTab] = useState(false);
   const [historyTab, setHistoryTab] = useState(false);
@@ -78,7 +41,6 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {/* {earnTab && "Current Balance"} */}
           {earnTab &&
             <>
               Current Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
