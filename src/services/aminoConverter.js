@@ -212,4 +212,129 @@ export const customAminoTypes = {
       };
     },
   },
+  "/comdex.locker.v1beta1.MsgCreateLockerRequest": {
+    aminoType: "locker/MsgCreateLockerRequest",
+    toAmino: ({
+      depositor,
+      amount,
+      assetId,
+      appMappingId,
+    }) => {
+      return {
+        depositor,
+        amount: amount,
+        asset_id: String(assetId),
+        app_mapping_id: String(appMappingId),
+      };
+    },
+    fromAmino: ({
+      depositor,
+      amount,
+      asset_id,
+      app_mapping_id,
+    
+    }) => {
+      return {
+        depositor,
+        amount: amount,
+        assetId: Number(asset_id),
+        appMappingId: Number(app_mapping_id),
+     
+      };
+    },
+  },
+  "/comdex.locker.v1beta1.MsgAddWhiteListedAssetRequest": {
+    aminoType: "locker/MsgAddWhiteListedAssetRequest",
+    toAmino: ({
+      from,
+      assetId,
+      appMappingId,
+    }) => {
+      return {
+        from,
+        asset_id: String(assetId),
+        app_mapping_id: String(appMappingId),
+      };
+    },
+    fromAmino: ({
+      from,
+      asset_id,
+      app_mapping_id,
+    
+    }) => {
+      return {
+        from,
+        assetId: Number(asset_id),
+        appMappingId: Number(app_mapping_id),
+      };
+    },
+  },
+  "/comdex.locker.v1beta1.MsgDepositAssetRequest": {
+    aminoType: "locker/MsgDepositAssetRequest",
+    toAmino: ({
+      depositor,
+      lockerId,
+      amount,
+      assetId,
+      appMappingId,
+    }) => {
+      return {
+        depositor,
+        locker_id: lockerId,
+        amount: amount,
+        asset_id: String(assetId),
+        app_mapping_id: String(appMappingId),
+      };
+    },
+    fromAmino: ({
+      depositor,
+      amount,
+      locker_id,
+      asset_id,
+      app_mapping_id,
+    
+    }) => {
+      return {
+        depositor,
+        lockerId: locker_id,
+        amount: amount,
+        assetId: Number(asset_id),
+        appMappingId: Number(app_mapping_id),
+      };
+    },
+  },
+  "/comdex.locker.v1beta1.MsgWithdrawAssetRequest": {
+    aminoType: "locker/MsgWithdrawAssetRequest",
+    toAmino: ({
+      depositor,
+      lockerId,
+      amount,
+      assetId,
+      appMappingId,
+    }) => {
+      return {
+        depositor,
+        locker_id: lockerId,
+        amount: amount,
+        asset_id: String(assetId),
+        app_mapping_id: String(appMappingId),
+      };
+    },
+    fromAmino: ({
+      depositor,
+      amount,
+      locker_id,
+      asset_id,
+      app_mapping_id,
+    
+    }) => {
+      return {
+        depositor,
+        lockerId: locker_id,
+        amount: amount,
+        assetId: Number(asset_id),
+        appMappingId: Number(app_mapping_id),
+      };
+    },
+  },
 };
