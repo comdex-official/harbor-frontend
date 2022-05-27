@@ -1,15 +1,14 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import variables from "../../../utils/variables";
-import { Button, Table } from "antd";
+import { Table } from "antd";
 import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import Bidding from "./Bidding";
 
-const DebtAuction = ({setPairs}) => {
+const DebtAuction = ({ setPairs }) => {
     const columns = [
         {
             title: "Auctioned Asset",
