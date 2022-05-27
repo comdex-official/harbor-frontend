@@ -12,7 +12,11 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { CautionNotice } from "./components/common";
 import Disclaimer from "./components/common/Disclaimer";
+import {message} from 'antd';
 
+message.config({
+  maxCount: 2,
+});
 
 const store = createStore(
   reducer,
