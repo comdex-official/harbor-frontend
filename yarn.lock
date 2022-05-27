@@ -4570,9 +4570,9 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-comdex-codec@comdex-official/proto-codecs#stable-latest-proto-file:
+comdex-codec@comdex-official/proto-codecs#stable-token-new-proto:
   version "0.1.0"
-  resolved "git+ssh://git@github.com/comdex-official/proto-codecs.git#22f0f330beb1e0edfb824b98182bd2ab1487cd37"
+  resolved "git+ssh://git@github.com/comdex-official/proto-codecs.git#b3faf4bb69d37ed0928f9477e80c5a3f37228968"
   dependencies:
     "@vercel/ncc" "^0.29.1"
     protobufjs "^6.11.2"
