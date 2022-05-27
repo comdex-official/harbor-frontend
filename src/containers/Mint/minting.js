@@ -1,20 +1,15 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
-import { Button, message, Table, Spin } from "antd";
+import { message,Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
-import PlaceBidModal from "../Auctions/Collateral Auction/PlaceBidModal";
-import FilterModal from "../Auctions/FilterModal/FilterModal";
-import data from "./data";
 import "./index.scss";
-import { Link } from "react-router-dom";
 import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryAllVaultByProduct, queryExtendedPairVault, queryVaultByProductId } from "../../services/Mint/query";
+import {  queryExtendedPairVault, queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
 import { PRODUCT_ID } from "../../constants/common";
-import { queryPairVaults } from "../../services/asset/query";
 import { setPairs } from "../../actions/asset";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -27,7 +22,7 @@ import {
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
 
-const Minting = ({ lang, address, pair, setPairs }) => {
+const Minting = ({  address}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -66,18 +61,6 @@ const Minting = ({ lang, address, pair, setPairs }) => {
 
   // *----------Get list of all extended pair vaults----------*
 
-  // const fetchQueryPairValuts = () => {
-  //   setLoading(true)
-  //   queryPairVaults((error, data) => {
-  //     if (error) {
-  //       message.error(error);
-  //       return;
-  //     }
-  //     console.log("Pair vaults list", data);
-  //     dispatch(setExtendedPairVaultListData(data))
-  //     setLoading(false)
-  //   })
-  // }
   const fetchQueryPairValuts = (productId) => {
     setLoading(true)
     queryVaultByProductId(productId, (error, data) => {

@@ -1,15 +1,6 @@
-import TooltipIcon from "../../../../../components/TooltipIcon";
-import { Col, Row, SvgIcon } from "../../../../../components/common";
-import variables from "../../../../../utils/variables";
-import {
-  iconNameFromDenom,
-  showTotalAssetCount,
-} from "../../../../../utils/string";
-import { denomConversion } from "../../../../../utils/coin";
-import { calculatePoolLiquidity } from "../../../../../utils/calculations";
 import { List } from "antd";
 
-const PricePool = ({ lang, poolBalance, markets }) => {
+const PricePool = () => {
   const data = [
     {
       title: "Liquidation Price",

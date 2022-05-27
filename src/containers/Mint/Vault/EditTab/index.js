@@ -1,5 +1,4 @@
-import * as PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PricePool from "../Mint/PricePool";
 import VaultDetails from "../Mint/VaultDetails";
 import Edit from "./Tab";
