@@ -2,17 +2,15 @@ import { Button, message, Slider } from "antd";
 import *  as PropTypes from 'prop-types';
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Col, Row, SvgIcon } from "../../../components/common";
+import { Col } from "../../../components/common";
 import CustomInput from "../../../components/CustomInput";
-import TooltipIcon from "../../../components/TooltipIcon";
 import {
   amountConversion,
   amountConversionWithComma,
   denomConversion,
   getAmount,
-  getDenomBalance,
 } from "../../../utils/coin";
-import { iconNameFromDenom, toDecimals } from "../../../utils/string";
+import { toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import "./index.scss";
 import { useDispatch } from "react-redux";
@@ -30,12 +28,7 @@ import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/com
 const Withdraw = ({
   lang,
   address,
-  reverse,
-  pair,
-  spotPrice,
-  setAssets,
   assets,
-  balances,
   refreshBalance,
   userLockedAmountInLocker,
   setUserLockedValue,
@@ -49,11 +42,9 @@ const Withdraw = ({
   const inAmount = useSelector((state) => state.asset.inAmount);
   const isLockerExist = useSelector((state) => state.locker.isLockerExist);
 
-  const [firstInput, setFirstInput] = useState();
-  const [secondInput, setSecondInput] = useState();
+
   const [inProgress, setInProgress] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
-  const [outputValidationError, setOutputValidationError] = useState();
   const [userDeposite, setuserDeposite] = useState();
   const [reward, setReward] = useState();
 
@@ -203,16 +194,6 @@ const Withdraw = ({
       }
     );
 
-  }
-  const handleInputMax = () => {
-    if (Number(userLockedAmountInLocker) > DEFAULT_FEE) {
-      return (
-        dispatch(setAmountIn(amountConversion(userLockedAmountInLocker - DEFAULT_FEE)))
-
-      )
-    } else {
-      return null
-    }
   }
   const marks = {
     0: "0%",

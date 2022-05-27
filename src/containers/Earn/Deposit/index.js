@@ -1,4 +1,4 @@
-import { Button, Input, message, Select } from "antd";
+import { Button, message, Select } from "antd";
 import Long from "long";
 import './index.scss'
 import *  as PropTypes from 'prop-types';
@@ -22,12 +22,10 @@ import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist, setOwn
 import "./index.scss";
 import { queryAssets } from "../../../services/asset/query";
 import { DEFAULT_FEE, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
-import { queryLockerWhiteListedAssetByProduct, queryLockerWhiteListedAssetByProductId, queryUserLockerByProductAssetId } from "../../../services/locker/query";
-import { queryAllBalances } from "../../../services/bank/query";
-import { comdex } from "../../../config/network";
+import { queryLockerWhiteListedAssetByProductId, queryUserLockerByProductAssetId } from "../../../services/locker/query";
 import Snack from "../../../components/common/Snack";
 import { signAndBroadcastTransaction } from "../../../services/helper";
-import { defaultFee, getTypeURL } from "../../../services/transaction";
+import { defaultFee } from "../../../services/transaction";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
@@ -47,17 +45,12 @@ const Deposit = ({
   const inAmount = useSelector((state) => state.asset.inAmount);
   const isLockerExist = useSelector((state) => state.locker.isLockerExist);
 
-  const [secondInput, setSecondInput] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
-  const [outputValidationError, setOutputValidationError] = useState();
-  const [poolBalance, setLocalPoolBalance] = useState([]);
-  const [selectedAsset, setSelectedAsset] = useState();
 
 
   const whiteListedAssetData = [];
-  const { Option } = Select;
 
   const resetValues = () => {
     dispatch(setAmountIn(0));

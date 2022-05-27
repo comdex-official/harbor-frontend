@@ -81,18 +81,7 @@ const Earn = () => {
     dispatch(setAmountIn(0));
     setDefaultTabSelect(key);
   };
-  const showModal = (pool) => {
-    setDefaultTabSelect("1");
-    setIsModalVisible(true);
-  };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
 
   return (
     <>
