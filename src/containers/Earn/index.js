@@ -11,7 +11,6 @@ import { setAmountIn } from "../../actions/asset";
 import { useSelector } from "react-redux";
 import { toDecimals } from "../../utils/string";
 import { calculateROI } from "../../utils/number";
-// import './index.scss'
 
 const Earn = () => {
   const dispatch = useDispatch();
@@ -98,7 +97,7 @@ const Earn = () => {
   return (
     <>
       <div className="app-content-wrapper">
-        <Row>
+        <Row className="earn-main-container">
           <Col>
             <Tabs
               className="comdex-tabs"
@@ -126,7 +125,7 @@ const Earn = () => {
                     <div className="input-container">
                       <CustomInput
                         className=""
-                        placeholder=" "
+                        placeholder="0.00"
                         value={principal}
                         onChange={(event) =>
                           onChangePrincipal(event.target.value)
@@ -135,7 +134,7 @@ const Earn = () => {
                     </div>
                   </div>
                 </div>
-                <div className="content-container">
+                <div className="content-container time-content-container">
                   <div className="left-container">Time Period</div>
                   <div className="right-container">
                     <div className="input-container">

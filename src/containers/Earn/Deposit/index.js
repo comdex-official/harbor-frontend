@@ -33,17 +33,12 @@ import { useSelector } from "react-redux";
 
 const Deposit = ({
   lang,
-  reverse,
-  spotPrice,
   balances,
-  pair,
   address,
   setAssets,
   assets,
   refreshBalance,
   setWhiteListedAssets,
-  setAllWhiteListedAssets,
-  allWhiteListedAssets,
   whiteListedAsset,
   ownerLockerInfo,
   setOwnerVaultInfo,
@@ -291,66 +286,6 @@ const Deposit = ({
               <Row>
                 <Col>
                   <div className="assets-select-wrapper">
-                    {/* When we receive multiple whitelisted asset then will show dropdown */}
-
-                    {/* Start */}
-                    {/* {whiteListedAssetData && whiteListedAssetData[0]?.length > 1 ?
-                      <div >
-                        <Select
-                          className="assets-select"
-                          dropdownClassName="asset-select-dropdown"
-                          placeholder={
-                            <div className="select-placeholder">
-                              <div className="circle-icon">
-                                <div className="circle-icon-inner" />
-                              </div>
-                              Select
-                            </div>
-                          }
-                          onChange={(e) => {
-                            console.log(e);
-                            setSelectedAsset(e)
-                          }}
-                          suffixIcon={<SvgIcon name="caret-down" />}
-                        >
-                          {whiteListedAssetData[0]?.map((item) => (
-                            <Option key={item.denom} value={item.denom}>
-                              <div className="select-inner">
-                                <div className="select-right">
-                                  <div className="select-right-inner">
-                                    <div className="svg-icon">
-                                      <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                    </div>
-                                    <div>
-                                      {denomConversion(item.denom)}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </Option>
-                          ))}
-                          ,
-                        </Select>
-                      </div>
-                      :
-                      <div>
-                        {whiteListedAssetData[0][0]?.map((item) => {
-                          <div className="farm-asset-icon-container">
-                            <div className="select-inner">
-                              <div className="svg-icon">
-                                <div className="svg-icon-inner">
-                                  <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                  {denomConversion(item.denom)}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        })}
-                      </div>
-                    } */}
-                    {/* End */}
-
-
                     {/* For Single Asset */}
                     {loading ? <h1>Loading...</h1> : null}
                     {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
@@ -389,7 +324,7 @@ const Deposit = ({
                     className="active"
                     onClick={() => handleInputMax()}
                   >
-                    max
+                    Max
                   </Button>
                 </div>
               </div>

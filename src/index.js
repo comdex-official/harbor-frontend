@@ -10,6 +10,8 @@ import { createRoot } from "react-dom/client";
 import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { CautionNotice } from "./components/common";
+import Disclaimer from "./components/common/Disclaimer";
 
 
 const store = createStore(
@@ -23,6 +25,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <BrowserRouter>
+      <Disclaimer />
       <App />
     </BrowserRouter>
   </Provider>
