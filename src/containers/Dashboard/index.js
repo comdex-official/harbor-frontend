@@ -50,7 +50,6 @@ const Dashboard = ({ lang, isDarkMode }) => {
             name: "ATOM",
             y: 60,
             color: "#665AA6",
-            // color: isDarkMode ? "#373549" : "#E0E0E0",
           },
           {
             name: "CMDX",

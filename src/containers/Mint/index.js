@@ -55,7 +55,6 @@ const stateToProps = (state) => {
 
 const actionToProps = {
   setAccountVaults,
-  // setAllExtendedPair,
 };
 
 export default connect(stateToProps, actionToProps)(Borrow);
