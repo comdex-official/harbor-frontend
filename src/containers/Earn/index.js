@@ -10,6 +10,8 @@ import Withdraw from "./Withdraw";
 import CustomInput from "../../components/CustomInput";
 import { useDispatch } from "react-redux";
 import { setAmountIn } from "../../actions/asset";
+import { useSelector } from "react-redux";
+
 // import './index.scss'
 
 const Earn = () => {
@@ -18,6 +20,8 @@ const Earn = () => {
   const [isModalVisible, setIsModalVisible] = useState(true);
   const [defaultTabSelect, setDefaultTabSelect] = useState("1");
   const { TabPane } = Tabs;
+
+  const isLockerExist = useSelector((state) => state.locker.isLockerExist);
 
   const callback = (key) => {
     dispatch(setAmountIn(0))
@@ -50,7 +54,7 @@ const Earn = () => {
               <TabPane tab="Deposit" key="1">
                 <Deposit />
               </TabPane>
-              <TabPane tab="Withdraw" key="2">
+              <TabPane tab="Withdraw" key="2" disabled={!isLockerExist}>
                 <Withdraw />
               </TabPane>
             </Tabs>

@@ -78,7 +78,7 @@ const Mint = ({
   const dispatch = useDispatch();
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
-  
+
   const marks = {
     0: "0%",
     150: "Min - 150%",

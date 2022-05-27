@@ -11,7 +11,7 @@ const Banner = ({ lang }) => {
           Borrow <span>Composite</span> by depositing<br /> your IBC enabled assets
         </h2>
         <Link to='/mint'>
-          <Button type="primary">
+          <Button type="primary " className=" btn-filled ">
             Take me there!
           </Button>
         </Link>

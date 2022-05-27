@@ -2,7 +2,6 @@ import "./index.scss";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Checkbox, Slider } from "antd";
-import variables from "../../../utils/variables";
 import CustomInput from "../../../components/CustomInput";
 import {
   DEFAULT_PAGE_NUMBER,
@@ -12,7 +11,6 @@ import { queryPairs } from "../../../services/asset/query";
 import { denomConversion } from "../../../utils/coin";
 import { message } from "antd";
 import { uniqueDenoms } from "../../../utils/string";
-
 const marks = {
   0: "00:00hrs",
   100: "3d:00h:00m",
@@ -170,5 +168,6 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
     </>
   );
 };
+
 
 export default FilterModal;

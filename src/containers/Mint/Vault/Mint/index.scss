@@ -19,6 +19,13 @@
       }
     }
   }
+  .ant-row {
+    @media only screen and (max-width: 980px) {
+      gap: 10px;
+      justify-content: space-between;
+      padding-right: 10px;
+    }
+  }
   .card-assets-container {
     display: flex;
     flex-direction: column;

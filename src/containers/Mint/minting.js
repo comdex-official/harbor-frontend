@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Button, message, Table } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
-import PlaceBidModal from "../Auctions/PlaceBidModal";
+import PlaceBidModal from "../Auctions/Collateral Auction/PlaceBidModal";
 import FilterModal from "../Auctions/FilterModal/FilterModal";
 import data from "./data";
 import "./index.scss";

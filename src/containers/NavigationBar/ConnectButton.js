@@ -194,7 +194,7 @@ const ConnectButton = ({
           <div className="connected_left">
             <div className="testnet-top">
               <SvgIcon name="testnet" />
-              {/* {variables[lang].testnet} */} User Address
+              {variables[lang].testnet}
             </div>
           </div>
           <DisConnectModal />

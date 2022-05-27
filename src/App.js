@@ -4,8 +4,24 @@ import NavigationBar from "./containers/NavigationBar";
 import SvgSprite from "./utils/SvgSpriteLoader";
 import svgFile from "./assets/images/svg/svg-sprite.svg";
 import SideBar from "./containers/SideBar";
+import { useEffect } from "react";
 
 function App() {
+
+  const checkScreenSize = () => {
+    let currentWidth = window.innerWidth;
+    console.log(currentWidth);
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    }
+  })
+
+
   return (
     <>
       <SvgSprite url={svgFile} />

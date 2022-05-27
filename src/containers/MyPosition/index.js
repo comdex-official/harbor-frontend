@@ -2,12 +2,13 @@ import * as PropTypes from "prop-types";
 import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
 import variables from "../../utils/variables";
-import { Progress, Tabs, List } from "antd";
+import { Progress, Tabs, List, Tooltip } from "antd";
 import MyEarn from "./MyEarn";
 import Borrow from "./MyVault";
 import History from "./History";
 import "./index.scss";
 import { useState } from "react";
+import TooltipIcon from "../../components/TooltipIcon";
 
 const { TabPane } = Tabs;
 
@@ -77,9 +78,19 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {earnTab && "Current Balance"}
-          {vaultTab && "Collateral Locked"}
-          {historyTab && "CMST Balance"}
+          {/* {earnTab && "Current Balance"} */}
+          {earnTab &&
+            <>
+            Current Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
+            </>}
+          {vaultTab && <>
+            Collateral Locked <TooltipIcon text="Total amount of collateral locked across all vaults" />
+          </>}
+          {historyTab && 
+          <>
+            Current CMST Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
+          </>
+         }
         </>
       ),
       counts: (
@@ -108,9 +119,19 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {earnTab && "Total interest Earned"}
-          {vaultTab && "Total Debt"}
-          {historyTab && "Collateral Locked"}
+          {earnTab && 
+          <>
+            Total interest Earned <TooltipIcon text="Total interest accumulated till date from Locker" />
+          </>
+         }
+          {vaultTab && <>
+            Total Due <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+          </>
+          }
+          {historyTab && <>
+            Collateral Locked <TooltipIcon text="Total amount of collateral locked across all vaults" />
+          </>
+           }
         </>
       ),
       counts: (
@@ -139,9 +160,20 @@ const MyPositions = (lang) => {
     {
       title: (
         <>
-          {earnTab && "Current interest Rate"}
-          {vaultTab && "Available To Borrow"}
-          {historyTab && "Total Borrowed"}
+          {earnTab && 
+          <>
+            Current interest Rate <TooltipIcon text="Current annual interest rate of Locker" />
+          </>
+        }
+          {vaultTab && 
+          <>
+            Available To Borrow <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
+          </>
+          }
+          {historyTab &&  <>
+            Total Borrowed <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
+          </>
+          }
         </>
       ),
       counts: (
@@ -198,13 +230,11 @@ const MyPositions = (lang) => {
 
             {vaultTab && (
               <div className="myhome-upper-right">
-                {/* <div className="mb-3">Your Borrow Limit</div> */}
                 <div className="borrow-limit-bar">
                   <div className="borrow-limit-upper">
                     <div>
                       <h4>0.00%</h4>
                     </div>
-                    {/* <div className="small-text">Borrow Limit :$0.00</div> */}
                   </div>
                   <div className="borrow-limit-middle">
                     <Progress percent={30} size="small" />
@@ -226,7 +256,7 @@ const MyPositions = (lang) => {
             defaultActiveKey="1"
             onChange={callback}
           >
-            <TabPane tab="Earn" key="1">
+            <TabPane tab="Locker" key="1">
               <MyEarn />
             </TabPane>
             <TabPane tab="Vaults" key="2">

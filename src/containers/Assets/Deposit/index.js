@@ -2,7 +2,7 @@ import "./index.scss";
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Form, Modal, message, Spin } from "antd";
 import { aminoSignIBCTx } from "../../../services/helper";
 import { initializeIBCChain } from "../../../services/keplr";
@@ -44,7 +44,7 @@ const Deposit = ({
     );
   };
 
- 
+
 
 
   const showModal = () => {

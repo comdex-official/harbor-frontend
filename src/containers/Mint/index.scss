@@ -358,17 +358,29 @@
 
 .vault-mint-main-container {
   .card-main-container {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(20rem, 1fr));
-    grid-template-rows: repeat(auto, 1fr);
-    gap: 12px;
+    // display: grid;
+    // grid-template-columns: repeat(3, minmax(20rem, 1fr));
+    // grid-template-rows: repeat(auto, 1fr);
+    // gap: 12px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
     .card-container {
       background: $assets-bg-light;
       padding: 25px 25px;
       border-radius: $base-border-radius;
       box-shadow: $box-shadow-inner-light;
       border: 1px solid $border-color-base;
-
+      flex-basis: 30%;
+      @media only screen and (min-width: 1000px) and (max-width: 1300px) {
+        flex-basis: 45%;
+      }
+      @media only screen and (max-width: 972px) {
+        flex-basis: 45%;
+      }
+      @media only screen and (max-width: 720px) {
+        flex-basis: 100%;
+      }
       .dark-mode & {
         background: $background-dark2;
         box-shadow: none;
@@ -410,7 +422,7 @@
       .bottom-container {
         display: flex;
         flex-direction: column;
-        row-gap: 10px;
+        row-gap: 12px;
         .contenet-container {
           display: flex;
           // flex-direction: column;
@@ -419,6 +431,7 @@
           .name {
           }
           .value {
+            font-weight: 500;
           }
         }
       }
