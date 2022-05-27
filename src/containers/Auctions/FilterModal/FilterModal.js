@@ -62,6 +62,7 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
         shape="round"
         className="filter-btn"
         onClick={showModal}
+        style={{ border: "1px solid" }}
       >
         <SvgIcon name="filter" viewbox="0 0 13.579 13.385" /> Filter
       </Button>

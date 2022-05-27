@@ -7,6 +7,7 @@ import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
+import Bidding from "./Bidding";
 
 const DebtAuction = ({setPairs}) => {
     const columns = [
@@ -180,6 +181,12 @@ const DebtAuction = ({setPairs}) => {
                                 pagination={false}
                                 scroll={{ x: "100%" }}
                             />
+                        </div>
+                    </div>
+                    <div className="more-bottom">
+                        <h3>Your Bidding</h3>
+                        <div className="more-bottom-card">
+                            <Bidding />
                         </div>
                     </div>
                 </Col>

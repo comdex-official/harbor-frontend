@@ -7,8 +7,9 @@ import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
+import Bidding from "./Bidding";
 
-const SurplusAuction = ({setPairs}) => {
+const SurplusAuction = ({ setPairs }) => {
   const columns = [
     {
       title: "Auctioned Asset",
@@ -45,7 +46,7 @@ const SurplusAuction = ({setPairs}) => {
     {
       title: (
         <>
-          <FilterModal setPairs={setPairs}/>
+          <FilterModal setPairs={setPairs} />
         </>
       ),
       dataIndex: "action",
@@ -180,6 +181,12 @@ const SurplusAuction = ({setPairs}) => {
                 pagination={false}
                 scroll={{ x: "100%" }}
               />
+            </div>
+          </div>
+          <div className="more-bottom">
+            <h3>Your Bidding</h3>
+            <div className="more-bottom-card">
+              <Bidding />
             </div>
           </div>
         </Col>
