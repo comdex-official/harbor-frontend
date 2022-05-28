@@ -1,7 +1,7 @@
 import { Button, Slider, message } from "antd";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import {  Row, SvgIcon } from "../../../../components/common";
+import { Row, SvgIcon } from "../../../../components/common";
 import CustomInput from "../../../../components/CustomInput";
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { useParams } from "react-router";
@@ -284,7 +284,7 @@ const Mint = ({
           <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
-                Deposit <TooltipIcon />
+                Deposit
               </label>
               <div className="assets-select-wrapper">
                 {/* Icon Container Start  */}

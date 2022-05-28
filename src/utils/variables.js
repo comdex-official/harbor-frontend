@@ -244,7 +244,7 @@ const variables = {
 
 
     // Mint
-    tooltip_mint_asset_lr: "If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite 		Debt",
+    tooltip_mint_asset_lr: "If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt",
     tooltip_mint_asset_stabilityfee: "Current Interest Rate on Borrowed Amount",
     tooltip_mint_asset_mincollateralratio: "Minimum collateral ratio at which composite should be minted",
     tooltip_mint_asset_minborrow: "Minimum composite that should be borrowed for any active vault",

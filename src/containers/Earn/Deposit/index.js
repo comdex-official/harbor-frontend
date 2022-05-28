@@ -289,8 +289,8 @@ const Deposit = ({
                               <div className="select-inner">
                                 <div className="svg-icon">
                                   <div className="svg-icon-inner">
-                                    <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                    <span style={{ textTransform: "uppercase" }}> {item.name}</span>
+                                    <SvgIcon name={iconNameFromDenom(item?.denom)} />
+                                    <span style={{ textTransform: "uppercase" }}> {item?.name}</span>
                                   </div>
                                 </div>
                               </div>
@@ -334,14 +334,13 @@ const Deposit = ({
             </div>
           </div>
 
-          <div className="Interest-rate-container mt-4">
+          <div className="interest-rate-container mt-4">
             <Row>
               <div className="title">Current Interest rate</div>
               <div className="value">6%</div>
             </Row>
           </div>
 
-          {/* <Info /> */}
           <div className="assets PoolSelect-btn">
             <div className="assets-form-btn text-center  mb-2">
               <Button

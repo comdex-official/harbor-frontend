@@ -44,9 +44,6 @@ const Deposit = ({
     );
   };
 
-
-
-
   const showModal = () => {
     initializeIBCChain(chain.chainInfo, (error, account) => {
       if (error) {

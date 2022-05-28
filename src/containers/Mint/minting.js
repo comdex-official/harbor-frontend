@@ -1,13 +1,13 @@
 import * as PropTypes from "prop-types";
 import { SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
-import { message,Spin } from "antd";
+import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
 import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import {  queryExtendedPairVault, queryVaultByProductId } from "../../services/Mint/query";
+import { queryExtendedPairVault, queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
 import { PRODUCT_ID } from "../../constants/common";
 import { setPairs } from "../../actions/asset";
@@ -22,7 +22,7 @@ import {
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
 
-const Minting = ({  address}) => {
+const Minting = ({ address }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -113,7 +113,7 @@ const Minting = ({  address}) => {
                         <div className="bottom-container">
                           <div className="contenet-container">
                             <div className="name">
-                              Liquidation Ratio <TooltipIcon text="" />
+                              Liquidation Ratio <TooltipIcon text="If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt" />
                             </div>
                             <div className="value">
                               {item?.liquidationRatio / 10 ** 16} %
@@ -122,7 +122,7 @@ const Minting = ({  address}) => {
                           <div className="contenet-container">
                             <div className="name">
                               Min. Collateralization Ratio{" "}
-                              <TooltipIcon text="" />
+                            <TooltipIcon text="Minimum collateral ratio at which composite should be minted" />
                             </div>
                             <div className="value">
                               {item?.minCr / 10 ** 16} %
@@ -130,7 +130,7 @@ const Minting = ({  address}) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                              Stability Fee <TooltipIcon text="" />
+                            Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
                             </div>
                             <div className="value">
                               {item?.stabilityFee / 10 ** 16} %
@@ -138,7 +138,7 @@ const Minting = ({  address}) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                              Min. Borrow Amount <TooltipIcon text="" />
+                            Min. Borrow Amount <TooltipIcon text="Minimum composite that should be borrowed for any active vault" />
                             </div>
                             <div className="value">
                               {" "}
@@ -147,7 +147,7 @@ const Minting = ({  address}) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                              Debt Ceiling <TooltipIcon text="" />
+                            Debt Ceiling <TooltipIcon text="Maximum Composite that can be withdrawn per vault type" />
                             </div>
                             <div className="value">
                               {" "}
@@ -162,7 +162,7 @@ const Minting = ({  address}) => {
             }
           })
         ) : (
-          <NoData/>
+          <NoData />
         )}
       </div>
     </div>
