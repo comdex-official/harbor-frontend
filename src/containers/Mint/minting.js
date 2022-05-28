@@ -7,7 +7,7 @@ import "./index.scss";
 import "./index.scss";
 import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryVaultByProductId } from "../../services/Mint/query";
+import { queryVaultByOwner, queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
 import { PRODUCT_ID } from "../../constants/common";
 import { setPairs } from "../../actions/asset";
@@ -21,7 +21,7 @@ import {
 } from "../../actions/locker";
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
-import { queryExtendedPairVaultById } from "../../services/asset/query";
+import { queryExtendedPairVaultById, queryPairVault } from "../../services/asset/query";
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
@@ -41,6 +41,7 @@ const Minting = ({ address }) => {
   useEffect(() => {
     fetchExtendexPairList(PRODUCT_ID);
     // fetchQueryPairValuts(PRODUCT_ID);
+
   }, [address])
 
   // ******* Get Vault Query *********
@@ -53,12 +54,16 @@ const Minting = ({ address }) => {
       setLoading(false);
       if (error) {
         message.error(error);
+        console.log(error)
         return;
       }
       console.log("Extented pair List", data);
-      dispatch(setAllExtendedPair(data?.extendedPairIds));
+      // dispatch(setAllExtendedPair(data?.extendedPairIds));
     });
   };
+
+
+
 
   // *----------Get list of all extended pair vaults----------*
 

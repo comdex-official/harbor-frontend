@@ -73,13 +73,14 @@ export const queryPair = (pairId, callback) => {
       });
   });
 };
+
 export const queryExtendedPairVaultById = (productId, callback) => {
   createQueryClient((error, rpcClient) => {
     if (error) {
       callback(error);
       return;
     }
-
+    console.log("This is product id", productId);
     new QueryServiceClientImpl(rpcClient)
       .QueryProductToExtendedPair({
         productId: Long.fromNumber(productId),
