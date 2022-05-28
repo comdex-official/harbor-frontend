@@ -1,14 +1,13 @@
 import { Button, Slider, message } from "antd";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { Col, Row, SvgIcon } from "../../../../components/common";
+import { Row, SvgIcon } from "../../../../components/common";
 import CustomInput from "../../../../components/CustomInput";
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { useParams } from "react-router";
 import {
   amountConversion,
   amountConversionWithComma,
-  denomConversion,
   getAmount,
   getDenomBalance,
 } from "../../../../utils/coin";
@@ -45,12 +44,9 @@ import { setExtendedPairVaultListData } from "../../../../actions/locker";
 const Mint = ({
   lang,
   address,
-  pairs,
   pair,
   balances,
   setPair,
-  setAssetIn,
-  setAssetOut,
   setAmountIn,
   setAmountOut,
   setComplete,
@@ -59,19 +55,15 @@ const Mint = ({
   markets,
   collateralRatio,
   setCollateralRatio,
-  vaults,
-  setVault,
   vault,
   refreshBalance,
 }) => {
   // pathVaultId ----> extentedPairvaultId
   const { pathVaultId } = useParams();
 
-  const [firstInput, setFirstInput] = useState();
-  const [secondInput, setSecondInput] = useState();
+
   const [inProgress, setInProgress] = useState(false);
   const [validationError, setValidationError] = useState();
-  const [outputValidationError, setOutputValidationError] = useState();
   const [loading, setLoading] = useState(false);
   const [currentExtentedVaultdata, setCurrentExtentedVaultdata] = useState();
 
@@ -149,10 +141,6 @@ const Mint = ({
     )}`;
   };
 
-  const getOutputPrice = () => {
-    // return reverse ? spotPrice : 1 / spotPrice;
-    // calculating price from pool
-  };
 
   const handleSliderChange = (value) => {
     setCollateralRatio(value);
@@ -296,7 +284,7 @@ const Mint = ({
           <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
-                Deposit <TooltipIcon />
+                Deposit
               </label>
               <div className="assets-select-wrapper">
                 {/* Icon Container Start  */}

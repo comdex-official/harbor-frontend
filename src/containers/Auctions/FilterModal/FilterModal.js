@@ -16,7 +16,7 @@ const marks = {
   100: "3d:00h:00m",
 };
 
-const FilterModal = ({ lang, address, pairs, setPairs }) => {
+const FilterModal = ({ address, pairs, setPairs }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
 

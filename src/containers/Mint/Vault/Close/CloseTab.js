@@ -4,19 +4,17 @@ import React, { useEffect, useState } from "react";
 import variables from "../../../../utils/variables";
 import { Button, message } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { amountConversionWithComma, denomConversion, getDenomBalance } from "../../../../utils/coin";
+import { getDenomBalance } from "../../../../utils/coin";
 import { amountConversion } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
-import { marketPrice } from "../../../../utils/number";
 import { useNavigate, useParams } from "react-router";
 import { setVault } from "../../../../actions/account";
 import { setBalanceRefresh } from "../../../../actions/account";
-import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import { denomToSymbol } from "../../../../utils/string";
 import { queryOwnerVaults, queryOwnerVaultsInfo } from "../../../../services/Mint/query";
-import { setUserLockedVaultData } from "../../../../actions/mint";
 import Long from "long";
 import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
 import { queryPairVault } from "../../../../services/asset/query";
@@ -25,7 +23,6 @@ const CloseTab = ({
   lang,
   address,
   vault,
-  markets,
   setVault,
   refreshBalance,
   setBalanceRefresh,

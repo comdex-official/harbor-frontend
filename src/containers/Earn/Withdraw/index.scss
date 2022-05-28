@@ -189,7 +189,6 @@
     .withdraw-content-container {
       display: flex;
       flex-direction: column;
-      // row-gap: 14px;
       .withdraw-stats-container {
         display: flex;
         justify-content: space-between;
@@ -258,7 +257,6 @@
               right: 0%;
               font-size: 15px;
               font-weight: 600;
-              // top: 12px;
               top: 50%;
               transform: translate(-15%, -30%);
               .dark-mode & {
@@ -305,7 +303,6 @@
                   margin-left: 0;
                 }
                 &:nth-child(2) {
-                  // margin-left: -1px;
                 }
                 &:last-child {
                   margin-left: -1px;

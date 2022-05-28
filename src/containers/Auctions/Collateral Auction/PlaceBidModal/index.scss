@@ -15,10 +15,19 @@
       }
     }
     label {
-      font-weight: lighter;
+      font-weight: 300;
       font-size: $font-size-lg;
       .dark-mode & {
         color: $white;
+      }
+    }
+    .ant-input {
+      background: rgba($secondary-color, 0.3);
+      border-color: rgba($secondary-color, 0.3);
+      text-align: right;
+      .dark-mode & {
+        background: $background-dark2;
+        border-color: $background-dark2;
       }
     }
   }

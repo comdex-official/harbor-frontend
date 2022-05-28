@@ -1,8 +1,7 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
 import variables from "../../utils/variables";
-import { Button, Table } from "antd";
 import TooltipIcon from "../../components/TooltipIcon";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
@@ -51,7 +50,6 @@ const Dashboard = ({ lang, isDarkMode }) => {
             name: "ATOM",
             y: 60,
             color: "#665AA6",
-            // color: isDarkMode ? "#373549" : "#E0E0E0",
           },
           {
             name: "CMDX",
@@ -129,7 +127,7 @@ const Dashboard = ({ lang, isDarkMode }) => {
         lineColor: "#665aa6",
         marker: false,
         data: [
-          2, 2.5, 2.8, 3, 4, 4.5, 4.2, 4.0, 3.8, 3.2, 4, 2.9, 3.1, 2.8, 2.7,
+          1.2, .9, 1.1, 1, 1, 1, 1, 1, 1.1, 1, 1, 1, .9, 1, 1.2,
         ],
       },
     ],

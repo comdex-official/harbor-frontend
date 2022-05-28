@@ -4,13 +4,11 @@ import Earn from "./containers/Earn";
 import BorrowTab from "./containers/Mint";
 import Vault from "./containers/Mint/Vault";
 import MyPositions from "./containers/MyPosition";
-// import MyPositions from "./containers/MyHome";
 import Assets from "./containers/Assets";
 import More from './containers/More'
 import Govern from './containers/More/Govern'
 import GovernDetails from './containers/More/Govern/Details'
 import Airdrop from "./containers/More/Airdrop";
-// import Balances from "./containers/MyPositions";
 
 const routes = [
   {

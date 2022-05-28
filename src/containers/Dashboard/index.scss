@@ -13,7 +13,6 @@
       width: 100%;
     }
     .composite-card {
-      // height: 97%;
       padding: 32px 5px 30px 30px;
     }
     .totalvalues {
@@ -27,8 +26,8 @@
       @media only screen and (min-width: 800px) and (max-width: 949px) {
         column-gap: 10px;
       }
-      @media only screen and (max-width: 750px) {
-        // flex-direction: column;
+      @media only screen and (max-width: 500px) {
+        flex-direction: column;
       }
       .totalvalues-chart {
         width: 50%;
@@ -37,11 +36,12 @@
       .totalvalues-right {
         width: 48%;
         @media only screen and (max-width: 750px) {
-          // display: flex;
-          // flex-wrap: wrap;
-          // width: 100%;
-          // justify-content: space-between;
-          // padding: 0 15px;
+        }
+        @media only screen and (max-width: 500px) {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          flex-wrap: wrap;
         }
       }
     }
@@ -268,8 +268,10 @@
 }
 .others-dashboard-stats {
   border-left: 5px solid #e0e0e0;
+  @media screen and (max-width: 500px) {
+    height: max-content;
+  }
   .dark-mode & {
-    // color: isDarkMode ? "#373549" : "#E0E0E0",
     border-left: 5px solid #373549;
   }
 }

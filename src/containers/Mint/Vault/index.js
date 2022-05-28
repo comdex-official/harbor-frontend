@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, message, Button } from "antd";
+import { Tabs, Button } from "antd";
 import "./index.scss";
 import { Col, Row } from "../../../components/common";
 import { Link } from "react-router-dom";

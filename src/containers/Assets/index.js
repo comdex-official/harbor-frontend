@@ -72,7 +72,6 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
       dataIndex: "ibcdeposit",
       key: "ibcdeposit",
       align: "center",
-      // width: 210,
       render: (value) => {
         if (value) {
           return <Deposit chain={value} />;
@@ -216,7 +215,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
                 <SvgIcon
                   name={iconNameFromDenom(item.currency?.coinMinimalDenom)}
                 />
-              </div>{" "}
+              </div>
               {item.currency?.coinDenom}{" "}
             </div>
           </>

@@ -4,8 +4,6 @@ import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
 import React from "react";
 import { Button } from "antd";
-// import StackImg from "../../assets/images/stack_svg.svg";
-// import AuctionImg from "../../assets/images/auctionAsset 1comdex.svg";
 import { useNavigate } from "react-router";
 
 const More = ({ }) => {
@@ -39,7 +37,6 @@ const More = ({ }) => {
                   </Button>
                 </div>
               </div>
-              {/* <img src={StackImg} alt={StackImg} /> */}
             </div>
           </div>
         </Col>
@@ -62,9 +59,6 @@ const More = ({ }) => {
                   </Button>
                 </div>
               </div>
-              {/* <div className="morecard-right">
-                <img src={AuctionImg} alt={AuctionImg} />
-              </div> */}
             </div>
           </div>
         </Col>

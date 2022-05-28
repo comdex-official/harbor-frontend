@@ -1,12 +1,10 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { Col, Row} from "../../components/common";
 import { connect } from "react-redux";
-import variables from "../../utils/variables";
 import { Button, Table, Progress } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
 import TooltipIcon from "../../components/TooltipIcon";
-import Item from "antd/lib/list/Item";
 
 const MyVault = (lang) => {
   const columns = [

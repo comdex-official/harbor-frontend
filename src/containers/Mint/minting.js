@@ -1,20 +1,15 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
-import { Button, message, Table, Spin } from "antd";
+import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
-import PlaceBidModal from "../Auctions/Collateral Auction/PlaceBidModal";
-import FilterModal from "../Auctions/FilterModal/FilterModal";
-import data from "./data";
 import "./index.scss";
-import { Link } from "react-router-dom";
 import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryAllVaultByProduct, queryExtendedPairVault, queryVaultByProductId } from "../../services/Mint/query";
+import { queryVaultByOwner, queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
 import { PRODUCT_ID } from "../../constants/common";
-import { queryPairVaults } from "../../services/asset/query";
 import { setPairs } from "../../actions/asset";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -26,8 +21,9 @@ import {
 } from "../../actions/locker";
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
+import { queryExtendedPairVaultById, queryPairVault } from "../../services/asset/query";
 
-const Minting = ({ lang, address, pair, setPairs }) => {
+const Minting = ({ address }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -44,33 +40,37 @@ const Minting = ({ lang, address, pair, setPairs }) => {
 
   useEffect(() => {
     fetchExtendexPairList(PRODUCT_ID);
-    fetchQueryPairValuts(PRODUCT_ID);
+    // fetchQueryPairValuts(PRODUCT_ID);
+
   }, [address])
 
-  // *******Get Vault Query *********
+  // ******* Get Vault Query *********
 
   // *----------Get list of all extended pair vaults Id's across product id----------* From asset module 
 
   const fetchExtendexPairList = (productId) => {
     setLoading(true);
-    queryExtendedPairVault(productId, (error, data) => {
+    queryExtendedPairVaultById(productId, (error, data) => {
       setLoading(false);
       if (error) {
         message.error(error);
+        console.log(error)
         return;
       }
       console.log("Extented pair List", data);
-      dispatch(setAllExtendedPair(data?.extendedPairIds));
+      // dispatch(setAllExtendedPair(data?.extendedPairIds));
     });
   };
 
+
+
+
   // *----------Get list of all extended pair vaults----------*
 
-  const fetchQueryPairValuts = () => {
+  const fetchQueryPairValuts = (productId) => {
     setLoading(true)
-    queryPairVaults((error, data) => {
+    queryVaultByProductId(productId, (error, data) => {
       if (error) {
-        console.log('the errror', error);
         message.error(error);
         return;
       }
@@ -79,18 +79,6 @@ const Minting = ({ lang, address, pair, setPairs }) => {
       setLoading(false)
     })
   }
-  // const fetchQueryPairValuts = (productId) => {
-  //   setLoading(true)
-  //   queryVaultByProductId(productId, (error, data) => {
-  //     if (error) {
-  //       message.error(error);
-  //       return;
-  //     }
-  //     console.log("Pair vaults list", data);
-  //     dispatch(setExtendedPairVaultListData(data))
-  //     setLoading(false)
-  //   })
-  // }
 
   if (loading) {
     return <Spin />;
@@ -131,7 +119,7 @@ const Minting = ({ lang, address, pair, setPairs }) => {
                         <div className="bottom-container">
                           <div className="contenet-container">
                             <div className="name">
-                              Liquidation Ratio <TooltipIcon text="" />
+                              Liquidation Ratio <TooltipIcon text="If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt" />
                             </div>
                             <div className="value">
                               {item?.liquidationRatio / 10 ** 16} %
@@ -140,7 +128,7 @@ const Minting = ({ lang, address, pair, setPairs }) => {
                           <div className="contenet-container">
                             <div className="name">
                               Min. Collateralization Ratio{" "}
-                              <TooltipIcon text="" />
+                              <TooltipIcon text="Minimum collateral ratio at which composite should be minted" />
                             </div>
                             <div className="value">
                               {item?.minCr / 10 ** 16} %
@@ -148,7 +136,7 @@ const Minting = ({ lang, address, pair, setPairs }) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                              Stability Fee <TooltipIcon text="" />
+                              Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
                             </div>
                             <div className="value">
                               {item?.stabilityFee / 10 ** 16} %
@@ -156,7 +144,7 @@ const Minting = ({ lang, address, pair, setPairs }) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                              Min. Borrow Amount <TooltipIcon text="" />
+                              Min. Borrow Amount <TooltipIcon text="Minimum composite that should be borrowed for any active vault" />
                             </div>
                             <div className="value">
                               {" "}
@@ -165,7 +153,7 @@ const Minting = ({ lang, address, pair, setPairs }) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                              Debt Ceiling <TooltipIcon text="" />
+                              Debt Ceiling <TooltipIcon text="Maximum Composite that can be withdrawn per vault type" />
                             </div>
                             <div className="value">
                               {" "}
@@ -180,7 +168,7 @@ const Minting = ({ lang, address, pair, setPairs }) => {
             }
           })
         ) : (
-          <NoData/>
+          <NoData />
         )}
       </div>
     </div>

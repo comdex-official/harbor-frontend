@@ -2,47 +2,34 @@ import "../index.scss";
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import React, { useEffect, useState } from "react";
-import variables from "../../../../utils/variables";
 import { Button, message, Select, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { iconNameFromDenom, toDecimals } from "../../../../utils/string";
-import { amountConversion, denomConversion } from "../../../../utils/coin";
-import { getDenomBalance } from "../../../../utils/coin";
+import { iconNameFromDenom } from "../../../../utils/string";
+import { amountConversion } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
 import { getTypeURL } from "../../../../services/transaction";
 import CustomInput from "../../../../components/CustomInput";
-import { decimalConversion, marketPrice } from "../../../../utils/number";
+import { marketPrice } from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";
-import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
-import { comdex } from "../../../../config/network";
-import Snack from "../../../../components/common/Snack";
-import {
-  setExtendedPairVaultListData,
-  setWhiteListedAssets,
-} from "../../../../actions/locker";
+import { PRODUCT_ID } from "../../../../constants/common";
+import { setExtendedPairVaultListData } from "../../../../actions/locker";
 import {
   queryOwnerVaults,
   queryOwnerVaultsInfo,
-  queryVaultByOwner,
-  queryVaults,
-  userVaultInfo,
 } from "../../../../services/Mint/query";
 import { connect } from "react-redux";
 import { setPairs } from "../../../../actions/asset";
 import { setAccountVaults } from "../../../../actions/account";
-import { setVault } from "../../../../actions/account";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setUserLockedVaultData } from "../../../../actions/mint";
 import { setBalanceRefresh } from "../../../../actions/account";
 import { setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
-import { Navigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import Long from "long";
 import { queryPairVault } from "../../../../services/asset/query";
 
-const Option = Select.Option;
 
 const marks = {
   0: "0%",
@@ -51,12 +38,9 @@ const marks = {
 };
 
 const Edit = ({
-  lang,
   address,
-  vaults,
   pair,
   markets,
-  balances,
   ownerVaultId,
   ownerVaultInfo,
   setOwnerVaultId,
@@ -68,6 +52,7 @@ const Edit = ({
   const { pathVaultId } = useParams();
 
   const vault = useSelector((state) => state.account.vault);
+
   const userVault = useSelector(
     (state) => state.mint.userLockedVaultData.vault
   );
@@ -139,7 +124,7 @@ const Edit = ({
     if (type === "deposit") {
       const newInput =
         (Number(ownerVaultInfo?.amountOut) * debtPrice * newRatio) /
-          collateralPrice -
+        collateralPrice -
         Number(ownerVaultInfo?.amountIn);
 
       setNewCollateralRatio(value);
@@ -154,7 +139,7 @@ const Edit = ({
       const newInput =
         Number(ownerVaultInfo?.amountIn) -
         (Number(ownerVaultInfo?.amountOut) * debtPrice * newRatio) /
-          collateralPrice;
+        collateralPrice;
 
       setNewCollateralRatio(value);
       setWithdraw(amountConversion(newInput));
@@ -168,7 +153,7 @@ const Edit = ({
       const newInput =
         Number(ownerVaultInfo?.amountOut) -
         (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
-          (debtPrice * newRatio);
+        (debtPrice * newRatio);
 
       setNewCollateralRatio(value);
       setRepay(amountConversion(newInput));
@@ -179,7 +164,7 @@ const Edit = ({
     } else {
       const newInput =
         (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
-          (debtPrice * newRatio) -
+        (debtPrice * newRatio) -
         Number(ownerVaultInfo?.amountOut);
 
       setNewCollateralRatio(value);
@@ -305,17 +290,7 @@ const Edit = ({
         resetValues();
         setBalanceRefresh(refreshBalance + 1);
         message.success("success");
-
-        // Add Query vault data
         getOwnerVaultInfoByVaultId(ownerVaultId);
-        // if (vault?.id) {
-        //   fetchVault(vault?.id);
-        // }
-
-        // Navigate({
-        //   pathname: `/home`,
-        //   hash: "2",
-        // });
       }
     );
   };
@@ -415,7 +390,6 @@ const Edit = ({
                   <div className="maxhalf">
                     <button
                       className="ant-btn active"
-                      // onClick={() => handleMaxClick()}
                     >
                       Max
                     </button>
@@ -446,10 +420,10 @@ const Edit = ({
                     (collateralRatio <= 150
                       ? " red-track"
                       : collateralRatio < 200
-                      ? " orange-track"
-                      : collateralRatio >= 200
-                      ? " green-track"
-                      : " ")
+                        ? " orange-track"
+                        : collateralRatio >= 200
+                          ? " green-track"
+                          : " ")
                   }
                   defaultValue="150"
                   marks={marks}
@@ -466,7 +440,7 @@ const Edit = ({
                   }}
                   placeholder="0"
                   value={newCollateralRatio}
-                  />
+                />
                 <span className="collateral-percentage">%</span>
               </div>
             </div>
@@ -478,14 +452,12 @@ const Edit = ({
               disabled={
                 inProgress ||
                 inputValidationError?.message ||
-                !Number(inputAmount) 
+                !Number(inputAmount)
               }
-              // onClick={() => setCautionNoticeValues(true, false)}
               onClick={() => handleSubmit()}
             >
               {editType}
             </Button>
-            {/* <CautionNotice inProgress={inProgress} handleClick={handleSubmit} /> */}
           </div>
         </div>
       </div>
