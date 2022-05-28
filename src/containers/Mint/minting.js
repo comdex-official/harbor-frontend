@@ -58,7 +58,7 @@ const Minting = ({ address }) => {
         return;
       }
       console.log("Extented pair List", data);
-      // dispatch(setAllExtendedPair(data?.extendedPairIds));
+      dispatch(setAllExtendedPair(data?.extendedPairIds));
     });
   };
 
