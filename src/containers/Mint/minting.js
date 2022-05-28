@@ -66,9 +66,22 @@ const Minting = ({ lang, address, pair, setPairs }) => {
 
   // *----------Get list of all extended pair vaults----------*
 
-  // const fetchQueryPairValuts = () => {
+  const fetchQueryPairValuts = () => {
+    setLoading(true)
+    queryPairVaults((error, data) => {
+      if (error) {
+        console.log('the errror', error);
+        message.error(error);
+        return;
+      }
+      console.log("Pair vaults list", data);
+      dispatch(setExtendedPairVaultListData(data))
+      setLoading(false)
+    })
+  }
+  // const fetchQueryPairValuts = (productId) => {
   //   setLoading(true)
-  //   queryPairVaults((error, data) => {
+  //   queryVaultByProductId(productId, (error, data) => {
   //     if (error) {
   //       message.error(error);
   //       return;
@@ -78,18 +91,6 @@ const Minting = ({ lang, address, pair, setPairs }) => {
   //     setLoading(false)
   //   })
   // }
-  const fetchQueryPairValuts = (productId) => {
-    setLoading(true)
-    queryVaultByProductId(productId, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      console.log("Pair vaults list", data);
-      dispatch(setExtendedPairVaultListData(data))
-      setLoading(false)
-    })
-  }
 
   if (loading) {
     return <Spin />;
