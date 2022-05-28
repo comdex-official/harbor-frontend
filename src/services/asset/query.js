@@ -73,6 +73,25 @@ export const queryPair = (pairId, callback) => {
       });
   });
 };
+export const queryExtendedPairVaultById = (productId, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryServiceClientImpl(rpcClient)
+      .QueryProductToExtendedPair({
+        productId: Long.fromNumber(productId),
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
 
 export const queryPairVault = (pairId, callback) => {
   createQueryClient((error, rpcClient) => {
@@ -94,7 +113,7 @@ export const queryPairVault = (pairId, callback) => {
   });
 };
 
-export const queryPairVaults = ( callback) => {
+export const queryPairVaults = (callback) => {
   createQueryClient((error, rpcClient) => {
     if (error) {
       callback(error);

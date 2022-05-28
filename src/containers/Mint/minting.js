@@ -7,7 +7,7 @@ import "./index.scss";
 import "./index.scss";
 import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryExtendedPairVault, queryVaultByProductId } from "../../services/Mint/query";
+import { queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
 import { PRODUCT_ID } from "../../constants/common";
 import { setPairs } from "../../actions/asset";
@@ -21,6 +21,7 @@ import {
 } from "../../actions/locker";
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
+import { queryExtendedPairVaultById } from "../../services/asset/query";
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
@@ -39,16 +40,16 @@ const Minting = ({ address }) => {
 
   useEffect(() => {
     fetchExtendexPairList(PRODUCT_ID);
-    fetchQueryPairValuts(PRODUCT_ID);
+    // fetchQueryPairValuts(PRODUCT_ID);
   }, [address])
 
-  // *******Get Vault Query *********
+  // ******* Get Vault Query *********
 
   // *----------Get list of all extended pair vaults Id's across product id----------* From asset module 
 
   const fetchExtendexPairList = (productId) => {
     setLoading(true);
-    queryExtendedPairVault(productId, (error, data) => {
+    queryExtendedPairVaultById(productId, (error, data) => {
       setLoading(false);
       if (error) {
         message.error(error);
@@ -122,7 +123,7 @@ const Minting = ({ address }) => {
                           <div className="contenet-container">
                             <div className="name">
                               Min. Collateralization Ratio{" "}
-                            <TooltipIcon text="Minimum collateral ratio at which composite should be minted" />
+                              <TooltipIcon text="Minimum collateral ratio at which composite should be minted" />
                             </div>
                             <div className="value">
                               {item?.minCr / 10 ** 16} %
@@ -130,7 +131,7 @@ const Minting = ({ address }) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                            Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
+                              Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
                             </div>
                             <div className="value">
                               {item?.stabilityFee / 10 ** 16} %
@@ -138,7 +139,7 @@ const Minting = ({ address }) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                            Min. Borrow Amount <TooltipIcon text="Minimum composite that should be borrowed for any active vault" />
+                              Min. Borrow Amount <TooltipIcon text="Minimum composite that should be borrowed for any active vault" />
                             </div>
                             <div className="value">
                               {" "}
@@ -147,7 +148,7 @@ const Minting = ({ address }) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                            Debt Ceiling <TooltipIcon text="Maximum Composite that can be withdrawn per vault type" />
+                              Debt Ceiling <TooltipIcon text="Maximum Composite that can be withdrawn per vault type" />
                             </div>
                             <div className="value">
                               {" "}
