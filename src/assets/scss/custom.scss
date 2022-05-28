@@ -18,50 +18,9 @@ body {
   font-weight: 300;
   background: $body-background-light !important;
   height: auto !important;
-
-  // &::before {
-  //   background: $sidebar-bg-light;
-  //   content: "";
-  //   position: fixed;
-  //   top: 0;
-  //   left: 0;
-  //   width: 100%;
-  //   height: 100%;
-  //   opacity: 1;
-  // }
-
   &.dark-mode {
-    // background: $body-background-dark;
     background: $primary-gradient !important;
     color: $white;
-
-    // &::before {
-    //   background: radial-gradient(
-    //     66.64% 66.79% at 3.9% 4.23%,
-    //     #16375c 0%,
-    //     #040516 100%
-    //   );
-    //   content: "";
-    //   position: fixed;
-    //   top: 0;
-    //   left: 0;
-    //   width: 100%;
-    //   height: 100%;
-    // }
-
-    // &::after {
-    //   background: radial-gradient(
-    //     66.64% 66.79% at 113.9% 104.23%,
-    //     rgba(254, 67, 80, 0.6) 0.56%,
-    //     rgba(4, 5, 23, 0) 96.15%
-    //   );
-    //   content: "";
-    //   position: fixed;
-    //   bottom: 0;
-    //   right: 0;
-    //   width: 100%;
-    //   height: 100%;
-    // }
   }
 }
 
@@ -328,7 +287,6 @@ button {
     .ant-slider-handle {
       background-color: $white;
       border: 3px solid $secondary-color;
-      // display: none;
       @media screen and (max-width: 991px) {
         display: block;
       }
@@ -585,7 +543,6 @@ button {
               padding: 10px 15px 0 15px;
               font-size: $font-size-sm + 3;
               color: $dark-color;
-              // text-align: left !important;
               text-align: center;
               .dark-mode & {
                 color: $text-color-white;
@@ -921,236 +878,6 @@ button {
   }
 }
 
-// .assets-select-wrapper {
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;
-//   background-color: $form-input-bg-light;
-//   border-radius: $base-border-radius;
-//   padding: 6px;
-//   .dark-mode & {
-//     background-color: $form-input-bg-dark;
-//   }
-//   .assets-select-input {
-//     height: 44px;
-//     font-size: $font-size-lg + 2;
-//     color: $text-color-secondary-dark;
-//     padding-right: 20px;
-//     border-style: none;
-//     text-align: right;
-//     box-shadow: none;
-//     .dark-mode & {
-//       color: $white;
-//     }
-//     &.with-select {
-//       border-radius: $base-border-radius;
-//       & + .assets-select {
-//         & .ant-select-selector {
-//           background: darken($form-input-bg-light, 10%);
-//           border-radius: 0 $base-border-radius $base-border-radius 0;
-//           .dark-mode & {
-//             background: $assets-select-bg-dark;
-//           }
-//         }
-//       }
-//     }
-//     &::placeholder {
-//       color: $text-color-secondary-dark;
-//       .dark-mode & {
-//         color: $text-color-secondary-light;
-//       }
-//     }
-//   }
-//   .assets-select {
-//     width: 100%;
-//     max-width: 130px;
-//     border-radius: 0 $base-border-radius $base-border-radius 0;
-//     .ant-select-arrow {
-//       top: 46%;
-//       .icon {
-//         fill: $text-color-secondary-dark;
-//         width: 8px;
-//         height: 18px;
-//         .dark-mode & {
-//           fill: $white;
-//         }
-//       }
-//     }
-//     .ant-select-selection-placeholder {
-//       display: flex;
-//       align-items: center;
-
-//       .select-placeholder {
-//         display: flex;
-//         align-items: center;
-//         font-size: $font-size-lg + 1;
-
-//         .circle-icon {
-//           width: 40px;
-//           height: 40px;
-//           border-radius: 40px;
-//           padding: 1px;
-//           background: $primary-gradient;
-//           margin-right: 12px;
-
-//           .circle-icon-inner {
-//             background: $white;
-//             width: 100%;
-//             height: 100%;
-//             border-radius: 100%;
-//             .dark-mode & {
-//               background: $background-dark1;
-//             }
-//           }
-//         }
-//       }
-//     }
-//     .ant-select-selector {
-//       background: $form-input-bg-light;
-//       border: 0;
-//       height: 44px;
-//       padding-right: 0;
-//       padding-left: 0;
-//       border-radius: $base-border-radius;
-//       .dark-mode & {
-//         background-color: $form-input-bg-dark;
-//       }
-//       .ant-select-selection-item {
-//         padding-right: 0;
-//         text-align: center;
-//         line-height: 45px;
-//         border-radius: $base-border-radius;
-//         background: $assets-select-bg-light;
-//         .dark-mode & {
-//           background: $assets-select-bg-dark;
-//         }
-//         .select-inner {
-//           display: flex;
-//           align-items: center;
-//           justify-content: space-between;
-//           height: 100%;
-//           color: $white;
-//           .select-right {
-//             height: 100%;
-//             width: 100%;
-//             background: transparent;
-//             display: flex;
-//             align-items: center;
-//             justify-content: flex-start;
-//             padding-right: 14px;
-//             padding-left: 15px;
-//             .select-right-inner {
-//               display: flex;
-//               align-items: center;
-//               justify-content: space-between;
-//               color: $text-color-secondary-dark;
-//               .dark-mode & {
-//                 color: $white;
-//               }
-//               .name {
-//                 display: none;
-//               }
-//               .title {
-//                 text-transform: uppercase;
-//               }
-//               & .svg-icon {
-//                 display: flex;
-//                 align-items: center;
-//                 justify-content: center;
-//                 margin-right: 8px;
-//                 width: 25px;
-//                 height: 25px;
-//                 & .icon {
-//                   max-width: 100%;
-//                   max-height: 100%;
-//                   width: 100%;
-//                   height: 100%;
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .asset-select-dropdown {
-//   border-radius: 0;
-//   padding: 0;
-//   color: $text-color-secondary-dark;
-//   border: 1px solid rgb(231, 227, 235);
-//   background-color: $white;
-//   .dark-mode & {
-//     color: $white;
-//     background-color: $dark-card-bg;
-//     border-color: #1d1d21;
-//   }
-//   .ant-select-item {
-//     height: 46px;
-//     color: $text-color-secondary-dark;
-//     display: flex;
-//     align-items: center;
-//     .dark-mode & {
-//       color: $white;
-//     }
-//     &.ant-select-item-option-selected {
-//       background-color: $primary-light !important;
-//     }
-//     .ant-select-item-option-content {
-//       .select-inner {
-//         display: flex;
-//         align-items: center;
-//         justify-content: space-between;
-//         height: 100%;
-//         color: inherit;
-//         .select-right {
-//           height: 100%;
-//           width: 110px;
-//           display: flex;
-//           align-items: center;
-//           justify-content: flex-start;
-//           .select-right-inner {
-//             display: flex;
-//             align-items: center;
-//             line-height: 1;
-//             justify-content: space-between;
-//             .name {
-//               color: inherit;
-//               font-size: $font-size-base - 2;
-//               display: block;
-//               margin-top: 2px;
-//             }
-//             .title {
-//               text-transform: uppercase;
-//             }
-//             & .svg-icon {
-//               display: flex;
-//               align-items: center;
-//               padding: 4px;
-//               justify-content: center;
-//               margin-right: 8px;
-//               width: 25px;
-//               height: 25px;
-//               & .icon {
-//                 max-width: 100%;
-//                 max-height: 100%;
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//     &.ant-select-item-option-active {
-//       font-weight: normal;
-//       background-color: rgba(0, 0, 0, 0.2);
-//     }
-//     &.ant-select-item-option-selected {
-//       font-weight: normal;
-//       background-color: rgba(0, 0, 0, 0.5);
-//     }
-//   }
-// }
-
 .ant-select-dropdown {
   &.asset-select-dropdown {
     background: $background-light2;
@@ -1236,7 +963,6 @@ button {
 
   .dark-mode & {
     background: $background-dark2;
-    // box-shadow: $box-shadow-inner-dark;
     box-shadow: none;
   }
 

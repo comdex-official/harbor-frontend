@@ -3,7 +3,11 @@
 .composite-card {
   &.govern-card2 {
     padding: 26px;
-
+    &:last-child {
+      @media only screen and (max-width: 550px) {
+        margin-top: 15px;
+      }
+    }
     h3 {
       .dark-mode & {
         color: $white;
@@ -18,7 +22,9 @@
 
     .govern-dlt-card {
       display: flex;
-
+      @media only screen and (max-width: 550px) {
+        flex-direction: column;
+      }
       .govern-dlt-chart {
         width: 40%;
       }
