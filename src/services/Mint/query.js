@@ -89,7 +89,7 @@ export const queryOwnerVaults = (productId, address, extentedPairId, callback) =
             callback(error)
         }
         new QueryServiceClientImpl(rpcClient)
-            .QueryVaultOfOwnerByPair({
+            .QueryVaultOfOwnerByExtendedPair({
                 productId: Long.fromNumber(productId),
                 owner: address,
                 extendedPairId: Long.fromNumber(extentedPairId),

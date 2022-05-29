@@ -39,7 +39,7 @@ import { useSelector } from "react-redux";
 import Long from "long";
 import { CMDX_PRICE, CMST_PRICE } from "../../../../services/oracle/price";
 import { queryPair, queryPairVault } from "../../../../services/asset/query";
-import { setExtendedPairVaultListData } from "../../../../actions/locker";
+import { setExtendedPairVaultListData, setSelectedExtentedPairvault } from "../../../../actions/locker";
 
 const Mint = ({
   lang,
@@ -251,8 +251,10 @@ const Mint = ({
         message.error(error);
         return;
       }
+      console.log(data);
       setCurrentExtentedVaultdata(data?.pairVault)
       dispatch(setExtendedPairVaultListData(data?.pairVault))
+      dispatch(setSelectedExtentedPairvault(data?.pairVault))
       setLoading(false)
     })
   }

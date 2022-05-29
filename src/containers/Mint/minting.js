@@ -30,6 +30,11 @@ const Minting = ({ address }) => {
   const extenedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
   );
+  const extenedPairVaultList = useSelector(
+    (state) => state.locker.extenedPairVaultList[0]
+  );
+
+  console.log("from Reducer extended pair", extenedPairVaultList);
   const [loading, setLoading] = useState(false);
 
   const navigateToMint = (path) => {
@@ -57,8 +62,8 @@ const Minting = ({ address }) => {
         console.log(error)
         return;
       }
-      console.log("Extented pair List", data);
-      dispatch(setAllExtendedPair(data?.extendedPairIds));
+      console.log("Extented pair List", data.extendedPair);
+      dispatch(setAllExtendedPair(data?.extendedPair));
     });
   };
 
@@ -87,8 +92,8 @@ const Minting = ({ address }) => {
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       <div className="card-main-container">
-        {extenedPairVaultListData?.pairVault?.length > 0 ? (
-          extenedPairVaultListData?.pairVault.map((item, index) => {
+        {extenedPairVaultList?.length > 0 ? (
+          extenedPairVaultList?.map((item, index) => {
             if (
               item &&
               !item.isPsmPair &&
