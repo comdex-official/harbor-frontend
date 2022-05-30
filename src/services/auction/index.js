@@ -1,8 +1,9 @@
-import { QueryServiceClientImpl } from "comdex-codec/build/comdex/auction/v1beta1/querier";
+import { QueryClientImpl } from "comdex-codec/build/comdex/auction/v1beta1/querier";
 import Long from "long";
 import { createQueryClient } from "../helper";
+import {PRODUCT_ID} from "../../constants/common";
 
-export const queryActionList = (
+export const queryDutchAuctionList = (
   offset,
   limit,
   countTotal,
@@ -15,8 +16,9 @@ export const queryActionList = (
       return;
     }
 
-    new QueryServiceClientImpl(rpcClient)
-      .QueryAuctions({
+    new QueryClientImpl(rpcClient)
+      .QueryDutchAuctions({
+        appId: Long.fromNumber(PRODUCT_ID),
         pagination: {
           key: "",
           offset: Long.fromNumber(offset),
@@ -26,6 +28,7 @@ export const queryActionList = (
         },
       })
       .then((result) => {
+        
         callback(null, result);
       })
       .catch((error) => {
@@ -34,16 +37,18 @@ export const queryActionList = (
   });
 };
 
-export const queryBiddingList = (bidder, callback) => {
+export const queryDutchBiddingList = (bidder, callback) => {
   createQueryClient((error, rpcClient) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryServiceClientImpl(rpcClient)
-      .QueryBiddings({
+    new QueryClientImpl(rpcClient)
+      .QueryDebtBiddings({
         bidder,
+        appId: Long.fromNumber(PRODUCT_ID),
+        history: false,
       })
       .then((result) => {
         callback(null, result);
@@ -61,7 +66,7 @@ export const queryAuctionParams = (callback) => {
       return;
     }
 
-    new QueryServiceClientImpl(rpcClient)
+    new QueryClientImpl(rpcClient)
       .QueryParams()
       .then((result) => {
         callback(null, result);
