@@ -138,6 +138,7 @@ const Withdraw = ({
         message.error(error);
         return;
       }
+      console.log(data);
       let lockerExist = data?.lockerInfo?.length;
       if (lockerExist > 0) {
         dispatch(setIsLockerExist(true));

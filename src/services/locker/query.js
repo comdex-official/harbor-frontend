@@ -43,7 +43,7 @@ export const queryUserLockerByProductAssetId = (productId, assetId, owner, callb
             return;
         }
         new QueryServiceClientImpl(rpcClient)
-            .QueryOwnerLockerByProductToAssetID({
+            .QueryOwnerLockerByProductToAssetIDbyOwner({
                 productId: Long.fromNumber(productId),
                 assetId: Long.fromNumber(assetId),
                 owner: owner
