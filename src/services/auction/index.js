@@ -45,7 +45,7 @@ export const queryDutchBiddingList = (bidder, callback) => {
     }
 
     new QueryClientImpl(rpcClient)
-      .QueryDebtBiddings({
+      .QueryDutchBiddings({
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
         history: false,
@@ -72,5 +72,117 @@ export const queryAuctionParams = (callback) => {
         callback(null, result);
       })
       .catch((error) => callback(error?.message));
+  });
+};
+
+export const queryDebtAuctionList = (
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  callback
+) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+      .QueryDebtAuctions({
+        appId: Long.fromNumber(PRODUCT_ID),
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
+      })
+      .then((result) => {
+        
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+
+export const queryDebtBiddingList = (bidder, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+      .QueryDebtBiddings({
+        bidder,
+        appId: Long.fromNumber(PRODUCT_ID),
+        history: false,
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+
+export const querySurplusAuctionList = (
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  callback
+) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+      .QuerySurplusAuctions({
+        appId: Long.fromNumber(PRODUCT_ID),
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
+      })
+      .then((result) => {
+        
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+
+export const querySurplusBiddingList = (bidder, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+      .QuerySurplusBiddings({
+        bidder,
+        appId: Long.fromNumber(PRODUCT_ID),
+        history: false,
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
   });
 };

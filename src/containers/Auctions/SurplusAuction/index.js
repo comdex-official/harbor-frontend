@@ -1,14 +1,93 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import {  Table } from "antd";
+import { Table } from "antd";
 import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import Bidding from "./Bidding";
+import { querySurplusAuctionList , querySurplusBiddingList, queryAuctionParams} from "../../../services/auction";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+} from "../../../constants/common";
+import { message } from "antd";
+import {useState, useEffect} from 'react';
 
-const SurplusAuction = ({ setPairs }) => {
+const SurplusAuctions = ({ setPairs, address }) => {
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [inProgress, setInProgress] = useState(false);
+  const [params, setParams] = useState({});
+  const [auctions, setAuctions] = useState();
+  const [biddings, setBiddings] = useState();
+
+  useEffect(() => {
+    fetchData();
+    queryParams();
+  }, [address]);
+
+  const fetchData = () => {
+    fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
+    fetchBiddings(address);
+  };
+
+  const queryParams = () => {
+    queryAuctionParams((error, result) => {
+      if (error) {
+        return;
+      }
+
+      setParams(result?.params);
+    });
+  };
+
+  const handleChange = (value) => {
+    setPageNumber(value.current - 1);
+    setPageSize(value.pageSize);
+    fetchAuctions(
+      (value.current - 1) * value.pageSize,
+      value.pageSize,
+      true,
+      false
+    );
+  };
+
+  const fetchAuctions = (offset, limit, isTotal, isReverse) => {
+    setInProgress(true);
+    querySurplusAuctionList(offset, limit, isTotal, isReverse, (error, result) => {
+      setInProgress(false);
+
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      setAuctions(result && result.auctions, result && result.pagination);
+    });
+  };
+
+  const fetchBiddings = (address) => {
+    setInProgress(true);
+    querySurplusBiddingList(address, (error, result) => {
+      setInProgress(false);
+
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      if (address) {
+        setBiddings(
+          result && result.biddings,
+          result && result.pagination,
+          result && result.bidder
+        );
+      }
+    });
+  };
+
   const columns = [
     {
       title: "Auctioned Asset",
@@ -54,7 +133,7 @@ const SurplusAuction = ({ setPairs }) => {
       width: 140,
       render: () => (
         <>
-          <PlaceBidModal setPairs={setPairs} />
+          <PlaceBidModal />
         </>
       ),
     },
@@ -166,6 +245,8 @@ const SurplusAuction = ({ setPairs }) => {
       top_bid: "11",
     },
   ];
+
+  console.log('params, auction, biddings', params, auctions, biddings);
   return (
     <div className="app-content-wrapper">
       <Row>
@@ -176,7 +257,13 @@ const SurplusAuction = ({ setPairs }) => {
                 className="custom-table liquidation-table"
                 dataSource={tableData}
                 columns={columns}
-                pagination={false}
+                loading={inProgress}
+                onChange={(event) => handleChange(event)}
+                pagination={{
+                  total:
+                    auctions && auctions.pagination && auctions.pagination.total,
+                  pageSize,
+                }}
                 scroll={{ x: "100%" }}
               />
             </div>
@@ -193,14 +280,16 @@ const SurplusAuction = ({ setPairs }) => {
   );
 };
 
-SurplusAuction.propTypes = {
+SurplusAuctions.propTypes = {
   lang: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
+  address: PropTypes.string,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
   };
 };
 
@@ -208,4 +297,4 @@ const actionsToProps = {
   setPairs,
 };
 
-export default connect(stateToProps, actionsToProps)(SurplusAuction);
+export default connect(stateToProps, actionsToProps)(SurplusAuctions);
