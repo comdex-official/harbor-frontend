@@ -337,4 +337,111 @@ export const customAminoTypes = {
       };
     },
   },
+  "/comdex.auction.v1beta1.MsgPlaceSurplusBidRequest": {
+    aminoType: "auction/MsgPlaceSurplusBidRequest",
+    toAmino: ({
+      bidder,
+      amount,
+      auctionId,
+      appId,
+      auctionMappingId,
+    }) => {
+      return {
+        bidder,
+        amount: amount,
+        auction_id: String(auctionId),
+        app_id: String(appId),
+        auction_mapping_id: String(auctionMappingId),
+      };
+    },
+    fromAmino: ({
+      bidder,
+      amount,
+      auction_id,
+      app_id,
+      auction_mapping_id,
+    }) => {
+      return {
+        bidder,
+        amount: amount,
+        auctionId: Number(auction_id),
+        appId: Number(app_id),
+        auctionMappingId: Number(auction_mapping_id),
+      };
+    },
+  },
+  "/comdex.auction.v1beta1.MsgPlaceDebtBidRequest": {
+    aminoType: "auction/MsgPlaceDebtBidRequest",
+    toAmino: ({
+      bidder,
+      bid,
+      expectedUserToken,
+      auctionId,
+      appId,
+      auctionMappingId,
+    }) => {
+      return {
+        bidder,
+        bid: bid,
+        expected_user_token: expectedUserToken,
+        auction_id: String(auctionId),
+        app_id: String(appId),
+        auction_mapping_id: String(auctionMappingId),
+      };
+    },
+    fromAmino: ({
+      bidder,
+      bid,
+      expected_user_token,
+      auction_id,
+      app_id,
+      auction_mapping_id,
+    }) => {
+      return {
+        bidder,
+        bid: bid,
+        expectedUserToken: expected_user_token,
+        auctionId: Number(auction_id),
+        appId: Number(app_id),
+        auctionMappingId: Number(auction_mapping_id),
+      };
+    },
+  },
+  "/comdex.auction.v1beta1.MsgPlaceDutchBidRequest": {
+    aminoType: "auction/MsgPlaceDutchBidRequest",
+    toAmino: ({
+      bidder,
+      max,
+      amount,
+      auctionId,
+      appId,
+      auctionMappingId,
+    }) => {
+      return {
+        bidder,
+        max,
+        amount: amount,
+        auction_id: String(auctionId),
+        app_id: String(appId),
+        auction_mapping_id: String(auctionMappingId),
+      };
+    },
+    fromAmino: ({
+      bidder,
+      max,
+      amount,
+      auction_id,
+      app_id,
+      auction_mapping_id,
+    }) => {
+      return {
+        bidder,
+        max,
+        amount: amount,
+        auctionId: Number(auction_id),
+        appId: Number(app_id),
+        auctionMappingId: Number(auction_mapping_id),
+      };
+    },
+  },
 };
