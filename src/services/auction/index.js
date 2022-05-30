@@ -1,4 +1,4 @@
-import { QueryClientImpl } from "comdex-codec/build/comdex/auction/v1beta1/querier";
+import { QueryClientImpl } from "comdex-codec/build/comdex/auction/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
 import {PRODUCT_ID} from "../../constants/common";
