@@ -151,8 +151,8 @@ const Minting = ({ address }) => {
                       >
                         <div className="up-container">
                           <div className="icon-container">
-                            {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
-                            <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} />
+                            <SvgIcon name={iconNameFromDenom("ucmdx")} />
+                            {/* <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} /> */}
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{item?.pairName}</div>
