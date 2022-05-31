@@ -29,6 +29,28 @@ export const ibcDenomToDenom = (key) => {
   }
 };
 
+export const symbolToDenom = (key) => {
+  switch (key) {
+    case "atom":
+    case ibcDenoms["atom"]:
+      return "uatom";
+    case "xprt":
+    case ibcDenoms["xprt"]:
+      return "uxprt";
+    case "osmo":
+    case ibcDenoms["osmo"]:
+      return "uosmo";
+    case "cmdx":
+      return "ucmdx";
+    case "cmst":
+      return "ucmst";
+    case "harbor":
+      return "uharbor";
+    default:
+      return "";
+  }
+};
+
 export const denomToSymbol = (key) => {
   switch (key) {
     case "uatom":

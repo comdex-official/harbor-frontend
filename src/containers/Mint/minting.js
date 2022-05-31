@@ -5,7 +5,7 @@ import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
-import { iconNameFromDenom } from "../../utils/string";
+import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
 import { queryVaultByOwner, queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
@@ -114,13 +114,14 @@ const Minting = ({ address }) => {
         if (item?.id?.low === pairID) {
           let icon = item?.name;
           icon = icon.toLowerCase();
-          console.log(icon);
+          icon = symbolToDenom(icon)
+          console.log(icon); // return ucmdx
           return icon;
         }
       })
     }
   }
-  
+
   if (loading) {
     return <Spin />;
   }
@@ -150,8 +151,8 @@ const Minting = ({ address }) => {
                       >
                         <div className="up-container">
                           <div className="icon-container">
-                            {/* <SvgIcon name={iconNameFromDenom("ucmdx")} /> */}
-                            <SvgIcon name={iconNameFromDenom(`"${getAsssetIcon(2)}"`)} />
+                            {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
+                            <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} />
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{item?.pairName}</div>
