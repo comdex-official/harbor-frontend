@@ -8,6 +8,7 @@ import {
   IN_AMOUNT_SET,
   OUT_AMOUNT_SET,
   COLLATERAL_RATIO_SET,
+  SET_ASSET_LIST,
 } from "../constants/asset";
 import { message } from "antd";
 import axios from "axios";
@@ -81,6 +82,14 @@ export const setAssets = (list, pagination) => {
     cAssets,
   };
 };
+
+export const setAssetList = (value) => {
+  return {
+    type: SET_ASSET_LIST,
+    value,
+  };
+};
+
 
 export const fetchProofHeight = (rest, channel, callback) => {
   let url = `${rest}/ibc/core/channel/v1/channels/${channel}/ports/transfer`;
