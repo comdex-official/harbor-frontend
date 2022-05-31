@@ -19,7 +19,7 @@ function omitDefault(input) {
 
 export const customAminoTypes = {
   "/comdex.vault.v1beta1.MsgCreateRequest": {
-    aminoType: "vault/MsgCreateRequest",
+    aminoType: "comdex/vault/MsgCreateRequest",
     toAmino: ({
       from,
       appMappingId,
@@ -52,7 +52,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.vault.v1beta1.MsgDepositRequest": {
-    aminoType: "vault/MsgDepositRequest",
+    aminoType: "comdex/vault/MsgDepositRequest",
     toAmino: ({
       from,
       appMappingId,
@@ -85,7 +85,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.vault.v1beta1.MsgWithdrawRequest": {
-    aminoType: "vault/MsgWithdrawRequest",
+    aminoType: "comdex/vault/MsgWithdrawRequest",
     toAmino: ({
       from,
       appMappingId,
@@ -118,7 +118,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.vault.v1beta1.MsgDrawRequest": {
-    aminoType: "vault/MsgDrawRequest",
+    aminoType: "comdex/vault/MsgDrawRequest",
     toAmino: ({
       from,
       appMappingId,
@@ -151,7 +151,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.vault.v1beta1.MsgRepayRequest": {
-    aminoType: "vault/MsgRepayRequest",
+    aminoType: "comdex/vault/MsgRepayRequest",
     toAmino: ({
       from,
       appMappingId,
@@ -184,7 +184,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.vault.v1beta1.MsgCloseRequest": {
-    aminoType: "vault/MsgCloseRequest",
+    aminoType: "comdex/vault/MsgCloseRequest",
     toAmino: ({
       from,
       appMappingId,
@@ -213,7 +213,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.locker.v1beta1.MsgCreateLockerRequest": {
-    aminoType: "locker/MsgCreateLockerRequest",
+    aminoType: "comdex/locker/MsgCreateLockerRequest",
     toAmino: ({
       depositor,
       amount,
@@ -244,7 +244,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.locker.v1beta1.MsgAddWhiteListedAssetRequest": {
-    aminoType: "locker/MsgAddWhiteListedAssetRequest",
+    aminoType: "comdex/locker/MsgAddWhiteListedAssetRequest",
     toAmino: ({
       from,
       assetId,
@@ -270,7 +270,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.locker.v1beta1.MsgDepositAssetRequest": {
-    aminoType: "locker/MsgDepositAssetRequest",
+    aminoType: "comdex/locker/MsgDepositAssetRequest",
     toAmino: ({
       depositor,
       lockerId,
@@ -304,7 +304,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.locker.v1beta1.MsgWithdrawAssetRequest": {
-    aminoType: "locker/MsgWithdrawAssetRequest",
+    aminoType: "comdex/locker/MsgWithdrawAssetRequest",
     toAmino: ({
       depositor,
       lockerId,
