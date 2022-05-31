@@ -131,7 +131,7 @@ const CloseTab = ({
             from: address,
             appMappingId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
-            userVaultid: ownerVaultId,
+            userVaultId: ownerVaultId,
           },
         },
         fee: defaultFee(),
