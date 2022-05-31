@@ -47,11 +47,12 @@ const VaultDetails = ({
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
+        console.log(error);
         message.error(error);
         return;
       }
+      console.log("Owner vault data", data);
       setOwnerVaultId(data?.vaultId)
-      // console.log("Owner vault data by id", data);
     })
   }
   // *----------Get the owner vaultDetails by ownervaultId----------
@@ -62,8 +63,8 @@ const VaultDetails = ({
         message.error(error);
         return;
       }
-      setOwnerVaultInfo(data.vault)
-      // console.log("Owner vault data by info", data);
+      console.log(data);
+      setOwnerVaultInfo(data?.vault)
 
     })
   }

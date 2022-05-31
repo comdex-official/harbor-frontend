@@ -133,7 +133,6 @@ const Deposit = ({
         message.error(error);
         return;
       }
-      console.log(data);
       setWhiteListedAssets(data?.assetIds)
       setLoading(false)
     })

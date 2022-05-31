@@ -405,6 +405,10 @@
             text-transform: uppercase;
             font-size: 1.3rem;
             font-weight: 600;
+            color: #000;
+            .dark-mode & {
+              color: #fff;
+            }
           }
           .vault-desc {
           }
@@ -418,6 +422,10 @@
           display: flex;
           justify-content: space-between;
           width: 100%;
+          color: #000;
+          .dark-mode & {
+            color: #fff;
+          }
           .name {
           }
           .value {
