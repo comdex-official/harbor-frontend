@@ -1,6 +1,6 @@
 import Long from "long";
 import { createQueryClient } from "../helper";
-import { QueryServiceClientImpl } from 'comdex-codec/build/comdex/vault/v1beta1/querier'
+import { QueryClientImpl } from 'comdex-codec/build/comdex/vault/v1beta1/query'
 
 
 export const queryExtendedPairVault = (productId, callback) => {
@@ -9,7 +9,7 @@ export const queryExtendedPairVault = (productId, callback) => {
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryExtendedPairIDByProduct({
                 productId: Long.fromNumber(productId)
             }).then((result) => {
@@ -32,7 +32,7 @@ export const queryVaultByProductId = (
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryAllVaultsByProduct({
                 appId: Long.fromNumber(product)
             })
@@ -54,7 +54,7 @@ export const queryVaultByOwner = (
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryAllVaultByOwner({
                 owner: owner
             })
@@ -72,7 +72,7 @@ export const queryVaults = (id, callback) => {
         if (error) {
             callback(error)
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryVault({
                 id: id
             }).then((result) => {
@@ -88,7 +88,7 @@ export const queryOwnerVaults = (productId, address, extentedPairId, callback) =
         if (error) {
             callback(error)
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryVaultOfOwnerByPair({
                 productId: Long.fromNumber(productId),
                 owner: address,
@@ -107,7 +107,7 @@ export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
         if (error) {
             callback(error)
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryVault({
                 id: ownerVaultId,
             }).then((result) => {
@@ -124,7 +124,7 @@ export const queryAllVaultByProduct = (productId, callback) => {
         if (error) {
             callback(error)
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryVaultByProduct({
                 productId: Long.fromNumber(productId),
             }).then((result) => {

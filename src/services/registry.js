@@ -1,7 +1,7 @@
-import { MsgCreateLockerRequest, MsgDepositAssetRequest, MsgWithdrawAssetRequest } from 'comdex-codec/build/comdex/locker/v1beta1/msg';
-import { MsgCreateRequest, MsgDepositRequest, MsgWithdrawRequest, MsgDrawRequest, MsgRepayRequest, MsgCloseRequest } from 'comdex-codec/build/comdex/vault/v1beta1/msg'
+import { MsgCreateLockerRequest, MsgDepositAssetRequest, MsgWithdrawAssetRequest } from 'comdex-codec/build/comdex/locker/v1beta1/tx';
+import { MsgCreateRequest, MsgDepositRequest, MsgWithdrawRequest, MsgDrawRequest, MsgRepayRequest, MsgCloseRequest } from 'comdex-codec/build/comdex/vault/v1beta1/tx'
 
-import {MsgPlaceSurplusBidRequest, MsgPlaceDebtBidRequest, MsgPlaceDutchBidRequest} from 'comdex-codec/build/comdex/auction/v1beta1/msg';
+import {MsgPlaceSurplusBidRequest, MsgPlaceDebtBidRequest, MsgPlaceDutchBidRequest} from 'comdex-codec/build/comdex/auction/v1beta1/tx';
 
 import { Registry } from "@cosmjs/proto-signing";
 import { defaultRegistryTypes } from "@cosmjs/stargate";

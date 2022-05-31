@@ -1,4 +1,4 @@
-import { QueryServiceClientImpl } from "comdex-codec/build/comdex/vault/v1beta1/querier";
+import { QueryClientImpl } from "comdex-codec/build/comdex/vault/v1beta1/querier";
 import Long from "long";
 import { createQueryClient } from "../helper";
 
@@ -16,7 +16,7 @@ import { createQueryClient } from "../helper";
 //       return;
 //     }
 
-//     new QueryServiceClientImpl(rpcClient)
+//     new QueryClientImpl(rpcClient)
 //       .QueryVaults({
 //         owner,
 //         pagination: {
@@ -43,7 +43,7 @@ import { createQueryClient } from "../helper";
 //       return;
 //     }
 
-//     new QueryServiceClientImpl(rpcClient)
+//     new QueryClientImpl(rpcClient)
 //       .QueryVault({
 //         id,
 //       })
@@ -63,7 +63,7 @@ import { createQueryClient } from "../helper";
 //       return;
 //     }
 
-//     new QueryServiceClientImpl(rpcClient)
+//     new QueryClientImpl(rpcClient)
 //       .QueryTotalCollaterals({})
 //       .then((result) => {
 //         callback(null, result);
