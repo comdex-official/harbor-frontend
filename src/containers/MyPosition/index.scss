@@ -396,3 +396,152 @@
     }
   }
 }
+
+.position-history-table {
+  .ant-table {
+    background: none;
+
+    .ant-table-content {
+      table {
+        border-collapse: separate;
+        border-spacing: 0 0.65em;
+
+        .ant-table-thead {
+          tr {
+            th {
+              background: none;
+              font-weight: 300;
+              border: 0;
+              padding: 10px 15px 0 15px;
+              font-size: $font-size-sm + 3;
+              color: $dark-color;
+              text-align: center;
+              .dark-mode & {
+                color: $text-color-white;
+              }
+            }
+            th:nth-child(1) {
+              text-align: left !important;
+            }
+            th:last-child {
+              text-align: right !important;
+            }
+          }
+        }
+
+        .ant-table-tbody {
+          .ant-table-placeholder {
+            .ant-empty {
+              .dark-mode & {
+                color: $text-color-light;
+              }
+            }
+          }
+          tr {
+            border-radius: 15px;
+            border: 0.5px solid $border-color-base;
+
+            td {
+              .ant-btn-sm {
+                padding: 0 22px;
+              }
+              color: $text-color-light2;
+              border-top: 1px solid;
+              border-bottom: 1px solid;
+              border: 1.5px solid $border-color-base;
+              border-left: 0;
+              border-right: 0;
+              padding: 15px 15px;
+              font-size: $font-size-lg - 1;
+              line-height: 1;
+              border-color: transparent;
+              background: none;
+              text-align: center;
+              &:last-child {
+                text-align: right !important;
+              }
+              &:first-child {
+                border-radius: 15px 0 0 15px;
+                text-align: start;
+                .dark-mode & {
+                  border-left: 1px solid $border-dark;
+                }
+              }
+
+              &:last-child {
+                border-radius: 0 15px 15px 0;
+                text-align: end;
+                .dark-mode & {
+                  border-right: 1px solid $border-dark;
+                }
+              }
+
+              .dark-mode & {
+                color: $white;
+                border-color: $border-dark;
+              }
+              a {
+                color: $text-color-light2;
+                .dark-mode & {
+                  color: white;
+                }
+              }
+            }
+
+            p {
+              margin-bottom: 0;
+              line-height: 1;
+              font-size: $font-size-base + 3;
+            }
+
+            small {
+              font-size: $font-size-sm;
+              line-height: 1;
+
+              .dark-mode & {
+                color: $text-color-light;
+              }
+            }
+
+            &:nth-child(odd) {
+              background: $background-light;
+              box-shadow: $box-shadow-inner-light;
+
+              .dark-mode & {
+                background: $background-dark1;
+                box-shadow: none;
+              }
+              &:hover {
+                box-shadow: $box-shadow-inner-light;
+                background: rgba($secondary-color, 0.3);
+                .dark-mode & {
+                  background: $secondary-color;
+                  box-shadow: none;
+                }
+              }
+            }
+
+            &:nth-child(even) {
+              background: $background-light;
+              box-shadow: $box-shadow-inner-light;
+
+              .dark-mode & {
+                background: $background-dark1;
+                box-shadow: none;
+              }
+              &:hover {
+                box-shadow: $box-shadow-inner-light-hover;
+                background: rgba($secondary-color, 0.3);
+
+                .dark-mode & {
+                  background: $secondary-color;
+                  box-shadow: none;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

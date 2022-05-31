@@ -122,7 +122,7 @@ const History = (props) => {
           <div className="composite-card">
             <div className="card-content">
               <Table
-                className="custom-table"
+                className=" position-history-table"
                 dataSource={tableData}
                 columns={columns}
                 scroll={{ x: "100%" }}
