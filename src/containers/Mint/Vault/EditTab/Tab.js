@@ -266,7 +266,7 @@ const Edit = ({
             extendedPairVaultId: Long.fromNumber(
               selectedExtentedPairVaultListData[0]?.id?.low
             ),
-            userVaultid: ownerVaultId,
+            userVaultId: ownerVaultId,
             amount: getAmount(inputAmount),
           },
         },
