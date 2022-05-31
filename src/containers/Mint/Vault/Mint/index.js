@@ -235,6 +235,7 @@ const Mint = ({
 
   useEffect(() => {
     resetValues()
+    
     fetchQueryPairValut(pathVaultId);
     if (pairId) {
       getAssetDataByPairId(pairId);

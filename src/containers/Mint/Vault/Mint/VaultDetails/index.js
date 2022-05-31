@@ -47,6 +47,7 @@ const VaultDetails = ({
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
+        console.log(error);
         message.error(error);
         return;
       }
@@ -62,6 +63,7 @@ const VaultDetails = ({
         message.error(error);
         return;
       }
+      console.log(data);
       setOwnerVaultInfo(data?.vault)
 
     })

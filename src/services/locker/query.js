@@ -1,6 +1,6 @@
 import Long from "long";
 import { createQueryClient } from "../helper";
-import { QueryServiceClientImpl } from 'comdex-codec/build/comdex//locker/v1beta1/querier'
+import { QueryClientImpl } from 'comdex-codec/build/comdex//locker/v1beta1/query'
 
 export const queryLockerWhiteListedAssetByProduct = (callback) => {
     createQueryClient((error, rpcClient) => {
@@ -8,7 +8,7 @@ export const queryLockerWhiteListedAssetByProduct = (callback) => {
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryWhiteListedAssetByAllProduct().then((result) => {
                 callback(null, result);
             })
@@ -24,7 +24,7 @@ export const queryLockerWhiteListedAssetByProductId = (productId, callback) => {
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryWhiteListedAssetIDsByProductID({
                 productId: Long.fromNumber(productId)
             }).then((result) => {
@@ -42,7 +42,7 @@ export const queryUserLockerByProductAssetId = (productId, assetId, owner, callb
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryOwnerLockerByProductToAssetIDbyOwner({
                 productId: Long.fromNumber(productId),
                 assetId: Long.fromNumber(assetId),
@@ -62,7 +62,7 @@ export const queryUserLockedValueInLocker = (productId, assetId, owner, callback
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryOwnerLockerByProductToAssetID({
                 productId: Long.fromNumber(productId),
                 assetId: Long.fromNumber(assetId),
@@ -83,7 +83,7 @@ export const queryLockerLookupTableByApp = (productId, callback) => {
             callback(error);
             return;
         }
-        new QueryServiceClientImpl(rpcClient)
+        new QueryClientImpl(rpcClient)
             .QueryLockerLookupTableByApp({
                 appId: Long.fromNumber(productId),
             }).then((result) => {

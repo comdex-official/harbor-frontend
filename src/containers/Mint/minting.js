@@ -9,7 +9,7 @@ import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
 import { queryVaultByOwner, queryVaultByProductId } from "../../services/Mint/query";
 import React, { useEffect, useState } from "react";
-import { PRODUCT_ID } from "../../constants/common";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, PRODUCT_ID } from "../../constants/common";
 import { setPairs } from "../../actions/asset";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -21,7 +21,7 @@ import {
 } from "../../actions/locker";
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
-import { queryExtendedPairVaultById, queryPairVault } from "../../services/asset/query";
+import { queryAssets, queryExtendedPairVaultById, queryPairVault } from "../../services/asset/query";
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
@@ -46,7 +46,12 @@ const Minting = ({ address }) => {
   useEffect(() => {
     fetchExtendexPairList(PRODUCT_ID);
     // fetchQueryPairValuts(PRODUCT_ID);
-
+    fetchAssets(
+      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+      DEFAULT_PAGE_SIZE,
+      true,
+      false
+    );
   }, [address])
 
   // ******* Get Vault Query *********
@@ -70,6 +75,17 @@ const Minting = ({ address }) => {
 
 
 
+  const fetchAssets = (offset, limit, countTotal, reverse) => {
+    setLoading(true)
+    queryAssets(offset, limit, countTotal, reverse, (error, data) => {
+      setLoading(false)
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log(data);
+    });
+  };
   // *----------Get list of all extended pair vaults----------*
 
   const fetchQueryPairValuts = (productId) => {
