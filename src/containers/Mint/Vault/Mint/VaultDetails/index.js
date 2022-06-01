@@ -82,6 +82,7 @@ const VaultDetails = ({
           </div>
           <div className="assets-row">
             <div className="asset-name">interest Rate</div>
+            {/* TODO: Update the values properly */}
             <div className="asset-value">{((selectedExtentedPairVaultListData?.stabilityFee) / 10 ** 16) || "-"} %</div>
           </div>
           <div className="assets-row">

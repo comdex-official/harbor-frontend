@@ -6,60 +6,82 @@ import TooltipIcon from "../../components/TooltipIcon";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import Banner from "./Banner";
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from "react";
 import "./index.scss";
-import {queryAppTVL} from "../../services/vault/query";
-import {DOLLAR_DECIMALS, PRODUCT_ID} from "../../constants/common";
-import {message} from "antd";
-import {queryAsset} from "../../services/asset/query";
-import {commaSeparator, marketPrice} from "../../utils/number";
+import { queryAppTVL } from "../../services/vault/query";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
+import { message } from "antd";
+import { queryAsset } from "../../services/asset/query";
+import { commaSeparator, marketPrice } from "../../utils/number";
 import asset from "../../reducers/asset";
-import {amountConversion} from "../../utils/coin";
+import { amountConversion } from "../../utils/coin";
+
+const vaultsInfo = [
+  {
+    asset_denom: "ucmdx",
+    collateral_locked_amount: "13710000000",
+  },
+  {
+    asset_denom: "uatom",
+    collateral_locked_amount: "13710000000",
+  },
+  {
+    asset_denom: "uosmo",
+    collateral_locked_amount: "13710000000",
+  },
+  {
+    asset_denom: "uxprt",
+    collateral_locked_amount: "13710000000",
+  },
+];
 
 const Dashboard = ({ lang, isDarkMode, markets }) => {
-  const[TVL, setTVL] = useState();
-  const [totalValueObject, setTotalValueObject] = useState();
+  const [totalValueLocked, setTotalValueLocked] = useState();
+  const [totalDollarValue, setTotalDollarValue] = useState();
 
-  useEffect(() =>{
+  useEffect(() => {
     fetchTVL();
-  },[]);
+    let total = 0;
+    const result = new Map(
+      vaultsInfo.map((item) => {
+        let value =
+          Number(amountConversion(item.collateral_locked_amount)) *
+          marketPrice(markets, item?.asset_denom);
+        total += value;
+        item.dollarValue = value;
+        return [item.asset_denom, item];
+      })
+    );
+
+    setTotalValueLocked(result);
+    setTotalDollarValue(total);
+  }, []);
 
   const fetchTVL = () => {
-    queryAppTVL(PRODUCT_ID, (error, result)=> {
-      if(error){
+    queryAppTVL(PRODUCT_ID, (error, result) => {
+      if (error) {
         message.error(error);
         return;
       }
 
-      if(result?.tvldata && result?.tvldata?.length>0){
-        setTVL(result?.tvldata);
-        let totalValue = {}
-        let dollarValue = 0;
-        for (let i = 0; i <  result?.tvldata?.length; i++) {
-          let item = result?.tvldata[i];
-          queryAsset(item?.assetId, (error, result)=>{
-            if(error){
-              message.error(error);
-              return
-            }
-
-            item["asset"] = result?.asset;
-            const value = Number(amountConversion(item?.collateralLockedAmount)) * marketPrice(markets, result?.asset?.denom);
-            console.log('the value', value, dollarValue)
-            item["dollarValue"] = value;
-            dollarValue += value;
-            return totalValue[result?.asset?.denom] = item;
-          })
-          console.log('the total value', totalValue)
-          setTotalValueObject(totalValue)
-        }
+      if (result?.tvldata && result?.tvldata?.length > 0) {
+        // setTotalValueLocked(result?.tvldata);
       }
-    })
-  }
+    });
+  };
 
-  const calculateTotalValueLockedInDollar = () => {
+  const calculateTotalValueLockedInDollarForOthers = () => {
+    let amount = 0;
+    if (totalDollarValue) {
+      amount =
+        Number(totalDollarValue) -
+        (Number(totalValueLocked?.get("ucmdx")?.dollarValue) +
+          Number(totalValueLocked?.get("uatom")?.dollarValue));
+    }
 
-  }
+    return `$${commaSeparator(amount || 0, DOLLAR_DECIMALS)}
+`;
+  };
 
   const Options = {
     chart: {
@@ -100,23 +122,27 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         data: [
           {
             name: "ATOM",
-            y: 60,
+            y: Number(totalValueLocked?.get("uatom")?.dollarValue || 0),
             color: "#665AA6",
           },
           {
             name: "CMDX",
-            y: 40,
+            y: Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0),
             color: "#BFA9D7",
           },
           {
             name: "Others",
-            y: 30,
+            y:
+              Number(totalDollarValue || 0) -
+              (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
+                Number(totalValueLocked?.get("uatom")?.dollarValue || 0)),
             color: isDarkMode ? "#373549" : "#E0E0E0",
           },
         ],
       },
     ],
   };
+
   const PriceChart = {
     chart: {
       type: "spline",
@@ -178,9 +204,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         lineWidth: 2,
         lineColor: "#665aa6",
         marker: false,
-        data: [
-          1.2, .9, 1.1, 1, 1, 1, 1, 1, 1.1, 1, 1, 1, .9, 1, 1.2,
-        ],
+        data: [1.2, 0.9, 1.1, 1, 1, 1, 1, 1, 1.1, 1, 1, 1, 0.9, 1, 1.2],
       },
     ],
   };
@@ -252,6 +276,14 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     ],
   };
 
+  console.log(
+    "tvl",
+    totalValueLocked,
+    totalDollarValue,
+    commaSeparator(
+      (totalValueLocked?.get("uatom")?.dollarValue || 0, DOLLAR_DECIMALS)
+    )
+  );
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>
@@ -259,8 +291,15 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
           <div className="dashboard-upper-left ">
             <div className="composite-card  earn-deposite-card">
               <div className="dashboard-statics">
-                <p className="total-value">Total Value Locked <TooltipIcon text={variables[lang].tooltip_total_value_locked} /></p>
-                <h2>$15,690.00</h2>
+                <p className="total-value">
+                  Total Value Locked{" "}
+                  <TooltipIcon
+                    text={variables[lang].tooltip_total_value_locked}
+                  />
+                </p>
+                <h2>
+                  ${commaSeparator(totalDollarValue || 0, DOLLAR_DECIMALS)}
+                </h2>
               </div>
               <div className="totalvalues">
                 <div className="totalvalues-chart">
@@ -269,19 +308,27 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                 <div className="totalvalues-right">
                   <div className="dashboard-statics mb-5">
                     <p>ATOM</p>
-                    <h3>${commaSeparator(
-                          amountConversion(totalValueObject?.["uatom"]?.dollarValue || 0, DOLLAR_DECIMALS)
-                      )}</h3>
+                    <h3>
+                      $
+                      {commaSeparator(
+                        totalValueLocked?.get("uatom")?.dollarValue || 0,
+                        DOLLAR_DECIMALS
+                      )}
+                    </h3>
                   </div>
                   <div className="dashboard-statics mb-5 total-dashboard-stats">
                     <p>CMDX</p>
-                    <h3>${commaSeparator(
-                        amountConversion(totalValueObject?.["ucmdx"]?.dollarValue || 0, DOLLAR_DECIMALS)
-                    )}</h3>                  </div>
+                    <h3>
+                      $
+                      {commaSeparator(
+                        totalValueLocked?.get("ucmdx")?.dollarValue || 0,
+                        DOLLAR_DECIMALS
+                      )}
+                    </h3>{" "}
+                  </div>
                   <div className="dashboard-statics mb-0 others-dashboard-stats">
                     <p>Others</p>
-                    <h3>{TVL?.length>0 &&calculateTotalValueLockedInDollar()}</h3>
-                    <h3>$345.00</h3>
+                    <h3>{calculateTotalValueLockedInDollarForOthers()}</h3>
                   </div>
                 </div>
               </div>
@@ -297,13 +344,21 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                   </h4>
                 </div>
                 <div className="col2">
-                  <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply_CMST} /></small>
+                  <small>
+                    Circulating Supply{" "}
+                    <TooltipIcon
+                      text={variables[lang].tooltip_circulating_supply_CMST}
+                    />
+                  </small>
                   <p>
                     12,500,000 <span>CMST</span>
                   </p>
                 </div>
                 <div className="col3">
-                  <small>Market Cap <TooltipIcon text={variables[lang].tooltip_market_cap} /></small>
+                  <small>
+                    Market Cap{" "}
+                    <TooltipIcon text={variables[lang].tooltip_market_cap} />
+                  </small>
                   <p>$72,125,000</p>
                 </div>
               </div>
@@ -321,13 +376,21 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                     </h4>
                   </div>
                   <div className="col2">
-                    <small>Circulating Supply <TooltipIcon text={variables[lang].tooltip_circulating_supply_HARBOR} /></small>
+                    <small>
+                      Circulating Supply{" "}
+                      <TooltipIcon
+                        text={variables[lang].tooltip_circulating_supply_HARBOR}
+                      />
+                    </small>
                     <p>
                       12,500,000 <span>HARBOR</span>
                     </p>
                   </div>
                   <div className="col3">
-                    <small>Market Cap <TooltipIcon text={variables[lang].tooltip_market_cap} /></small>
+                    <small>
+                      Market Cap{" "}
+                      <TooltipIcon text={variables[lang].tooltip_market_cap} />
+                    </small>
                     <p>$72,125,000</p>
                   </div>
                 </div>
@@ -351,15 +414,15 @@ Dashboard.propTypes = {
   isDarkMode: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
   markets: PropTypes.arrayOf(
-      PropTypes.shape({
-        rates: PropTypes.shape({
-          high: PropTypes.number,
-          low: PropTypes.number,
-          unsigned: PropTypes.bool,
-        }),
-        symbol: PropTypes.string,
-        script_id: PropTypes.string,
-      })
+    PropTypes.shape({
+      rates: PropTypes.shape({
+        high: PropTypes.number,
+        low: PropTypes.number,
+        unsigned: PropTypes.bool,
+      }),
+      symbol: PropTypes.string,
+      script_id: PropTypes.string,
+    })
   ),
 };
 

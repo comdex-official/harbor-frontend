@@ -1,12 +1,34 @@
 import * as PropTypes from "prop-types";
 import { Col, Row} from "../../components/common";
 import { connect } from "react-redux";
-import { Button, Table, Progress } from "antd";
+import { Button, Table, Progress, message } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
 import TooltipIcon from "../../components/TooltipIcon";
+import {useEffect, useState} from "react";
+import {queryUserVaults} from "../../services/vault/query";
 
-const MyVault = (lang) => {
+const MyVault = ({address}) => {
+  const [vaults, setVaults] = useState();
+
+  useEffect(()=>{
+    if(address) {
+      fetchVaults();
+    }
+  },[address]);
+
+  const fetchVaults = () => {
+    queryUserVaults(address, (error, result)=>{
+      if(error){
+        message.error(error);
+        return;
+      }
+
+      setVaults()
+      console.log('the vaults', result)
+    })
+  }
+
   const columns = [
     {
       title: "Vault Type",
@@ -119,11 +141,13 @@ const MyVault = (lang) => {
 
 MyVault.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
   };
 };
 
