@@ -20,7 +20,6 @@ export const newQueryClientRPC = (rpc, callback) => {
       callback(null, rpcClient);
     })
     .catch((error) => {
-      console.log('the err', error);
       callback(error?.message);
     });
 };
@@ -44,7 +43,6 @@ export const signAndBroadcastTransaction = async (
     return;
   }
 
-  console.log('the transaction', transaction)
   SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
     registry: myRegistry, aminoTypes: aminoTypes 
   })

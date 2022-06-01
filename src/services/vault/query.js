@@ -16,7 +16,6 @@ export const queryExtendedPairVault = (productId, callback) => {
                 callback(null, result);
             })
             .catch((error) => {
-                console.log(error);
                 callback(error?.message);
             });
     });
@@ -147,11 +146,9 @@ export const queryAppTVL = (appId, callback) => {
             .QueryTVLlockedByApp({
                 appId: Long.fromNumber(appId),
             }).then((result) => {
-                console.log('it is', result)
                 callback(null, result);
             })
             .catch((error) => {
-                console.log(error);
                 callback(error?.message);
             });
     });

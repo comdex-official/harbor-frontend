@@ -48,7 +48,6 @@ export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
         callback(null, result);
       })
       .catch((error) => {
-        console.log(error);
         callback(error?.message);
       });
   });
@@ -125,7 +124,6 @@ export const queryPairVaults = (callback) => {
         productId: Long.fromNumber(1),
       })
       .then((result) => {
-        console.log('the data', result);
         callback(null, result);
       })
       .catch((error) => {

@@ -13,7 +13,6 @@ export const queryLockerWhiteListedAssetByProduct = (callback) => {
                 callback(null, result);
             })
             .catch((error) => {
-                console.log(error);
                 callback(error?.message);
             });
     });
@@ -31,7 +30,6 @@ export const queryLockerWhiteListedAssetByProductId = (productId, callback) => {
                 callback(null, result);
             })
             .catch((error) => {
-                console.log(error);
                 callback(error?.message);
             });
     });
@@ -51,7 +49,6 @@ export const queryUserLockerByProductAssetId = (productId, assetId, owner, callb
                 callback(null, result);
             })
             .catch((error) => {
-                console.log(error);
                 callback(error?.message);
             });
     });
@@ -71,7 +68,6 @@ export const queryUserLockedValueInLocker = (productId, assetId, owner, callback
                 callback(null, result);
             })
             .catch((error) => {
-                console.log(error);
                 callback(error?.message);
             });
     });
@@ -90,7 +86,6 @@ export const queryLockerLookupTableByApp = (productId, callback) => {
                 callback(null, result);
             })
             .catch((error) => {
-                console.log(error);
                 callback(error?.message);
             })
     });

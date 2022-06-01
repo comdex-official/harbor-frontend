@@ -42,9 +42,7 @@ const CloseTab = ({
 
   const returnDenom = () => {
     let assetPair = selectedExtentedPairVault && selectedExtentedPairVault[0]?.pairName;
-    if (assetPair === "cmdx-cmst") {
-      console.log("yes");
-    }
+    
     switch (assetPair) {
       case "cmdx-cmst":
         return "ucmdx";
@@ -54,7 +52,7 @@ const CloseTab = ({
         return "ucmdx";
     }
   }
-  const collateralAssetBalance = getDenomBalance(balances, returnDenom()) || 0;
+
 
   useEffect(() => {
     fetchQueryPairValut(pathVaultId)
@@ -94,7 +92,7 @@ const CloseTab = ({
         message.error(error);
         return;
       }
-      console.log("Query pair vaults", data);
+
       dispatch(setExtendedPairVaultListData(data?.pairVault))
     })
   }

@@ -17,7 +17,6 @@ const MyPositions = () => {
   const [historyTab, setHistoryTab] = useState(false);
 
   function callback(key) {
-    console.log(key);
     if (key === "1") {
       setHistoryTab(false);
       setVaultTab(false);

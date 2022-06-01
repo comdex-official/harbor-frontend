@@ -37,7 +37,6 @@ const Minting = ({ address }) => {
     (state) => state.asset?.assetList
   );
 
-  console.log("from Reducer extended pair", extenedPairVaultList);
   const [loading, setLoading] = useState(false);
 
   const navigateToMint = (path) => {
@@ -45,13 +44,9 @@ const Minting = ({ address }) => {
       pathname: `/vault/${path}`,
     });
   };
-  console.log(assetList);
-
-
 
   useEffect(() => {
     fetchExtendexPairList(PRODUCT_ID);
-    // fetchQueryPairValuts(PRODUCT_ID);
     fetchAssets(
       (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
       DEFAULT_PAGE_SIZE,
@@ -71,10 +66,8 @@ const Minting = ({ address }) => {
       setLoading(false);
       if (error) {
         message.error(error);
-        console.log(error)
         return;
       }
-      console.log("Extented pair List", data.extendedPair);
       dispatch(setAllExtendedPair(data?.extendedPair));
     });
   };
@@ -95,32 +88,11 @@ const Minting = ({ address }) => {
   };
   // *----------Get list of all extended pair vaults----------*
 
-  const fetchQueryPairValuts = (productId) => {
-    setLoading(true)
-    queryVaultByProductId(productId, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      console.log("Pair vaults list", data);
-      dispatch(setExtendedPairVaultListData(data))
-      setLoading(false)
-    })
-  }
 
   const getAsssetIcon = (pairID) => {
-    // eslint-disable-next-line no-lone-blocks
-    {
-      assetList && assetList.map((item) => {
-        if (item?.id?.low === pairID) {
-          let icon = item?.name;
-          icon = icon.toLowerCase();
-          icon = symbolToDenom(icon)
-          console.log(icon); // return ucmdx
-          return icon;
-        }
-      })
-    }
+    const selectedItem = assetList.length>0 && assetList.filter((item)=> (item?.id).toNumber() === pairID);
+    
+    return selectedItem[0]?.denom || ""
   }
 
   if (loading) {
@@ -152,8 +124,7 @@ const Minting = ({ address }) => {
                       >
                         <div className="up-container">
                           <div className="icon-container">
-                            <SvgIcon name={iconNameFromDenom("ucmdx")} />
-                            {/* <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} /> */}
+                             <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} />
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{item?.pairName}</div>

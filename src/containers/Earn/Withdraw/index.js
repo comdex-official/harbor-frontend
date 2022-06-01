@@ -48,8 +48,6 @@ const Withdraw = ({
   const [userDeposite, setuserDeposite] = useState();
   const [reward, setReward] = useState();
 
-  console.log(isLockerExist);
-
   const whiteListedAssetData = [];
   const resetValues = () => {
     dispatch(setAmountIn(0));
@@ -108,31 +106,9 @@ const Withdraw = ({
     fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
   }, [address, userDeposite]);
 
-  useEffect(() => {
-    // fetchOwnerLockerBalance(PRODUCT_ID, whiteListedAssetId, address);
-  }, [address, refreshBalance, userDeposite]);
-
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo[0]?.lockerId;
   const returnsAccumulated = ownerLockerInfo[0]?.returnsAccumulated;
-
-  // const fetchOwnerLockerBalance = (productId, lockerId, owner) => {
-  //   setInProgress(true);
-  //   queryUserLockedValueInLocker(productId, lockerId, owner, (error, data) => {
-  //     if (error) {
-  //       message.error(error);
-  //       return;
-  //     }
-  //     let balance;
-  //     console.log(data);
-  //     balance = (data?.lockerInfo[0]?.netBalance || "0") / 1000000;
-  //     setOwnerVaultInfo(data?.lockerInfo)
-  //     setReward(data?.lockerInfo[0]?.returnsAccumulated);
-  //     setuserDeposite(balance)
-  //     setUserLockedValue((data?.lockerInfo[0]?.netBalance || "0"))
-  //     setInProgress(false);
-  //   })
-  // }
 
   // **************Fetch Owner locker info***************** 
   const fetchOwnerLockerExistByAssetId = (productId, lockerId, address) => {
@@ -141,7 +117,7 @@ const Withdraw = ({
         message.error(error);
         return;
       }
-      console.log(data);
+
       let balance;
       balance = (data?.lockerInfo[0]?.netBalance || "0") / 1000000;
       setOwnerVaultInfo(data?.lockerInfo)
@@ -182,7 +158,6 @@ const Withdraw = ({
       (error, result) => {
         setInProgress(false);
         if (error) {
-          console.log(error);
           message.error(error);
           return;
         }

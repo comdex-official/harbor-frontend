@@ -246,7 +246,6 @@ const SurplusAuctions = ({ setPairs, address }) => {
     },
   ];
 
-  console.log('params, auction, biddings', params, auctions, biddings);
   return (
     <div className="app-content-wrapper">
       <Row>

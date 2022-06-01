@@ -25,7 +25,6 @@ const MyVault = ({address}) => {
       }
 
       setVaults()
-      console.log('the vaults', result)
     })
   }
 

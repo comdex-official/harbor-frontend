@@ -13,7 +13,6 @@ const Date = ({ height }) => {
 
   const fetchData = async () => {
     const trasactionTime = await getTransactionTimeFromHeight(height);
-    console.log(trasactionTime, "time");
     if (trasactionTime) {
       setTimestamp(trasactionTime);
     }

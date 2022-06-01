@@ -276,14 +276,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     ],
   };
 
-  console.log(
-    "tvl",
-    totalValueLocked,
-    totalDollarValue,
-    commaSeparator(
-      (totalValueLocked?.get("uatom")?.dollarValue || 0, DOLLAR_DECIMALS)
-    )
-  );
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>

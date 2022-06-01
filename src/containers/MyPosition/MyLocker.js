@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { PRODUCT_ID } from "../../constants/common";
 
 function onChange(checked) {
-  console.log(`switch to ${checked}`);
 }
 
 const MyEarn = () => {
@@ -87,7 +86,6 @@ const MyEarn = () => {
         message.error(error);
         return;
       }
-      console.log("Lookup table data", data);
     });
   };
 

@@ -35,7 +35,6 @@ const History = (props) => {
     });
   };
 
-  console.log("history", props.history);
   const tableData =
     props.history &&
     props.history.list &&

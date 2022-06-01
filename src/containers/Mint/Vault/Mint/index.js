@@ -205,7 +205,6 @@ const Mint = ({
       (error, result) => {
         setInProgress(false);
         if (error) {
-          console.log(error);
           message.error(error);
           resetValues();
           return;
@@ -252,7 +251,6 @@ const Mint = ({
         message.error(error);
         return;
       }
-      console.log(data);
       setCurrentExtentedVaultdata(data?.pairVault)
       dispatch(setExtendedPairVaultListData(data?.pairVault))
       dispatch(setSelectedExtentedPairvault(data?.pairVault))
