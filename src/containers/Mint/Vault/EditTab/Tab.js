@@ -80,8 +80,6 @@ const Edit = ({
     200: "Safe: 200%",
   };
 
-  console.log(pair);
-
   useEffect(() => {
     fetchQueryPairValut(pathVaultId);
   }, [address]);
@@ -295,6 +293,7 @@ const Edit = ({
     );
   };
 
+  
   return (
     <>
       <div className="edit-tab-card">
