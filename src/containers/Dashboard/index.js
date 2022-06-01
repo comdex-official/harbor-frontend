@@ -14,45 +14,12 @@ import { message } from "antd";
 import { commaSeparator, marketPrice } from "../../utils/number";
 import { amountConversion } from "../../utils/coin";
 
-const vaultsInfo = [
-  {
-    asset_denom: "ucmdx",
-    collateral_locked_amount: "13710000000",
-  },
-  {
-    asset_denom: "uatom",
-    collateral_locked_amount: "13710000000",
-  },
-  {
-    asset_denom: "uosmo",
-    collateral_locked_amount: "13710000000",
-  },
-  {
-    asset_denom: "uxprt",
-    collateral_locked_amount: "13710000000",
-  },
-];
-
 const Dashboard = ({ lang, isDarkMode, markets }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
 
   useEffect(() => {
     fetchTVL();
-    let total = 0;
-    const result = new Map(
-      vaultsInfo.map((item) => {
-        let value =
-          Number(amountConversion(item.collateral_locked_amount)) *
-          marketPrice(markets, item?.asset_denom);
-        total += value;
-        item.dollarValue = value;
-        return [item.asset_denom, item];
-      })
-    );
-
-    setTotalValueLocked(result);
-    setTotalDollarValue(total);
   }, []);
 
   const fetchTVL = () => {
@@ -63,7 +30,20 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       }
 
       if (result?.tvldata && result?.tvldata?.length > 0) {
-        // setTotalValueLocked(result?.tvldata);
+        let total = 0;
+        const totalValue = new Map(
+            result?.tvldata?.map((item) => {
+              let value =
+                  Number(amountConversion(item.collateralLockedAmount)) *
+                  marketPrice(markets, item?.assetDenom);
+              total += value;
+              item.dollarValue = value;
+              return [item.assetDenom, item];
+            })
+        );
+
+        setTotalValueLocked(totalValue);
+        setTotalDollarValue(total);
       }
     });
   };

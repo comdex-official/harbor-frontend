@@ -61,7 +61,7 @@ const PlaceBidModal = () => {
               <p>Opening Bid</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>10 USCX</label>
+              <label>10 CMST</label>
             </Col>
           </Row>
           <Row>
@@ -69,7 +69,7 @@ const PlaceBidModal = () => {
               <p>Top Bid</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>11 USCX</label>
+              <label>11 CMST</label>
             </Col>
           </Row>
           <Row>
