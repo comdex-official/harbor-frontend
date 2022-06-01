@@ -18,7 +18,7 @@ import { setExtendedPairVaultListData } from "../../../../actions/locker";
 import {
   queryOwnerVaults,
   queryOwnerVaultsInfo,
-} from "../../../../services/Mint/query";
+} from "../../../../services/vault/query";
 import { connect } from "react-redux";
 import { setPairs } from "../../../../actions/asset";
 import { setAccountVaults } from "../../../../actions/account";

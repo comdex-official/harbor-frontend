@@ -16,7 +16,7 @@ const routes = [
     element: <Dashboard />,
   },
   {
-    path: "/myPositions",
+    path: "/my-positions",
     element: <MyPositions />,
   },
   {

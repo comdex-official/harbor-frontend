@@ -14,7 +14,7 @@ import { setBalanceRefresh } from "../../../../actions/account";
 import { PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import { denomToSymbol } from "../../../../utils/string";
-import { queryOwnerVaults, queryOwnerVaultsInfo } from "../../../../services/Mint/query";
+import { queryOwnerVaults, queryOwnerVaultsInfo } from "../../../../services/vault/query";
 import Long from "long";
 import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
 import { queryPairVault } from "../../../../services/asset/query";

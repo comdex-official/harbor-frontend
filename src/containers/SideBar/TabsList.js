@@ -11,8 +11,8 @@ export const tabsList = [
     name: "My Positions",
     value: "home",
     langKey: "positions",
-    path: "myPositions",
-    active: "myPositions",
+    path: "my-positions",
+    active: "my-positions",
     index: 1,
   },
   {

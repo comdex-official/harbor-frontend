@@ -5,9 +5,9 @@ import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
-import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../utils/string";
+import { iconNameFromDenom, symbolToDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryVaultByOwner, queryVaultByProductId } from "../../services/Mint/query";
+import { queryVaultByProductId } from "../../services/vault/query";
 import React, { useEffect, useState } from "react";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, PRODUCT_ID } from "../../constants/common";
 import { setAssetList, setPairs } from "../../actions/asset";
@@ -58,6 +58,7 @@ const Minting = ({ address }) => {
       true,
       false
     );
+
   }, [address])
 
   // ******* Get Vault Query *********

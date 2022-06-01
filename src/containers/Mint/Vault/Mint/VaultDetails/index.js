@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 import React, { useEffect } from 'react'
 import { connect, useSelector } from 'react-redux';
 import { PRODUCT_ID } from '../../../../../constants/common';
-import { queryOwnerVaults, queryOwnerVaultsInfo } from '../../../../../services/Mint/query';
+import { queryOwnerVaults, queryOwnerVaultsInfo } from '../../../../../services/vault/query';
 import { setOwnerVaultId, setOwnerVaultInfo } from '../../../../../actions/locker';
 import moment from 'moment';
 
