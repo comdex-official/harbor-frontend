@@ -90,3 +90,22 @@ export const queryLockerLookupTableByApp = (productId, callback) => {
             })
     });
 };
+
+export const queryUserLockerHistory = (productId, owner, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryClientImpl(rpcClient)
+            .QueryOwnerTxDetailsLockerOfProductByOwner({
+                productId: Long.fromNumber(productId),
+                owner: owner
+            }).then((result) => {
+            callback(null, result);
+        })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};

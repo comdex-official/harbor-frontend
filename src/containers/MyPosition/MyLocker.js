@@ -4,14 +4,31 @@ import { connect } from "react-redux";
 import { Table, message } from "antd";
 import "./index.scss";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryLockerLookupTableByApp } from "../../services/locker/query";
-import { useEffect } from "react";
+import {queryLockerLookupTableByApp, queryUserLockerHistory} from "../../services/locker/query";
+import {useEffect, useState} from "react";
 import { PRODUCT_ID } from "../../constants/common";
 
-function onChange(checked) {
-}
+const MyEarn = ({address}) => {
 
-const MyEarn = () => {
+  const [lockers, setLockers] = useState();
+
+  useEffect(()=>{
+    if(address) {
+      fetchLockers();
+    }
+  },[address]);
+
+  const fetchLockers = () => {
+    queryUserLockerHistory(PRODUCT_ID, address, (error, result)=>{
+      if(error){
+        message.error(error);
+        return;
+      }
+
+      setLockers()
+    })
+  }
+
   const columns = [
     {
       title: "Amount",
@@ -115,11 +132,13 @@ const MyEarn = () => {
 
 MyEarn.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
   };
 };
 

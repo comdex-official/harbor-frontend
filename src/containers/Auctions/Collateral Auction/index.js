@@ -182,7 +182,6 @@ const CollateralAuctions = ({ setPairs, address }) => {
         };
       }): [];
 
-  console.log('table data', tableData, auctions)
   return (
     <div className="app-content-wrapper">
       <Row>
