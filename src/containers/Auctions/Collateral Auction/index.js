@@ -269,7 +269,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
             </div>
           </div>
           <div className="more-bottom">
-            <h3>Your Bidding</h3>
+            <h3 className="title">Your Bidding</h3>
             <div className="more-bottom-card">
               <Bidding />
             </div>
