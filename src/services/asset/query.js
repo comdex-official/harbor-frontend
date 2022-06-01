@@ -1,4 +1,4 @@
-import { QueryServiceClientImpl } from "comdex-codec/build/comdex/asset/v1beta1/querier";
+import { QueryClientImpl } from "comdex-codec/build/comdex/asset/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
 
@@ -9,7 +9,7 @@ export const queryPairs = (offset, limit, countTotal, reverse, callback) => {
       return;
     }
 
-    new QueryServiceClientImpl(rpcClient)
+    new QueryClientImpl(rpcClient)
       .QueryPairs({
         pagination: {
           key: "",
@@ -34,8 +34,7 @@ export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
       callback(error);
       return;
     }
-
-    new QueryServiceClientImpl(rpcClient)
+    new QueryClientImpl(rpcClient)
       .QueryAssets({
         pagination: {
           key: "",
@@ -61,7 +60,7 @@ export const queryPair = (pairId, callback) => {
       return;
     }
 
-    new QueryServiceClientImpl(rpcClient)
+    new QueryClientImpl(rpcClient)
       .QueryPair({
         id: Long.fromNumber(pairId),
       })
@@ -71,5 +70,84 @@ export const queryPair = (pairId, callback) => {
       .catch((error) => {
         callback(error?.message);
       });
+  });
+};
+
+export const queryExtendedPairVaultById = (productId, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+    new QueryClientImpl(rpcClient)
+      .QueryProductToExtendedPair({
+        productId: Long.fromNumber(productId),
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+
+export const queryPairVault = (pairId, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+      .QueryPairVault({
+        id: Long.fromNumber(pairId),
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+
+export const queryPairVaults = (callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+      .QueryProductToExtendedPair({
+        productId: Long.fromNumber(1),
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+
+export const queryAsset = (id, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+        .QueryAsset({
+          id: Long.fromNumber(id),
+        })
+        .then((result) => {
+          callback(null, result);
+        })
+        .catch((error) => {
+          callback(error?.message);
+        });
   });
 };

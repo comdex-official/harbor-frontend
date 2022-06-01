@@ -1,5 +1,5 @@
 import * as PropTypes from "prop-types";
-import { Button, message, Dropdown } from "antd";
+import { Button, Dropdown } from "antd";
 import { SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
 import { decode } from "js-base64";
@@ -22,14 +22,13 @@ import {
 } from "../../actions/account";
 import { queryAllBalances } from "../../services/bank/query";
 import Lodash from "lodash";
-import { queryVaultList } from "../../services/vault/query";
 import { setAccountVaults } from "../../actions/account";
 import ConnectModal from "../Modal";
 import { marketPrice } from "../../utils/number";
 import { queryMarketList } from "../../services/oracle/query";
 import { setMarkets } from "../../actions/oracle";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { comdex } from "../../config/network";
+import { cmst, comdex, harbor } from "../../config/network";
 
 const ConnectButton = ({
   setAccountAddress,
@@ -54,7 +53,7 @@ const ConnectButton = ({
     const userAddress = savedAddress ? decode(savedAddress) : address;
 
     fetchMarkets();
-    getVaults();
+    // getVaults();
 
     if (userAddress) {
       setAccountAddress(userAddress);
@@ -75,10 +74,10 @@ const ConnectButton = ({
       true,
       false
     );
-  }, [markets]);
+  }, [address, markets]);
 
   useEffect(() => {
-    getVaults();
+    // getVaults();
   }, [pools]);
 
   const fetchBalances = (address) => {
@@ -130,7 +129,9 @@ const ConnectButton = ({
     const assetBalances = balances.filter(
       (item) =>
         item.denom.substr(0, 4) === "ibc/" ||
-        item.denom === comdex.coinMinimalDenom
+        item.denom === comdex.coinMinimalDenom ||
+        item.denom === cmst.coinMinimalDenom ||
+        item.denom === harbor.coinMinimalDenom
     );
 
     const value = assetBalances.map((item) => {
@@ -138,51 +139,6 @@ const ConnectButton = ({
     });
 
     setAssetBalance(Lodash.sum(value));
-  };
-
-  const getVaults = () => {
-    fetchVaults(
-      address,
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
-      true,
-      false
-    );
-  };
-
-  const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
-    queryVaultList(
-      address,
-      offset,
-      limit,
-      isTotal,
-      isReverse,
-      (error, result) => {
-        if (error) {
-          message.error(error);
-          return;
-        }
-
-        setAccountVaults(result?.vaultsInfo, result?.pagination);
-
-        calculateMintBalance(result?.vaultsInfo);
-      }
-    );
-  };
-
-  const calculateMintBalance = (vaults) => {
-    const userVaults = vaults.filter((item) => item.owner === address);
-    const debtBalance = userVaults.map((item) => {
-      return marketPrice(markets, item.debt?.denom) * item.debt?.amount;
-    });
-
-    setDebtBalance(Lodash.sum(debtBalance));
-
-    const collateralBalance = userVaults.map((item) => {
-      return getPrice(item.collateral?.denom) * item.collateral?.amount;
-    });
-
-    setCollateralBalance(Lodash.sum(collateralBalance));
   };
 
   const WalletConnectedDropdown = <ConnectModal />;
@@ -194,7 +150,7 @@ const ConnectButton = ({
           <div className="connected_left">
             <div className="testnet-top">
               <SvgIcon name="testnet" />
-              {/* {variables[lang].testnet} */} User Address
+              {variables[lang].testnet}
             </div>
           </div>
           <DisConnectModal />

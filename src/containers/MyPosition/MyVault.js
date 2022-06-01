@@ -1,12 +1,33 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { Col, Row} from "../../components/common";
 import { connect } from "react-redux";
-import variables from "../../utils/variables";
-import { Button, Table, Progress } from "antd";
+import { Button, Table, Progress, message } from "antd";
 import "./index.scss";
 import { Link } from "react-router-dom";
+import TooltipIcon from "../../components/TooltipIcon";
+import {useEffect, useState} from "react";
+import {queryUserVaults} from "../../services/vault/query";
 
-const MyVault = (lang) => {
+const MyVault = ({address}) => {
+  const [vaults, setVaults] = useState();
+
+  useEffect(()=>{
+    if(address) {
+      fetchVaults();
+    }
+  },[address]);
+
+  const fetchVaults = () => {
+    queryUserVaults(address, (error, result)=>{
+      if(error){
+        message.error(error);
+        return;
+      }
+
+      setVaults()
+    })
+  }
+
   const columns = [
     {
       title: "Vault Type",
@@ -15,20 +36,28 @@ const MyVault = (lang) => {
       width: 180,
     },
     {
-      title: "Debt",
+      title: <>
+        Debt <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+      </>,
       dataIndex: "debt",
       key: "debt",
       width: 150,
     },
     {
-      title: "Interest Rate",
+      title: <>
+        Interest Rate <TooltipIcon text="Current annual interest rate of Vault" />
+      </>,
       dataIndex: "apy",
       key: "apy",
       width: 150,
       render: (apy) => <>{apy}%</>,
     },
     {
-      title: "Health Factor",
+      title:
+        <>
+          Collateralization ratio <TooltipIcon text="The collateral ratio of the vault which is equal to collateral deposited by composite borrowed" />
+        </>
+      ,
       dataIndex: "health",
       key: "health",
       width: 200,
@@ -48,9 +77,9 @@ const MyVault = (lang) => {
       key: "action",
       align: "right",
       width: 200,
-      render: () => (
+      render: (item) => (
         <>
-          <Link to="/vault">
+          <Link to="/vault/1">
             <Button type="primary" className="btn-filled" size="small">
               Manage
             </Button>
@@ -66,9 +95,6 @@ const MyVault = (lang) => {
       vault: (
         <>
           <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
             ATOM-A
           </div>
         </>
@@ -81,23 +107,21 @@ const MyVault = (lang) => {
       vault: (
         <>
           <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
             ATOM-B
           </div>
         </>
       ),
       debt: "90 CMST",
       apy: "20",
+      action: "item",
     },
   ];
 
   return (
-    <div className="app-content-wrapper">
+    <div className="app-content-wrapper vaults-table-container">
       <Row>
         <Col>
-          <div className="commodo-card">
+          <div className="composite-card">
             <div className="card-content">
               <Table
                 className="custom-table"
@@ -116,11 +140,13 @@ const MyVault = (lang) => {
 
 MyVault.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
   };
 };
 

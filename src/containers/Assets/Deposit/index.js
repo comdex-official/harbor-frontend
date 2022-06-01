@@ -207,8 +207,8 @@ const Deposit = ({
                           setAmount(
                             availableBalance?.amount > DEFAULT_FEE
                               ? amountConversion(
-                                  availableBalance?.amount - DEFAULT_FEE
-                                )
+                                availableBalance?.amount - DEFAULT_FEE
+                              )
                               : amountConversion(availableBalance?.amount)
                           );
                         }}

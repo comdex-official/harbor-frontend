@@ -1,49 +1,65 @@
 import "../index.scss";
+import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import React, { useEffect, useState } from "react";
-import variables from "../../../../utils/variables";
-import { Button, message, Select, Slider } from "antd";
+import { Button, message, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { iconNameFromDenom, toDecimals } from "../../../../utils/string";
-import { amountConversion, denomConversion } from "../../../../utils/coin";
-import { getDenomBalance } from "../../../../utils/coin";
+import { iconNameFromDenom } from "../../../../utils/string";
+import { amountConversion } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
 import { getTypeURL } from "../../../../services/transaction";
-import { queryVault } from "../../../../services/vault/query";
 import CustomInput from "../../../../components/CustomInput";
-import { decimalConversion, marketPrice } from "../../../../utils/number";
+import { marketPrice } from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";
-import { DOLLAR_DECIMALS } from "../../../../constants/common";
-import { comdex } from "../../../../config/network";
-import Snack from "../../../../components/common/Snack";
-
-const Option = Select.Option;
-
-const marks = {
-  0: "0%",
-  150: "Min - 150%",
-  200: "Safe: 200%",
-};
+import { PRODUCT_ID } from "../../../../constants/common";
+import { setExtendedPairVaultListData } from "../../../../actions/locker";
+import {
+  queryOwnerVaults,
+  queryOwnerVaultsInfo,
+} from "../../../../services/vault/query";
+import { connect } from "react-redux";
+import { setPairs } from "../../../../actions/asset";
+import { setAccountVaults } from "../../../../actions/account";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setBalanceRefresh } from "../../../../actions/account";
+import { setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
+import { useParams } from "react-router";
+import Long from "long";
+import { queryPairVault } from "../../../../services/asset/query";
 
 const Edit = ({
-  lang,
   address,
-  vaults,
-  vault,
+  pair,
   markets,
-  balances,
-  setVault,
+  ownerVaultId,
+  ownerVaultInfo,
+  setOwnerVaultId,
+  setOwnerVaultInfo,
   setBalanceRefresh,
   refreshBalance,
 }) => {
+  const dispatch = useDispatch();
+  const { pathVaultId } = useParams();
+
+  const vault = useSelector((state) => state.account.vault);
+
+  const selectedExtentedPairVaultListData = useSelector(
+    (state) => state.locker.extenedPairVaultListData
+  );
+
   const [inProgress, setInProgress] = useState(false);
   const [inputAmount, setInputAmount] = useState();
   const [editType, setEditType] = useState("deposit");
   const [inputValidationError, setInputValidationError] = useState();
   const [newCollateralRatio, setNewCollateralRatio] = useState();
   const [collateralRatio, setCollateralRatio] = useState(200);
+  const [deposit, setDeposit] = useState();
+  const [withdraw, setWithdraw] = useState();
+  const [repay, setRepay] = useState();
+  const [draw, setDraw] = useState();
 
   const marks = {
     0: "0%",
@@ -51,17 +67,220 @@ const Edit = ({
     200: "Safe: 200%",
   };
 
-  const handleSliderChange = (value) => {
-    setCollateralRatio(value);
-    // setAmountOut(
-    //   calculateAmountOut(
-    //     inAmount,
-    //     selectedTokenPrice,
-    //     value / 100,
-    //     marketPrice(markets, pair && pair.denomOut)
-    //   )
-    // );
+  useEffect(() => {
+    fetchQueryPairValut(pathVaultId);
+  }, [address]);
+
+  useEffect(() => {
+    if (address && selectedExtentedPairVaultListData[0]?.id?.low) {
+      getOwnerVaultId(
+        PRODUCT_ID,
+        address,
+        selectedExtentedPairVaultListData[0]?.id?.low
+      );
+    }
+  }, [address, vault]);
+
+  useEffect(() => {
+    if (ownerVaultId) {
+      getOwnerVaultInfoByVaultId(ownerVaultId);
+    }
+  }, [address, ownerVaultId]);
+
+  const resetValues = () => {
+    setInputValidationError();
+    setInputAmount();
+    setDeposit();
+    setWithdraw();
+    setRepay();
+    setDraw();
   };
+
+  const collateralAssetBalance = ownerVaultInfo?.amountIn || 0;
+
+  const debtAssetBalance = ownerVaultInfo?.amountOut || 0;
+
+  const collateralPrice = marketPrice(markets, pair?.denomIn);
+
+  const debtPrice = marketPrice(markets, pair?.denomOut);
+
+  const handleSliderChange = (value, type = editType) => {
+    const newRatio = value / 100; // converting value to ratio
+    if (type === "deposit") {
+      const newInput =
+        (Number(ownerVaultInfo?.amountOut) * debtPrice * newRatio) /
+        collateralPrice -
+        Number(ownerVaultInfo?.amountIn);
+
+      setNewCollateralRatio(value);
+      setDeposit(amountConversion(newInput));
+      setWithdraw(0);
+      setDraw(0);
+      setRepay(0);
+      setInputValidationError(
+        ValidateInputNumber(newInput, collateralAssetBalance)
+      );
+    } else if (type === "withdraw") {
+      const newInput =
+        Number(ownerVaultInfo?.amountIn) -
+        (Number(ownerVaultInfo?.amountOut) * debtPrice * newRatio) /
+        collateralPrice;
+
+      setNewCollateralRatio(value);
+      setWithdraw(amountConversion(newInput));
+      setDeposit(0);
+      setDraw(0);
+      setRepay(0);
+      setInputValidationError(
+        ValidateInputNumber(newInput, ownerVaultInfo?.amountIn)
+      );
+    } else if (type === "repay") {
+      const newInput =
+        Number(ownerVaultInfo?.amountOut) -
+        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
+        (debtPrice * newRatio);
+
+      setNewCollateralRatio(value);
+      setRepay(amountConversion(newInput));
+      setDeposit(0);
+      setDraw(0);
+      setWithdraw(0);
+      setInputValidationError(ValidateInputNumber(newInput, debtAssetBalance));
+    } else {
+      const newInput =
+        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
+        (debtPrice * newRatio) -
+        Number(ownerVaultInfo?.amountOut);
+
+      setNewCollateralRatio(value);
+      setDraw(amountConversion(newInput));
+      setDeposit(0);
+      setWithdraw(0);
+      setRepay(0);
+      setInputValidationError(ValidateInputNumber(newInput));
+    }
+  };
+
+  const checkValidation = (value, type) => {
+    if (type === "deposit") {
+      const ratio =
+        ((Number(ownerVaultInfo?.amountIn) + Number(getAmount(value))) *
+          collateralPrice) /
+        (Number(ownerVaultInfo?.amountOut) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      setInputValidationError(
+        ValidateInputNumber(getAmount(value), collateralAssetBalance)
+      );
+    } else if (type === "withdraw") {
+      const ratio =
+        ((Number(ownerVaultInfo?.amountIn) - Number(getAmount(value))) *
+          collateralPrice) /
+        (Number(ownerVaultInfo?.amountOut) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      setInputValidationError(
+        ValidateInputNumber(getAmount(value), ownerVaultInfo?.amountIn)
+      );
+    } else if (type === "repay") {
+      const ratio =
+        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
+        ((Number(ownerVaultInfo?.amountOut) - Number(getAmount(value))) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      setInputValidationError(
+        ValidateInputNumber(getAmount(value), debtAssetBalance)
+      );
+    } else {
+      const ratio =
+        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
+        ((Number(ownerVaultInfo?.amountOut) + Number(getAmount(value))) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      setInputValidationError(ValidateInputNumber(getAmount(value)));
+    }
+  };
+
+  // ******* Get Vault Query *********
+
+  // *----------Get the owner vaultId by productId, pairId , and address----------
+
+  const getOwnerVaultId = (productId, address, extentedPairId) => {
+    queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setOwnerVaultId(data?.vaultId);
+    });
+  };
+
+  // *----------Get pair vault data by extended pairVault Id----------
+  const fetchQueryPairValut = (pairVaultId) => {
+    queryPairVault(pairVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      dispatch(setExtendedPairVaultListData(data?.pairVault));
+    });
+  };
+
+  // *----------Get the owner vaultDetails by ownervaultId----------
+
+  const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
+    queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setOwnerVaultInfo(data.vault);
+    });
+  };
+
+  const handleSubmit = () => {
+    setInProgress(true);
+
+    signAndBroadcastTransaction(
+      {
+        message: {
+          typeUrl: getTypeURL(editType),
+          value: {
+            from: address,
+            appMappingId: Long.fromNumber(PRODUCT_ID),
+            extendedPairVaultId: Long.fromNumber(
+              selectedExtentedPairVaultListData[0]?.id?.low
+            ),
+            userVaultId: ownerVaultId,
+            amount: getAmount(inputAmount),
+          },
+        },
+        fee: defaultFee(),
+        memo: "",
+      },
+      address,
+      (error, result) => {
+        setInProgress(false);
+
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        if (result?.code) {
+          message.info(result?.rawLog);
+          return;
+        }
+
+        resetValues();
+        setBalanceRefresh(refreshBalance + 1);
+        message.success("success");
+        getOwnerVaultInfoByVaultId(ownerVaultId);
+      }
+    );
+  };
+
+  
   return (
     <>
       <div className="edit-tab-card">
@@ -72,10 +291,10 @@ const Edit = ({
               <div className="assets-col">
                 <div className="assets-icons">
                   <div className="assets-icons-inner">
-                    <SvgIcon name={iconNameFromDenom("uatom")} />
+                    <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                   </div>
                 </div>
-                <h2>7647892</h2>
+                <h2>{amountConversion(ownerVaultInfo?.amountIn || 0)}</h2>
               </div>
             </div>
             <div className="borrowedithead-colum">
@@ -86,7 +305,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom("ucmst")} />
                   </div>
                 </div>
-                <h2>45732</h2>
+                <h2>{amountConversion(ownerVaultInfo?.amountOut || 0)}</h2>
               </div>
             </div>
           </div>
@@ -94,17 +313,21 @@ const Edit = ({
             <Row>
               <Col sm="6" className="mb-3">
                 <label>
-                  Deposite
+                  Deposit
                   <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                 </label>
                 <CustomInput
-                  value={0}
-                  // onChange={(event) => {
-                  //   setDeposit(event.target.value);
-                  //   setWithdraw(0);
-                  //   setDraw(0);
-                  //   setRepay(0);
-                  // }}
+                  value={deposit}
+                  onChange={(event) => {
+                    setInputAmount(event.target.value);
+                    setDeposit(event.target.value);
+                    setWithdraw(0);
+                    setDraw(0);
+                    setRepay(0);
+                    setInputValidationError(event.target.value);
+                    checkValidation(event.target.value, editType);
+                  }}
+                  validationError={inputValidationError}
                   onFocus={() => setEditType("deposit")}
                 />
               </Col>
@@ -114,13 +337,15 @@ const Edit = ({
                   <TooltipIcon text="Withdrawing your collateral would increase chances of liquidation" />
                 </label>
                 <CustomInput
-                  value={0}
-                  // onChange={(event) => {
-                  //   setWithdraw(event.target.value);
-                  //   setDeposit(0);
-                  //   setDraw(0);
-                  //   setRepay(0);
-                  // }}
+                  value={withdraw}
+                  onChange={(event) => {
+                    setInputAmount(event.target.value);
+                    setWithdraw(event.target.value);
+                    setDeposit(0);
+                    setDraw(0);
+                    setRepay(0);
+                    checkValidation(event.target.value, editType);
+                  }}
                   onFocus={() => setEditType("withdraw")}
                 />
               </Col>
@@ -130,13 +355,15 @@ const Edit = ({
                   <TooltipIcon text="Borrow more cAsset from your deposited collateral" />
                 </label>
                 <CustomInput
-                  value={0}
-                  // onChange={(event) => {
-                  //   setDraw(event.target.value);
-                  //   setWithdraw(0);
-                  //   setDeposit(0);
-                  //   setRepay(0);
-                  // }}
+                  value={draw}
+                  onChange={(event) => {
+                    setInputAmount(event.target.value);
+                    setDraw(event.target.value);
+                    setWithdraw(0);
+                    setDeposit(0);
+                    setRepay(0);
+                    checkValidation(event.target.value, editType);
+                  }}
                   onFocus={() => setEditType("draw")}
                 />
               </Col>
@@ -149,26 +376,26 @@ const Edit = ({
                   <div className="maxhalf">
                     <button
                       className="ant-btn active"
-                      // onClick={() => handleMaxClick()}
                     >
                       Max
                     </button>
                   </div>
                 </div>
                 <CustomInput
-                  value={0}
-                  // onChange={(event) => {
-                  //   setRepay(event.target.value);
-                  //   setWithdraw(0);
-                  //   setDraw(0);
-                  //   setDeposit(0);
-                  // }}
+                  value={repay}
+                  onChange={(event) => {
+                    setInputAmount(event.target.value);
+                    setRepay(event.target.value);
+                    setWithdraw(0);
+                    setDraw(0);
+                    setDeposit(0);
+                    checkValidation(event.target.value, editType);
+                  }}
                   onFocus={() => setEditType("repay")}
                 />
               </Col>
             </Row>
-            {/* <Row> */}
-            <div className="intrest-rate-container mt-4">
+            <div className="Interest-rate-container mt-4">
               <Row>
                 <div className="title">Set Collateral Ratio</div>
               </Row>
@@ -179,14 +406,14 @@ const Edit = ({
                     (collateralRatio <= 150
                       ? " red-track"
                       : collateralRatio < 200
-                      ? " orange-track"
-                      : collateralRatio >= 200
-                      ? " green-track"
-                      : " ")
+                        ? " orange-track"
+                        : collateralRatio >= 200
+                          ? " green-track"
+                          : " ")
                   }
-                  defaultValue={collateralRatio}
+                  defaultValue="150"
                   marks={marks}
-                  value={collateralRatio}
+                  value={newCollateralRatio}
                   max={500}
                   onChange={handleSliderChange}
                   min={0}
@@ -198,34 +425,84 @@ const Edit = ({
                     handleSliderChange(event.target?.value);
                   }}
                   placeholder="0"
-                  value={collateralRatio}
+                  value={newCollateralRatio}
                 />
                 <span className="collateral-percentage">%</span>
               </div>
             </div>
-            {/* </Row> */}
           </div>
           <div className="assets-form-btn">
             <Button
-              // disabled={
-              //   inProgress ||
-              //   (!Number(withdraw) &&
-              //     !Number(deposit) &&
-              //     !Number(draw) &&
-              //     !Number(repay))
-              // }
               type="primary"
               className="btn-filled"
-              // onClick={() => setCautionNoticeValues(true, false)}
+              disabled={
+                inProgress ||
+                inputValidationError?.message ||
+                !Number(inputAmount)
+              }
+              onClick={() => handleSubmit()}
             >
               {editType}
             </Button>
-            {/* <CautionNotice inProgress={inProgress} handleClick={handleSubmit} /> */}
           </div>
         </div>
       </div>
     </>
   );
 };
+Edit.propTypes = {
+  setAccountVaults: PropTypes.func.isRequired,
+  setPairs: PropTypes.func.isRequired,
+  lang: PropTypes.string.isRequired,
+  setBalanceRefresh: PropTypes.func.isRequired,
+  refreshBalance: PropTypes.number.isRequired,
+  address: PropTypes.string,
+  pair: PropTypes.shape({
+    denomIn: PropTypes.string,
+    denomOut: PropTypes.string,
+  }),
+  pairs: PropTypes.shape({
+    list: PropTypes.arrayOf(
+      PropTypes.shape({
+        denomIn: PropTypes.string,
+        denomOut: PropTypes.string,
+        liquidationRatio: PropTypes.string,
+        id: PropTypes.shape({
+          high: PropTypes.number,
+          low: PropTypes.number,
+          unsigned: PropTypes.bool,
+        }),
+      })
+    ),
+  }),
+  validationError: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      message: PropTypes.string.isRequired,
+    }),
+  ]),
+  ownerVaultId: PropTypes.string,
+  ownerVaultInfo: PropTypes.array,
+};
+const stateToProps = (state) => {
+  return {
+    lang: state.language,
+    address: state.account.address,
+    pair: state.asset.pair,
+    pairs: state.asset.pairs,
+    refreshBalance: state.account.refreshBalance,
+    markets: state.oracle.market.list,
+    balances: state.account.balances.list,
+    ownerVaultId: state.locker.ownerVaultId,
+    ownerVaultInfo: state.locker.ownerVaultInfo,
+  };
+};
 
-export default Edit;
+const actionsToProps = {
+  setPairs,
+  setAccountVaults,
+  setBalanceRefresh,
+  setOwnerVaultId,
+  setOwnerVaultInfo,
+};
+export default connect(stateToProps, actionsToProps)(Edit);

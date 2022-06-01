@@ -124,8 +124,8 @@ const list = (state = [], action) => {
   return state;
 };
 
-const baseCoinPoolPrice = (state= 0, action) => {
-  if(action.type === BASE_COIN_POOL_PRICE_SET){
+const baseCoinPoolPrice = (state = 0, action) => {
+  if (action.type === BASE_COIN_POOL_PRICE_SET) {
     return action.value
   }
   return state;

@@ -16,6 +16,9 @@ export const getTypeURL = (key) => {
       return "/comdex.vault.v1beta1.MsgDrawRequest";
     case "repay":
       return "/comdex.vault.v1beta1.MsgRepayRequest";
+
+    default:
+      return ""
   }
 };
 
@@ -45,6 +48,10 @@ export const messageTypeToText = (type) => {
       return "IBC-Transfer";
     case "/comdex.auction.v1beta1.MsgPlaceBidRequest":
       return "PlaceBid";
+    case "/comdex.locker.v1beta1.MsgWithdrawAssetRequest":
+      return "WithdrawAsset";
+    case "/comdex.locker.v1beta1.MsgCreateLockerRequest":
+      return "CreateLocker";
     default:
       return type;
   }
@@ -65,7 +72,7 @@ const txSearchParams = (recipientAddress, pageNumber, pageSize, type) => {
     page: pageNumber,
     per_page: pageSize,
     prove: false,
-    order_by: 'desc',
+    order_by: "desc",
   };
 };
 
@@ -86,4 +93,11 @@ export const fetchTxHistory = (address, pageNumber, pageSize, callback) => {
     .catch((error) => {
       callback(error && error.message);
     });
+};
+
+export const getTransactionTimeFromHeight = async (height) => {
+  const tmClient = await Tendermint34Client.connect(comdex?.rpc);
+  const block = await tmClient.block(height);
+  
+  return block?.block?.header?.time;
 };

@@ -3,6 +3,10 @@ import { comdex } from "../config/network";
 import { myRegistry } from "./registry";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { QueryClient, createProtobufRpcClient } from "@cosmjs/stargate";
+import { AminoTypes } from "@cosmjs/stargate";
+import { customAminoTypes } from "./aminoConverter";
+
+const aminoTypes = new AminoTypes(customAminoTypes);
 
 export const createQueryClient = (callback) => {
   return newQueryClientRPC(comdex.rpc, callback);
@@ -22,7 +26,7 @@ export const newQueryClientRPC = (rpc, callback) => {
 
 export const KeplrWallet = async (chainID = comdex.chainId) => {
   await window.keplr.enable(chainID);
-  const offlineSigner = window.getOfflineSigner(chainID);
+  const offlineSigner = await window.getOfflineSignerAuto(chainID);
   const accounts = await offlineSigner.getAccounts();
   return [offlineSigner, accounts];
 };
@@ -39,9 +43,8 @@ export const signAndBroadcastTransaction = async (
     return;
   }
 
-  console.log('the transaction', transaction)
   SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
-    registry: myRegistry,
+    registry: myRegistry, aminoTypes: aminoTypes 
   })
     .then((client) => {
       client
@@ -52,6 +55,7 @@ export const signAndBroadcastTransaction = async (
           transaction.memo
         )
         .then((result) => {
+
           callback(null, result);
         })
         .catch((error) => {

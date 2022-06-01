@@ -16,12 +16,13 @@ import { ibcAssetsInfo } from "../../config/ibc";
 import { embedChainInfo } from "../../config/chain";
 import { message } from "antd";
 import { iconNameFromDenom } from "../../utils/string";
-import { comdex } from "../../config/network";
+import { cmst, comdex, harbor } from "../../config/network";
 import Lodash from "lodash";
 import { marketPrice } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
+import { commaSeparator } from "../../utils/number";
 
-const Assets = ({ lang, assetBalance, balances, markets }) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
   const columns = [
     {
       title: "Asset",
@@ -29,17 +30,40 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       key: "asset",
     },
     {
-      title: "Balances",
-      dataIndex: "balances",
-      key: "balances",
-      align: "right",
+      title: "No. of Tokens",
+      dataIndex: "noOfTokens",
+      key: "noOfTokens",
+      align: "center",
+      render: (tokens) => (
+        <>
+          <p>${commaSeparator(Number(tokens || 0))}</p>
+        </>
+      ),
+    },
+    {
+      title: "Oracle Price",
+      dataIndex: "oraclePrice",
+      key: "oraclePrice",
+      align: "center",
+      render: (price) => (
+        <>
+          <p>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</p>
+        </>
+      ),
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      align: "center",
       render: (balance) => (
         <>
-          <p>{balance?.amount || 0}</p>
-          <small>
-            {amountConversion(balance?.value, DOLLAR_DECIMALS)}{" "}
-            {variables[lang].USD}
-          </small>
+          <p>
+            $
+            {commaSeparator(
+              amountConversion(balance?.value || 0, DOLLAR_DECIMALS)
+            )}
+          </p>
         </>
       ),
     },
@@ -47,7 +71,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       title: "IBC Deposit",
       dataIndex: "ibcdeposit",
       key: "ibcdeposit",
-      width: 110,
+      align: "center",
       render: (value) => {
         if (value) {
           return <Deposit chain={value} />;
@@ -107,15 +131,23 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       currency: originCurrency,
     };
   });
-
   const nativeCoin = balances.filter(
     (item) => item.denom === comdex?.coinMinimalDenom
   )[0];
+  const cmstCoin = balances.filter(
+    (item) => item.denom === cmst?.coinMinimalDenom
+  )[0];
+  const harborCoin = balances.filter(
+    (item) => item.denom === harbor?.coinMinimalDenom
+  )[0];
+
   const nativeCoinValue = getPrice(nativeCoin?.denom) * nativeCoin?.amount;
+  const cmstCoinValue = getPrice(cmstCoin?.denom) * cmstCoin?.amount;
+  const harborCoinValue = getPrice(harborCoin?.denom) * harborCoin?.amount;
 
   const currentChainData = [
     {
-      key: comdex.chainId,
+      key: comdex.coinMinimalDenom,
       asset: (
         <>
           <div className="assets-withicon">
@@ -126,9 +158,47 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
           </div>
         </>
       ),
-      balances: {
-        amount: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
+      noOfTokens: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
+      oraclePrice: getPrice(comdex?.coinMinimalDenom),
+      amount: {
         value: nativeCoinValue || 0,
+      },
+    },
+    {
+      key: cmst?.coinMinimalDenom,
+      asset: (
+        <>
+          <div className="assets-withicon">
+            <div className="assets-icon">
+              <SvgIcon name={iconNameFromDenom(cmst?.coinMinimalDenom)} />
+            </div>{" "}
+            {denomConversion(cmst?.coinMinimalDenom)}
+          </div>
+        </>
+      ),
+      noOfTokens: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
+      oraclePrice: getPrice(cmst?.coinMinimalDenom),
+      amount: {
+        value: cmstCoinValue || 0,
+      },
+    },
+    {
+      key: harbor?.coinMinimalDenom,
+      asset: (
+        <>
+          <div className="assets-withicon">
+            <div className="assets-icon">
+              <SvgIcon name={iconNameFromDenom(harbor?.coinMinimalDenom)} />
+            </div>{" "}
+            {denomConversion(harbor?.coinMinimalDenom)}
+          </div>
+        </>
+      ),
+      noOfTokens: harborCoin?.amount ? amountConversion(harborCoin.amount) : 0,
+      oraclePrice: getPrice(harbor?.coinMinimalDenom),
+
+      amount: {
+        value: harborCoinValue || 0,
       },
     },
   ];
@@ -145,12 +215,14 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
                 <SvgIcon
                   name={iconNameFromDenom(item.currency?.coinMinimalDenom)}
                 />
-              </div>{" "}
+              </div>
               {item.currency?.coinDenom}{" "}
             </div>
           </>
         ),
-        balances: item.balance,
+        noOfTokens: item?.balance?.amount,
+        oraclePrice: getPrice(item.currency?.coinMinimalDenom),
+        amount: item.balance,
         ibcdeposit: item,
         ibcwithdraw: item,
       };
@@ -160,7 +232,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
 
   return (
     <div className="app-content-wrapper">
-      <div className="app-content-small assets-section">
+      <div className=" assets-section">
         <Row>
           <Col>
             <div className="assets-head">
@@ -194,6 +266,7 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
 Assets.propTypes = {
   lang: PropTypes.string.isRequired,
   assetBalance: PropTypes.number,
+  refreshBalance: PropTypes.number.isRequired,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -219,6 +292,7 @@ const stateToProps = (state) => {
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
     markets: state.oracle.market.list,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 

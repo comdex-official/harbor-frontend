@@ -29,6 +29,28 @@ export const ibcDenomToDenom = (key) => {
   }
 };
 
+export const symbolToDenom = (key) => {
+  switch (key) {
+    case "atom":
+    case ibcDenoms["atom"]:
+      return "uatom";
+    case "xprt":
+    case ibcDenoms["xprt"]:
+      return "uxprt";
+    case "osmo":
+    case ibcDenoms["osmo"]:
+      return "uosmo";
+    case "cmdx":
+      return "ucmdx";
+    case "cmst":
+      return "ucmst";
+    case "harbor":
+      return "uharbor";
+    default:
+      return "";
+  }
+};
+
 export const denomToSymbol = (key) => {
   switch (key) {
     case "uatom":
@@ -51,6 +73,10 @@ export const denomToSymbol = (key) => {
       return "OSMO";
     case "ucmdx":
       return "CMDX";
+    case "ucmst":
+      return "CMST";
+    case "uharbor":
+      return "HARBOR";
     case "ucgold":
       return "XAU";
     case "ucsilver":
@@ -58,7 +84,7 @@ export const denomToSymbol = (key) => {
     case "ucoil":
       return "OIL";
     default:
-      return "cosmos";
+      return "CMDX";
   }
 };
 
@@ -92,6 +118,8 @@ export const iconNameFromDenom = (key) => {
     case "ucmst":
       // case ibcDenoms["ucmst"]:
       return "cmst-icon";
+    case "uharbor":
+      return "harbor-icon";
     default:
       return "";
   }
@@ -134,7 +162,7 @@ export const lowercaseFirstLetter = (string) => {
 export const toDecimals = (value, decimal = comdex.coinDecimals) =>
   value.indexOf(".") >= 0
     ? value.substr(0, value.indexOf(".")) +
-      value.substr(value.indexOf("."), decimal + 1)
+    value.substr(value.indexOf("."), decimal + 1)
     : value;
 
 export const showTotalAssetCount = (asset) => {
@@ -162,8 +190,8 @@ export const uniqueLiquidityPairDenoms = (list, type) => {
     ...new Set(
       list && list.length > 0
         ? list.map((item) =>
-            type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
-          )
+          type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
+        )
         : []
     ),
   ];
@@ -173,10 +201,10 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   const quoteList =
     list && list.length > 0
       ? list.filter((item) =>
-          type === "in"
-            ? item.baseCoinDenom === denom
-            : item.quoteCoinDenom === denom
-        )
+        type === "in"
+          ? item.baseCoinDenom === denom
+          : item.quoteCoinDenom === denom
+      )
       : [];
 
   const quoteMap = quoteList.map((item) =>

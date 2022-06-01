@@ -4,9 +4,11 @@ import Earn from "./containers/Earn";
 import BorrowTab from "./containers/Mint";
 import Vault from "./containers/Mint/Vault";
 import MyPositions from "./containers/MyPosition";
-// import MyPositions from "./containers/MyHome";
 import Assets from "./containers/Assets";
-// import Balances from "./containers/MyPositions";
+import More from './containers/More'
+import Govern from './containers/More/Govern'
+import GovernDetails from './containers/More/Govern/Details'
+import Airdrop from "./containers/More/Airdrop";
 
 const routes = [
   {
@@ -14,7 +16,7 @@ const routes = [
     element: <Dashboard />,
   },
   {
-    path: "/myPositions",
+    path: "/my-positions",
     element: <MyPositions />,
   },
   {
@@ -26,7 +28,7 @@ const routes = [
     element: <BorrowTab />,
   },
   {
-    path: "/vault",
+    path: "/vault/:pathVaultId",
     element: <Vault />,
   },
   {
@@ -36,6 +38,22 @@ const routes = [
   {
     path: "/auctions",
     element: <Auctions />,
+  },
+  {
+    path: "/more",
+    element: <More />,
+  },
+  {
+    path: "/govern",
+    element: <Govern />,
+  },
+  {
+    path: "/govern-details",
+    element: <GovernDetails />,
+  },
+  {
+    path: "/airdrop",
+    element: <Airdrop />,
   },
 ];
 

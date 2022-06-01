@@ -1,11 +1,16 @@
 import Router from "./Router";
-import "./App.scss";
 import NavigationBar from "./containers/NavigationBar";
 import SvgSprite from "./utils/SvgSpriteLoader";
 import svgFile from "./assets/images/svg/svg-sprite.svg";
 import SideBar from "./containers/SideBar";
+import { message } from 'antd';
+import "./App.scss";
 
-function App() {
+message.config({
+  maxCount: 2,
+});
+
+const App = () => {
   return (
     <>
       <SvgSprite url={svgFile} />

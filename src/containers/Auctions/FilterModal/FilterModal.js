@@ -2,7 +2,6 @@ import "./index.scss";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Checkbox, Slider } from "antd";
-import variables from "../../../utils/variables";
 import CustomInput from "../../../components/CustomInput";
 import {
   DEFAULT_PAGE_NUMBER,
@@ -12,13 +11,12 @@ import { queryPairs } from "../../../services/asset/query";
 import { denomConversion } from "../../../utils/coin";
 import { message } from "antd";
 import { uniqueDenoms } from "../../../utils/string";
-
 const marks = {
   0: "00:00hrs",
   100: "3d:00h:00m",
 };
 
-const FilterModal = ({ lang, address, pairs, setPairs }) => {
+const FilterModal = ({ address, pairs, setPairs }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(0);
 
@@ -54,9 +52,6 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
     setIsModalVisible(false);
   };
 
-  const uniqCollateralDenoms = uniqueDenoms(pairs && pairs.list, "in");
-  const uniqDebtDenoms = uniqueDenoms(pairs && pairs.list);
-
   return (
     <>
       <Button
@@ -64,6 +59,7 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
         shape="round"
         className="filter-btn"
         onClick={showModal}
+        style={{ border: "1px solid" }}
       >
         <SvgIcon name="filter" viewbox="0 0 13.579 13.385" /> Filter
       </Button>
@@ -87,11 +83,6 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
             <Col>
               <label>Auctioned Asset</label>
               <div className="filter-rows">
-                {/* {uniqCollateralDenoms.length > 0
-                  ? uniqCollateralDenoms.map((item) => (
-                      <Checkbox key={item}>{denomConversion(item)}</Checkbox>
-                    ))
-                  : null} */}
                 <Checkbox key={1}>{denomConversion("uatom")}</Checkbox>
                 <Checkbox key={2}>{denomConversion("uxprt")}</Checkbox>
                 <Checkbox key={3}>{denomConversion("uakt")}</Checkbox>
@@ -104,11 +95,6 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
             <Col>
               <label>Bidding Asset</label>
               <div className="filter-rows">
-                {/* {uniqDebtDenoms.length > 0
-                  ? uniqDebtDenoms.map((item) => (
-                      <Checkbox key={item}>{denomConversion(item)}</Checkbox>
-                    ))
-                  : null} */}
                 <Checkbox key={1}>CMST</Checkbox>
                 <Checkbox key={2}>HARBOR</Checkbox>
               </div>

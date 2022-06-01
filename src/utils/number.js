@@ -1,5 +1,6 @@
 import { Decimal } from "@cosmjs/math";
 import { DOLLAR_DECIMALS } from "../constants/common";
+import { CMDX_PRICE } from "../services/oracle/price";
 import { denomToSymbol } from "./string";
 
 export const formatNumber = (number) => {
@@ -34,5 +35,12 @@ export const marketPrice = (array, denom) => {
     return value[0] && value[0].rates / 1000000;
   }
 
-  return 1; // returning 1 as we are using ust.
+  // return 1; // returning 1 as we are using ust.
+  return CMDX_PRICE; // returning 1 as we are using ust.
 };
+
+export const calculateROI = (principal, interestRate, years, months, days) => {
+  const earns = Number(principal) * (1 + (Number(interestRate) / 100)) ** (Number(years) + Number(months) / 12 + Number(days) / 365);
+
+  return earns.toFixed(DOLLAR_DECIMALS)
+}

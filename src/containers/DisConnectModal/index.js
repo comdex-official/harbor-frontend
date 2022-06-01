@@ -61,8 +61,7 @@ const DisConnectModal = ({
       <div className="px-3">
         <div> {variables[lang].balance_wallet}</div>
         <div className="balance__value__data">
-          {amountConversionWithComma(getTotalValue(), DOLLAR_DECIMALS)}{" "}
-          {variables[lang].USD}
+         ${amountConversionWithComma(getTotalValue(), DOLLAR_DECIMALS)}{" "}
         </div>
       </div>
       <div className="mt-2 px-3">

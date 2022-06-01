@@ -8,3 +8,4 @@ export const IN_ASSET_SET = "IN_ASSET_SET";
 export const OUT_AMOUNT_SET = "OUT_AMOUNT_SET";
 export const IN_AMOUNT_SET = "IN_AMOUNT_SET";
 export const COLLATERAL_RATIO_SET = "COLLATERAL_RATIO_SET";
+export const SET_ASSET_LIST = "SET_ASSET_LIST";

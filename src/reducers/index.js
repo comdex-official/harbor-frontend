@@ -10,6 +10,8 @@ import auction from "./auction";
 import theme from "./theme";
 import oracle from "./oracle";
 import order from './order';
+import locker from './locker'
+import mint from './mint'
 
 const app = combineReducers({
   language,
@@ -21,15 +23,16 @@ const app = combineReducers({
   liquidity,
   auction,
   theme,
+  mint,
   oracle,
-  order
+  order,
+  locker,
 });
 
 const root = (state, action) => {
   if (action.type === "ACCOUNT_ADDRESS_SET" && action.value === "") {
     state.account = undefined; //explicitly clearing account data
   }
-
   return app(state, action);
 };
 

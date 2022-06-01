@@ -6,11 +6,10 @@ import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import thunk from "redux-thunk";
 import reducer from "./reducers";
-import { createRoot } from "react-dom/client";
 import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
+import Disclaimer from "./components/common/Disclaimer";
 
 const store = createStore(
   reducer,
@@ -23,6 +22,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <BrowserRouter>
+      <Disclaimer />
       <App />
     </BrowserRouter>
   </Provider>

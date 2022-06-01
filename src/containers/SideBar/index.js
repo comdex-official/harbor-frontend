@@ -4,7 +4,7 @@ import { Layout } from "antd";
 import { SvgIcon } from "../../components/common";
 import { useMediaQuery } from "react-responsive";
 import Footer from "../Footer";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Tabs from "./Tabs";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useNavigate } from "react-router";

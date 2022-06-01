@@ -1,42 +1,84 @@
 @import "../../assets/scss/style.scss";
-
+.dashboard-app-content-wrapper {
+  margin-top: -10px !important;
+}
 .dashboard-upper {
   display: flex;
+  @media only screen and (max-width: 750px) {
+    flex-direction: column;
+  }
   .dashboard-upper-left {
     width: 50%;
-    // padding-right: 20px;
-    .commodo-card {
-      height: 97%;
-      padding: 32px 40px;
+    @media only screen and (max-width: 750px) {
+      width: 100%;
+    }
+    .composite-card {
+      padding: 32px 5px 30px 30px;
     }
     .totalvalues {
       display: flex;
       align-items: center;
+      column-gap: 80px;
+
+      @media only screen and (min-width: 950px) and (max-width: 1200px) {
+        column-gap: 40px;
+      }
+      @media only screen and (min-width: 800px) and (max-width: 949px) {
+        column-gap: 10px;
+      }
+      @media only screen and (max-width: 500px) {
+        flex-direction: column;
+      }
       .totalvalues-chart {
         width: 50%;
         text-align: left;
       }
       .totalvalues-right {
-        width: 50%;
+        width: 48%;
+        @media only screen and (max-width: 750px) {
+        }
+        @media only screen and (max-width: 500px) {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
       }
     }
   }
   .dashboard-upper-right {
-    width: 50%;
+    width: 52%;
     padding-left: 20px;
+    @media only screen and (max-width: 750px) {
+      width: 100%;
+      padding-left: 0;
+      margin: 10px 0;
+    }
     .dashboardupper-chart {
-      padding: 20px 25px;
-      margin-bottom: 20px;
+      padding: 7.4px 25px;
+      margin-bottom: 15px;
       .dashboardupperchart-head {
         display: flex;
         justify-content: space-between;
+        .col2,
+        .col3 {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          justify-content: space-between;
+          row-gap: 4px;
+        }
         small {
-          font-size: $font-size-base;
-          font-weight: normal;
+          font-size: 13px;
+          font-weight: 400;
+          @media only screen and (min-width: 750px) and (max-width: 830px) {
+            font-size: 11px;
+          }
         }
         h4 {
           font-size: 22px;
           font-weight: bold;
+          margin-bottom: 0;
           .dark-mode & {
             color: $white;
           }
@@ -47,8 +89,9 @@
           }
         }
         p {
-          font-size: $font-size-lg;
+          font-size: $font-size-base;
           font-weight: 500;
+          margin-bottom: 0;
           span {
             font-weight: lighter;
           }
@@ -115,7 +158,7 @@
 
 .dashboard-bottom {
   margin-top: 20px;
-  .commodo-card {
+  .composite-card {
     padding: 15px 20px;
     .bottom-chart {
       display: flex;
@@ -170,7 +213,7 @@
 .dashboard-statics {
   border-left: 5px solid$secondary-color;
   line-height: 1;
-  margin: 0 0 30px;
+  margin: 0 0 20px;
   color: $text-color-dark2;
   padding: 5px 0 5px 15px;
   .dark-mode & {
@@ -178,11 +221,17 @@
   }
   p {
     margin-bottom: 0;
-    font-size: $font-size-base;
+    font-size: 17px;
+  }
+  .total-value {
+    margin-bottom: 0;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
   }
   h3 {
     margin-bottom: 0;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 600;
     line-height: 1;
     margin-top: 8px;
@@ -212,29 +261,34 @@
   }
 }
 .total-dashboard-stats {
-  border-left: 5px solid #e2f7e5;
+  border-left: 5px solid #bfa9d7;
+  .dark-mode & {
+    border-left: 5px solid #bfa9d7;
+  }
 }
 .others-dashboard-stats {
-  border-left: 5px solid #373549;
+  border-left: 5px solid #e0e0e0;
+  @media screen and (max-width: 500px) {
+    height: max-content;
+  }
+  .dark-mode & {
+    border-left: 5px solid #373549;
+  }
 }
 
 .dashboard-banner {
   background: $background-light;
   padding: 10px 25px 5px 25px;
-  //   border-radius: $base-border-radius;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 1rem;
-  //   box-shadow: $box-shadow-inner-light;
-  //   background-image: url("../../assets/images/banner_bg.svg");
   background-size: 100%;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   .dark-mode & {
     background: $background-dark1;
-    border: 1px solid $border-dark;
     box-shadow: $box-shadow-inner-dark;
     background-image: url("../../assets/images/dashboard-banner.svg");
     background-size: 100%;
@@ -243,13 +297,13 @@
     background-position: center;
   }
   .banner-left {
-    // text-align: center;
     width: 100%;
-    // padding: 2rem;
     h2 {
-      font-size: 1.7rem;
-      line-height: 1.2;
+      font-size: 2rem;
+      line-height: 1.1;
       color: #222a49;
+      font-weight: 700;
+      letter-spacing: 1.1px;
       @media screen and (max-width: 1120px) {
         font-size: 1.3rem;
       }

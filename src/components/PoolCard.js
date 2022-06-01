@@ -37,22 +37,6 @@ const PoolCard = ({ lang, pool, markets }) => {
 
   const TotalPoolLiquidity = amountConversionWithComma(calculatePoolLiquidity(pool?.balances), 2);
 
-  // const handleRouteChange = () => {
-  //   dispatch({
-  //     type: "OFFER_COIN_DENOM_SET",
-  //     value: pair?.baseCoinDenom,
-  //   });
-  //
-  //   dispatch({
-  //     type: "DEMAND_COIN_DENOM_SET",
-  //     value: pair?.quoteCoinDenom
-  //   });
-  //   navigate({
-  //     pathname: `/swap`,
-  //     hash: "buy",
-  //   });
-  // };
-
   const showPairDenoms =()=>{
     if(pair?.baseCoinDenom){
       return `${denomConversion(pair?.baseCoinDenom)}/${denomConversion(pair?.quoteCoinDenom)}`
@@ -61,10 +45,7 @@ const PoolCard = ({ lang, pool, markets }) => {
 
   return (
     <div className="dashboard-bottom-card-border">
-      <div
-        className="dashboard-card"
-        // onClick={() => handleRouteChange(pool.id && pool.id.toNumber())}
-      >
+      <div className="dashboard-card">
         <div className="dashboard-card-inner">
           <div className="card-upper">
             <h3>{showPairDenoms()}</h3>

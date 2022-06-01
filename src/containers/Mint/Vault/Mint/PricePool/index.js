@@ -1,36 +1,42 @@
-import TooltipIcon from "../../../../../components/TooltipIcon";
-import { Col, Row, SvgIcon } from "../../../../../components/common";
-import variables from "../../../../../utils/variables";
-import {
-  iconNameFromDenom,
-  showTotalAssetCount,
-} from "../../../../../utils/string";
-import { denomConversion } from "../../../../../utils/coin";
-import { calculatePoolLiquidity } from "../../../../../utils/calculations";
 import { List } from "antd";
+import * as PropTypes from "prop-types";
+import {connect, useSelector} from "react-redux";
+import {commaSeparator, marketPrice} from "../../../../../utils/number";
+import {amountConversion} from "../../../../../utils/coin";
+import {DOLLAR_DECIMALS} from "../../../../../constants/common";
 
-const PricePool = ({ lang, poolBalance, markets }) => {
-  const data = [
+const PricePool = ({ownerVaultInfo, markets, pair}) => {
+    const selectedExtendedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData[0]);
+
+    const collateralDeposited = Number(amountConversion(ownerVaultInfo?.amountIn)) *
+        marketPrice(markets, pair?.denomIn);
+
+    const withdrawn = Number(amountConversion(ownerVaultInfo?.amountOut)) *
+        marketPrice(markets, pair?.denomOut);
+
+    const liquidationPrice = (selectedExtendedPairVaultListData?.liquidationRatio / (10 ** 16)) * withdrawn;
+
+    const data = [
     {
       title: "Liquidation Price",
-      counts: "$1,234.20",
+        counts: `$${commaSeparator(Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS))}`
     },
     {
       title: "Collateral Deposited",
-      counts: "$1,234.20",
+        counts: `$${commaSeparator(Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS))}`
     },
     {
       title: "Oracle Price",
-      counts: "30.45%",
+        counts: `$${commaSeparator(Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(DOLLAR_DECIMALS))}`
     },
     {
       title: "Withdrawn",
-      counts: "$30.45",
+        counts: `$${commaSeparator(Number(withdrawn || 0).toFixed(DOLLAR_DECIMALS))}`
     },
   ];
   return (
     <>
-      <div className="commodo-card farm-content-card earn-deposite-card ">
+      <div className="composite-card farm-content-card earn-deposite-card ">
         <div className="card-head"></div>
         <List
           grid={{
@@ -57,4 +63,31 @@ const PricePool = ({ lang, poolBalance, markets }) => {
   );
 };
 
-export default PricePool;
+PricePool.prototype = {
+    markets: PropTypes.arrayOf(
+        PropTypes.shape({
+            rates: PropTypes.shape({
+                high: PropTypes.number,
+                low: PropTypes.number,
+                unsigned: PropTypes.bool,
+            }),
+            symbol: PropTypes.string,
+            script_id: PropTypes.string,
+        })
+    ),
+    ownerVaultInfo: PropTypes.array,
+    pair: PropTypes.shape({
+        denomIn: PropTypes.string,
+        denomOut: PropTypes.string,
+    }),
+}
+
+const stateToProps = (state) => {
+    return {
+        ownerVaultInfo: state.locker.ownerVaultInfo,
+        markets: state.oracle.market.list,
+        pair: state.asset.pair,
+    };
+};
+
+export default connect(stateToProps)(PricePool);
