@@ -2,7 +2,6 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
-import variables from "../../../utils/variables";
 import { Button, List, Select, Progress } from "antd";
 import "./index.scss";
 
@@ -23,7 +22,7 @@ const data = [
   }
 ];
 
-const Govern = (lang) => {
+const Govern = () => {
   const navigate = useNavigate();
   return (
     <div className="app-content-wrapper">

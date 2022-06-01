@@ -3,7 +3,6 @@ import { Button, Input, Modal } from "antd";
 import { Row, Col } from "../../../../components/common";
 import { connect } from "react-redux";
 import React, { useState } from "react";
-import variables from "../../../../utils/variables";
 import "./index.scss";
 
 const PlaceBidModal = () => {

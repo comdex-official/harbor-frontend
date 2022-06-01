@@ -11,9 +11,7 @@ import "./index.scss";
 import { queryAppTVL } from "../../services/vault/query";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import { message } from "antd";
-import { queryAsset } from "../../services/asset/query";
 import { commaSeparator, marketPrice } from "../../utils/number";
-import asset from "../../reducers/asset";
 import { amountConversion } from "../../utils/coin";
 
 const vaultsInfo = [

@@ -14,7 +14,6 @@ import { calculateROI } from "../../utils/number";
 
 const Earn = () => {
   const dispatch = useDispatch();
-  const [isModalVisible, setIsModalVisible] = useState(true);
   const [defaultTabSelect, setDefaultTabSelect] = useState("1");
   const { TabPane } = Tabs;
   const [principal, setPrincipal] = useState();

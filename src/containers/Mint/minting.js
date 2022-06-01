@@ -5,9 +5,8 @@ import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
-import { iconNameFromDenom, symbolToDenom } from "../../utils/string";
+import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import { queryVaultByProductId } from "../../services/vault/query";
 import React, { useEffect, useState } from "react";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, PRODUCT_ID } from "../../constants/common";
 import { setAssetList, setPairs } from "../../actions/asset";
@@ -16,20 +15,16 @@ import { useSelector } from "react-redux";
 import {
   setAllExtendedPair,
   setCurrentPairID,
-  setExtendedPairVaultListData,
   setSelectedExtentedPairvault,
 } from "../../actions/locker";
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
-import { queryAssets, queryExtendedPairVaultById, queryPairVault } from "../../services/asset/query";
+import { queryAssets, queryExtendedPairVaultById } from "../../services/asset/query";
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const extenedPairVaultListData = useSelector(
-    (state) => state.locker.extenedPairVaultListData[0]
-  );
   const extenedPairVaultList = useSelector(
     (state) => state.locker.extenedPairVaultList[0]
   );

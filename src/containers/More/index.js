@@ -6,7 +6,7 @@ import React from "react";
 import { Button } from "antd";
 import { useNavigate } from "react-router";
 
-const More = ({ }) => {
+const More = () => {
   const navigate = useNavigate();
 
   const handleRouteChange = (path) => {

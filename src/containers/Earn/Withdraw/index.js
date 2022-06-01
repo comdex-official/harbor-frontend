@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { Col } from "../../../components/common";
 import CustomInput from "../../../components/CustomInput";
 import {
-  amountConversion,
   amountConversionWithComma,
   denomConversion,
   getAmount,
@@ -17,13 +16,13 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { ValidateInputNumber } from "../../../config/_validation";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
-import { queryUserLockedValueInLocker, queryUserLockerByProductAssetId } from "../../../services/locker/query";
-import { setIsLockerExist, setUserLockedValue, setSliderTooltipVisible, setOwnerVaultInfo, setWhiteListedAssets } from "../../../actions/locker";
+import { queryUserLockerByProductAssetId } from "../../../services/locker/query";
+import { setIsLockerExist, setUserLockedValue, setSliderTooltipVisible, setOwnerVaultInfo } from "../../../actions/locker";
 import { defaultFee } from "../../../services/transaction";
 import Long from "long";
 import { signAndBroadcastTransaction } from "../../../services/helper";
 import Snack from "../../../components/common/Snack";
-import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
 
 const Withdraw = ({
   lang,

@@ -52,9 +52,6 @@ const FilterModal = ({ address, pairs, setPairs }) => {
     setIsModalVisible(false);
   };
 
-  const uniqCollateralDenoms = uniqueDenoms(pairs && pairs.list, "in");
-  const uniqDebtDenoms = uniqueDenoms(pairs && pairs.list);
-
   return (
     <>
       <Button
@@ -86,11 +83,6 @@ const FilterModal = ({ address, pairs, setPairs }) => {
             <Col>
               <label>Auctioned Asset</label>
               <div className="filter-rows">
-                {/* {uniqCollateralDenoms.length > 0
-                  ? uniqCollateralDenoms.map((item) => (
-                      <Checkbox key={item}>{denomConversion(item)}</Checkbox>
-                    ))
-                  : null} */}
                 <Checkbox key={1}>{denomConversion("uatom")}</Checkbox>
                 <Checkbox key={2}>{denomConversion("uxprt")}</Checkbox>
                 <Checkbox key={3}>{denomConversion("uakt")}</Checkbox>
@@ -103,11 +95,6 @@ const FilterModal = ({ address, pairs, setPairs }) => {
             <Col>
               <label>Bidding Asset</label>
               <div className="filter-rows">
-                {/* {uniqDebtDenoms.length > 0
-                  ? uniqDebtDenoms.map((item) => (
-                      <Checkbox key={item}>{denomConversion(item)}</Checkbox>
-                    ))
-                  : null} */}
                 <Checkbox key={1}>CMST</Checkbox>
                 <Checkbox key={2}>HARBOR</Checkbox>
               </div>
@@ -169,6 +156,5 @@ const FilterModal = ({ address, pairs, setPairs }) => {
     </>
   );
 };
-
 
 export default FilterModal;

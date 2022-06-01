@@ -1,4 +1,4 @@
-import { Button, message, Select } from "antd";
+import { Button, message } from "antd";
 import Long from "long";
 import './index.scss'
 import *  as PropTypes from 'prop-types';

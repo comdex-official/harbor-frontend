@@ -1,22 +1,3 @@
-import Long from "long";
-import BigNumber from "bignumber.js";
-
-function omitDefault(input) {
-  if (typeof input === "string") {
-    return input === "" ? undefined : input;
-  }
-
-  if (typeof input === "number") {
-    return input === 0 ? undefined : input;
-  }
-
-  if (Long.isLong(input)) {
-    return input.isZero() ? undefined : input;
-  }
-
-  throw new Error(`Got unsupported type '${typeof input}'`);
-}
-
 export const customAminoTypes = {
   "/comdex.vault.v1beta1.MsgCreateRequest": {
     aminoType: "comdex/vault/MsgCreateRequest",

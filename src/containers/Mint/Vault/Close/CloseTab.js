@@ -151,7 +151,7 @@ const CloseTab = ({
         setVault({}); // clearing local vault as it is closed.
         setBalanceRefresh(refreshBalance + 1);
         message.success("success");
-
+        navigate("/mint")
       }
     );
   };

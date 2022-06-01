@@ -2,7 +2,7 @@ import "../index.scss";
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import React, { useEffect, useState } from "react";
-import { Button, message, Select, Slider } from "antd";
+import { Button, message, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { iconNameFromDenom } from "../../../../utils/string";
 import { amountConversion } from "../../../../utils/coin";
@@ -30,13 +30,6 @@ import { useParams } from "react-router";
 import Long from "long";
 import { queryPairVault } from "../../../../services/asset/query";
 
-
-const marks = {
-  0: "0%",
-  150: "Min - 150%",
-  200: "Safe: 200%",
-};
-
 const Edit = ({
   address,
   pair,
@@ -53,12 +46,6 @@ const Edit = ({
 
   const vault = useSelector((state) => state.account.vault);
 
-  const userVault = useSelector(
-    (state) => state.mint.userLockedVaultData.vault
-  );
-  const selectedExtentedPairVault = useSelector(
-    (state) => state.locker.selectedExtentedPairVault
-  );
   const selectedExtentedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData
   );

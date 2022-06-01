@@ -1,5 +1,5 @@
 import * as PropTypes from "prop-types";
-import { Button, message, Dropdown } from "antd";
+import { Button, Dropdown } from "antd";
 import { SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
 import { decode } from "js-base64";
@@ -22,7 +22,6 @@ import {
 } from "../../actions/account";
 import { queryAllBalances } from "../../services/bank/query";
 import Lodash from "lodash";
-// import { queryVaultList } from "../../services/vault/query";
 import { setAccountVaults } from "../../actions/account";
 import ConnectModal from "../Modal";
 import { marketPrice } from "../../utils/number";
@@ -75,7 +74,7 @@ const ConnectButton = ({
       true,
       false
     );
-  }, [markets]);
+  }, [address, markets]);
 
   useEffect(() => {
     // getVaults();
@@ -140,51 +139,6 @@ const ConnectButton = ({
     });
 
     setAssetBalance(Lodash.sum(value));
-  };
-
-  // const getVaults = () => {
-  //   fetchVaults(
-  //     address,
-  //     (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-  //     DEFAULT_PAGE_SIZE,
-  //     true,
-  //     false
-  //   );
-  // };
-
-  // const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
-  //   queryVaultList(
-  //     address,
-  //     offset,
-  //     limit,
-  //     isTotal,
-  //     isReverse,
-  //     (error, result) => {
-  //       if (error) {
-  //         message.error(error);
-  //         return;
-  //       }
-
-  //       setAccountVaults(result?.vaultsInfo, result?.pagination);
-
-  //       calculateMintBalance(result?.vaultsInfo);
-  //     }
-  //   );
-  // };
-
-  const calculateMintBalance = (vaults) => {
-    const userVaults = vaults.filter((item) => item.owner === address);
-    const debtBalance = userVaults.map((item) => {
-      return marketPrice(markets, item.debt?.denom) * item.debt?.amount;
-    });
-
-    setDebtBalance(Lodash.sum(debtBalance));
-
-    const collateralBalance = userVaults.map((item) => {
-      return getPrice(item.collateral?.denom) * item.collateral?.amount;
-    });
-
-    setCollateralBalance(Lodash.sum(collateralBalance));
   };
 
   const WalletConnectedDropdown = <ConnectModal />;

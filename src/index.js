@@ -6,11 +6,9 @@ import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import thunk from "redux-thunk";
 import reducer from "./reducers";
-import { createRoot } from "react-dom/client";
 import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { CautionNotice } from "./components/common";
 import Disclaimer from "./components/common/Disclaimer";
 
 const store = createStore(

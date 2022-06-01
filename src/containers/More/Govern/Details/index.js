@@ -3,13 +3,11 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import { connect } from "react-redux";
-import variables from "../../../../utils/variables";
-import { Button, List, Select, Progress } from "antd";
+import { Button, List } from "antd";
 import "./index.scss";
 import VoteNowModal from "../VoteNowModal";
 import { Link } from "react-router-dom";
 
-const { Option } = Select;
 
 const data = [
   {
