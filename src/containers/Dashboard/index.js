@@ -5,10 +5,62 @@ import variables from "../../utils/variables";
 import TooltipIcon from "../../components/TooltipIcon";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import "./index.scss";
 import Banner from "./Banner";
+import {useEffect, useState} from 'react';
+import "./index.scss";
+import {queryAppTVL} from "../../services/vault/query";
+import {DOLLAR_DECIMALS, PRODUCT_ID} from "../../constants/common";
+import {message} from "antd";
+import {queryAsset} from "../../services/asset/query";
+import {commaSeparator, marketPrice} from "../../utils/number";
+import asset from "../../reducers/asset";
+import {amountConversion} from "../../utils/coin";
 
-const Dashboard = ({ lang, isDarkMode }) => {
+const Dashboard = ({ lang, isDarkMode, markets }) => {
+  const[TVL, setTVL] = useState();
+  const [totalValueObject, setTotalValueObject] = useState();
+
+  useEffect(() =>{
+    fetchTVL();
+  },[]);
+
+  const fetchTVL = () => {
+    queryAppTVL(PRODUCT_ID, (error, result)=> {
+      if(error){
+        message.error(error);
+        return;
+      }
+
+      if(result?.tvldata && result?.tvldata?.length>0){
+        setTVL(result?.tvldata);
+        let totalValue = {}
+        let dollarValue = 0;
+        for (let i = 0; i <  result?.tvldata?.length; i++) {
+          let item = result?.tvldata[i];
+          queryAsset(item?.assetId, (error, result)=>{
+            if(error){
+              message.error(error);
+              return
+            }
+
+            item["asset"] = result?.asset;
+            const value = Number(amountConversion(item?.collateralLockedAmount)) * marketPrice(markets, result?.asset?.denom);
+            console.log('the value', value, dollarValue)
+            item["dollarValue"] = value;
+            dollarValue += value;
+            return totalValue[result?.asset?.denom] = item;
+          })
+          console.log('the total value', totalValue)
+          setTotalValueObject(totalValue)
+        }
+      }
+    })
+  }
+
+  const calculateTotalValueLockedInDollar = () => {
+
+  }
+
   const Options = {
     chart: {
       type: "pie",
@@ -217,14 +269,18 @@ const Dashboard = ({ lang, isDarkMode }) => {
                 <div className="totalvalues-right">
                   <div className="dashboard-statics mb-5">
                     <p>ATOM</p>
-                    <h3>$12,345.00</h3>
+                    <h3>${commaSeparator(
+                          amountConversion(totalValueObject?.["uatom"]?.dollarValue || 0, DOLLAR_DECIMALS)
+                      )}</h3>
                   </div>
                   <div className="dashboard-statics mb-5 total-dashboard-stats">
                     <p>CMDX</p>
-                    <h3>$2,345.00</h3>
-                  </div>
+                    <h3>${commaSeparator(
+                        amountConversion(totalValueObject?.["ucmdx"]?.dollarValue || 0, DOLLAR_DECIMALS)
+                    )}</h3>                  </div>
                   <div className="dashboard-statics mb-0 others-dashboard-stats">
                     <p>Others</p>
+                    <h3>{TVL?.length>0 &&calculateTotalValueLockedInDollar()}</h3>
                     <h3>$345.00</h3>
                   </div>
                 </div>
@@ -294,12 +350,24 @@ const Dashboard = ({ lang, isDarkMode }) => {
 Dashboard.propTypes = {
   isDarkMode: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
+  markets: PropTypes.arrayOf(
+      PropTypes.shape({
+        rates: PropTypes.shape({
+          high: PropTypes.number,
+          low: PropTypes.number,
+          unsigned: PropTypes.bool,
+        }),
+        symbol: PropTypes.string,
+        script_id: PropTypes.string,
+      })
+  ),
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     isDarkMode: state.theme.theme.darkThemeEnabled,
+    markets: state.oracle.market.list,
   };
 };
 

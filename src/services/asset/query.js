@@ -133,3 +133,23 @@ export const queryPairVaults = (callback) => {
       });
   });
 };
+
+export const queryAsset = (id, callback) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    new QueryClientImpl(rpcClient)
+        .QueryAsset({
+          id: Long.fromNumber(id),
+        })
+        .then((result) => {
+          callback(null, result);
+        })
+        .catch((error) => {
+          callback(error?.message);
+        });
+  });
+};

@@ -137,4 +137,23 @@ export const queryAllVaultByProduct = (productId, callback) => {
     })
 }
 
+export const queryAppTVL = (appId, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryClientImpl(rpcClient)
+            .QueryTVLlockedByApp({
+                appId: Long.fromNumber(appId),
+            }).then((result) => {
+                console.log('it is', result)
+                callback(null, result);
+            })
+            .catch((error) => {
+                console.log(error);
+                callback(error?.message);
+            });
+    });
+};
 

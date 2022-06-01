@@ -289,8 +289,6 @@ const variables = {
     tooltip_calculator: "Calculator to compute earnings expected after a period of time for a certain principal",
     tooltip_interestearned: "Interest earned till date",
     tooltip_balance: "Current balance of Composite deposited in locker",
-    tooltip_newbalance: "New balance of Composite in locker after withdrawal transaction is completed",
-    tooltip_calculator: "Calculator to compute earnings expected after a period of time for a certain principal",
 
     //Assets
     total_asset_balance: "Total Asset Balance",
