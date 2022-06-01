@@ -41,8 +41,6 @@ const CautionNotice = () => {
             <Button
               onClick={(e) => {
                 e.preventDefault();
-
-                // onAgree();
               }}
               disabled={!isChecked}
               name="Agree"

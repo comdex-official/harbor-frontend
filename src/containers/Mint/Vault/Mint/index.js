@@ -93,12 +93,6 @@ const Mint = ({
     );
     setAmountIn(value);
     setAmountOut(
-      // calculateAmountOut(
-      //   value,
-      //   selectedTokenPrice,
-      //   collateralRatio / 100,
-      //   marketPrice(markets, pair && pair.denomOut)
-      // )
       calculateAmountOut(
         value,
         CMDX_PRICE,
