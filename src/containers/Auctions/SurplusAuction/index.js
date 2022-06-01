@@ -119,7 +119,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
       dataIndex: "top_bid",
       key: "top_bid",
       width: 150,
-      render: (asset_apy) => <>{asset_apy} USCX</>,
+      render: (asset_apy) => <>{asset_apy} CMST</>,
     },
     {
       title: (

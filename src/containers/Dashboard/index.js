@@ -62,6 +62,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         return;
       }
 
+      console.log('the result', result)
       if (result?.tvldata && result?.tvldata?.length > 0) {
         // setTotalValueLocked(result?.tvldata);
       }
