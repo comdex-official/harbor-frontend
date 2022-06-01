@@ -54,7 +54,7 @@ export const queryUserVaults = (
             return;
         }
         new QueryClientImpl(rpcClient)
-            .QueryAllVaultByOwner({
+            .QueryVaultInfoByOwner({
                 owner: owner
             })
             .then((result) => {
