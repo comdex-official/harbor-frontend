@@ -4,40 +4,84 @@ import { connect } from "react-redux";
 import { Table, message } from "antd";
 import "./index.scss";
 import TooltipIcon from "../../components/TooltipIcon";
-import {queryLockerLookupTableByApp, queryUserLockerHistory} from "../../services/locker/query";
-import {useEffect, useState} from "react";
-import { PRODUCT_ID } from "../../constants/common";
-import {amountConversion} from "../../utils/coin";
+import { queryUserLockerHistory } from "../../services/locker/query";
+import { useEffect, useState } from "react";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+  PRODUCT_ID,
+} from "../../constants/common";
+import { amountConversion } from "../../utils/coin";
 import moment from "moment";
 
-const lockerData = [{
-  amount: "100000000",
-  balance: "100000000",
-  txTime: "2022-06-02T07:36:42.515720968Z",
-  txType: "Create",
+const lockerData = [
+  {
+    amount: "100000000",
+    balance: "100000000",
+    txTime: "2022-06-02T07:36:42.515720968Z",
+    txType: "Create",
+  },
+  {
+    amount: "100000000",
+    balance: "100000000",
+    txTime: "2022-06-02T07:36:42.515720968Z",
+    txType: "Deposit",
+  },
+  {
+    amount: "100000000",
+    balance: "100000000",
+    txTime: "2022-06-02T07:36:42.515720968Z",
+    txType: "Withdraw",
+  },
+  {
+    amount: "100000000",
+    balance: "100000000",
+    txTime: "2022-06-02T07:36:42.515720968Z",
+    txType: "Deposit",
+  },
+];
 
-}];
-
-const MyEarn = ({address}) => {
-
+const MyEarn = ({ address }) => {
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [lockers, setLockers] = useState(lockerData);
+  const [inProgress, setInProgress] = useState(false);
 
-  useEffect(()=>{
-    if(address) {
-      fetchLockers();
+  useEffect(() => {
+    if (address) {
+      fetchLockers((pageNumber - 1) * pageSize, pageSize, true, false);
     }
-  },[address]);
+  }, [address]);
 
-  const fetchLockers = () => {
-    queryUserLockerHistory(PRODUCT_ID, address, (error, result)=>{
-      if(error){
-        message.error(error);
-        return;
+  const fetchLockers = (offset, limit, isTotal, isReverse) => {
+    queryUserLockerHistory(
+      PRODUCT_ID,
+      address,
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        console.log("locker data", result);
       }
+    );
+  };
 
-      console.log('locker data', result)
-    })
-  }
+  const handleChange = (value) => {
+    setPageNumber(value.current - 1);
+    setPageSize(value.pageSize);
+    fetchLockers(
+      (value.current - 1) * value.pageSize,
+      value.pageSize,
+      true,
+      false
+    );
+  };
 
   const columns = [
     {
@@ -47,9 +91,12 @@ const MyEarn = ({address}) => {
       width: 300,
     },
     {
-      title: <>
-        Transaction Type <TooltipIcon text="Type of transaction ( Withdraw or Deposit)" />
-      </>,
+      title: (
+        <>
+          Transaction Type{" "}
+          <TooltipIcon text="Type of transaction ( Withdraw or Deposit)" />
+        </>
+      ),
       dataIndex: "transaction",
       key: "balance",
       width: 300,
@@ -61,9 +108,11 @@ const MyEarn = ({address}) => {
       width: 300,
     },
     {
-      title: <>
-        Balance <TooltipIcon text="Balance after transaction" />
-      </>,
+      title: (
+        <>
+          Balance <TooltipIcon text="Balance after transaction" />
+        </>
+      ),
       dataIndex: "balance",
       key: "balance",
       width: 300,
@@ -71,28 +120,24 @@ const MyEarn = ({address}) => {
   ];
 
   const tableData =
-      lockers &&
-      lockers?.length > 0 &&
-      lockers?.map((item) => {
-        return {
-          key: 1,
-          amount: (
-              <>
-                <div className="assets-withicon">
-                  {amountConversion(item?.amount || 0)} CMST
-                </div>
-              </>
-          ),
-          transaction: item?.txType,
-          date: moment(item?.txTime).format("MMM DD, YYYY HH:mm"),
-          balance: (
-              <>
-                  {amountConversion(item?.balance || 0)} CMST
-              </>
-          ) ,
-          action: item,
-        };
-      });
+    lockers &&
+    lockers?.length > 0 &&
+    lockers?.map((item) => {
+      return {
+        key: 1,
+        amount: (
+          <>
+            <div className="assets-withicon">
+              {amountConversion(item?.amount || 0)} CMST
+            </div>
+          </>
+        ),
+        transaction: item?.txType,
+        date: moment(item?.txTime).format("MMM DD, YYYY HH:mm"),
+        balance: <>{amountConversion(item?.balance || 0)} CMST</>,
+        action: item,
+      };
+    });
 
   return (
     <div className="app-content-wrappers earn-table-container">
@@ -104,7 +149,15 @@ const MyEarn = ({address}) => {
                 className="custom-table"
                 dataSource={tableData}
                 columns={columns}
-                pagination={false}
+                loading={inProgress}
+                onChange={(event) => handleChange(event)}
+                pagination={{
+                  total:
+                    lockers && lockers.pagination && lockers.pagination.total,
+                  showSizeChanger: true,
+                  defaultPageSize: pageSize,
+                  pageSizeOptions: ["5", "10", "20", "50"],
+                }}
                 scroll={{ x: "100%" }}
               />
             </div>
