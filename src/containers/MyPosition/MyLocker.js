@@ -14,37 +14,10 @@ import {
 import { amountConversion } from "../../utils/coin";
 import moment from "moment";
 
-const lockerData = [
-  {
-    amount: "100000000",
-    balance: "100000000",
-    txTime: "2022-06-02T07:36:42.515720968Z",
-    txType: "Create",
-  },
-  {
-    amount: "100000000",
-    balance: "100000000",
-    txTime: "2022-06-02T07:36:42.515720968Z",
-    txType: "Deposit",
-  },
-  {
-    amount: "100000000",
-    balance: "100000000",
-    txTime: "2022-06-02T07:36:42.515720968Z",
-    txType: "Withdraw",
-  },
-  {
-    amount: "100000000",
-    balance: "100000000",
-    txTime: "2022-06-02T07:36:42.515720968Z",
-    txType: "Deposit",
-  },
-];
-
 const MyEarn = ({ address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-  const [lockers, setLockers] = useState(lockerData);
+  const [lockers, setLockers] = useState();
   const [inProgress, setInProgress] = useState(false);
 
   useEffect(() => {
@@ -54,6 +27,7 @@ const MyEarn = ({ address }) => {
   }, [address]);
 
   const fetchLockers = (offset, limit, isTotal, isReverse) => {
+    setInProgress(true);
     queryUserLockerHistory(
       PRODUCT_ID,
       address,
@@ -62,12 +36,13 @@ const MyEarn = ({ address }) => {
       isTotal,
       isReverse,
       (error, result) => {
+        setInProgress(false);
         if (error) {
           message.error(error);
           return;
         }
 
-        console.log("locker data", result);
+        setLockers(result?.userTxData || []);
       }
     );
   };
