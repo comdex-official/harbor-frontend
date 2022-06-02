@@ -66,9 +66,10 @@
   }
 }
 
-.tnxshash-col {
+.tnx-hash-col {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   .icon {
     fill: $background-dark2;
     margin-left: 8px;

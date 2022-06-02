@@ -14,12 +14,60 @@ import { message } from "antd";
 import { commaSeparator, marketPrice } from "../../utils/number";
 import { amountConversion } from "../../utils/coin";
 
+const vaultsInfo = [
+  {
+    assetDenom: "ucmdx",
+    collateralLockedAmount: "13710000000",
+  },
+  {
+    assetDenom: "ucmdx",
+    collateralLockedAmount: "13710000000",
+  },
+  {
+    assetDenom: "uosmo",
+    collateralLockedAmount: "13710000000",
+  },
+  {
+    assetDenom: "uxprt",
+    collateralLockedAmount: "13710000000",
+  },
+];
+
 const Dashboard = ({ lang, isDarkMode, markets }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
 
   useEffect(() => {
-    fetchTVL();
+    // fetchTVL();
+    const uniqueVaults = Array.from(
+      vaultsInfo.reduce(
+        (m, { assetDenom, collateralLockedAmount }) =>
+          m.set(
+            assetDenom,
+            (m.get(assetDenom) || 0) + Number(collateralLockedAmount)
+          ),
+        new Map()
+      ),
+      ([assetDenom, collateralLockedAmount]) => ({
+        assetDenom,
+        collateralLockedAmount,
+      })
+    );
+
+    let total = 0;
+    const totalValue = new Map(
+      uniqueVaults?.map((item) => {
+        let value =
+          Number(amountConversion(item.collateralLockedAmount)) *
+          marketPrice(markets, item?.assetDenom);
+        total += value;
+        item.dollarValue = value;
+        return [item.assetDenom, item];
+      })
+    );
+
+    setTotalValueLocked(totalValue);
+    setTotalDollarValue(total);
   }, []);
 
   const fetchTVL = () => {
@@ -30,20 +78,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       }
 
       if (result?.tvldata && result?.tvldata?.length > 0) {
-        let total = 0;
-        const totalValue = new Map(
-            result?.tvldata?.map((item) => {
-              let value =
-                  Number(amountConversion(item.collateralLockedAmount)) *
-                  marketPrice(markets, item?.assetDenom);
-              total += value;
-              item.dollarValue = value;
-              return [item.assetDenom, item];
-            })
-        );
-
-        setTotalValueLocked(totalValue);
-        setTotalDollarValue(total);
       }
     });
   };
@@ -53,8 +87,8 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     if (totalDollarValue) {
       amount =
         Number(totalDollarValue) -
-        (Number(totalValueLocked?.get("ucmdx")?.dollarValue) +
-          Number(totalValueLocked?.get("uatom")?.dollarValue));
+        (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
+          Number(totalValueLocked?.get("uatom")?.dollarValue || 0));
     }
 
     return `$${commaSeparator(amount || 0, DOLLAR_DECIMALS)}

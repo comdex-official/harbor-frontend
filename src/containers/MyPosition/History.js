@@ -13,13 +13,13 @@ import Date from "./Date";
 
 import "./index.scss";
 
-const History = (props) => {
+const History = ({address, history}) => {
   const [inProgress, setInProgress] = useState(false);
-  const [pageNumber, setpageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
   useEffect(() => {
-    getTransactions(props.address, pageNumber, pageSize);
+    getTransactions(address, pageNumber, pageSize);
   }, []);
 
   const getTransactions = (address, pageNumber, pageSize) => {
@@ -31,34 +31,21 @@ const History = (props) => {
         return;
       }
 
-      props.setTransactionHistory(result.txs, result.totalCount);
+      setTransactionHistory(result.txs, result.totalCount);
     });
   };
 
   const tableData =
-    props.history &&
-    props.history.list &&
-    props.history.list.length > 0 &&
-    props.history.list.map((item, index) => {
+    history &&
+    history.list &&
+    history.list.length > 0 &&
+    history.list.map((item, index) => {
       const decodedTransaction = decodeTxRaw(item.tx);
       const hash = generateHash(item.tx);
 
       return {
         key: index,
-        tnx_hash: (
-          <a
-            href={`${comdex.explorerUrlToTx.replace(
-              "{txHash}",
-              hash?.toUpperCase()
-            )}`}
-            rel="noreferrer"
-            target="_blank"
-          >
-            {" "}
-            {truncateString(hash, 6, 6)}
-          </a>
-        ),
-        amount: 1,
+        tnx_hash: hash,
         type: messageTypeToText(decodedTransaction.body.messages[0].typeUrl),
         block_height: item.height,
         date: item.height,
@@ -66,9 +53,9 @@ const History = (props) => {
     });
 
   const handleChange = (value) => {
-    setpageNumber(value.current);
+    setPageNumber(value.current);
     setPageSize(value.pageSize);
-    getTransactions(props.address, value.current, value.pageSize);
+    getTransactions(address, value.current, value.pageSize);
   };
 
   const columns = [
@@ -76,39 +63,45 @@ const History = (props) => {
       title: "Type",
       dataIndex: "type",
       key: "type",
-      width: 100
-    },
-    {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      render: (value) => (
-        <div>
-          <span>{value}</span>
-        </div>
-      )
+      width: 300,
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      width: 250,
+      width: 300,
       render: (height) => <Date height={height} />,
     },
     {
       title: "Block Height",
       dataIndex: "block_height",
       key: "block_height",
-      width: 150,
+      width: 300,
     },
     {
       title: "Tnx Hash",
       dataIndex: "tnx_hash",
       key: "tnx_hash",
-      width: 150,
-      render: (tnx_hash) => (
-        <div className="tnxshash-col">
-          <span > {tnx_hash} </span><Copy />
+      width: 300,
+      render: (hash) => (
+        <div className="tnx-hash-col">
+          <span>
+            {" "}
+            {
+              <a
+                href={`${comdex.explorerUrlToTx.replace(
+                  "{txHash}",
+                  hash?.toUpperCase()
+                )}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {" "}
+                {truncateString(hash, 10, 10)}
+              </a>
+            }{" "}
+          </span>
+          <Copy text={hash} />
         </div>
       ),
     },
@@ -127,12 +120,12 @@ const History = (props) => {
                 scroll={{ x: "100%" }}
                 loading={inProgress}
                 pagination={{
-                  total: props.history && props.history.count,
+                  total: history && history.count,
                   showSizeChanger: true,
                   defaultPageSize: 5,
                   pageSizeOptions: ["5", "10", "20", "50"],
                 }}
-                total={props.history && props.history.count}
+                total={history && history.count}
                 onChange={(event) => handleChange(event)}
               />
             </div>

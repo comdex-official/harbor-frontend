@@ -14,6 +14,7 @@ import { DOLLAR_DECIMALS } from "../../constants/common";
 const MyVault = ({ address }) => {
   const [vaults, setVaults] = useState();
   const navigate = useNavigate();
+  const [inProgress, setInProgress] = useState(false);
 
   useEffect(() => {
     if (address) {
@@ -22,7 +23,9 @@ const MyVault = ({ address }) => {
   }, [address]);
 
   const fetchVaults = () => {
+    setInProgress(true);
     queryUserVaults(address, (error, result) => {
+      setInProgress(false);
       if (error) {
         message.error(error);
         return;
@@ -139,6 +142,7 @@ const MyVault = ({ address }) => {
                 className="custom-table"
                 dataSource={tableData}
                 columns={columns}
+                loading={inProgress}
                 pagination={false}
                 scroll={{ x: "100%" }}
               />

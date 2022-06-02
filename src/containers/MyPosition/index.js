@@ -1,22 +1,43 @@
 import * as PropTypes from "prop-types";
 import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
-import { Progress, Tabs, List} from "antd";
+import { Progress, Tabs, List, message} from "antd";
 import MyEarn from "./MyLocker";
 import Borrow from "./MyVault";
 import History from "./History";
 import "./index.scss";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import TooltipIcon from "../../components/TooltipIcon";
+import {queryUserLockerStats} from "../../services/locker/query";
+import {PRODUCT_ID} from "../../constants/common";
+import {amountConversion} from "../../utils/coin";
 
 const { TabPane } = Tabs;
 
-const MyPositions = () => {
+const MyPositions = ({address}) => {
   const [earnTab, setEarnTab] = useState(true);
   const [vaultTab, setVaultTab] = useState(false);
   const [historyTab, setHistoryTab] = useState(false);
+  const [lockerInfo, setLockerInfo] = useState();
 
-  function callback(key) {
+  useEffect(()=>{
+    if(address) {
+      fetchLockerStats()
+    }
+  },[address])
+
+  const fetchLockerStats = () => {
+    queryUserLockerStats(PRODUCT_ID, address, (error, result)=>{
+      if(error){
+        message.error(error);
+        return;
+      }
+
+      setLockerInfo(result?.lockerInfo[0])
+    })
+  };
+
+  const callback = (key) => {
     if (key === "1") {
       setHistoryTab(false);
       setVaultTab(false);
@@ -36,6 +57,7 @@ const MyPositions = () => {
       return;
     }
   }
+
   const data = [
     {
       title: (
@@ -58,7 +80,7 @@ const MyPositions = () => {
         <>
           {earnTab && (
             <div className="stats-values">
-              <h3>1.040,456</h3>
+              <h3>{amountConversion(lockerInfo?.netBalance || 0)}</h3>
               <span>CMST</span>
             </div>
           )}
@@ -99,7 +121,7 @@ const MyPositions = () => {
         <>
           {earnTab && (
             <div className="stats-values">
-              <h3>1.040,456</h3>
+              <h3>{amountConversion(lockerInfo?.returnsAccumulated || 0)}</h3>
               <span>CMST</span>
             </div>
           )}
@@ -235,11 +257,13 @@ const MyPositions = () => {
 
 MyPositions.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
   };
 };
 

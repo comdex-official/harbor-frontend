@@ -4,30 +4,59 @@ import { connect } from "react-redux";
 import { Table, message } from "antd";
 import "./index.scss";
 import TooltipIcon from "../../components/TooltipIcon";
-import {queryLockerLookupTableByApp, queryUserLockerHistory} from "../../services/locker/query";
-import {useEffect, useState} from "react";
-import { PRODUCT_ID } from "../../constants/common";
+import { queryUserLockerHistory } from "../../services/locker/query";
+import { useEffect, useState } from "react";
+import {
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+  PRODUCT_ID,
+} from "../../constants/common";
+import { amountConversion } from "../../utils/coin";
+import moment from "moment";
 
-const MyEarn = ({address}) => {
-
+const MyEarn = ({ address }) => {
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [lockers, setLockers] = useState();
+  const [inProgress, setInProgress] = useState(false);
 
-  useEffect(()=>{
-    if(address) {
-      fetchLockers();
+  useEffect(() => {
+    if (address) {
+      fetchLockers((pageNumber - 1) * pageSize, pageSize, true, false);
     }
-  },[address]);
+  }, [address]);
 
-  const fetchLockers = () => {
-    queryUserLockerHistory(PRODUCT_ID, address, (error, result)=>{
-      if(error){
-        message.error(error);
-        return;
+  const fetchLockers = (offset, limit, isTotal, isReverse) => {
+    setInProgress(true);
+    queryUserLockerHistory(
+      PRODUCT_ID,
+      address,
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        setInProgress(false);
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        setLockers(result?.userTxData || []);
       }
+    );
+  };
 
-      setLockers()
-    })
-  }
+  const handleChange = (value) => {
+    setPageNumber(value.current - 1);
+    setPageSize(value.pageSize);
+    fetchLockers(
+      (value.current - 1) * value.pageSize,
+      value.pageSize,
+      true,
+      false
+    );
+  };
 
   const columns = [
     {
@@ -37,9 +66,12 @@ const MyEarn = ({address}) => {
       width: 300,
     },
     {
-      title: <>
-        Transaction Type <TooltipIcon text="Type of transaction ( Withdraw or Deposit)" />
-      </>,
+      title: (
+        <>
+          Transaction Type{" "}
+          <TooltipIcon text="Type of transaction ( Withdraw or Deposit)" />
+        </>
+      ),
       dataIndex: "transaction",
       key: "balance",
       width: 300,
@@ -51,63 +83,36 @@ const MyEarn = ({address}) => {
       width: 300,
     },
     {
-      title: <>
-        Balance <TooltipIcon text="Balance after transaction" />
-      </>,
+      title: (
+        <>
+          Balance <TooltipIcon text="Balance after transaction" />
+        </>
+      ),
       dataIndex: "balance",
       key: "balance",
       width: 300,
     },
   ];
 
-  const tableData = [
-    {
-      key: 1,
-      amount: (
-        <>
-          <div className="assets-withicon">
-            20 CMST
-          </div>
-        </>
-      ),
-      transaction: "Deposit",
-      date: "00:00:00",
-      balance: "30 CMST",
-    },
-    {
-      key: 2,
-      amount: (
-        <>
-          <div className="assets-withicon">
-            123 CMST
-          </div>
-        </>
-      ),
-      transaction: "Withdraw",
-      date: "00:00:00",
-      balance: "20 CMST",
-    },
-  ];
-  useEffect(() => {
-    fetchLookUpTableByProductId(PRODUCT_ID);
-  }, [])
-
-  // *******Get Vault Query *********
-
-  // *----------Get ...... product id----------* From asset module 
-  const fetchLookUpTableByProductId = (productId) => {
-    // setLoading(true);
-    queryLockerLookupTableByApp(productId, (error, data) => {
-      // setLoading(false);
-      if (error) {
-        message.error(error);
-        return;
-      }
+  const tableData =
+    lockers &&
+    lockers?.length > 0 &&
+    lockers?.map((item) => {
+      return {
+        key: 1,
+        amount: (
+          <>
+            <div className="assets-withicon">
+              {amountConversion(item?.amount || 0)} CMST
+            </div>
+          </>
+        ),
+        transaction: item?.txType,
+        date: moment(item?.txTime).format("MMM DD, YYYY HH:mm"),
+        balance: <>{amountConversion(item?.balance || 0)} CMST</>,
+        action: item,
+      };
     });
-  };
-
-
-
 
   return (
     <div className="app-content-wrappers earn-table-container">
@@ -119,7 +124,15 @@ const MyEarn = ({address}) => {
                 className="custom-table"
                 dataSource={tableData}
                 columns={columns}
-                pagination={false}
+                loading={inProgress}
+                onChange={(event) => handleChange(event)}
+                pagination={{
+                  total:
+                    lockers && lockers.pagination && lockers.pagination.total,
+                  showSizeChanger: true,
+                  defaultPageSize: pageSize,
+                  pageSizeOptions: ["5", "10", "20", "50"],
+                }}
                 scroll={{ x: "100%" }}
               />
             </div>
