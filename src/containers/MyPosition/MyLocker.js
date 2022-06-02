@@ -7,10 +7,20 @@ import TooltipIcon from "../../components/TooltipIcon";
 import {queryLockerLookupTableByApp, queryUserLockerHistory} from "../../services/locker/query";
 import {useEffect, useState} from "react";
 import { PRODUCT_ID } from "../../constants/common";
+import {amountConversion} from "../../utils/coin";
+import moment from "moment";
+
+const lockerData = [{
+  amount: "100000000",
+  balance: "100000000",
+  txTime: "2022-06-02T07:36:42.515720968Z",
+  txType: "Create",
+
+}];
 
 const MyEarn = ({address}) => {
 
-  const [lockers, setLockers] = useState();
+  const [lockers, setLockers] = useState(lockerData);
 
   useEffect(()=>{
     if(address) {
@@ -25,7 +35,7 @@ const MyEarn = ({address}) => {
         return;
       }
 
-      setLockers()
+      console.log('locker data', result)
     })
   }
 
@@ -60,54 +70,29 @@ const MyEarn = ({address}) => {
     },
   ];
 
-  const tableData = [
-    {
-      key: 1,
-      amount: (
-        <>
-          <div className="assets-withicon">
-            20 CMST
-          </div>
-        </>
-      ),
-      transaction: "Deposit",
-      date: "00:00:00",
-      balance: "30 CMST",
-    },
-    {
-      key: 2,
-      amount: (
-        <>
-          <div className="assets-withicon">
-            123 CMST
-          </div>
-        </>
-      ),
-      transaction: "Withdraw",
-      date: "00:00:00",
-      balance: "20 CMST",
-    },
-  ];
-  useEffect(() => {
-    fetchLookUpTableByProductId(PRODUCT_ID);
-  }, [])
-
-  // *******Get Vault Query *********
-
-  // *----------Get ...... product id----------* From asset module 
-  const fetchLookUpTableByProductId = (productId) => {
-    // setLoading(true);
-    queryLockerLookupTableByApp(productId, (error, data) => {
-      // setLoading(false);
-      if (error) {
-        message.error(error);
-        return;
-      }
-    });
-  };
-
-
-
+  const tableData =
+      lockers &&
+      lockers?.length > 0 &&
+      lockers?.map((item) => {
+        return {
+          key: 1,
+          amount: (
+              <>
+                <div className="assets-withicon">
+                  {amountConversion(item?.amount || 0)} CMST
+                </div>
+              </>
+          ),
+          transaction: item?.txType,
+          date: moment(item?.txTime).format("MMM DD, YYYY HH:mm"),
+          balance: (
+              <>
+                  {amountConversion(item?.balance || 0)} CMST
+              </>
+          ) ,
+          action: item,
+        };
+      });
 
   return (
     <div className="app-content-wrappers earn-table-container">
