@@ -52,6 +52,8 @@ export const messageTypeToText = (type) => {
       return "WithdrawAsset";
     case "/comdex.locker.v1beta1.MsgCreateLockerRequest":
       return "CreateLocker";
+    case "/comdex.locker.v1beta1.MsgDepositAssetRequest":
+      return "DepositAssetRequest";
     default:
       return type;
   }
