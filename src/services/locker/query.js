@@ -140,3 +140,27 @@ export const queryUserLockerHistory = (
       });
   });
 };
+
+export const queryUserLockerStats = (
+    productId,
+    owner,
+    callback
+) => {
+  createQueryClient((error, rpcClient) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+    new QueryClientImpl(rpcClient)
+        .QueryLockerByProductByOwner({
+          productId: Long.fromNumber(productId),
+          owner: owner,
+        })
+        .then((result) => {
+          callback(null, result);
+        })
+        .catch((error) => {
+          callback(error?.message);
+        });
+  });
+};
