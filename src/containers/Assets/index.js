@@ -36,7 +36,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
       align: "center",
       render: (tokens) => (
         <>
-          <p>${commaSeparator(Number(tokens || 0))}</p>
+          <p>{commaSeparator(Number(tokens || 0))}</p>
         </>
       ),
     },

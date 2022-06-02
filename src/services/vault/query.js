@@ -142,8 +142,9 @@ export const queryAppTVL = (appId, callback) => {
             callback(error);
             return;
         }
+
         new QueryClientImpl(rpcClient)
-            .QueryTVLlockedByApp({
+            .QueryTVLLockedByAppOfAllExtendedPairs({
                 appId: Long.fromNumber(appId),
             }).then((result) => {
                 callback(null, result);
