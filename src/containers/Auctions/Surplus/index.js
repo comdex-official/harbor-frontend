@@ -18,9 +18,9 @@ import {
 } from "../../../constants/common";
 import { message } from "antd";
 import { useState, useEffect } from "react";
-import {auctionsData} from "./data";
-import {iconNameFromDenom} from "../../../utils/string";
-import {amountConversion, denomConversion} from "../../../utils/coin";
+import { auctionsData } from "./data";
+import { iconNameFromDenom } from "../../../utils/string";
+import { amountConversion, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 
 const SurplusAuctions = ({ setPairs, address }) => {
@@ -125,11 +125,16 @@ const SurplusAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Top Bid",
-      dataIndex: "top_bid",
-      key: "top_bid",
+      title: "Min Bid",
+      dataIndex: "min_bid",
+      key: "min_bid",
       width: 150,
-      render: (asset_apy) => <>{asset_apy} CMST</>,
+      render: (bid) => (
+        <>
+          {amountConversion(bid?.amount || 0)}{" "}
+          {denomConversion(bid?.denom)}
+        </>
+      ),
     },
     {
       title: (
@@ -155,50 +160,44 @@ const SurplusAuctions = ({ setPairs, address }) => {
   ];
 
   const tableData =
-      auctionsData && auctionsData.length > 0
-          ? auctionsData.map((item, index) => {
-            return {
-              key: index,
-              id: item.id,
-              auctioned_asset: (
-                  <>
-                    <div className="assets-withicon">
-                      <div className="assets-icon">
-                        <SvgIcon
-                            name={iconNameFromDenom(
-                                item?.outflowTokenInitAmount?.denom
-                            )}
-                        />
-                      </div>
-                      {denomConversion(item?.outflowTokenInitAmount?.denom)}
-                    </div>
-                  </>
-              ),
-              bridge_asset: (
-                  <>
-                    <div className="assets-withicon">
-                      <div className="assets-icon">
-                        <SvgIcon
-                            name={iconNameFromDenom(
-                                item?.inflowTokenCurrentAmount?.denom
-                            )}
-                        />
-                      </div>
-                      {denomConversion(item?.inflowTokenCurrentAmount?.denom)}
-                    </div>
-                  </>
-              ),
-              end_time: moment(item && item.endTime).format(
-                  "MMM DD, YYYY HH:mm"
-              ),
-              quantity:
-                  item?.outflowToken?.amount &&
-                  amountConversion(item?.outflowToken?.amount),
-              current_price: item?.outflowTokenCurrentPrice,
-              action: item,
-            };
-          })
-          : [];
+    auctionsData && auctionsData.length > 0
+      ? auctionsData.map((item, index) => {
+          return {
+            key: index,
+            id: item.id,
+            auctioned_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.outflowToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.outflowToken?.denom)}
+                </div>
+              </>
+            ),
+            bridge_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.inflowToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.inflowToken?.denom)}
+                </div>
+              </>
+            ),
+            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
+            quantity:
+              item?.outflowToken?.amount &&
+              amountConversion(item?.outflowToken?.amount),
+            min_bid: item?.bid,
+            action: item,
+          };
+        })
+      : [];
 
   return (
     <div className="app-content-wrapper">

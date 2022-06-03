@@ -11,7 +11,7 @@ export const auctionsData = [
       },
     expectedMintedToken: {
         amount: "10000000",
-        denom: "uatom",
+        denom: "ucmdx",
       },
     endTime: "2022-06-01T19:07:29.621538Z",
     activeBiddingId: "1",

@@ -158,7 +158,7 @@ const PlaceBidModal = ({
             <Col sm="6" className="text-right">
               <label>
                 {amountConversion(auction?.expectedMintedToken?.amount || 0)}{" "}
-                {denomConversion(auction?.expectedUserToken?.denom)}
+                {denomConversion(auction?.expectedMintedToken?.denom)}
               </label>
             </Col>
           </Row>

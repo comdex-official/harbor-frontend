@@ -100,9 +100,9 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
-      title: "Bridge Asset",
-      dataIndex: "bridge_asset",
-      key: "bridge_asset",
+      title: "User Payable Token",
+      dataIndex: "payable_token",
+      key: "payable_token",
       width: 180,
     },
     {
@@ -117,7 +117,12 @@ const DebtAuctions = ({ setPairs, address }) => {
       dataIndex: "max_bid",
       key: "max_bid",
       width: 150,
-      render: (asset_apy) => <>{asset_apy} CMST</>,
+      render: (bid) => (
+        <>
+          {amountConversion(bid?.amount || 0)}{" "}
+          {denomConversion(bid?.denom)}
+        </>
+      ),
     },
     {
       title: (
@@ -160,7 +165,7 @@ const DebtAuctions = ({ setPairs, address }) => {
                 </div>
               </>
             ),
-            bridge_asset: (
+            payable_token: (
               <>
                 <div className="assets-withicon">
                   <div className="assets-icon">
@@ -168,13 +173,12 @@ const DebtAuctions = ({ setPairs, address }) => {
                       name={iconNameFromDenom(item?.expectedUserToken?.denom)}
                     />
                   </div>
-                  {denomConversion(item?.expectedUserToken?.denom)}
+                  {amountConversion(item?.expectedUserToken?.amount)} {denomConversion(item?.expectedUserToken?.denom)}
                 </div>
               </>
             ),
             end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
-
-            max_bid: amountConversion(item?.expectedMintedToken?.amount || 0),
+            max_bid: item?.expectedMintedToken,
             action: item,
           };
         })

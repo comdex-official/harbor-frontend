@@ -7,15 +7,20 @@ import { comdex } from "../../../../config/network";
 import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
-import {amountConversion, getAmount, getDenomBalance} from "../../../../utils/coin";
+import {
+  amountConversion,
+  denomConversion,
+  getAmount,
+  getDenomBalance,
+} from "../../../../utils/coin";
 import Snack from "../../../../components/common/Snack";
 import { ValidateInputNumber } from "../../../../config/_validation";
 import { toDecimals } from "../../../../utils/string";
 import CustomInput from "../../../../components/CustomInput";
 import Long from "long";
-import {DOLLAR_DECIMALS, PRODUCT_ID} from "../../../../constants/common";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
-import {commaSeparator} from "../../../../utils/number";
+import { commaSeparator } from "../../../../utils/number";
 import moment from "moment";
 
 const PlaceBidModal = ({
@@ -97,7 +102,7 @@ const PlaceBidModal = ({
     setValidationError(
       ValidateInputNumber(
         getAmount(value),
-        getDenomBalance(balances, auction?.bid?.denom) || 0
+        getDenomBalance(balances, auction?.outflowToken?.denom) || 0
       )
     );
     setBidAmount(value);
@@ -124,20 +129,12 @@ const PlaceBidModal = ({
         <div className="palcebid-modal-inner">
           <Row>
             <Col sm="6">
-              <p>Collateral Current Price</p>
-            </Col>
-            <Col sm="6" className="text-right">
-              <label>${commaSeparator(Number(auction?.outflowTokenCurrentPrice || 0).toFixed(DOLLAR_DECIMALS))}</label>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="6">
               <p>End Time </p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>{moment(auction?.end_time).format(
-                  "MMM DD, YYYY HH:mm"
-              )}</label>
+              <label>
+                {moment(auction?.end_time).format("MMM DD, YYYY HH:mm")}
+              </label>
             </Col>
           </Row>
           <Row>
@@ -145,7 +142,21 @@ const PlaceBidModal = ({
               <p>Quantity </p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>{amountConversion(auction?.outflowToken_current_amount?.amount || 0)}</label>
+              <label>
+                {amountConversion(auction?.outflowToken?.amount || 0)}{" "}
+                {denomConversion(auction?.outflowToken?.denom)}
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Min Bid </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                {amountConversion(auction?.bid?.amount || 0)}{" "}
+                {denomConversion(auction?.bid?.denom)}
+              </label>
             </Col>
           </Row>
           <Row>
