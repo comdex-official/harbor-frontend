@@ -166,39 +166,7 @@ const Govern = ({
                     </div>
                   </React.Fragment>
                 )
-
               })}
-
-
-
-              {/* <div className="governlist-row" onClick={() => navigate("/govern-details")}>
-                <div className="left-section">
-                  <h3>Increasing MaxValidator to 100</h3>
-                  <p>adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, </p>
-                </div>
-                <div className="right-section">
-                  <Row>
-                    <Col sm="6">
-                      <label>Vote Starts :</label>
-                      <p>24th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Voting Ends :</label>
-                      <p>26th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Duration : </label>
-                      <p>3 days</p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Progress percent={30} size="small" />
-                    </Col>
-                  </Row>
-                </div>
-              </div> */}
-
             </div>
           </div>
         </Col>
