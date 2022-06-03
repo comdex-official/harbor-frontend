@@ -96,20 +96,14 @@ export const Bidding = ({ biddingList }) => {
               <Button
                   size="small"
                   className={
-                    item?.auctionStatus === "0"
-                        ? "biddin-btn bid-btn-placed"
-                        : item?.auctionStatus === "1"
-                            ? "biddin-btn bid-btn-success"
-                            : item?.auctionStatus === "2"
-                                ? "biddin-btn bid-btn-rejected"
-                                : ""
+                      item?.auctionStatus === "active"
+                          ? "biddin-btn bid-btn-success"
+                          : item?.auctionStatus === "inactive"
+                              ? "biddin-btn bid-btn-rejected"
+                              : ""
                   }
               >
-                {item?.auctionStatus === "0"
-                    ? "Started No bids"
-                    : item?.auctionStatus === "1"
-                        ? "Going on"
-                        : "Ended"}
+                  {item?.auctionStatus}
               </Button>
           ),
           action: (
