@@ -19,7 +19,7 @@ import {
 } from "../../../constants/common";
 import { message } from "antd";
 import { useState, useEffect } from "react";
-import { auctionsData } from "./data";
+import {auctionsData, biddingsData} from "./data";
 import { amountConversion, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
@@ -31,7 +31,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
   const [auctions, setAuctions] = useState(auctionsData);
-  const [biddings, setBiddings] = useState();
+  const [biddings, setBiddings] = useState(biddingsData);
 
   useEffect(() => {
     fetchData();
@@ -96,7 +96,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
         return;
       }
 
-      if (result?.bidder) {
+      if (result?.biddings?.length > 0) {
         setBiddings(result && result.biddings);
       }
     });

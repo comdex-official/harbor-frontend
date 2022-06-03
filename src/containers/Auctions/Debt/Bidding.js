@@ -2,51 +2,38 @@ import { Table, Button } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversion } from "../../../utils/coin";
-import TooltipIcon from '../../../components/TooltipIcon'
+import TooltipIcon from "../../../components/TooltipIcon";
+import moment from "moment";
+
 export const Bidding = ({ biddingList }) => {
   const columnsBidding = [
     {
       title: (
         <>
-          Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
+          Outflow Token <TooltipIcon text="Asset to be sold in the auction" />
         </>
       ),
-      dataIndex: "auctionedasset",
-      key: "auctionedasset",
+      dataIndex: "outflowToken",
+      key: "outflowToken",
       width: 250,
     },
     {
       title: (
         <>
-          Amount <TooltipIcon text="Auction amount" />
-        </>
-      ),
-      dataIndex: "amount",
-      key: "amount",
-      align: "center",
-      width: 150,
-    },
-    {
-      title: (
-        <>
-          Bidding Asset{" "}
+          Inflow Token{" "}
           <TooltipIcon text="Asset used to buy the auctioned asset" />
         </>
       ),
-      dataIndex: "biddingasset",
-      key: "biddingasset",
+      dataIndex: "inflowToken",
+      key: "inflowToken",
       width: 200,
     },
     {
-      title: (
-        <>
-          Amount <TooltipIcon text="Bid amount" />
-        </>
-      ),
-      dataIndex: "amount2",
-      key: "amount2",
-      align: "center",
+      title: "Timestamp",
+      dataIndex: "timestamp",
+      key: "timestamp",
       width: 200,
+      render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
       title: (
@@ -78,45 +65,51 @@ export const Bidding = ({ biddingList }) => {
     biddingList.map((item, index) => {
       return {
         key: index,
-        id: item.id,
-        auctionedasset: (
+        outflowToken: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
                 <SvgIcon
-                  name={iconNameFromDenom(item?.auctionedCollateral?.denom)}
+                  name={iconNameFromDenom(item?.outflowTokenAmount?.denom)}
                 />
               </div>
-              {denomConversion(item?.auctionedCollateral?.denom)}
+              {amountConversion(item?.outflowTokenAmount?.amount || 0)}{" "}
+              {denomConversion(item?.outflowTokenAmount?.denom)}
             </div>
           </>
         ),
-        biddingasset: (
+        inflowToken: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
-                <SvgIcon name={iconNameFromDenom(item?.bid?.denom)} />
+                <SvgIcon
+                  name={iconNameFromDenom(item?.bid?.denom)}
+                />
               </div>
+              {amountConversion(item?.bid?.amount || 0)}{" "}
               {denomConversion(item?.bid?.denom)}
             </div>
           </>
         ),
-        amount:
-          item?.auctionedCollateral?.amount &&
-          amountConversion(item?.auctionedCollateral?.amount),
-        amount2: item?.bid?.amount && amountConversion(item?.bid?.amount),
+        timestamp: moment(item?.biddingTimestamp).format("MMM DD, YYYY HH:mm"),
         auctionStatus: (
           <Button
             size="small"
             className={
-              item?.auctionStatus === "active"
+              item?.auctionStatus === "0"
+                ? "biddin-btn bid-btn-placed"
+                : item?.auctionStatus === "1"
                 ? "biddin-btn bid-btn-success"
-                : item?.auctionStatus === "inactive"
-                  ? "biddin-btn bid-btn-rejected"
-                  : ""
+                : item?.auctionStatus === "2"
+                ? "biddin-btn bid-btn-rejected"
+                : ""
             }
           >
-            {item?.auctionStatus}
+            {item?.auctionStatus === "0"
+              ? "Started No bids"
+              : item?.auctionStatus === "1"
+              ? "Going on"
+              : "Ended"}
           </Button>
         ),
         action: (
@@ -126,10 +119,10 @@ export const Bidding = ({ biddingList }) => {
               item?.biddingStatus === "placed"
                 ? "biddin-btn bid-btn-placed"
                 : item?.biddingStatus === "success"
-                  ? "biddin-btn bid-btn-success"
-                  : item?.biddingStatus === "rejected"
-                    ? "biddin-btn bid-btn-rejected"
-                    : ""
+                ? "biddin-btn bid-btn-success"
+                : item?.biddingStatus === "rejected"
+                ? "biddin-btn bid-btn-rejected"
+                : ""
             }
           >
             {item?.biddingStatus}

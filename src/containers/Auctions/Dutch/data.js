@@ -34,3 +34,19 @@ export const auctionsData = [
     vaultOwner: "comdex1f6y7w7gps2y4hzgl6yhjq0ppqra20pszlmyqj3",
   },
 ];
+
+export const biddingsData = [
+  {
+    outflowTokenAmount: {
+      amount: "10000000",
+      denom: "uatom",
+    },
+    inflowTokenAmount: {
+      amount: "10000000",
+      denom: "ucmdx",
+    },
+    biddingTimestamp: "2022-06-01T19:07:29.621538Z",
+    biddingStatus: "rejected",
+    auctionStatus: "1",
+  }
+]

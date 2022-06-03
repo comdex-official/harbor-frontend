@@ -2,58 +2,44 @@ import { Table, Button } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversion } from "../../../utils/coin";
-import TooltipIcon from '../../../components/TooltipIcon'
-export const Bidding = ({ biddingList }) => {
+import TooltipIcon from "../../../components/TooltipIcon";
+import moment from "moment";
 
+export const Bidding = ({ biddingList }) => {
   const columnsBidding = [
     {
       title: (
-        <>
-          Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
-        </>
+          <>
+            Outflow Token <TooltipIcon text="Asset to be sold in the auction" />
+          </>
       ),
-      dataIndex: "auctionedasset",
-      key: "auctionedasset",
+      dataIndex: "outflowToken",
+      key: "outflowToken",
       width: 250,
     },
     {
       title: (
-        <>
-          Amount <TooltipIcon text="Auction amount" />
-        </>
+          <>
+            Inflow Token{" "}
+            <TooltipIcon text="Asset used to buy the auctioned asset" />
+          </>
       ),
-      dataIndex: "amount",
-      key: "amount",
-      align: "center",
-      width: 150,
-    },
-    {
-      title: (
-        <>
-          Bidding Asset{" "}
-          <TooltipIcon text="Asset used to buy the auctioned asset" />
-        </>
-      ),
-      dataIndex: "biddingasset",
-      key: "biddingasset",
+      dataIndex: "inflowToken",
+      key: "inflowToken",
       width: 200,
     },
     {
-      title: (
-        <>
-          Amount <TooltipIcon text="Bid amount" />
-        </>
-      ),
-      dataIndex: "amount2",
-      key: "amount2",
-      align: "center",
+      title: "Timestamp",
+      dataIndex: "timestamp",
+      key: "timestamp",
       width: 200,
+      render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
       title: (
-        <>
-          Auction Status <TooltipIcon text="Auction status" />
-        </>
+          <>
+            Auction Status <TooltipIcon text="Auction status" />
+          </>
       ),
       dataIndex: "auctionStatus",
       key: "auctionStatus",
@@ -61,9 +47,9 @@ export const Bidding = ({ biddingList }) => {
     },
     {
       title: (
-        <>
-          Bidding Status <TooltipIcon text="Bidding status" />
-        </>
+          <>
+            Bidding Status <TooltipIcon text="Bidding status" />
+          </>
       ),
       dataIndex: "action",
       key: "action",
@@ -74,79 +60,85 @@ export const Bidding = ({ biddingList }) => {
   // biddingList.reverse(); // showing newest bid first (ascending->descending)
 
   const tableBiddingData =
-    biddingList &&
-    biddingList.length > 0 &&
-    biddingList.map((item, index) => {
-      return {
-        key: index,
-        id: item.id,
-        auctionedasset: (
-          <>
-            <div className="assets-withicon">
-              <div className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom(item?.auctionedCollateral?.denom)}
-                />
-              </div>
-              {denomConversion(item?.auctionedCollateral?.denom)}
-            </div>
-          </>
-        ),
-        biddingasset: (
-          <>
-            <div className="assets-withicon">
-              <div className="assets-icon">
-                <SvgIcon name={iconNameFromDenom(item?.bid?.denom)} />
-              </div>
-              {denomConversion(item?.bid?.denom)}
-            </div>
-          </>
-        ),
-        amount:
-          item?.auctionedCollateral?.amount &&
-          amountConversion(item?.auctionedCollateral?.amount),
-        amount2: item?.bid?.amount && amountConversion(item?.bid?.amount),
-        auctionStatus: (
-          <Button
-            size="small"
-            className={
-              item?.auctionStatus === "active"
-                ? "biddin-btn bid-btn-success"
-                : item?.auctionStatus === "inactive"
-                  ? "biddin-btn bid-btn-rejected"
-                  : ""
-            }
-          >
-            {item?.auctionStatus}
-          </Button>
-        ),
-        action: (
-          <Button
-            size="small"
-            className={
-              item?.biddingStatus === "placed"
-                ? "biddin-btn bid-btn-placed"
-                : item?.biddingStatus === "success"
-                  ? "biddin-btn bid-btn-success"
-                  : item?.biddingStatus === "rejected"
-                    ? "biddin-btn bid-btn-rejected"
-                    : ""
-            }
-          >
-            {item?.biddingStatus}
-          </Button>
-        ),
-      };
-    });
+      biddingList &&
+      biddingList.length > 0 &&
+      biddingList.map((item, index) => {
+        return {
+          key: index,
+          outflowToken: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                        name={iconNameFromDenom(item?.outflowTokenAmount?.denom)}
+                    />
+                  </div>
+                  {amountConversion(item?.outflowTokenAmount?.amount || 0)}{" "}
+                  {denomConversion(item?.outflowTokenAmount?.denom)}
+                </div>
+              </>
+          ),
+          inflowToken: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                        name={iconNameFromDenom(item?.inflowTokenAmount?.denom)}
+                    />
+                  </div>
+                  {amountConversion(item?.inflowTokenAmount?.amount || 0)}{" "}
+                  {denomConversion(item?.inflowTokenAmount?.denom)}
+                </div>
+              </>
+          ),
+          timestamp: moment(item?.biddingTimestamp).format("MMM DD, YYYY HH:mm"),
+          auctionStatus: (
+              <Button
+                  size="small"
+                  className={
+                    item?.auctionStatus === "0"
+                        ? "biddin-btn bid-btn-placed"
+                        : item?.auctionStatus === "1"
+                            ? "biddin-btn bid-btn-success"
+                            : item?.auctionStatus === "2"
+                                ? "biddin-btn bid-btn-rejected"
+                                : ""
+                  }
+              >
+                {item?.auctionStatus === "0"
+                    ? "Started No bids"
+                    : item?.auctionStatus === "1"
+                        ? "Going on"
+                        : "Ended"}
+              </Button>
+          ),
+          action: (
+              <Button
+                  size="small"
+                  className={
+                    item?.biddingStatus === "placed"
+                        ? "biddin-btn bid-btn-placed"
+                        : item?.biddingStatus === "success"
+                            ? "biddin-btn bid-btn-success"
+                            : item?.biddingStatus === "rejected"
+                                ? "biddin-btn bid-btn-rejected"
+                                : ""
+                  }
+              >
+                {item?.biddingStatus}
+              </Button>
+          ),
+        };
+      });
 
   return (
-    <Table
-      className="custom-table more-table  bidding-bottom-table"
-      dataSource={tableBiddingData}
-      columns={columnsBidding}
-      pagination={false}
-      scroll={{ x: "100%" }}
-    />
+      <Table
+          className="custom-table more-table  bidding-bottom-table"
+          dataSource={tableBiddingData}
+          columns={columnsBidding}
+          pagination={false}
+          scroll={{ x: "100%" }}
+      />
   );
 };
 

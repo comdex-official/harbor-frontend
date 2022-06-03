@@ -49,11 +49,6 @@
 
 .bidding-bottom-table {
   table {
-    .ant-table-thead {
-      tr {
-       
-      }
-    }
     td:nth-child(3) {
       .assets-withicon {
         justify-content: flex-start !important;
@@ -68,6 +63,14 @@
     }
   }
 }
+
+.ant-input {
+  color: $text-color-dark2;
+  .dark-mode & {
+    color: $white;
+  }
+}
+
 .biddin-btn {
   border-radius: $base-border-radius !important;
   color: $white !important;
