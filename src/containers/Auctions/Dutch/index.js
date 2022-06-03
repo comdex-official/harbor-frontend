@@ -19,7 +19,6 @@ import {
 } from "../../../constants/common";
 import { message } from "antd";
 import { useState, useEffect } from "react";
-import {auctionsData, biddingsData} from "./data";
 import { amountConversion, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
@@ -30,8 +29,8 @@ const CollateralAuctions = ({ setPairs, address }) => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
-  const [auctions, setAuctions] = useState(auctionsData);
-  const [biddings, setBiddings] = useState(biddingsData);
+  const [auctions, setAuctions] = useState();
+  const [biddings, setBiddings] = useState();
 
   useEffect(() => {
     fetchData();
