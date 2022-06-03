@@ -24,7 +24,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2> Governance</h2>
                 <p>
-                  Stake your CMDX tokens to earn rewards and participate in
+                  Stake your HARBOR tokens to earn rewards and participate in
                   governance proposals
                 </p>
                 <div className="button-container">

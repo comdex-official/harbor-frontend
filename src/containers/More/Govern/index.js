@@ -52,7 +52,7 @@ const Govern = ({
     let avgParticipation = proposalUpData?.active_participation_supply
     avgParticipation = avgParticipation / proposalUpData?.proposal_count
     avgParticipation = avgParticipation / ((proposalUpData?.current_supply))
-    avgParticipation = avgParticipation * 100
+    avgParticipation = Number(avgParticipation * 100).toFixed(2)
     return avgParticipation;
   }
 
@@ -123,7 +123,7 @@ const Govern = ({
           <div className="comdex-card govern-card earn-deposite-card ">
             <div className="governcard-head ">
               {/* <Button type="primary" className="btn-filled">New Proposal</Button> */}
-              <Button type="primary" className="btn-filled">Forum</Button>
+              <a href="https://forum.comdex.one/" target="_blank"><Button type="primary" className="btn-filled">Forum</Button></a>
               <Select defaultValue="Filter" className="select-primary   ml-2" suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
                 <Option value="passed" className="govern-select-option">Passed</Option>
                 <Option value="rejected">Rejected</Option>

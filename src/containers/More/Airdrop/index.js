@@ -139,7 +139,7 @@ const Airdrop = (lang) => {
               <li>
                 <div className="progresslist-left">
                   <small>Mission #1</small>
-                  <p>Lorem Ipsum Dolar amet</p>
+                  <p>(20%): Connect the wallet and deposit at least two assets on the platform.</p>
                 </div>
                 <div className="progresslist-right">
                   <p>Complete</p>
@@ -148,7 +148,7 @@ const Airdrop = (lang) => {
               <li>
                 <div className="progresslist-left">
                   <small>Mission #2</small>
-                  <p>Lorem Ipsum Dolar amet</p>
+                  <p>(20%): Mint $CMST using any asset as collateral.</p>
                 </div>
                 <div className="progresslist-right">
                   <p>Ineligible</p>
@@ -157,7 +157,7 @@ const Airdrop = (lang) => {
               <li>
                 <div className="progresslist-left">
                   <small>Mission #3</small>
-                  <p>Lorem Ipsum Dolar amet</p>
+                  <p>20%): Deposit $CMST in the Locker Vault in the Earn tab.</p>
                 </div>
                 <div className="progresslist-right">
                   <p>Ineligible</p>
@@ -166,7 +166,7 @@ const Airdrop = (lang) => {
               <li>
                 <div className="progresslist-left">
                   <small>Mission #4</small>
-                  <p>Lorem Ipsum Dolar amet</p>
+                  <p>(40%): Vote on governance proposals for one year using $HARBOR</p>
                 </div>
                 <div className="progresslist-right">
                   <p>Ineligible</p>

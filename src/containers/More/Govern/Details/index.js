@@ -15,6 +15,7 @@ import { truncateString } from "../../../../utils/string";
 import Copy from "../../../../components/Copy";
 import { useState } from "react";
 import moment from "moment";
+import { formatNumber } from "../../../../utils/number";
 
 const GovernDetails = ({
   lang,
@@ -50,12 +51,13 @@ const GovernDetails = ({
 
   const calculateTotalValue = () => {
     let value = currentProposal?.votes;
-    let yes = value?.yes;
-    let no = value?.no;
-    let veto = value?.veto;
-    let abstain = value?.abstain;
+    let yes = Number(value?.yes);
+    let no = Number(value?.no);
+    let veto = Number(value?.veto);
+    let abstain = Number(value?.abstain);
     let totalValue = yes + no + abstain + veto
     totalValue = (totalValue / 1000000)
+    totalValue = formatNumber(totalValue)
     return totalValue;
   }
   const calculateVotes = () => {
@@ -66,10 +68,10 @@ const GovernDetails = ({
     let abstain = Number(value?.abstain);
     let totalValue = yes + no + abstain + veto;
 
-    yes = (yes / totalValue) * 100
-    no = (no / totalValue) * 100
-    veto = (veto / totalValue) * 100
-    abstain = (abstain / totalValue) * 100
+    yes = Number((yes / totalValue) * 100).toFixed(2)
+    no = Number((no / totalValue) * 100).toFixed(2)
+    veto = Number((veto / totalValue) * 100).toFixed(2)
+    abstain = Number((abstain / totalValue) * 100).toFixed(2)
 
     setGetVotes({
       ...getVotes,
@@ -90,6 +92,9 @@ const GovernDetails = ({
   const votingEndTime = unixToGMTTime(currentProposal?.expires?.at_time);
   const duration = moment.duration(currentProposal?.duration?.time, 'seconds');
 
+  console.log(currentProposal, "all");
+  console.log(votingStartTime, "Start");
+  console.log(votingEndTime, "End");
   const data = [
     {
       title: "Voting Starts",

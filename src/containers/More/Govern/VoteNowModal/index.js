@@ -73,7 +73,7 @@ const VoteNowModal = ({
                   <Radio value="yes">Yes</Radio>
                   <Radio value="no">No</Radio>
                   <Radio value="veto">NoWithVeto</Radio>
-                  <Radio value="abstrain">Abstain</Radio>
+                  <Radio value="abstain">Abstain</Radio>
                 </Space>
               </Radio.Group>
             </Col>
