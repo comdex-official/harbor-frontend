@@ -79,7 +79,9 @@ const CollateralAuctions = ({ setPairs, address }) => {
           return;
         }
 
-        setAuctions(result && result.auctions, result && result.pagination);
+        if (result?.auctions?.length > 0) {
+          setAuctions(result && result.auctions);
+        }
       }
     );
   };
@@ -148,7 +150,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
       render: (item) => (
         <>
           <PlaceBidModal
-          params={params}
+            params={params}
             auction={item}
             refreshData={fetchData}
             discount={params?.auctionDiscountPercent}
@@ -159,8 +161,8 @@ const CollateralAuctions = ({ setPairs, address }) => {
   ];
 
   const tableData =
-    auctionsData && auctionsData.length > 0
-      ? auctionsData.map((item, index) => {
+    auctions && auctions.length > 0
+      ? auctions.map((item, index) => {
           return {
             key: index,
             id: item.id,
@@ -192,9 +194,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
                 </div>
               </>
             ),
-            end_time: moment(item && item.endTime).format(
-              "MMM DD, YYYY HH:mm"
-            ),
+            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
             quantity:
               item?.outflowTokenCurrentAmount?.amount &&
               amountConversion(item?.outflowTokenCurrentAmount?.amount),

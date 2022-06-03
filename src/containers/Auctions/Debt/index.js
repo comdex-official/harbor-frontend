@@ -28,7 +28,7 @@ const DebtAuctions = ({ setPairs, address }) => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
-  const [auctions, setAuctions] = useState();
+  const [auctions, setAuctions] = useState(auctionsData);
   const [biddings, setBiddings] = useState();
 
   useEffect(() => {
@@ -72,7 +72,9 @@ const DebtAuctions = ({ setPairs, address }) => {
         return;
       }
 
-      setAuctions(result && result.auctions, result && result.pagination);
+      if (result?.auctions?.length > 0) {
+        setAuctions(result && result.auctions);
+      }
     });
   };
 
@@ -119,8 +121,7 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 150,
       render: (bid) => (
         <>
-          {amountConversion(bid?.amount || 0)}{" "}
-          {denomConversion(bid?.denom)}
+          {amountConversion(bid?.amount || 0)} {denomConversion(bid?.denom)}
         </>
       ),
     },
@@ -148,8 +149,8 @@ const DebtAuctions = ({ setPairs, address }) => {
   ];
 
   const tableData =
-    auctionsData && auctionsData.length > 0
-      ? auctionsData.map((item, index) => {
+    auctions && auctions.length > 0
+      ? auctions.map((item, index) => {
           return {
             key: index,
             id: item.id,
@@ -173,7 +174,8 @@ const DebtAuctions = ({ setPairs, address }) => {
                       name={iconNameFromDenom(item?.expectedUserToken?.denom)}
                     />
                   </div>
-                  {amountConversion(item?.expectedUserToken?.amount)} {denomConversion(item?.expectedUserToken?.denom)}
+                  {amountConversion(item?.expectedUserToken?.amount)}{" "}
+                  {denomConversion(item?.expectedUserToken?.denom)}
                 </div>
               </>
             ),
