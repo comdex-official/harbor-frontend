@@ -7,20 +7,28 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import Bidding from "./Bidding";
-import { queryDebtAuctionList , queryDebtBiddingList, queryAuctionParams} from "../../../services/auction";
+import {
+  queryDebtAuctionList,
+  queryDebtBiddingList,
+  queryAuctionParams,
+} from "../../../services/auction";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
 } from "../../../constants/common";
 import { message } from "antd";
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from "react";
+import { auctionsData } from "./data";
+import { iconNameFromDenom } from "../../../utils/string";
+import { amountConversion, denomConversion } from "../../../utils/coin";
+import moment from "moment";
 
 const DebtAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
-  const [auctions, setAuctions] = useState();
+  const [auctions, setAuctions] = useState(auctionsData);
   const [biddings, setBiddings] = useState();
 
   useEffect(() => {
@@ -64,7 +72,9 @@ const DebtAuctions = ({ setPairs, address }) => {
         return;
       }
 
-      setAuctions(result && result.auctions, result && result.pagination);
+      if (result?.auctions?.length > 0) {
+        setAuctions(result && result.auctions);
+      }
     });
   };
 
@@ -92,15 +102,9 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
-      title: "Bridge Asset",
-      dataIndex: "bridge_asset",
-      key: "bridge_asset",
-      width: 180,
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
+      title: "User Payable Token",
+      dataIndex: "payable_token",
+      key: "payable_token",
       width: 180,
     },
     {
@@ -111,11 +115,15 @@ const DebtAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Top Bid",
-      dataIndex: "top_bid",
-      key: "top_bid",
+      title: "Max Bid",
+      dataIndex: "max_bid",
+      key: "max_bid",
       width: 150,
-      render: (asset_apy) => <>{asset_apy} CMST</>,
+      render: (bid) => (
+        <>
+          {amountConversion(bid?.amount || 0)} {denomConversion(bid?.denom)}
+        </>
+      ),
     },
     {
       title: (
@@ -127,120 +135,56 @@ const DebtAuctions = ({ setPairs, address }) => {
       key: "action",
       align: "right",
       width: 140,
-      render: () => (
+      render: (item) => (
         <>
-          <PlaceBidModal />
+          <PlaceBidModal
+            params={params}
+            auction={item}
+            refreshData={fetchData}
+            discount={params?.auctionDiscountPercent}
+          />
         </>
       ),
     },
   ];
 
-  const tableData = [
-    {
-      key: 1,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="atom-icon" viewBox="0 0 30 30" />
-            </div>
-            ATOM
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  ATOM",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 2,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="xprt-icon" viewBox="0 0 30 30" />
-            </div>
-            XPRT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  XPRT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 3,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="akt-icon" viewBox="0 0 30 30" />
-            </div>
-            AKT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  AKT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 4,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="harbor-icon" viewBox="0 0 30 30" />
-            </div>
-            HARBOR
-          </div>
-        </>
-      ),
-      quantity: "1  CMST",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-  ];
+  const tableData =
+    auctions && auctions.length > 0
+      ? auctions.map((item, index) => {
+          return {
+            key: index,
+            id: item.id,
+            auctioned_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.auctionedToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.auctionedToken?.denom)}
+                </div>
+              </>
+            ),
+            payable_token: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                    />
+                  </div>
+                  {amountConversion(item?.expectedUserToken?.amount)}{" "}
+                  {denomConversion(item?.expectedUserToken?.denom)}
+                </div>
+              </>
+            ),
+            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
+            max_bid: item?.expectedMintedToken,
+            action: item,
+          };
+        })
+      : [];
 
   return (
     <div className="app-content-wrapper">
@@ -256,7 +200,9 @@ const DebtAuctions = ({ setPairs, address }) => {
                 onChange={(event) => handleChange(event)}
                 pagination={{
                   total:
-                    auctions && auctions.pagination && auctions.pagination.total,
+                    auctions &&
+                    auctions.pagination &&
+                    auctions.pagination.total,
                   pageSize,
                 }}
                 scroll={{ x: "100%" }}
@@ -266,7 +212,7 @@ const DebtAuctions = ({ setPairs, address }) => {
           <div className="more-bottom">
             <h3 className="title">Your Bidding</h3>
             <div className="more-bottom-card">
-            <Bidding biddingList={biddings}/>
+              <Bidding biddingList={biddings} />
             </div>
           </div>
         </Col>

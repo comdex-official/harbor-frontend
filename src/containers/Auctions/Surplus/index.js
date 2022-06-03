@@ -18,13 +18,17 @@ import {
 } from "../../../constants/common";
 import { message } from "antd";
 import { useState, useEffect } from "react";
+import { auctionsData } from "./data";
+import { iconNameFromDenom } from "../../../utils/string";
+import { amountConversion, denomConversion } from "../../../utils/coin";
+import moment from "moment";
 
 const SurplusAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
-  const [auctions, setAuctions] = useState();
+  const [auctions, setAuctions] = useState(auctionsData);
   const [biddings, setBiddings] = useState();
 
   useEffect(() => {
@@ -73,7 +77,9 @@ const SurplusAuctions = ({ setPairs, address }) => {
           return;
         }
 
-        setAuctions(result && result.auctions, result && result.pagination);
+        if (result?.auctions?.length > 0) {
+          setAuctions(result && result.auctions);
+        }
       }
     );
   };
@@ -121,11 +127,15 @@ const SurplusAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Top Bid",
-      dataIndex: "top_bid",
-      key: "top_bid",
+      title: "Min Bid",
+      dataIndex: "min_bid",
+      key: "min_bid",
       width: 150,
-      render: (asset_apy) => <>{asset_apy} CMST</>,
+      render: (bid) => (
+        <>
+          {amountConversion(bid?.amount || 0)} {denomConversion(bid?.denom)}
+        </>
+      ),
     },
     {
       title: (
@@ -137,120 +147,58 @@ const SurplusAuctions = ({ setPairs, address }) => {
       key: "action",
       align: "right",
       width: 140,
-      render: () => (
+      render: (item) => (
         <>
-          <PlaceBidModal />
+          <PlaceBidModal
+            params={params}
+            auction={item}
+            refreshData={fetchData}
+            discount={params?.auctionDiscountPercent}
+          />
         </>
       ),
     },
   ];
 
-  const tableData = [
-    {
-      key: 1,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="atom-icon" viewBox="0 0 30 30" />
-            </div>
-            ATOM
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  ATOM",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 2,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="xprt-icon" viewBox="0 0 30 30" />
-            </div>
-            XPRT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  XPRT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 3,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="akt-icon" viewBox="0 0 30 30" />
-            </div>
-            AKT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  AKT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 4,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="harbor-icon" viewBox="0 0 30 30" />
-            </div>
-            HARBOR
-          </div>
-        </>
-      ),
-      quantity: "1  CMST",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-  ];
+  const tableData =
+    auctions && auctions.length > 0
+      ? auctions.map((item, index) => {
+          return {
+            key: index,
+            id: item.id,
+            auctioned_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.outflowToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.outflowToken?.denom)}
+                </div>
+              </>
+            ),
+            bridge_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.inflowToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.inflowToken?.denom)}
+                </div>
+              </>
+            ),
+            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
+            quantity:
+              item?.outflowToken?.amount &&
+              amountConversion(item?.outflowToken?.amount),
+            min_bid: item?.bid,
+            action: item,
+          };
+        })
+      : [];
 
   return (
     <div className="app-content-wrapper">

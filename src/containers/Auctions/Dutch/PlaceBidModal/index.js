@@ -7,15 +7,19 @@ import { comdex } from "../../../../config/network";
 import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
-import {amountConversion, getAmount, getDenomBalance} from "../../../../utils/coin";
+import {
+  amountConversion,
+  getAmount,
+  getDenomBalance,
+} from "../../../../utils/coin";
 import Snack from "../../../../components/common/Snack";
 import { ValidateInputNumber } from "../../../../config/_validation";
 import { toDecimals } from "../../../../utils/string";
 import CustomInput from "../../../../components/CustomInput";
 import Long from "long";
-import {DOLLAR_DECIMALS, PRODUCT_ID} from "../../../../constants/common";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
-import {commaSeparator} from "../../../../utils/number";
+import { commaSeparator } from "../../../../utils/number";
 import moment from "moment";
 
 const PlaceBidModal = ({
@@ -55,9 +59,9 @@ const PlaceBidModal = ({
           typeUrl: "/comdex.auction.v1beta1.MsgPlaceDutchBidRequest",
           value: {
             bidder: address,
-            auctionId: auction?.auction_id,
+            auctionId: auction?.auctionId,
             amount: {
-              denom: auction?.outflow_token_init_amount?.denom,
+              denom: auction?.outflowTokenInitAmount?.denom,
               amount: getAmount(bidAmount),
             },
             max: maxPrice,
@@ -100,7 +104,7 @@ const PlaceBidModal = ({
     setValidationError(
       ValidateInputNumber(
         getAmount(value),
-        getDenomBalance(balances, auction?.bid?.denom) || 0
+        getDenomBalance(balances, auction?.outflowTokenInitAmount?.denom) || 0
       )
     );
     setBidAmount(value);
@@ -109,12 +113,7 @@ const PlaceBidModal = ({
   const handleMaxPriceChange = (value) => {
     value = toDecimals(value).toString().trim();
 
-    setMaxValidationError(
-      ValidateInputNumber(
-        getAmount(value),
-        getDenomBalance(balances, auction?.bid?.denom) || 0
-      )
-    );
+    setMaxValidationError(ValidateInputNumber(getAmount(value)));
     setMaxPrice(value);
   };
   return (
@@ -141,7 +140,14 @@ const PlaceBidModal = ({
               <p>Collateral Current Price</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>${commaSeparator(Number(auction?.outflow_token_current_price || 0).toFixed(DOLLAR_DECIMALS))}</label>
+              <label>
+                $
+                {commaSeparator(
+                  Number(auction?.outflowTokenCurrentPrice || 0).toFixed(
+                    DOLLAR_DECIMALS
+                  )
+                )}
+              </label>
             </Col>
           </Row>
           <Row>
@@ -149,9 +155,9 @@ const PlaceBidModal = ({
               <p>End Time </p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>{moment(auction?.end_time).format(
-                  "MMM DD, YYYY HH:mm"
-              )}</label>
+              <label>
+                {moment(auction?.endTime).format("MMM DD, YYYY HH:mm")}
+              </label>
             </Col>
           </Row>
           <Row>
@@ -159,7 +165,11 @@ const PlaceBidModal = ({
               <p>Quantity </p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>{amountConversion(auction?.outflow_token_current_amount?.amount || 0)}</label>
+              <label>
+                {amountConversion(
+                  auction?.outflowTokenCurrentAmount?.amount || 0
+                )}
+              </label>
             </Col>
           </Row>
           <Row>
