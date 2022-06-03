@@ -115,9 +115,9 @@ const DebtAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Top Bid",
-      dataIndex: "top_bid",
-      key: "top_bid",
+      title: "Min Bid",
+      dataIndex: "min_bid",
+      key: "min_bid",
       width: 150,
       render: (asset_apy) => <>{asset_apy} CMST</>,
     },
@@ -156,11 +156,11 @@ const DebtAuctions = ({ setPairs, address }) => {
                       <div className="assets-icon">
                         <SvgIcon
                             name={iconNameFromDenom(
-                                item?.outflow_token_init_amount?.denom
+                                item?.outflowTokenInitAmount?.denom
                             )}
                         />
                       </div>
-                      {denomConversion(item?.outflow_token_init_amount?.denom)}
+                      {denomConversion(item?.outflowTokenInitAmount?.denom)}
                     </div>
                   </>
               ),
@@ -170,21 +170,21 @@ const DebtAuctions = ({ setPairs, address }) => {
                       <div className="assets-icon">
                         <SvgIcon
                             name={iconNameFromDenom(
-                                item?.inflow_token_current_amount?.denom
+                                item?.inflowTokenCurrentAmount?.denom
                             )}
                         />
                       </div>
-                      {denomConversion(item?.inflow_token_current_amount?.denom)}
+                      {denomConversion(item?.inflowTokenCurrentAmount?.denom)}
                     </div>
                   </>
               ),
-              end_time: moment(item && item.end_time).format(
+              end_time: moment(item && item.endTime).format(
                   "MMM DD, YYYY HH:mm"
               ),
               quantity:
-                  item?.outflow_token?.amount &&
-                  amountConversion(item?.outflow_token?.amount),
-              current_price: item?.outflow_token_current_price,
+                  item?.outflowToken?.amount &&
+                  amountConversion(item?.outflowToken?.amount),
+              current_price: item?.outflowTokenCurrentPrice,
               action: item,
             };
           })

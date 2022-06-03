@@ -53,9 +53,9 @@ const PlaceBidModal = ({
           typeUrl: "/comdex.auction.v1beta1.MsgPlaceSurplusBidRequest",
           value: {
             bidder: address,
-            auctionId: auction?.auction_id,
+            auctionId: auction?.auctionId,
             amount: {
-              denom: auction?.outflow_token?.denom,
+              denom: auction?.outflowToken?.denom,
               amount: getAmount(bidAmount),
             },
             appId: Long.fromNumber(PRODUCT_ID),
@@ -127,7 +127,7 @@ const PlaceBidModal = ({
               <p>Collateral Current Price</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>${commaSeparator(Number(auction?.outflow_token_current_price || 0).toFixed(DOLLAR_DECIMALS))}</label>
+              <label>${commaSeparator(Number(auction?.outflowTokenCurrentPrice || 0).toFixed(DOLLAR_DECIMALS))}</label>
             </Col>
           </Row>
           <Row>
@@ -145,7 +145,7 @@ const PlaceBidModal = ({
               <p>Quantity </p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>{amountConversion(auction?.outflow_token_current_amount?.amount || 0)}</label>
+              <label>{amountConversion(auction?.outflowToken_current_amount?.amount || 0)}</label>
             </Col>
           </Row>
           <Row>
