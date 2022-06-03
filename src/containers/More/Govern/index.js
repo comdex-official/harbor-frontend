@@ -27,14 +27,12 @@ const Govern = ({
     totalProposal(productId).then((res) => {
       setAllProposal(res)
     }).catch((err) => {
-      console.log(err);
     })
   }
   const fetchAllProposalUpData = (productId) => {
     fetchProposalUpData(productId).then((res) => {
       setProposalUpData(res)
     }).catch((err) => {
-      console.log(err);
     })
   }
 

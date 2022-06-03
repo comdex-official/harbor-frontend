@@ -36,7 +36,6 @@ const GovernDetails = ({
     fetchSpecificProposalData(proposalId).then((res) => {
       setCurrentProposal(res);
     }).catch((err) => {
-      console.log(err);
     })
   }
 
