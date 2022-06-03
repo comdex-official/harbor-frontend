@@ -37,12 +37,12 @@ export const biddingsData = [
       amount: "10000000",
       denom: "uatom",
     },
-    inflowTokenAmount: {
+    bid: {
       amount: "10000000",
       denom: "ucmdx",
     },
     biddingTimestamp: "2022-06-01T19:07:29.621538Z",
-    biddingStatus: "rejected",
+    biddingStatus: "success",
     auctionStatus: "0",
   }
 ]

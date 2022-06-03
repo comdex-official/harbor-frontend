@@ -83,11 +83,11 @@ export const Bidding = ({ biddingList }) => {
             <div className="assets-withicon">
               <div className="assets-icon">
                 <SvgIcon
-                  name={iconNameFromDenom(item?.inflowTokenAmount?.denom)}
+                  name={iconNameFromDenom(item?.bid?.denom)}
                 />
               </div>
-              {amountConversion(item?.inflowTokenAmount?.amount || 0)}{" "}
-              {denomConversion(item?.inflowTokenAmount?.denom)}
+              {amountConversion(item?.bid?.amount || 0)}{" "}
+              {denomConversion(item?.bid?.denom)}
             </div>
           </>
         ),
