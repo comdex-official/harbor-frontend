@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import { Tabs} from "antd";
 import { connect } from 'react-redux';
 import { Col, Row } from "../../components/common";
-import SurplusAuction from "./SurplusAuction";
-import DebtAuction from "./Debt Auction";
-import CollateralAuction from "./Collateral Auction";
+import SurplusAuction from "./Surplus";
+import DebtAuction from "./Debt";
+import CollateralAuction from "./Dutch";
 import { setPairs } from "../../actions/asset";
 
 const Auctions = () => {

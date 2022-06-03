@@ -7,13 +7,17 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import Bidding from "./Bidding";
-import { querySurplusAuctionList , querySurplusBiddingList, queryAuctionParams} from "../../../services/auction";
+import {
+  querySurplusAuctionList,
+  querySurplusBiddingList,
+  queryAuctionParams,
+} from "../../../services/auction";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
 } from "../../../constants/common";
 import { message } from "antd";
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from "react";
 
 const SurplusAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -56,16 +60,22 @@ const SurplusAuctions = ({ setPairs, address }) => {
 
   const fetchAuctions = (offset, limit, isTotal, isReverse) => {
     setInProgress(true);
-    querySurplusAuctionList(offset, limit, isTotal, isReverse, (error, result) => {
-      setInProgress(false);
+    querySurplusAuctionList(
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        setInProgress(false);
 
-      if (error) {
-        message.error(error);
-        return;
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        setAuctions(result && result.auctions, result && result.pagination);
       }
-
-      setAuctions(result && result.auctions, result && result.pagination);
-    });
+    );
   };
 
   const fetchBiddings = (address) => {
@@ -78,12 +88,8 @@ const SurplusAuctions = ({ setPairs, address }) => {
         return;
       }
 
-      if (address) {
-        setBiddings(
-          result && result.biddings,
-          result && result.pagination,
-          result && result.bidder
-        );
+      if (result?.bidder) {
+        setBiddings(result && result.biddings);
       }
     });
   };
@@ -260,7 +266,9 @@ const SurplusAuctions = ({ setPairs, address }) => {
                 onChange={(event) => handleChange(event)}
                 pagination={{
                   total:
-                    auctions && auctions.pagination && auctions.pagination.total,
+                    auctions &&
+                    auctions.pagination &&
+                    auctions.pagination.total,
                   pageSize,
                 }}
                 scroll={{ x: "100%" }}
@@ -270,7 +278,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
           <div className="more-bottom">
             <h3 className="title">Your Bidding</h3>
             <div className="more-bottom-card">
-              <Bidding />
+              <Bidding biddingList={biddings} />
             </div>
           </div>
         </Col>

@@ -34,7 +34,7 @@ const variables = {
     overview: "Overview",
     tvl: "Total Value Locked (TVL)",
     tv: "Total Value",
-    collateral: "Collateral",
+    collateral: "Dutch",
     liquidity: "Liquidity",
     pair_id: "Pair Id",
     cmdx_circulating_supply: "Circulating Supply",
@@ -68,7 +68,7 @@ const variables = {
     total_volume: "TOTAL VOLUME",
     total_value_locked: "TOTAL VALUE LOCKED",
     total_liquidity: "Liquidity",
-    total_collateral: "Collateral",
+    total_collateral: "Dutch",
 
     // Balances
     total_claimable_rewards: "total claimable rewards",
@@ -82,7 +82,7 @@ const variables = {
     farm_balance: "Farm Balance",
     asset_balance: "Asset Balance",
     borrowing_power_used: "Borrowing Power Used",
-    your_collateral: "Your Collateral",
+    your_collateral: "Your Dutch",
     health_factor: "Health Factor",
     you_borrowed: "You Borrowed",
     borrow_information: "Borrow Information",
@@ -96,12 +96,12 @@ const variables = {
     withdraw: "Withdraw",
     draw: "Draw",
     repay: "Repay",
-    deposit_collateral: "Deposit Collateral",
-    withdraw_collateral: "Withdraw Collateral",
+    deposit_collateral: "Deposit Dutch",
+    withdraw_collateral: "Withdraw Dutch",
     draw_debt: "Draw Debt",
     repay_debt: "Repay Debt",
     closeVault: "Close Vault",
-    collateral_type: "Collateral Type",
+    collateral_type: "Dutch Type",
     add_remove: "Add/Remove",
 
     // Send
@@ -122,10 +122,10 @@ const variables = {
     close: "Close",
     borrow_cAssets: "Borrow cAssets",
     borrow_cAsset: "Borrow cAsset",
-    choose_collateral: "Collateral Asset",
+    choose_collateral: "Dutch Asset",
     collateral_asset:
-      "Collateral asset may affect the minimum collateral ratio.",
-    set_collateral_ratio: "Set a Collateral Ratio",
+      "Dutch asset may affect the minimum collateral ratio.",
+    set_collateral_ratio: "Set a Dutch Ratio",
     liquidate_below_minimum:
       "Position will be liquidated if the collateral ratio moves below the minimum threshold",
 
@@ -136,7 +136,7 @@ const variables = {
     burn_amount: "Burn Amount",
 
     // Farm Page
-    collateral_ratio: "Collateral Ratio",
+    collateral_ratio: "Dutch Ratio",
     borrowed_assets: "Borrowed Assets",
     remove: "Remove",
     remove_liquidity: " Remove Liquidity",

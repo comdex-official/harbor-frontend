@@ -43,6 +43,7 @@ export const signAndBroadcastTransaction = async (
     return;
   }
 
+  console.log('the transaction', transaction)
   SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
     registry: myRegistry, aminoTypes: aminoTypes 
   })

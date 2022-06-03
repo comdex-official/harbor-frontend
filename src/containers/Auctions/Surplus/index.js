@@ -7,15 +7,19 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import Bidding from "./Bidding";
-import { queryDebtAuctionList , queryDebtBiddingList, queryAuctionParams} from "../../../services/auction";
+import {
+  querySurplusAuctionList,
+  querySurplusBiddingList,
+  queryAuctionParams,
+} from "../../../services/auction";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
 } from "../../../constants/common";
 import { message } from "antd";
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from "react";
 
-const DebtAuctions = ({ setPairs, address }) => {
+const SurplusAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
@@ -56,21 +60,27 @@ const DebtAuctions = ({ setPairs, address }) => {
 
   const fetchAuctions = (offset, limit, isTotal, isReverse) => {
     setInProgress(true);
-    queryDebtAuctionList(offset, limit, isTotal, isReverse, (error, result) => {
-      setInProgress(false);
+    querySurplusAuctionList(
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        setInProgress(false);
 
-      if (error) {
-        message.error(error);
-        return;
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        setAuctions(result && result.auctions, result && result.pagination);
       }
-
-      setAuctions(result && result.auctions, result && result.pagination);
-    });
+    );
   };
 
   const fetchBiddings = (address) => {
     setInProgress(true);
-    queryDebtBiddingList(address, (error, result) => {
+    querySurplusBiddingList(address, (error, result) => {
       setInProgress(false);
 
       if (error) {
@@ -92,7 +102,7 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
-      title: "Bridge Asset",
+      title: "Inflow Asset",
       dataIndex: "bridge_asset",
       key: "bridge_asset",
       width: 180,
@@ -256,7 +266,9 @@ const DebtAuctions = ({ setPairs, address }) => {
                 onChange={(event) => handleChange(event)}
                 pagination={{
                   total:
-                    auctions && auctions.pagination && auctions.pagination.total,
+                    auctions &&
+                    auctions.pagination &&
+                    auctions.pagination.total,
                   pageSize,
                 }}
                 scroll={{ x: "100%" }}
@@ -266,7 +278,7 @@ const DebtAuctions = ({ setPairs, address }) => {
           <div className="more-bottom">
             <h3 className="title">Your Bidding</h3>
             <div className="more-bottom-card">
-            <Bidding biddingList={biddings}/>
+              <Bidding biddingList={biddings} />
             </div>
           </div>
         </Col>
@@ -275,7 +287,7 @@ const DebtAuctions = ({ setPairs, address }) => {
   );
 };
 
-DebtAuctions.propTypes = {
+SurplusAuctions.propTypes = {
   lang: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
   address: PropTypes.string,
@@ -292,4 +304,4 @@ const actionsToProps = {
   setPairs,
 };
 
-export default connect(stateToProps, actionsToProps)(DebtAuctions);
+export default connect(stateToProps, actionsToProps)(SurplusAuctions);

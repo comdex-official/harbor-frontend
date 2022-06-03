@@ -4,6 +4,7 @@ import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversion } from "../../../utils/coin";
 import TooltipIcon from '../../../components/TooltipIcon'
 export const Bidding = ({ biddingList }) => {
+
   const columnsBidding = [
     {
       title: (
