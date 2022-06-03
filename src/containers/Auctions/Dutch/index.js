@@ -7,20 +7,30 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import Bidding from "./Bidding";
-import { queryDebtAuctionList , queryDebtBiddingList, queryAuctionParams} from "../../../services/auction";
+import {
+  queryDutchAuctionList,
+  queryDutchBiddingList,
+  queryAuctionParams,
+} from "../../../services/auction";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
+  DOLLAR_DECIMALS,
 } from "../../../constants/common";
 import { message } from "antd";
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from "react";
+import { auctionsData } from "./data";
+import { amountConversion, denomConversion } from "../../../utils/coin";
+import moment from "moment";
+import { iconNameFromDenom } from "../../../utils/string";
+import { commaSeparator } from "../../../utils/number";
 
-const DebtAuctions = ({ setPairs, address }) => {
+const CollateralAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
-  const [auctions, setAuctions] = useState();
+  const [auctions, setAuctions] = useState(auctionsData);
   const [biddings, setBiddings] = useState();
 
   useEffect(() => {
@@ -56,21 +66,27 @@ const DebtAuctions = ({ setPairs, address }) => {
 
   const fetchAuctions = (offset, limit, isTotal, isReverse) => {
     setInProgress(true);
-    queryDebtAuctionList(offset, limit, isTotal, isReverse, (error, result) => {
-      setInProgress(false);
+    queryDutchAuctionList(
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        setInProgress(false);
 
-      if (error) {
-        message.error(error);
-        return;
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        setAuctions(result && result.auctions, result && result.pagination);
       }
-
-      setAuctions(result && result.auctions, result && result.pagination);
-    });
+    );
   };
 
   const fetchBiddings = (address) => {
     setInProgress(true);
-    queryDebtBiddingList(address, (error, result) => {
+    queryDutchBiddingList(address, (error, result) => {
       setInProgress(false);
 
       if (error) {
@@ -92,7 +108,7 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
-      title: "Bridge Asset",
+      title: "Inflow Asset",
       dataIndex: "bridge_asset",
       key: "bridge_asset",
       width: 180,
@@ -111,11 +127,13 @@ const DebtAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Top Bid",
-      dataIndex: "top_bid",
-      key: "top_bid",
+      title: "Current Price",
+      dataIndex: "current_price",
+      key: "current_price",
       width: 150,
-      render: (asset_apy) => <>{asset_apy} CMST</>,
+      render: (price) => (
+        <>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</>
+      ),
     },
     {
       title: (
@@ -127,120 +145,64 @@ const DebtAuctions = ({ setPairs, address }) => {
       key: "action",
       align: "right",
       width: 140,
-      render: () => (
+      render: (item) => (
         <>
-          <PlaceBidModal />
+          <PlaceBidModal
+          params={params}
+            auction={item}
+            refreshData={fetchData}
+            discount={params?.auctionDiscountPercent}
+          />
         </>
       ),
     },
   ];
 
-  const tableData = [
-    {
-      key: 1,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="atom-icon" viewBox="0 0 30 30" />
-            </div>
-            ATOM
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  ATOM",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 2,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="xprt-icon" viewBox="0 0 30 30" />
-            </div>
-            XPRT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  XPRT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 3,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="akt-icon" viewBox="0 0 30 30" />
-            </div>
-            AKT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  AKT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 4,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="harbor-icon" viewBox="0 0 30 30" />
-            </div>
-            HARBOR
-          </div>
-        </>
-      ),
-      quantity: "1  CMST",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-  ];
+  const tableData =
+    auctionsData && auctionsData.length > 0
+      ? auctionsData.map((item, index) => {
+          return {
+            key: index,
+            id: item.id,
+            auctioned_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(
+                        item?.outflow_token_init_amount?.denom
+                      )}
+                    />
+                  </div>
+                  {denomConversion(item?.outflow_token_init_amount?.denom)}
+                </div>
+              </>
+            ),
+            bridge_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(
+                        item?.inflow_token_current_amount?.denom
+                      )}
+                    />
+                  </div>
+                  {denomConversion(item?.inflow_token_current_amount?.denom)}
+                </div>
+              </>
+            ),
+            end_time: moment(item && item.end_time).format(
+              "MMM DD, YYYY HH:mm"
+            ),
+            quantity:
+              item?.outflow_token_current_amount?.amount &&
+              amountConversion(item?.outflow_token_current_amount?.amount),
+            current_price: item?.outflow_token_current_price,
+            action: item,
+          };
+        })
+      : [];
 
   return (
     <div className="app-content-wrapper">
@@ -256,7 +218,9 @@ const DebtAuctions = ({ setPairs, address }) => {
                 onChange={(event) => handleChange(event)}
                 pagination={{
                   total:
-                    auctions && auctions.pagination && auctions.pagination.total,
+                    auctions &&
+                    auctions.pagination &&
+                    auctions.pagination.total,
                   pageSize,
                 }}
                 scroll={{ x: "100%" }}
@@ -266,7 +230,7 @@ const DebtAuctions = ({ setPairs, address }) => {
           <div className="more-bottom">
             <h3 className="title">Your Bidding</h3>
             <div className="more-bottom-card">
-            <Bidding biddingList={biddings}/>
+              <Bidding biddingList={biddings} />
             </div>
           </div>
         </Col>
@@ -275,7 +239,7 @@ const DebtAuctions = ({ setPairs, address }) => {
   );
 };
 
-DebtAuctions.propTypes = {
+CollateralAuctions.propTypes = {
   lang: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
   address: PropTypes.string,
@@ -292,4 +256,4 @@ const actionsToProps = {
   setPairs,
 };
 
-export default connect(stateToProps, actionsToProps)(DebtAuctions);
+export default connect(stateToProps, actionsToProps)(CollateralAuctions);
