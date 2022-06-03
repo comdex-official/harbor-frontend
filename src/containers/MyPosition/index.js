@@ -54,7 +54,7 @@ const MyPositions = ({address}) => {
       setEarnTab(false);
       setVaultTab(false);
       setHistoryTab(true);
-      return;
+
     }
   }
 

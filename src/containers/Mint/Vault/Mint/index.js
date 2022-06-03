@@ -233,7 +233,7 @@ const Mint = ({
     if (pairId) {
       getAssetDataByPairId(pairId);
     }
-  }, [address, pairId])
+  }, [address, pairId, refreshBalance])
 
   // *******Get Vault Query *********
 

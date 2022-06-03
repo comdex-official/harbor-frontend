@@ -17,6 +17,9 @@ const Vault = () => {
     if (ownerVaultId) {
       setActiveKey("2");
     }
+    else{
+      setActiveKey("1");
+    }
   }, [ownerVaultId]);
 
   const BackButton = {
