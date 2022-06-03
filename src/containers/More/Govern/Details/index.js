@@ -31,11 +31,12 @@ const GovernDetails = ({
     abstain: 0
   });
 
-  // ******* Get Vault Query *********
-  // *****Fetch specific proposal data***** 
+
   const fetchSpecificProposal = (proposalId) => {
     fetchSpecificProposalData(proposalId).then((res) => {
       setCurrentProposal(res);
+    }).catch((err) => {
+      console.log(err);
     })
   }
 
