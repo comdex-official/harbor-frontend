@@ -7,25 +7,29 @@ import { comdex } from "../../../../config/network";
 import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
-import {amountConversion, getAmount, getDenomBalance} from "../../../../utils/coin";
+import {
+  amountConversion, denomConversion,
+  getAmount,
+  getDenomBalance,
+} from "../../../../utils/coin";
 import Snack from "../../../../components/common/Snack";
 import { ValidateInputNumber } from "../../../../config/_validation";
 import { toDecimals } from "../../../../utils/string";
 import CustomInput from "../../../../components/CustomInput";
 import Long from "long";
-import {DOLLAR_DECIMALS, PRODUCT_ID} from "../../../../constants/common";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
-import {commaSeparator} from "../../../../utils/number";
+import { commaSeparator } from "../../../../utils/number";
 import moment from "moment";
 
 const PlaceBidModal = ({
-                         lang,
-                         address,
-                         auction,
-                         refreshData,
-                         params,
-                         balances,
-                       }) => {
+  lang,
+  address,
+  auction,
+  refreshData,
+  params,
+  balances,
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bidAmount, setBidAmount] = useState();
   const [inProgress, setInProgress] = useState(false);
@@ -48,50 +52,50 @@ const PlaceBidModal = ({
 
     //TODO: update the naming after getting data from chain, camelCase
     signAndBroadcastTransaction(
-        {
-          message: {
-            typeUrl: "/comdex.auction.v1beta1.MsgPlaceDebtBidRequest",
-            value: {
-              bidder: address,
-              auctionId: auction?.auctionId,
-              bid: {
-                denom: auction?.outflowToken?.denom,
-                amount: getAmount(bidAmount),
-              },
-              expectedUserToken: {
-                denom: auction?.outflowToken?.denom,
-                amount: getAmount(bidAmount),
-              },
-              appId: Long.fromNumber(PRODUCT_ID),
-              auctionMappingId: params?.debtId,
+      {
+        message: {
+          typeUrl: "/comdex.auction.v1beta1.MsgPlaceDebtBidRequest",
+          value: {
+            bidder: address,
+            auctionId: auction?.auctionId,
+            bid: {
+              denom: auction?.expectedMintedToken?.denom,
+              amount: getAmount(bidAmount),
             },
+            expectedUserToken: {
+              denom: auction?.expectedUserToken?.denom,
+              amount: auction?.expectedUserToken?.amount,
+            },
+            appId: Long.fromNumber(PRODUCT_ID),
+            auctionMappingId: params?.debtId,
           },
-          fee: defaultFee(),
-          memo: "",
         },
-        address,
-        (error, result) => {
-          setInProgress(false);
-          setIsModalVisible(false);
-          if (error) {
-            message.error(error);
-            return;
-          }
-
-          if (result?.code) {
-            message.info(result?.rawLog);
-            return;
-          }
-
-          refreshData();
-          message.success(
-              <Snack
-                  message={variables[lang].tx_success}
-                  explorerUrlToTx={comdex.explorerUrlToTx}
-                  hash={result?.transactionHash}
-              />
-          );
+        fee: defaultFee(),
+        memo: "",
+      },
+      address,
+      (error, result) => {
+        setInProgress(false);
+        setIsModalVisible(false);
+        if (error) {
+          message.error(error);
+          return;
         }
+
+        if (result?.code) {
+          message.info(result?.rawLog);
+          return;
+        }
+
+        refreshData();
+        message.success(
+          <Snack
+            message={variables[lang].tx_success}
+            explorerUrlToTx={comdex.explorerUrlToTx}
+            hash={result?.transactionHash}
+          />
+        );
+      }
     );
   };
 
@@ -99,88 +103,94 @@ const PlaceBidModal = ({
     value = toDecimals(value).toString().trim();
 
     setValidationError(
-        ValidateInputNumber(
-            getAmount(value),
-            getDenomBalance(balances, auction?.bid?.denom) || 0
-        )
+      ValidateInputNumber(
+        getAmount(value),
+        getDenomBalance(balances, auction?.expectedMintedToken?.denom) || 0
+      )
     );
     setBidAmount(value);
   };
-  
+
   return (
-      <>
-        <Button type="primary" size="small" className="px-3" onClick={showModal}>
-          {" "}
-          Place Bid{" "}
-        </Button>
-        <Modal
-            centered={true}
-            className="palcebid-modal auction-placebid-modal"
-            footer={null}
-            header={null}
-            visible={isModalVisible}
-            width={550}
-            closable={false}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            closeIcon={null}
-        >
-          <div className="palcebid-modal-inner">
-            <Row>
-              <Col sm="6">
-                <p>Collateral Current Price</p>
-              </Col>
-              <Col sm="6" className="text-right">
-                <label>${commaSeparator(Number(auction?.outflowTokenCurrentPrice || 0).toFixed(DOLLAR_DECIMALS))}</label>
-              </Col>
-            </Row>
-            <Row>
-              <Col sm="6">
-                <p>End Time </p>
-              </Col>
-              <Col sm="6" className="text-right">
-                <label>{moment(auction?.end_time).format(
-                    "MMM DD, YYYY HH:mm"
-                )}</label>
-              </Col>
-            </Row>
-            <Row>
-              <Col sm="6">
-                <p>Quantity </p>
-              </Col>
-              <Col sm="6" className="text-right">
-                <label>{amountConversion(auction?.outflowToken_current_amount?.amount || 0)}</label>
-              </Col>
-            </Row>
-            <Row>
-              <Col sm="6">
-                <p>Your Bid</p>
-              </Col>
-              <Col sm="6" className="text-right">
-                <CustomInput
-                    value={bidAmount}
-                    onChange={(event) => handleChange(event.target.value)}
-                    validationError={validationError}
-                />
-              </Col>
-            </Row>
-            <Row className="p-0">
-              <Col className="text-center mt-3">
-                <Button
-                    type="primary"
-                    className="btn-filled px-5"
-                    size="large"
-                    loading={inProgress}
-                    disabled={!Number(bidAmount)}
-                    onClick={handleClick}
-                >
-                  Place Bid
-                </Button>
-              </Col>
-            </Row>
-          </div>
-        </Modal>
-      </>
+    <>
+      <Button type="primary" size="small" className="px-3" onClick={showModal}>
+        {" "}
+        Place Bid{" "}
+      </Button>
+      <Modal
+        centered={true}
+        className="palcebid-modal auction-placebid-modal"
+        footer={null}
+        header={null}
+        visible={isModalVisible}
+        width={550}
+        closable={false}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        closeIcon={null}
+      >
+        <div className="palcebid-modal-inner">
+          <Row>
+            <Col sm="6">
+              <p>End Time </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                {moment(auction?.endTime).format("MMM DD, YYYY HH:mm")}
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>User payable amount </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                {amountConversion(auction?.expectedUserToken?.amount || 0)}{" "}
+                {denomConversion(auction?.expectedUserToken?.denom)}
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Max Bid </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                {amountConversion(auction?.expectedMintedToken?.amount || 0)}{" "}
+                {denomConversion(auction?.expectedUserToken?.denom)}
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Your Bid</p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <CustomInput
+                value={bidAmount}
+                onChange={(event) => handleChange(event.target.value)}
+                validationError={validationError}
+              />
+            </Col>
+          </Row>
+          <Row className="p-0">
+            <Col className="text-center mt-3">
+              <Button
+                type="primary"
+                className="btn-filled px-5"
+                size="large"
+                loading={inProgress}
+                disabled={!Number(bidAmount)}
+                onClick={handleClick}
+              >
+                Place Bid
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      </Modal>
+    </>
   );
 };
 
@@ -204,10 +214,10 @@ PlaceBidModal.propTypes = {
     }),
   }),
   balances: PropTypes.arrayOf(
-      PropTypes.shape({
-        denom: PropTypes.string.isRequired,
-        amount: PropTypes.string,
-      })
+    PropTypes.shape({
+      denom: PropTypes.string.isRequired,
+      amount: PropTypes.string,
+    })
   ),
   bidAmount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   discount: PropTypes.shape({

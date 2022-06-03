@@ -196,8 +196,8 @@ const CollateralAuctions = ({ setPairs, address }) => {
               "MMM DD, YYYY HH:mm"
             ),
             quantity:
-              item?.outflowToken_current_amount?.amount &&
-              amountConversion(item?.outflowToken_current_amount?.amount),
+              item?.outflowTokenCurrentAmount?.amount &&
+              amountConversion(item?.outflowTokenCurrentAmount?.amount),
             current_price: item?.outflowTokenCurrentPrice,
             action: item,
           };

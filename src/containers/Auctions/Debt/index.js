@@ -7,16 +7,20 @@ import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import Bidding from "./Bidding";
-import { queryDebtAuctionList , queryDebtBiddingList, queryAuctionParams} from "../../../services/auction";
+import {
+  queryDebtAuctionList,
+  queryDebtBiddingList,
+  queryAuctionParams,
+} from "../../../services/auction";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
 } from "../../../constants/common";
 import { message } from "antd";
-import {useState, useEffect} from 'react';
-import {auctionsData} from "./data";
-import {iconNameFromDenom} from "../../../utils/string";
-import {amountConversion, denomConversion} from "../../../utils/coin";
+import { useState, useEffect } from "react";
+import { auctionsData } from "./data";
+import { iconNameFromDenom } from "../../../utils/string";
+import { amountConversion, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 
 const DebtAuctions = ({ setPairs, address }) => {
@@ -102,12 +106,6 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-      width: 180,
-    },
-    {
       title: "End Time",
       dataIndex: "end_time",
       key: "end_time",
@@ -115,9 +113,9 @@ const DebtAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Min Bid",
-      dataIndex: "min_bid",
-      key: "min_bid",
+      title: "Max Bid",
+      dataIndex: "max_bid",
+      key: "max_bid",
       width: 150,
       render: (asset_apy) => <>{asset_apy} CMST</>,
     },
@@ -145,51 +143,42 @@ const DebtAuctions = ({ setPairs, address }) => {
   ];
 
   const tableData =
-      auctionsData && auctionsData.length > 0
-          ? auctionsData.map((item, index) => {
-            return {
-              key: index,
-              id: item.id,
-              auctioned_asset: (
-                  <>
-                    <div className="assets-withicon">
-                      <div className="assets-icon">
-                        <SvgIcon
-                            name={iconNameFromDenom(
-                                item?.outflowTokenInitAmount?.denom
-                            )}
-                        />
-                      </div>
-                      {denomConversion(item?.outflowTokenInitAmount?.denom)}
-                    </div>
-                  </>
-              ),
-              bridge_asset: (
-                  <>
-                    <div className="assets-withicon">
-                      <div className="assets-icon">
-                        <SvgIcon
-                            name={iconNameFromDenom(
-                                item?.inflowTokenCurrentAmount?.denom
-                            )}
-                        />
-                      </div>
-                      {denomConversion(item?.inflowTokenCurrentAmount?.denom)}
-                    </div>
-                  </>
-              ),
-              end_time: moment(item && item.endTime).format(
-                  "MMM DD, YYYY HH:mm"
-              ),
-              quantity:
-                  item?.outflowToken?.amount &&
-                  amountConversion(item?.outflowToken?.amount),
-              current_price: item?.outflowTokenCurrentPrice,
-              action: item,
-            };
-          })
-          : [];
+    auctionsData && auctionsData.length > 0
+      ? auctionsData.map((item, index) => {
+          return {
+            key: index,
+            id: item.id,
+            auctioned_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.auctionedToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.auctionedToken?.denom)}
+                </div>
+              </>
+            ),
+            bridge_asset: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.expectedUserToken?.denom)}
+                </div>
+              </>
+            ),
+            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
 
+            max_bid: amountConversion(item?.expectedMintedToken?.amount || 0),
+            action: item,
+          };
+        })
+      : [];
 
   return (
     <div className="app-content-wrapper">
@@ -205,7 +194,9 @@ const DebtAuctions = ({ setPairs, address }) => {
                 onChange={(event) => handleChange(event)}
                 pagination={{
                   total:
-                    auctions && auctions.pagination && auctions.pagination.total,
+                    auctions &&
+                    auctions.pagination &&
+                    auctions.pagination.total,
                   pageSize,
                 }}
                 scroll={{ x: "100%" }}
@@ -215,7 +206,7 @@ const DebtAuctions = ({ setPairs, address }) => {
           <div className="more-bottom">
             <h3 className="title">Your Bidding</h3>
             <div className="more-bottom-card">
-            <Bidding biddingList={biddings}/>
+              <Bidding biddingList={biddings} />
             </div>
           </div>
         </Col>
