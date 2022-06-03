@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { amountConversion, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
-import { commaSeparator } from "../../../utils/number";
+import {commaSeparator, decimalConversion} from "../../../utils/number";
 
 const CollateralAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -197,7 +197,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
             quantity:
               item?.outflowTokenCurrentAmount?.amount &&
               amountConversion(item?.outflowTokenCurrentAmount?.amount),
-            current_price: item?.outflowTokenCurrentPrice,
+            current_price: decimalConversion(item?.outflowTokenCurrentPrice),
             action: item,
           };
         })
