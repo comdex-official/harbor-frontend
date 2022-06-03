@@ -12,6 +12,7 @@ import oracle from "./oracle";
 import order from './order';
 import locker from './locker'
 import mint from './mint'
+import govern from "./govern";
 
 const app = combineReducers({
   language,
@@ -27,6 +28,7 @@ const app = combineReducers({
   oracle,
   order,
   locker,
+  govern,
 });
 
 const root = (state, action) => {

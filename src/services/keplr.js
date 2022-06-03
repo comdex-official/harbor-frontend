@@ -1,8 +1,10 @@
-import { comdex } from "../config/network";import {
+import { comdex } from "../config/network"; import {
   ChainStore,
   getKeplrFromWindow,
   AccountSetBase,
 } from "@keplr-wallet/stores";
+
+export const contractAddr = "comdex14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9spunaxy";
 
 export const getChainConfig = () => {
   return {
@@ -103,8 +105,8 @@ export const fetchKeplrAccountName = async () => {
   const accountSetBase = new AccountSetBase(
     {
       // No need
-      addEventListener: () => {},
-      removeEventListener: () => {},
+      addEventListener: () => { },
+      removeEventListener: () => { },
     },
     chainStore,
     comdex?.chainId,
@@ -115,12 +117,18 @@ export const fetchKeplrAccountName = async () => {
     }
   );
 
-   // Need wait some time to get the Keplr.
-   await (() => {
+  // Need wait some time to get the Keplr.
+  await (() => {
     return new Promise((resolve) => {
       setTimeout(resolve, 1000);
     });
   })();
 
   return accountSetBase?.name;
+};
+export const KeplrWallet = async (chainID = comdex?.chainId) => {
+  await window.keplr.enable(chainID);
+  const offlineSigner = window.getOfflineSigner(chainID);
+  const accounts = await offlineSigner.getAccounts();
+  return [offlineSigner, accounts];
 };

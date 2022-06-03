@@ -4,26 +4,82 @@ import { connect } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, List, Select, Progress } from "antd";
 import "./index.scss";
+import { fetchProposalUpData, totalProposal } from "../../../services/contractsRead";
+import React, { useEffect } from "react";
+import { PRODUCT_ID } from '../../../constants/common';
+import moment from "moment";
+import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 
 const { Option } = Select;
 
-const data = [
-  {
-    title: "Total Staked",
-    counts: '312.45'
-  },
-  {
-    title: "Total Proposals",
-    counts: "7"
-  },
-  {
-    title: "Average Participation",
-    counts: "50.12%"
-  }
-];
 
-const Govern = () => {
+
+const Govern = ({
+  lang,
+  address,
+  allProposal,
+  setAllProposal,
+  proposalUpData,
+  setProposalUpData,
+}) => {
+
+  const fetchAllProposal = (productId) => {
+    totalProposal(productId).then((res) => {
+      setAllProposal(res)
+    }).catch((err) => {
+    })
+  }
+  const fetchAllProposalUpData = (productId) => {
+    fetchProposalUpData(productId).then((res) => {
+      setProposalUpData(res)
+    }).catch((err) => {
+    })
+  }
+
+  const unixToGMTTime = (time) => {
+    let newTime = Math.floor(time / 1000000000);
+    var timestamp = moment.unix(newTime);
+    timestamp = timestamp.format("DD/MMMM/YYYY")
+    return timestamp;
+  }
+
+  useEffect(() => {
+    fetchAllProposal(PRODUCT_ID)
+    fetchAllProposalUpData(PRODUCT_ID)
+  }, [address])
+
+  const calculateAverageParticipation = () => {
+    let avgParticipation = proposalUpData?.active_participation_supply
+    avgParticipation = avgParticipation / proposalUpData?.proposal_count
+    avgParticipation = avgParticipation / ((proposalUpData?.current_supply))
+    avgParticipation = avgParticipation * 100
+    return avgParticipation;
+  }
+
+  const data = [
+    {
+      title: "Total Staked",
+      counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 : "-"
+    },
+    {
+      title: "Total Proposals",
+      counts: proposalUpData ? proposalUpData?.proposal_count : "-"
+    },
+    {
+      title: "Average Participation",
+      counts: proposalUpData ? `${calculateAverageParticipation() + "%"}` : "-"
+    }
+  ];
+
+  const getDuration = (data) => {
+    let duration;
+    duration = moment.duration(data, "seconds");
+    duration = `${duration.days()} Days ${duration.hours()} Hours`
+    return duration;
+
+  }
   const navigate = useNavigate();
+
   return (
     <div className="app-content-wrapper">
       <div className="back-btn-container">
@@ -61,73 +117,54 @@ const Govern = () => {
           </div>
         </Col>
       </Row>
+
       <Row className="mt-3">
         <Col>
           <div className="comdex-card govern-card earn-deposite-card ">
             <div className="governcard-head ">
-              <Button type="primary" className="btn-filled">New Proposal</Button>
+              {/* <Button type="primary" className="btn-filled">New Proposal</Button> */}
               <Button type="primary" className="btn-filled">Forum</Button>
               <Select defaultValue="Filter" className="select-primary   ml-2" suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
-                <Option value="jack" className="govern-select-option">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-                <Option value="Yiminghe">yiminghe</Option>
+                <Option value="passed" className="govern-select-option">Passed</Option>
+                <Option value="rejected">Rejected</Option>
+                <Option value="pending">Pending</Option>
+                <Option value="voting">Voting</Option>
               </Select>
             </div>
             <div className="govern-card-content ">
-              <div className="governlist-row" onClick={() => navigate("/govern-details")}>
-                <div className="left-section">
-                  <h3>Increasing MaxValidator to 100</h3>
-                  <p>adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, </p>
-                </div>
-                <div className="right-section">
-                  <Row>
-                    <Col sm="6">
-                      <label>Vote Starts :</label>
-                      <p>24th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Voting Ends :</label>
-                      <p>26th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Duration : </label>
-                      <p>3 days</p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Progress percent={30} size="small" />
-                    </Col>
-                  </Row>
-                </div>
-              </div>
-              <div className="governlist-row" onClick={() => navigate("/govern-details")}>
-                <div className="left-section">
-                  <h3>Increasing MaxValidator to 100</h3>
-                  <p>adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, </p>
-                </div>
-                <div className="right-section">
-                  <Row>
-                    <Col sm="6">
-                      <label>Vote Starts :</label>
-                      <p>24th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Voting Ends :</label>
-                      <p>26th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Duration : </label>
-                      <p>3 days</p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Progress percent={30} size="small" />
-                    </Col>
-                  </Row>
-                </div>
-              </div>
+              {allProposal && allProposal.map((item) => {
+                return (
+                  <React.Fragment key={item?.id}>
+                    <div className="governlist-row" onClick={() => navigate(`/govern-details/${item?.id}`)} >
+                      <div className="left-section">
+                        <h3>{item?.title}</h3>
+                        <p>{item?.description} </p>
+                      </div>
+                      <div className="right-section">
+                        <Row>
+                          <Col sm="6">
+                            <label>Vote Starts :</label>
+                            <p>{unixToGMTTime(item?.start_time) || "--/--/--"}</p>
+                          </Col>
+                          <Col sm="6">
+                            <label>Voting Ends :</label>
+                            <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"}</p>
+                          </Col>
+                          <Col sm="6">
+                            <label>Duration : </label>
+                            <p>{getDuration(item?.duration?.time)}</p>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Progress percent={30} size="small" />
+                          </Col>
+                        </Row>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                )
+              })}
             </div>
           </div>
         </Col>
@@ -138,15 +175,23 @@ const Govern = () => {
 
 Govern.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  allProposal: PropTypes.array.isRequired,
+  proposalUpData: PropTypes.array.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
+    allProposal: state.govern.allProposal,
+    proposalUpData: state.govern.proposalUpData
   };
 };
 
 const actionsToProps = {
+  setAllProposal,
+  setProposalUpData,
 };
 
 export default connect(stateToProps, actionsToProps)(Govern);

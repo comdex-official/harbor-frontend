@@ -7,35 +7,114 @@ import { Button, List } from "antd";
 import "./index.scss";
 import VoteNowModal from "../VoteNowModal";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router";
+import { fetchSpecificProposalData } from "../../../../services/contractsRead";
+import { useEffect } from "react";
+import { setCurrentProposal } from "../../../../actions/govern";
+import { truncateString } from "../../../../utils/string";
+import Copy from "../../../../components/Copy";
+import { useState } from "react";
+import moment from "moment";
+
+const GovernDetails = ({
+  lang,
+  address,
+  currentProposal,
+  setCurrentProposal,
+}) => {
+  const { proposalId } = useParams();
+  let currentProposalId = Number(proposalId);
+  const [getVotes, setGetVotes] = useState({
+    yes: 0,
+    no: 0,
+    veto: 0,
+    abstain: 0
+  });
 
 
-const data = [
-  {
-    title: "Voting Starts",
-    counts: '2022-04-08 15:54:23'
-  },
-  {
-    title: "Voting Ends",
-    counts: "2022-04-10 15:54:23"
-  },
-  {
-    title: "Duration",
-    counts: "3 Days"
-  },
-  {
-    title: "Proposer",
-    counts: "comdex@123t7...123"
+  const fetchSpecificProposal = (proposalId) => {
+    fetchSpecificProposalData(proposalId).then((res) => {
+      setCurrentProposal(res);
+    }).catch((err) => {
+    })
   }
-];
 
-const dataVote = [
-  {
-    title: "Total Value",
-    counts: '24,901.25 CMST'
+  useEffect(() => {
+    fetchSpecificProposal(currentProposalId)
+  }, [address])
+
+  useEffect(() => {
+    calculateVotes()
+  }, [address, currentProposal])
+
+
+  const calculateTotalValue = () => {
+    let value = currentProposal?.votes;
+    let yes = value?.yes;
+    let no = value?.no;
+    let veto = value?.veto;
+    let abstain = value?.abstain;
+    let totalValue = yes + no + abstain + veto
+    totalValue = (totalValue / 1000000)
+    return totalValue;
   }
-];
+  const calculateVotes = () => {
+    let value = currentProposal?.votes;
+    let yes = Number(value?.yes);
+    let no = Number(value?.no);
+    let veto = Number(value?.veto);
+    let abstain = Number(value?.abstain);
+    let totalValue = yes + no + abstain + veto;
 
-const GovernDetails = (lang) => {
+    yes = (yes / totalValue) * 100
+    no = (no / totalValue) * 100
+    veto = (veto / totalValue) * 100
+    abstain = (abstain / totalValue) * 100
+
+    setGetVotes({
+      ...getVotes,
+      yes: yes,
+      no: no,
+      veto: veto,
+      abstain: abstain
+    })
+  }
+
+  const unixToGMTTime = (time) => {
+    let newTime = Math.floor(time / 1000000000);
+    var timestamp = moment.unix(newTime);
+    timestamp = timestamp.format("DD/MM/YYYY HH:MM:SS")
+    return timestamp;
+  }
+  const votingStartTime = unixToGMTTime(currentProposal?.start_time);
+  const votingEndTime = unixToGMTTime(currentProposal?.expires?.at_time);
+  const duration = moment.duration(currentProposal?.duration?.time, 'seconds');
+
+  const data = [
+    {
+      title: "Voting Starts",
+      counts: votingStartTime != "Invalid date" ? votingStartTime : "--/--/-- 00:00:00"
+    },
+    {
+      title: "Voting Ends",
+      counts: votingEndTime != "Invalid date" ? votingEndTime : "--/--/-- 00:00:00"
+    },
+    {
+      title: "Duration",
+      counts: votingEndTime != "Invalid date" ? `${duration.days()} Days ${duration.hours()} Hours` : "--/--/-- 00:00:00"
+    },
+    {
+      title: "Proposer",
+      counts: currentProposal?.proposer ? <div className="flex "><span className="mr-2">{truncateString(currentProposal?.proposer, 6, 6)}</span><span><Copy text={currentProposal?.proposer} /></span> </div> : "------",
+
+    }
+  ];
+  const dataVote = [
+    {
+      title: "Total Vote",
+      counts: currentProposal ? `${calculateTotalValue() + " " + "HABOR"}` : 0,
+    }
+  ];
   const Options = {
     chart: {
       type: "pie",
@@ -85,28 +164,29 @@ const GovernDetails = (lang) => {
         data: [
           {
             name: "Yes",
-            y: 30,
+            y: Number(getVotes?.yes || 0),
             color: "#52B788",
           },
           {
             name: "No",
-            y: 30,
+            y: Number(getVotes?.no || 0),
             color: "#F76872",
           },
           {
             name: "noWithVeto",
-            y: 20,
+            y: Number(getVotes?.veto || 0),
             color: "#AACBB9",
           },
           {
             name: "Abstain",
-            y: 20,
+            y: Number(getVotes?.abstain || 0),
             color: "#6A7B6C",
           },
         ],
       },
     ],
   };
+
   return (
     <div className="app-content-wrapper">
       <Row>
@@ -145,21 +225,23 @@ const GovernDetails = (lang) => {
           </div>
         </Col>
       </Row>
+
+
       <Row>
         <Col md="6">
           <div className="composite-card govern-card2 earn-deposite-card h-100">
             <Row>
               <Col>
-                <h3>#2</h3>
+                <h3>#{currentProposal?.id || "-"}</h3>
               </Col>
               <Col className="text-right">
-                <Button type="primary" className="btn-filled">Passed</Button>
+                <Button type="primary" className="btn-filled">{currentProposal?.status || "-"}</Button>
               </Col>
             </Row>
             <Row>
               <Col>
-                <h2>Increasing MaxValidator to 100</h2>
-                <p>adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, </p>
+                <h2>{currentProposal?.title || "---"}</h2>
+                <p>{currentProposal?.description || "----"} </p>
               </Col>
             </Row>
           </div>
@@ -198,28 +280,28 @@ const GovernDetails = (lang) => {
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
                           <label>Yes</label>
-                          <p>51.42%</p>
+                          <p>{getVotes?.yes || 0}%</p>
                         </div>
                       </li>
                       <li>
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
                           <label>No</label>
-                          <p>21.42%</p>
+                          <p>{getVotes?.no || 0}%</p>
                         </div>
                       </li>
                       <li>
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
                           <label>noWithVeto </label>
-                          <p>0.00%</p>
+                          <p>{getVotes?.veto || 0}%</p>
                         </div>
                       </li>
                       <li>
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
                           <label>Abstain</label>
-                          <p>17.70%</p>
+                          <p>{getVotes?.abstain || 0}%</p>
                         </div>
                       </li>
                     </ul>
@@ -236,15 +318,20 @@ const GovernDetails = (lang) => {
 
 GovernDetails.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  currentProposal: PropTypes.array.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
+    currentProposal: state.govern.currentProposal,
   };
 };
 
 const actionsToProps = {
+  setCurrentProposal,
 };
 
 export default connect(stateToProps, actionsToProps)(GovernDetails);
