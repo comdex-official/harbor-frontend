@@ -58,7 +58,9 @@ button {
   max-width: 100%;
   height: auto;
 }
-
+.flex {
+  display: flex;
+}
 .main_wrapper {
   display: flex;
   min-height: 100vh;
@@ -213,9 +215,9 @@ button {
       &:hover:not(&[disabled]),
       &:active,
       &:focus {
-        background-color: $secondary-color-hover;
+        background-color: rgba($secondary-color, 0.3);
         color: $white;
-        border-color: $secondary-color-hover;
+        border-color: rgba($secondary-color, 0.3);
       }
 
       &[disabled] {
