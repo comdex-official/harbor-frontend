@@ -126,7 +126,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(
+                  Number((vaultsInfo?.collateralLocked).toNumber() || 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
@@ -182,7 +182,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.totalDue?.low || 0).toFixed(
+                  Number((vaultsInfo?.totalDue).toNumber() || 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
@@ -194,7 +194,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(
+                  Number((vaultsInfo?.collateralLocked).toNumber() || 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
@@ -256,7 +256,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.totalDue?.low || 0).toFixed(
+                  Number((vaultsInfo?.totalDue).toNumber() || 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
