@@ -11,6 +11,8 @@ import TooltipIcon from "../../components/TooltipIcon";
 import {queryUserLockerStats} from "../../services/locker/query";
 import {PRODUCT_ID} from "../../constants/common";
 import {amountConversion} from "../../utils/coin";
+import {queryCollectorInformation} from "../../services/collector";
+import {queryUserVaultsStats} from "../../services/vault/query";
 
 const { TabPane } = Tabs;
 
@@ -23,11 +25,21 @@ const MyPositions = ({address}) => {
   useEffect(()=>{
     if(address) {
       fetchLockerStats()
+      fetchCollectorStats();
+      fetchVaultStats();
     }
   },[address])
 
+  const fetchCollectorStats =()=> {
+    queryCollectorInformation((error, result)=> {
+      if(error){
+        message.error(error);
+        return;
+      }
+    })
+  }
   const fetchLockerStats = () => {
-    queryUserLockerStats(PRODUCT_ID, address, (error, result)=>{
+    queryUserLockerStats(address, (error, result)=>{
       if(error){
         message.error(error);
         return;
@@ -37,6 +49,16 @@ const MyPositions = ({address}) => {
     })
   };
 
+  const fetchVaultStats = () => {
+    queryUserVaultsStats(address, (error, result)=>{
+      if(error){
+        message.error(error);
+        return;
+      }
+
+      console.log('the vaults stats', result)
+    })
+  }
   const callback = (key) => {
     if (key === "1") {
       setHistoryTab(false);
