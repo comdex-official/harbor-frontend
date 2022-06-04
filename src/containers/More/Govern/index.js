@@ -23,16 +23,16 @@ const Govern = ({
   setProposalUpData,
 }) => {
 
-  // ******* Get Vault Query *********
-  // *****Fetch all proposal***** 
   const fetchAllProposal = (productId) => {
     totalProposal(productId).then((res) => {
       setAllProposal(res)
+    }).catch((err) => {
     })
   }
   const fetchAllProposalUpData = (productId) => {
     fetchProposalUpData(productId).then((res) => {
       setProposalUpData(res)
+    }).catch((err) => {
     })
   }
 
@@ -52,7 +52,7 @@ const Govern = ({
     let avgParticipation = proposalUpData?.active_participation_supply
     avgParticipation = avgParticipation / proposalUpData?.proposal_count
     avgParticipation = avgParticipation / ((proposalUpData?.current_supply))
-    avgParticipation = avgParticipation * 100
+    avgParticipation = Number(avgParticipation * 100).toFixed(2)
     return avgParticipation;
   }
 
@@ -123,7 +123,7 @@ const Govern = ({
           <div className="comdex-card govern-card earn-deposite-card ">
             <div className="governcard-head ">
               {/* <Button type="primary" className="btn-filled">New Proposal</Button> */}
-              <Button type="primary" className="btn-filled">Forum</Button>
+              <a href="https://forum.comdex.one/" target="_blank"><Button type="primary" className="btn-filled">Forum</Button></a>
               <Select defaultValue="Filter" className="select-primary   ml-2" suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
                 <Option value="passed" className="govern-select-option">Passed</Option>
                 <Option value="rejected">Rejected</Option>
@@ -164,39 +164,7 @@ const Govern = ({
                     </div>
                   </React.Fragment>
                 )
-
               })}
-
-
-
-              {/* <div className="governlist-row" onClick={() => navigate("/govern-details")}>
-                <div className="left-section">
-                  <h3>Increasing MaxValidator to 100</h3>
-                  <p>adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, </p>
-                </div>
-                <div className="right-section">
-                  <Row>
-                    <Col sm="6">
-                      <label>Vote Starts :</label>
-                      <p>24th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Voting Ends :</label>
-                      <p>26th April, 2022</p>
-                    </Col>
-                    <Col sm="6">
-                      <label>Duration : </label>
-                      <p>3 days</p>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Progress percent={30} size="small" />
-                    </Col>
-                  </Row>
-                </div>
-              </div> */}
-
             </div>
           </div>
         </Col>
