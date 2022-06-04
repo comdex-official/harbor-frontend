@@ -2,7 +2,7 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, List, Select, Progress } from "antd";
+import { Button, List, Select, Progress, Spin } from "antd";
 import "./index.scss";
 import { fetchProposalUpData, totalProposal } from "../../../services/contractsRead";
 import React, { useEffect } from "react";
@@ -78,6 +78,31 @@ const Govern = ({
     return duration;
 
   }
+  const calculateDurationPercentage = (startTime, duration) => {
+    // formula = ((currentTime - start time)/duration )*100
+    let start = startTime
+    let totalDuration = duration
+    let currentTime = moment().format("hh:mm:ss")
+
+    // Calculating current time in sec 
+    let currentTimeInseconds = new Date(moment(currentTime, "hh:mm")).getTime()
+    // ***convertimg from milisec to sec*** 
+    currentTimeInseconds = currentTimeInseconds / 1000
+
+    // Calculating start time in sec 
+    // ***Removing miliSec from unix time*** 
+    start = Math.floor(start / 1000000000);
+    start = moment.unix(start);
+    start = start.format(" hh:mm:ss")
+
+    let startTimeInSec = new Date(moment(start, "hh:mm")).getTime()
+    startTimeInSec = startTimeInSec / 1000
+
+    // Calculating percentage 
+    let percentage = ((currentTimeInseconds - startTimeInSec) / totalDuration) * 100
+    percentage = Number(percentage).toFixed(2)
+    return percentage;
+  }
   const navigate = useNavigate();
 
   return (
@@ -125,12 +150,17 @@ const Govern = ({
               {/* <Button type="primary" className="btn-filled">New Proposal</Button> */}
               <a href="https://forum.comdex.one/" target="_blank"><Button type="primary" className="btn-filled">Forum</Button></a>
               <Select defaultValue="Filter" className="select-primary   ml-2" suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
-                <Option value="passed" className="govern-select-option">Passed</Option>
-                <Option value="rejected">Rejected</Option>
+                <Option value="all" className="govern-select-option">All</Option>
+                <Option value="voting" >Open</Option>
                 <Option value="pending">Pending</Option>
-                <Option value="voting">Voting</Option>
+                <Option value="passed" >Passed</Option>
+                <Option value="executed">Executed</Option>
+                <Option value="rejected">Rejected</Option>
               </Select>
             </div>
+
+            {!allProposal && <div className="spinner"><Spin /></div>}
+
             <div className="govern-card-content ">
               {allProposal && allProposal.map((item) => {
                 return (
@@ -157,7 +187,7 @@ const Govern = ({
                         </Row>
                         <Row>
                           <Col>
-                            <Progress percent={30} size="small" />
+                            <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time)} size="small" />
                           </Col>
                         </Row>
                       </div>

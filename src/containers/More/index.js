@@ -24,8 +24,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2> Governance</h2>
                 <p>
-                  Stake your HARBOR tokens to earn rewards and participate in
-                  governance proposals
+                  Use HRBR token to drive key decision for the protocol via proposals
                 </p>
                 <div className="button-container">
                   <Button

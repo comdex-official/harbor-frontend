@@ -83,6 +83,7 @@ const GovernDetails = ({
   }
 
   const unixToGMTTime = (time) => {
+    // *Removing miliSec from unix time 
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
     timestamp = timestamp.format("DD/MM/YYYY hh:mm:ss")
