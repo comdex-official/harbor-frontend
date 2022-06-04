@@ -51,7 +51,6 @@ export const TransactionWithKeplr = async (transaction, address, callback) => {
     return;
   }
 
-  console.log("signer", offlineSigner, accounts);
   const response = Transaction(
     offlineSigner,
     address,
@@ -64,16 +63,11 @@ export const TransactionWithKeplr = async (transaction, address, callback) => {
     .then((result) => {
       if (result && result.code !== undefined && result.code !== 0) {
         callback(result.log || result.rawLog);
-        console.log("Transaction res", result);
       } else {
-        console.log("Transaction res1", result);
-
         callback(null, result);
       }
     })
     .catch((error) => {
-      console.log("Transaction errr", error);
-
       callback(error && error.message);
     });
 };
@@ -142,8 +136,6 @@ async function Transaction(wallet, signerAddress, msgs, fee, memo = "") {
   const { accountNumber, sequence } = await cosmJS.getSequence(signerAddress);
   const clientChain = await cosmJS.getChainId();
 
-  console.log("client is", cosmJS, accountNumber, sequence, clientChain);
-
   const txRaw = await cosmJS.sign(signerAddress, msgs, fee, memo, {
     accountNumber,
     sequence: Number(sequence),
@@ -151,7 +143,6 @@ async function Transaction(wallet, signerAddress, msgs, fee, memo = "") {
   });
 
   const txBytes = Uint8Array.from(TxRaw.encode(txRaw).finish());
-  console.log("raw, bytes", txRaw, txBytes);
 
   return cosmJS
     .broadcastTx(txBytes)

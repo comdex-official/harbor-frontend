@@ -280,7 +280,6 @@ const Edit = ({
     );
   };
 
-  
   return (
     <>
       <div className="edit-tab-card">
@@ -373,13 +372,6 @@ const Edit = ({
                     Repay
                     <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
-                  <div className="maxhalf">
-                    <button
-                      className="ant-btn active"
-                    >
-                      Max
-                    </button>
-                  </div>
                 </div>
                 <CustomInput
                   value={repay}
@@ -435,6 +427,7 @@ const Edit = ({
             <Button
               type="primary"
               className="btn-filled"
+              loading={inProgress}
               disabled={
                 inProgress ||
                 inputValidationError?.message ||
