@@ -85,16 +85,15 @@ const GovernDetails = ({
   const unixToGMTTime = (time) => {
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
-    timestamp = timestamp.format("DD/MM/YYYY HH:MM:SS")
+    timestamp = timestamp.format("DD/MM/YYYY hh:mm:ss")
     return timestamp;
   }
   const votingStartTime = unixToGMTTime(currentProposal?.start_time);
   const votingEndTime = unixToGMTTime(currentProposal?.expires?.at_time);
   const duration = moment.duration(currentProposal?.duration?.time, 'seconds');
 
-  console.log(currentProposal, "all");
-  console.log(votingStartTime, "Start");
-  console.log(votingEndTime, "End");
+
+
   const data = [
     {
       title: "Voting Starts",

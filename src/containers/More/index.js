@@ -46,16 +46,16 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Airdrop</h2>
                 <p>
-                  Auction between bidders to capitalize on the liquidation of
-                  assets and acquire assets at a discounted rate
+                  Perform tasks to claim your $HARBOR airdrop.
                 </p>
                 <div className="button-container">
                   <Button
                     type="primary"
                     className="btn-filled"
-                    onClick={() => handleRouteChange("/airdrop")}
+                    disabled={true}
+                  // onClick={() => handleRouteChange("/airdrop")}
                   >
-                    Enter Now
+                    Coming Soon
                   </Button>
                 </div>
               </div>
