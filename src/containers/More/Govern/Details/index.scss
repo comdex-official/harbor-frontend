@@ -36,7 +36,7 @@
           .ant-list-item {
             margin: 5px 0;
             color: $text-color-dark2;
-            border-left: 1px solid$success-color;
+            border-left: 2px solid $secondary-color;
             padding-left: 15px;
 
             .dark-mode & {
@@ -96,25 +96,25 @@
 
             &:nth-child(1) {
               .icon {
-                fill: #52b788;
+                fill: #665aa6;
               }
             }
 
             &:nth-child(2) {
               .icon {
-                fill: #f76872;
+                fill: #bfa9d7;
               }
             }
 
             &:nth-child(3) {
               .icon {
-                fill: #aacbb9;
+                fill: #e7ddf1;
               }
             }
 
             &:nth-child(4) {
               .icon {
-                fill: #6a7b6c;
+                fill: #81808f;
               }
             }
           }

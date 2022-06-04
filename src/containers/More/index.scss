@@ -29,6 +29,7 @@
 
   .more-card-inner {
     display: flex;
+    justify-content: center;
     .morecard-left {
       padding: 15px;
       display: flex;
@@ -81,7 +82,12 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+
   .back-btn {
     padding: 0px 25px;
   }
+}
+.user-vote {
+  text-transform: capitalize;
+  padding-left: 2px;
 }
