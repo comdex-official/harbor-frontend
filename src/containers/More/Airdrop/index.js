@@ -8,15 +8,15 @@ import { Link } from "react-router-dom";
 const data = [
   {
     title: "Total Airdrop",
-    counts: '24 CMST'
+    counts: '24 HARBOR'
   },
   {
     title: "Claimed Airdrop",
-    counts: "1 CMST"
+    counts: "1 HARBOR"
   },
   {
     title: "Unclaimed Airdrop",
-    counts: "0 CMST"
+    counts: "0 HARBOR"
   },
   {
     title: "Time to claim Airdrop",
