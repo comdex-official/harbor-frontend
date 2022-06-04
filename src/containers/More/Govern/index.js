@@ -9,6 +9,7 @@ import React, { useEffect } from "react";
 import { PRODUCT_ID } from '../../../constants/common';
 import moment from "moment";
 import { setAllProposal, setProposalUpData } from "../../../actions/govern";
+import { useState } from "react";
 
 const { Option } = Select;
 
@@ -23,9 +24,12 @@ const Govern = ({
   setProposalUpData,
 }) => {
 
+  const [proposalList, setProposalList] = useState()
+
   const fetchAllProposal = (productId) => {
     totalProposal(productId).then((res) => {
       setAllProposal(res)
+      setProposalList(res)
     }).catch((err) => {
     })
   }
@@ -58,7 +62,7 @@ const Govern = ({
 
   const data = [
     {
-      title: "Total Staked",
+      title: "Total Supply",
       counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 : "-"
     },
     {
@@ -105,6 +109,18 @@ const Govern = ({
   }
   const navigate = useNavigate();
 
+  const filterAllProposal = (value) => {
+    let allFilteredProposal = allProposal && allProposal.filter((item) => {
+      if (value === "all") {
+        return allProposal
+      }
+      return item.status === value
+    })
+    setProposalList(allFilteredProposal)
+    console.log(allFilteredProposal, "Filter proposal");
+  }
+
+
   return (
     <div className="app-content-wrapper">
       <div className="back-btn-container">
@@ -149,9 +165,9 @@ const Govern = ({
             <div className="governcard-head ">
               {/* <Button type="primary" className="btn-filled">New Proposal</Button> */}
               <a href="https://forum.comdex.one/" target="_blank"><Button type="primary" className="btn-filled">Forum</Button></a>
-              <Select defaultValue="Filter" className="select-primary   ml-2" suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
+              <Select defaultValue="Filter" className="select-primary ml-2" onChange={(e) => filterAllProposal(e)} suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
                 <Option value="all" className="govern-select-option">All</Option>
-                <Option value="voting" >Open</Option>
+                <Option value="open" >Open</Option>
                 <Option value="pending">Pending</Option>
                 <Option value="passed" >Passed</Option>
                 <Option value="executed">Executed</Option>
@@ -160,11 +176,12 @@ const Govern = ({
             </div>
             {!allProposal && <div className="spinner"><Spin /></div>}
             <div className="govern-card-content ">
-              {allProposal && allProposal.map((item) => {
+              {proposalList && proposalList.map((item) => {
                 return (
                   <React.Fragment key={item?.id}>
                     <div className="governlist-row" onClick={() => navigate(`/govern-details/${item?.id}`)} >
                       <div className="left-section">
+                        <h3>#{item?.id}</h3>
                         <h3>{item?.title}</h3>
                         <p>{item?.description} </p>
                       </div>
