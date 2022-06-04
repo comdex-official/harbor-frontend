@@ -54,7 +54,9 @@ const ConnectModal = ({
             <span>{variables[lang].keplr_wallet}</span>{" "}
           </div>
         </div>
+        <div className="wallet-links">
         <ButtonSubmit/>
+        </div>
       </div>
     </Spin>
   );
