@@ -240,6 +240,7 @@ const Edit = ({
 
   const handleSubmit = () => {
     setInProgress(true);
+    message.info("Transaction initiated");
 
     signAndBroadcastTransaction(
       {

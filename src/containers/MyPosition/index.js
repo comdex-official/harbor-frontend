@@ -126,7 +126,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(
+                  Number(vaultsInfo?.collateralLocked ? (vaultsInfo?.collateralLocked).toNumber() : 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
@@ -182,7 +182,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.totalDue?.low || 0).toFixed(
+                  Number(vaultsInfo?.totalDue ? (vaultsInfo?.totalDue).toNumber() : 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
@@ -194,7 +194,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(
+                  Number(vaultsInfo?.collateralLocked ? (vaultsInfo?.collateralLocked).toNumber() : 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
@@ -233,8 +233,8 @@ const MyPositions = ({ address, balances }) => {
             <div className="stats-values">
               <h3>
                 {collectorInfo?.lockerSavingRate
-                  ? decimalConversion(collectorInfo?.lockerSavingRate) * 100
-                  : 0}
+                  ? Number(decimalConversion(collectorInfo?.lockerSavingRate) * 100).toFixed(DOLLAR_DECIMALS)
+                  : Number().toFixed(DOLLAR_DECIMALS)}
                 %
               </h3>
             </div>
@@ -256,7 +256,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {commaSeparator(
-                  Number(vaultsInfo?.totalDue?.low || 0).toFixed(
+                  Number(vaultsInfo?.totalDue ? (vaultsInfo?.totalDue).toNumber() : 0).toFixed(
                     DOLLAR_DECIMALS
                   )
                 )}
@@ -303,8 +303,8 @@ const MyPositions = ({ address, balances }) => {
                       <h4>
                         Average Collateral Ratio:{" "}
                         {vaultsInfo?.averageCrRatio
-                          ? decimalConversion(vaultsInfo?.averageCrRatio)
-                          : 0}
+                          ? Number(decimalConversion(vaultsInfo?.averageCrRatio)).toFixed(DOLLAR_DECIMALS)
+                          : Number().toFixed(DOLLAR_DECIMALS)}
                         %
                       </h4>
                     </div>

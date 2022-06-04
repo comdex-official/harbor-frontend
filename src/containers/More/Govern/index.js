@@ -117,7 +117,6 @@ const Govern = ({
       return item.status === value
     })
     setProposalList(allFilteredProposal)
-    console.log(allFilteredProposal, "Filter proposal");
   }
 
 
