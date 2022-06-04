@@ -55,7 +55,7 @@ const VoteNowModal = ({
   };
   return (
     <>
-      <Button type="primary" className="btn-filled mb-n4" onClick={showModal} loading={loading} disabled={loading} >Vote Now</Button>
+      <Button type="primary" className="btn-filled mb-n4" onClick={showModal} loading={loading} disabled={currentProposal?.status != "open"} >Vote Now</Button>
       <Modal
         centered={true}
         className="votenow-modal"

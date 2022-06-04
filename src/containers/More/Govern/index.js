@@ -63,7 +63,7 @@ const Govern = ({
   const data = [
     {
       title: "Total Supply",
-      counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 : "-"
+      counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 + " HARBOR" : "-"
     },
     {
       title: "Total Proposals",

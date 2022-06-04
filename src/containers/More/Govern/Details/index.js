@@ -127,7 +127,7 @@ const GovernDetails = ({
   const dataVote = [
     {
       title: "Total Vote",
-      counts: currentProposal ? `${calculateTotalValue() + " " + "HABOR"}` : 0,
+      counts: currentProposal ? `${(calculateTotalValue() || "0") + " " + "HARBOR"}` : 0,
     }
   ];
   const Options = {
@@ -188,7 +188,7 @@ const GovernDetails = ({
             color: "#BFA9D7",
           },
           {
-            name: "noWithVeto",
+            name: "No With Veto",
             y: Number(getVotes?.veto || 0),
             color: "#E7DDF1",
           },
@@ -309,7 +309,7 @@ const GovernDetails = ({
                       <li>
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
-                          <label>noWithVeto </label>
+                          <label>No With Veto </label>
                           <p>{getVotes?.veto || 0}%</p>
                         </div>
                       </li>
