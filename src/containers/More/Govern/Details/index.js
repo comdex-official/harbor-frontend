@@ -8,9 +8,9 @@ import "./index.scss";
 import VoteNowModal from "../VoteNowModal";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
-import { fetchSpecificProposalData } from "../../../../services/contractsRead";
+import { checkUserVote, fetchSpecificProposalData } from "../../../../services/contractsRead";
 import { useEffect } from "react";
-import { setCurrentProposal } from "../../../../actions/govern";
+import { setCurrentProposal, setUserVote } from "../../../../actions/govern";
 import { truncateString } from "../../../../utils/string";
 import Copy from "../../../../components/Copy";
 import { useState } from "react";
@@ -22,6 +22,8 @@ const GovernDetails = ({
   address,
   currentProposal,
   setCurrentProposal,
+  userVote,
+  setUserVote
 }) => {
   const { proposalId } = useParams();
   let currentProposalId = Number(proposalId);
@@ -39,9 +41,17 @@ const GovernDetails = ({
     }).catch((err) => {
     })
   }
+  const fetchUserVote = (proposalId, address) => {
+    checkUserVote(proposalId, address).then((res) => {
+      setUserVote(res.vote)
+    }).catch((err) => {
+    })
+  }
+
 
   useEffect(() => {
     fetchSpecificProposal(currentProposalId)
+    fetchUserVote(currentProposalId, address)
   }, [address])
 
   useEffect(() => {
@@ -83,6 +93,7 @@ const GovernDetails = ({
   }
 
   const unixToGMTTime = (time) => {
+    // *Removing miliSec from unix time 
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
     timestamp = timestamp.format("DD/MM/YYYY hh:mm:ss")
@@ -116,7 +127,7 @@ const GovernDetails = ({
   const dataVote = [
     {
       title: "Total Vote",
-      counts: currentProposal ? `${calculateTotalValue() + " " + "HABOR"}` : 0,
+      counts: currentProposal ? `${(calculateTotalValue() || "0") + " " + "HARBOR"}` : 0,
     }
   ];
   const Options = {
@@ -169,22 +180,22 @@ const GovernDetails = ({
           {
             name: "Yes",
             y: Number(getVotes?.yes || 0),
-            color: "#52B788",
+            color: "#665AA6",
           },
           {
             name: "No",
             y: Number(getVotes?.no || 0),
-            color: "#F76872",
+            color: "#BFA9D7",
           },
           {
-            name: "noWithVeto",
+            name: "No With Veto",
             y: Number(getVotes?.veto || 0),
-            color: "#AACBB9",
+            color: "#E7DDF1",
           },
           {
             name: "Abstain",
             y: Number(getVotes?.abstain || 0),
-            color: "#6A7B6C",
+            color: "#81808F",
           },
         ],
       },
@@ -254,7 +265,8 @@ const GovernDetails = ({
           <div className="composite-card govern-card2 earn-deposite-card">
             <Row>
               <Col className="text-right">
-                <VoteNowModal />
+                {userVote == null ? <VoteNowModal /> : <Button className="back-btn" type="primary">Your Vote :  <span className="user-vote"> {userVote?.vote || " ---"}</span> </Button>}
+
               </Col>
             </Row>
             <Row>
@@ -297,7 +309,7 @@ const GovernDetails = ({
                       <li>
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
-                          <label>noWithVeto </label>
+                          <label>No With Veto </label>
                           <p>{getVotes?.veto || 0}%</p>
                         </div>
                       </li>
@@ -324,6 +336,7 @@ GovernDetails.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   currentProposal: PropTypes.array.isRequired,
+  userVote: PropTypes.array.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -331,11 +344,13 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     currentProposal: state.govern.currentProposal,
+    userVote: state.govern.userVote,
   };
 };
 
 const actionsToProps = {
   setCurrentProposal,
+  setUserVote,
 };
 
 export default connect(stateToProps, actionsToProps)(GovernDetails);

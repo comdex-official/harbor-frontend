@@ -30,3 +30,8 @@ export const fetchProposalUpData = async (proposalId) => {
     const config = await client.queryContractSmart(contractAddr, { "app_all_up_data": { "app_id": proposalId } });
     return await config;
 }
+export const checkUserVote = async (proposalId, address) => {
+    const client = await CosmWasmClient.connect(configin.rpcEndpoint);
+    const config = await client.queryContractSmart(contractAddr, { "vote": { "proposal_id": proposalId, "voter": address } });
+    return await config;
+}

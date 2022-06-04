@@ -16,12 +16,12 @@
   }
 
   .govern-card-content {
+    min-height: 8rem;
     .governlist-row {
       display: flex;
       padding: 20px 40px 20px;
       border-bottom: 1px solid rgba($border-dark, 0.5);
       cursor: pointer;
-
       &:last-child {
         border: 0;
       }
@@ -64,11 +64,18 @@
             background: $slider-empty-bg;
             height: 15px;
             overflow: inherit;
-
+            width: 91%;
             .ant-progress-bg {
               background: $secondary-color;
               min-height: 100%;
               position: relative;
+            }
+          }
+          .ant-progress-text {
+            .dark-mode & {
+              color: $white;
+              font-weight: normal;
+              font-size: $font-size-sm - 1;
             }
           }
         }
@@ -99,4 +106,12 @@
   &:hover {
     background-color: $secondary-color !important;
   }
+}
+
+.spinner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: 8rem;
+  align-items: center;
 }

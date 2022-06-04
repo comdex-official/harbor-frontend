@@ -25,16 +25,21 @@ const VoteNowModal = ({
   const handleOk = () => {
     setLoading(true)
     if (address) {
-      transactionForVote(currentProposalId, userVote, (error, result) => {
-        if (error) {
-          message.error(error?.message)
+      if (userVote) {
+        transactionForVote(currentProposalId, userVote, (error, result) => {
+          if (error) {
+            message.error(error?.message)
+            setLoading(false)
+            return;
+          }
+          message.success("Success")
           setLoading(false)
-          return;
-        }
-        message.success("Success")
+          setIsModalVisible(false);
+        })
+      } else {
         setLoading(false)
-        setIsModalVisible(false);
-      })
+        message.error("Please select a vote option")
+      }
     }
     else {
       setLoading(false)
@@ -48,7 +53,7 @@ const VoteNowModal = ({
   };
   return (
     <>
-      <Button type="primary" className="btn-filled mb-n4" onClick={showModal} loading={loading} disabled={loading} >Vote Now</Button>
+      <Button type="primary" className="btn-filled mb-n4" onClick={showModal} loading={loading} disabled={currentProposal?.status != "open"} >Vote Now</Button>
       <Modal
         centered={true}
         className="votenow-modal"
@@ -65,7 +70,7 @@ const VoteNowModal = ({
           <Row>
             <Col sm="12">
               <h3>Your Vote</h3>
-              <p>#2 Lorem Ipsum diote Lorem Ipsum diote Lorem Ipsum diote</p>
+              <p>#{currentProposal?.id || "-"} {currentProposal?.title || "---"}</p>
               <Radio.Group name="radiogroup" onChange={(e) => setUserVote(e.target.value)}>
                 <Space direction="vertical">
                   <Radio value="yes">Yes</Radio>
@@ -79,7 +84,7 @@ const VoteNowModal = ({
           <Row className="p-0">
             <Col className="text-right mt-3">
               <Button type="primary" className="px-5 mr-3" size="large" onClick={handleCancel} loading={loading} >
-                Delete
+                Cancel
               </Button>
               <Button type="primary" className="btn-filled px-5" size="large" onClick={handleOk} loading={loading}  >
                 Confirm
@@ -102,6 +107,7 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    currentProposal: state.govern.currentProposal,
   };
 };
 
