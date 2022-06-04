@@ -7,9 +7,10 @@ import { Link } from "react-router-dom";
 import TooltipIcon from "../../components/TooltipIcon";
 import { useEffect, useState } from "react";
 import { queryUserVaults } from "../../services/vault/query";
-import { amountConversion } from "../../utils/coin";
+import {amountConversion, denomConversion} from "../../utils/coin";
 import { useNavigate } from "react-router";
 import { DOLLAR_DECIMALS } from "../../constants/common";
+import {decimalConversion} from "../../utils/number";
 
 const MyVault = ({ address }) => {
   const [vaults, setVaults] = useState();
@@ -63,7 +64,7 @@ const MyVault = ({ address }) => {
       dataIndex: "apy",
       key: "apy",
       width: 150,
-      render: (apy) => <>{apy}%</>,
+      render: (apy) => <>{(apy * 100) || 0}%</>,
     },
     {
       title: (
@@ -78,8 +79,7 @@ const MyVault = ({ address }) => {
       align: "center",
       render: (ratio) => (
         <>
-          <span>{Number(ratio || 0).toFixed(DOLLAR_DECIMALS)}</span>
-          {/*TODO: remove ratio and update value conversion*/}
+          <span>{Number((ratio * 100)|| 0).toFixed(DOLLAR_DECIMALS)}</span>
           <Progress
             className="health-progress"
             style={{ width: 130 }}
@@ -122,12 +122,12 @@ const MyVault = ({ address }) => {
         key: 1,
         vault: (
           <>
-            <div className="assets-withicon">ATOM-A</div>
+            <div className="assets-withicon">{item?.extendedPairName || ""}</div>
           </>
         ),
-        debt: amountConversion(item?.debt || 0),
-        apy: "20",
-        health: item?.collateralizationRatio / 10 ** 16,
+        debt:<> {amountConversion(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
+        apy: decimalConversion(item?.interestRate || 0),
+        health: decimalConversion(item?.collateralizationRatio || 0),
         action: item,
       };
     });

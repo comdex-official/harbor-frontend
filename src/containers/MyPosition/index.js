@@ -9,25 +9,40 @@ import "./index.scss";
 import { useState, useEffect} from "react";
 import TooltipIcon from "../../components/TooltipIcon";
 import {queryUserLockerStats} from "../../services/locker/query";
-import {PRODUCT_ID} from "../../constants/common";
-import {amountConversion} from "../../utils/coin";
+import {DOLLAR_DECIMALS, PRODUCT_ID} from "../../constants/common";
+import {amountConversion, denomConversion, getDenomBalance} from "../../utils/coin";
+import {queryCollectorInformation} from "../../services/collector";
+import {queryUserVaultsStats} from "../../services/vault/query";
+import {commaSeparator, decimalConversion} from "../../utils/number";
+import {cmst} from "../../config/network";
 
 const { TabPane } = Tabs;
 
-const MyPositions = ({address}) => {
+const MyPositions = ({address, balances}) => {
   const [earnTab, setEarnTab] = useState(true);
   const [vaultTab, setVaultTab] = useState(false);
   const [historyTab, setHistoryTab] = useState(false);
   const [lockerInfo, setLockerInfo] = useState();
+  const [vaultsInfo, setVaultsInfo] = useState();
 
   useEffect(()=>{
     if(address) {
       fetchLockerStats()
+      fetchCollectorStats();
+      fetchVaultStats();
     }
   },[address])
 
+  const fetchCollectorStats =()=> {
+    queryCollectorInformation((error, result)=> {
+      if(error){
+        message.error(error);
+        return;
+      }
+    })
+  }
   const fetchLockerStats = () => {
-    queryUserLockerStats(PRODUCT_ID, address, (error, result)=>{
+    queryUserLockerStats(address, (error, result)=>{
       if(error){
         message.error(error);
         return;
@@ -37,6 +52,16 @@ const MyPositions = ({address}) => {
     })
   };
 
+  const fetchVaultStats = () => {
+    queryUserVaultsStats(address, (error, result)=>{
+      if(error){
+        message.error(error);
+        return;
+      }
+
+      setVaultsInfo(result)
+    })
+  }
   const callback = (key) => {
     if (key === "1") {
       setHistoryTab(false);
@@ -86,14 +111,13 @@ const MyPositions = ({address}) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>145,326</h3>
-              <span></span>
+              <h3>${commaSeparator(Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(DOLLAR_DECIMALS))}</h3>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
-              <h3>123,456</h3>
-              <span>CMST</span>
+              <h3>{amountConversion(getDenomBalance(balances, cmst?.coinMinimalDenom) || 0)}</h3>
+              <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
         </>
@@ -108,7 +132,7 @@ const MyPositions = ({address}) => {
             </>
           }
           {vaultTab && <>
-            Total Due <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+            Total Borrowed <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
           </>
           }
           {historyTab && <>
@@ -127,14 +151,12 @@ const MyPositions = ({address}) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>145,326</h3>
-              <span>CMST</span>
+              <h3>${commaSeparator(Number(vaultsInfo?.totalDue?.low || 0).toFixed(DOLLAR_DECIMALS))}</h3>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
-              <h3>123,456</h3>
-              <span>CMST</span>
+              <h3>${commaSeparator(Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(DOLLAR_DECIMALS))}</h3>
             </div>
           )}
         </>
@@ -169,14 +191,12 @@ const MyPositions = ({address}) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>3562</h3>
-              <span>CMST</span>
+              <h3>${commaSeparator(Number(vaultsInfo?.availableToBorrow || 0).toFixed(DOLLAR_DECIMALS))}</h3>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
-              <h3>123,456</h3>
-              <span>CMST</span>
+              <h3>${commaSeparator(Number(vaultsInfo?.totalDue?.low || 0).toFixed(DOLLAR_DECIMALS))}</h3>
             </div>
           )}
         </>
@@ -216,15 +236,12 @@ const MyPositions = ({address}) => {
                 <div className="borrow-limit-bar">
                   <div className="borrow-limit-upper">
                     <div>
-                      <h4>0.00%</h4>
+                      <h4>Average Collateral Ratio: {vaultsInfo?.averageCrRatio ?
+                          decimalConversion( vaultsInfo?.averageCrRatio): 0}%</h4>
                     </div>
                   </div>
                   <div className="borrow-limit-middle">
-                    <Progress percent={30} size="small" />
-                  </div>
-                  <div className="borrow-limit-bottom">
-                    <div className="small-text">Collateral :$0.00</div>
-                    <div className="small-text">Borrowed :$0.00</div>
+                    <Progress percent={vaultsInfo?.averageCrRatio ? Number(vaultsInfo?.averageCrRatio)* 100 : 0} size="small" />
                   </div>
                 </div>
               </div>
@@ -258,12 +275,19 @@ const MyPositions = ({address}) => {
 MyPositions.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string,
+  balances: PropTypes.arrayOf(
+      PropTypes.shape({
+        denom: PropTypes.string.isRequired,
+        amount: PropTypes.string,
+      })
+  ),
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    balances: state.account.balances.list,
   };
 };
 

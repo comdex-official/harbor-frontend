@@ -27,12 +27,10 @@ const VoteNowModal = ({
     if (address) {
       transactionForVote(currentProposalId, userVote, (error, result) => {
         if (error) {
-          console.log(error);
           message.error(error?.message)
           setLoading(false)
           return;
         }
-        console.log(result);
         message.success("Success")
         setLoading(false)
         setIsModalVisible(false);

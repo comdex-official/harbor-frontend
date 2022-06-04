@@ -4647,12 +4647,12 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-comdex-codec@comdex-official/proto-codecs#test-dev-proto-js:
+comdex-codec@comdex-official/proto-codecs#main:
   version "0.1.0"
-  resolved "git+ssh://git@github.com/comdex-official/proto-codecs.git#80e8caf2d205beb52e9aaf480897181e23096d23"
+  resolved "git+ssh://git@github.com/comdex-official/proto-codecs.git#c382304001337d18455e686fb3faca750e7f9fc3"
   dependencies:
     "@vercel/ncc" "^0.29.1"
-    protobufjs "^6.11.2"
+    protobufjs "^6.11.3"
     ts-proto "^1.104.0"
 
 commander@^2.20.0:
@@ -10604,7 +10604,7 @@ prop-types@^15.5.10, prop-types@^15.6.1, prop-types@^15.7.2, prop-types@^15.8.1:
     object-assign "^4.1.1"
     react-is "^16.13.1"
 
-protobufjs@^6.11.2, protobufjs@^6.8.8, protobufjs@~6.11.2:
+protobufjs@^6.11.2, protobufjs@^6.11.3, protobufjs@^6.8.8, protobufjs@~6.11.2:
   version "6.11.3"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.11.3.tgz#637a527205a35caa4f3e2a9a4a13ddffe0e7af74"
   integrity sha512-xL96WDdCZYdU7Slin569tFX712BxsxslWwAfAhCYjQKGTq7dAU91Lomy6nLLhh/dyGhk/YH4TwTSRxTzhuHyZg==

@@ -161,7 +161,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
           color: "#FFCEFF",
         },
       },
-      categories: [null, null, "1", "2", "3", "4"],
+      categories: ["1", "2", "3", "4"],
     },
     xAxis: {
       lineColor: false,

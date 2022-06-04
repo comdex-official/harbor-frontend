@@ -59,15 +59,12 @@ export const transactionForVote = async (proposalId, vote, callback) => {
                 customFees.exec
             ).then((response) => {
                 callback(null, response)
-                // console.log(response)
 
             }).catch((err) => {
                 callback(err)
-                console.log("err", err);
             })
         }).catch((error) => {
             callback(error)
-            console.log("error", error)
         });
 
 }
