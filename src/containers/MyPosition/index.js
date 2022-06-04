@@ -108,7 +108,7 @@ const MyPositions = ({address}) => {
             </>
           }
           {vaultTab && <>
-            Total Due <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+            Total Borrowed <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
           </>
           }
           {historyTab && <>
@@ -216,15 +216,11 @@ const MyPositions = ({address}) => {
                 <div className="borrow-limit-bar">
                   <div className="borrow-limit-upper">
                     <div>
-                      <h4>0.00%</h4>
+                      <h4>Average Collateral Ratio: 0.00%</h4>
                     </div>
                   </div>
                   <div className="borrow-limit-middle">
                     <Progress percent={30} size="small" />
-                  </div>
-                  <div className="borrow-limit-bottom">
-                    <div className="small-text">Collateral :$0.00</div>
-                    <div className="small-text">Borrowed :$0.00</div>
                   </div>
                 </div>
               </div>
