@@ -1,42 +1,74 @@
 import * as PropTypes from "prop-types";
 import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
-import { Progress, Tabs, List, message} from "antd";
+import { Progress, Tabs, List, message } from "antd";
 import MyEarn from "./MyLocker";
 import Borrow from "./MyVault";
 import History from "./History";
-import "./index.scss";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import TooltipIcon from "../../components/TooltipIcon";
-import {queryUserLockerStats} from "../../services/locker/query";
-import {PRODUCT_ID} from "../../constants/common";
-import {amountConversion} from "../../utils/coin";
+import { queryUserLockerStats } from "../../services/locker/query";
+import { DOLLAR_DECIMALS } from "../../constants/common";
+import {
+  amountConversion,
+  denomConversion,
+  getDenomBalance,
+} from "../../utils/coin";
+import { queryCollectorInformation } from "../../services/collector";
+import { queryUserVaultsStats } from "../../services/vault/query";
+import { commaSeparator, decimalConversion } from "../../utils/number";
+import { cmst } from "../../config/network";
+import "./index.scss";
 
 const { TabPane } = Tabs;
 
-const MyPositions = ({address}) => {
+const MyPositions = ({ address, balances }) => {
   const [earnTab, setEarnTab] = useState(true);
   const [vaultTab, setVaultTab] = useState(false);
   const [historyTab, setHistoryTab] = useState(false);
   const [lockerInfo, setLockerInfo] = useState();
+  const [vaultsInfo, setVaultsInfo] = useState();
+  const [collectorInfo, setCollectorInfo] = useState();
 
-  useEffect(()=>{
-    if(address) {
-      fetchLockerStats()
+  useEffect(() => {
+    if (address) {
+      fetchLockerStats();
+      fetchCollectorStats();
+      fetchVaultStats();
     }
-  },[address])
+  }, [address]);
 
-  const fetchLockerStats = () => {
-    queryUserLockerStats(PRODUCT_ID, address, (error, result)=>{
-      if(error){
+  const fetchCollectorStats = () => {
+    queryCollectorInformation((error, result) => {
+      if (error) {
         message.error(error);
         return;
       }
 
-      setLockerInfo(result?.lockerInfo[0])
-    })
+      setCollectorInfo(result?.collectorLookup[0]);
+    });
+  };
+  const fetchLockerStats = () => {
+    queryUserLockerStats(address, (error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      setLockerInfo(result?.lockerInfo[0]);
+    });
   };
 
+  const fetchVaultStats = () => {
+    queryUserVaultsStats(address, (error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      setVaultsInfo(result);
+    });
+  };
   const callback = (key) => {
     if (key === "1") {
       setHistoryTab(false);
@@ -54,26 +86,31 @@ const MyPositions = ({address}) => {
       setEarnTab(false);
       setVaultTab(false);
       setHistoryTab(true);
-
     }
-  }
+  };
 
   const data = [
     {
       title: (
         <>
-          {earnTab &&
+          {earnTab && (
             <>
-              Current Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
-            </>}
-          {vaultTab && <>
-            Collateral Locked <TooltipIcon text="Total amount of collateral locked across all vaults" />
-          </>}
-          {historyTab &&
-            <>
-              Current CMST Balance <TooltipIcon text="Current balance of Composite deposited in Locker" />
+              Current Balance{" "}
+              <TooltipIcon text="Current balance of Composite deposited in Locker" />
             </>
-          }
+          )}
+          {vaultTab && (
+            <>
+              Collateral Locked{" "}
+              <TooltipIcon text="Total amount of collateral locked across all vaults" />
+            </>
+          )}
+          {historyTab && (
+            <>
+              Current CMST Balance{" "}
+              <TooltipIcon text="Current balance of Composite deposited in Locker" />
+            </>
+          )}
         </>
       ),
       counts: (
@@ -86,14 +123,24 @@ const MyPositions = ({address}) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>145,326</h3>
-              <span></span>
+              <h3>
+                $
+                {commaSeparator(
+                  Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(
+                    DOLLAR_DECIMALS
+                  )
+                )}
+              </h3>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
-              <h3>123,456</h3>
-              <span>CMST</span>
+              <h3>
+                {amountConversion(
+                  getDenomBalance(balances, cmst?.coinMinimalDenom) || 0
+                )}
+              </h3>
+              <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
         </>
@@ -102,19 +149,24 @@ const MyPositions = ({address}) => {
     {
       title: (
         <>
-          {earnTab &&
+          {earnTab && (
             <>
-              Total interest Earned <TooltipIcon text="Total interest accumulated till date from Locker" />
+              Total interest Earned{" "}
+              <TooltipIcon text="Total interest accumulated till date from Locker" />
             </>
-          }
-          {vaultTab && <>
-            Total Due <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
-          </>
-          }
-          {historyTab && <>
-            Collateral Locked <TooltipIcon text="Total amount of collateral locked across all vaults" />
-          </>
-          }
+          )}
+          {vaultTab && (
+            <>
+              Total Borrowed{" "}
+              <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+            </>
+          )}
+          {historyTab && (
+            <>
+              Collateral Locked{" "}
+              <TooltipIcon text="Total amount of collateral locked across all vaults" />
+            </>
+          )}
         </>
       ),
       counts: (
@@ -127,14 +179,26 @@ const MyPositions = ({address}) => {
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>145,326</h3>
-              <span>CMST</span>
+              <h3>
+                $
+                {commaSeparator(
+                  Number(vaultsInfo?.totalDue?.low || 0).toFixed(
+                    DOLLAR_DECIMALS
+                  )
+                )}
+              </h3>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
-              <h3>123,456</h3>
-              <span>CMST</span>
+              <h3>
+                $
+                {commaSeparator(
+                  Number(vaultsInfo?.collateralLocked?.low || 0).toFixed(
+                    DOLLAR_DECIMALS
+                  )
+                )}
+              </h3>
             </div>
           )}
         </>
@@ -143,40 +207,60 @@ const MyPositions = ({address}) => {
     {
       title: (
         <>
-          {earnTab &&
+          {earnTab && (
             <>
-              Current interest Rate <TooltipIcon text="Current annual interest rate of Locker" />
+              Current interest Rate{" "}
+              <TooltipIcon text="Current annual interest rate of Locker" />
             </>
-          }
-          {vaultTab &&
+          )}
+          {vaultTab && (
             <>
-              Available To Borrow <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
+              Available To Borrow{" "}
+              <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
             </>
-          }
-          {historyTab && <>
-            Total Borrowed <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
-          </>
-          }
+          )}
+          {historyTab && (
+            <>
+              Total Borrowed{" "}
+              <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
+            </>
+          )}
         </>
       ),
       counts: (
         <>
           {earnTab && (
             <div className="stats-values">
-              <h3>6%</h3>
-              <span></span>
+              <h3>
+                {collectorInfo?.lockerSavingRate
+                  ? decimalConversion(collectorInfo?.lockerSavingRate) * 100
+                  : 0}
+                %
+              </h3>
             </div>
           )}
           {vaultTab && (
             <div className="stats-values">
-              <h3>3562</h3>
-              <span>CMST</span>
+              <h3>
+                $
+                {commaSeparator(
+                  Number(vaultsInfo?.availableToBorrow || 0).toFixed(
+                    DOLLAR_DECIMALS
+                  )
+                )}
+              </h3>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
-              <h3>123,456</h3>
-              <span>CMST</span>
+              <h3>
+                $
+                {commaSeparator(
+                  Number(vaultsInfo?.totalDue?.low || 0).toFixed(
+                    DOLLAR_DECIMALS
+                  )
+                )}
+              </h3>
             </div>
           )}
         </>
@@ -216,15 +300,24 @@ const MyPositions = ({address}) => {
                 <div className="borrow-limit-bar">
                   <div className="borrow-limit-upper">
                     <div>
-                      <h4>0.00%</h4>
+                      <h4>
+                        Average Collateral Ratio:{" "}
+                        {vaultsInfo?.averageCrRatio
+                          ? decimalConversion(vaultsInfo?.averageCrRatio)
+                          : 0}
+                        %
+                      </h4>
                     </div>
                   </div>
                   <div className="borrow-limit-middle">
-                    <Progress percent={30} size="small" />
-                  </div>
-                  <div className="borrow-limit-bottom">
-                    <div className="small-text">Collateral :$0.00</div>
-                    <div className="small-text">Borrowed :$0.00</div>
+                    <Progress
+                      percent={
+                        vaultsInfo?.averageCrRatio
+                          ? Number(vaultsInfo?.averageCrRatio) * 100
+                          : 0
+                      }
+                      size="small"
+                    />
                   </div>
                 </div>
               </div>
@@ -258,12 +351,19 @@ const MyPositions = ({address}) => {
 MyPositions.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string,
+  balances: PropTypes.arrayOf(
+    PropTypes.shape({
+      denom: PropTypes.string.isRequired,
+      amount: PropTypes.string,
+    })
+  ),
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    balances: state.account.balances.list,
   };
 };
 
