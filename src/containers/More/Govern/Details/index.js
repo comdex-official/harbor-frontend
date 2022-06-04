@@ -92,9 +92,7 @@ const GovernDetails = ({
   const votingEndTime = unixToGMTTime(currentProposal?.expires?.at_time);
   const duration = moment.duration(currentProposal?.duration?.time, 'seconds');
 
-  console.log(currentProposal, "all");
-  console.log(votingStartTime, "Start");
-  console.log(votingEndTime, "End");
+
 
   const data = [
     {
