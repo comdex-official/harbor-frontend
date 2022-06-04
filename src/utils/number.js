@@ -44,3 +44,7 @@ export const calculateROI = (principal, interestRate, years, months, days) => {
 
   return earns.toFixed(DOLLAR_DECIMALS)
 }
+
+export const getAccountNumber = (value) => {
+  return value === "" ? "0" : value;
+};
