@@ -27,7 +27,6 @@ export const transactionForVote = async (proposalId, vote, callback) => {
     const httpUrl = comdex?.rpc;
     let walletAddress = localStorage.getItem("ac");
     walletAddress=decode(walletAddress);
-    console.log(walletAddress);
     const handleMsg = {
         "vote":
         {
