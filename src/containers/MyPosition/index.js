@@ -24,6 +24,7 @@ const MyPositions = ({address, balances}) => {
   const [historyTab, setHistoryTab] = useState(false);
   const [lockerInfo, setLockerInfo] = useState();
   const [vaultsInfo, setVaultsInfo] = useState();
+  const [collectorInfo, setCollectorInfo] = useState();
 
   useEffect(()=>{
     if(address) {
@@ -39,6 +40,8 @@ const MyPositions = ({address, balances}) => {
         message.error(error);
         return;
       }
+
+      setCollectorInfo(result?.collectorLookup[0])
     })
   }
   const fetchLockerStats = () => {
@@ -185,7 +188,7 @@ const MyPositions = ({address, balances}) => {
         <>
           {earnTab && (
             <div className="stats-values">
-              <h3>6%</h3>
+              <h3>{collectorInfo?.lockerSavingRate? decimalConversion( collectorInfo?.lockerSavingRate) * 100 : 0}%</h3>
               <span></span>
             </div>
           )}
