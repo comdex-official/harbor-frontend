@@ -158,9 +158,7 @@ const Govern = ({
                 <Option value="rejected">Rejected</Option>
               </Select>
             </div>
-
             {!allProposal && <div className="spinner"><Spin /></div>}
-
             <div className="govern-card-content ">
               {allProposal && allProposal.map((item) => {
                 return (
