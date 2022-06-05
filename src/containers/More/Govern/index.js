@@ -105,6 +105,7 @@ const Govern = ({
     // Calculating percentage 
     let percentage = ((currentTimeInseconds - startTimeInSec) / totalDuration) * 100
     percentage = Number(percentage).toFixed(2)
+    percentage = Math.abs(percentage)
     return percentage;
   }
   const navigate = useNavigate();
