@@ -88,7 +88,6 @@ const MyPositions = ({ address, balances }) => {
       setHistoryTab(true);
     }
   };
-
   const data = [
     {
       title: (
@@ -126,7 +125,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {amountConversionWithComma(
-                  Number(vaultsInfo?.collateralLocked || 0)
+                  Number(vaultsInfo?.collateralLocked || 0), 2
                 )}
               </h3>
             </div>
@@ -180,7 +179,7 @@ const MyPositions = ({ address, balances }) => {
           {vaultTab && (
             <div className="stats-values">
               <h3>
-                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
+                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), 2)}
               </h3>
             </div>
           )}
@@ -189,7 +188,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {amountConversionWithComma(
-                  Number(vaultsInfo?.collateralLocked || 0)
+                  Number(vaultsInfo?.collateralLocked || 0), 2
                 )}
               </h3>
             </div>
@@ -227,8 +226,8 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 {collectorInfo?.lockerSavingRate
                   ? Number(
-                      decimalConversion(collectorInfo?.lockerSavingRate) * 100
-                    ).toFixed(DOLLAR_DECIMALS)
+                    decimalConversion(collectorInfo?.lockerSavingRate) * 100
+                  ).toFixed(DOLLAR_DECIMALS)
                   : Number().toFixed(DOLLAR_DECIMALS)}
                 %
               </h3>
@@ -239,7 +238,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {amountConversionWithComma(
-                  Number(vaultsInfo?.availableToBorrow || 0)
+                  Number(vaultsInfo?.availableToBorrow || 0), 2
                 )}
               </h3>
             </div>
@@ -247,7 +246,7 @@ const MyPositions = ({ address, balances }) => {
           {historyTab && (
             <div className="stats-values">
               <h3>
-                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
+                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), 2)}
               </h3>
             </div>
           )}
