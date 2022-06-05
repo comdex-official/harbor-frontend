@@ -8,6 +8,7 @@ export const comdex = {
   rpc: "https://testrpc-commodo.comdex.one",
   rest: "https://testrest-commodo.comdex.one",
   explorerUrlToTx: `https://dev-explorer.comdex.one/transactions/{txHash}`,
+  coinType: 118,
 };
 
 export const cmst = {

@@ -13,6 +13,7 @@ import {
 } from "../../actions/account";
 import React, { useState } from "react";
 import variables from "../../utils/variables";
+import ButtonSubmit from "../NavigationBar/Ledger";
 
 const ConnectModal = ({
   setAccountAddress,
@@ -38,6 +39,7 @@ const ConnectModal = ({
       })
 
       localStorage.setItem("ac", encode(account.address));
+      localStorage.setItem("loginType", "keplr")
       showAccountConnectModal(false);
     });
   };
@@ -52,6 +54,9 @@ const ConnectModal = ({
           <div className="wallet-links" onClick={handleConnectToKeplr}>
             <span>{variables[lang].keplr_wallet}</span>{" "}
           </div>
+        </div>
+        <div className="wallet-links">
+        <ButtonSubmit/>
         </div>
       </div>
     </Spin>

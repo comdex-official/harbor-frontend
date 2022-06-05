@@ -22,7 +22,7 @@ const PricePool = ({ownerVaultInfo, markets, pair}) => {
         counts: `$${commaSeparator(Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS))}`
     },
     {
-      title: "Dutch Deposited",
+      title: "Collateral Deposited",
         counts: `$${commaSeparator(Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS))}`
     },
     {

@@ -123,4 +123,10 @@
       }
     }
   }
+  .alert-label {
+    color: $black;
+    .dark-mode & {
+      color: $text-color-light;
+    }
+  }
 }

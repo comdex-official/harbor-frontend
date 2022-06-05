@@ -1,8 +1,8 @@
-import { sha256 } from "@cosmjs/crypto";
 import { comdex } from "../config/network";
 import { denomConversion } from "./coin";
 import { calculatePoolShare } from "./calculations";
 import { ibcDenoms } from "../config/network";
+import { sha256, stringToPath } from "@cosmjs/crypto";
 
 const encoding = require("@cosmjs/encoding");
 
@@ -212,4 +212,14 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   );
 
   return [...new Set(quoteMap)];
+};
+
+export const makeHdPath = (
+  accountNumber = "0",
+  addressIndex = "0",
+  coinType = comdex.coinType
+) => {
+  return stringToPath(
+    "m/44'/" + coinType + "'/" + accountNumber + "'/0/" + addressIndex
+  );
 };
