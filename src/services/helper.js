@@ -51,21 +51,24 @@ export const TransactionWithKeplr = async (transaction, address, callback) => {
     return;
   }
 
-  const response = Transaction(
-    offlineSigner,
-    address,
-    [transaction?.message],
-    transaction?.fee,
-    transaction?.memo
-  );
+  SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
+    registry: myRegistry, aminoTypes: aminoTypes 
+  })
+    .then((client) => {
+      client
+        .signAndBroadcast(
+          address,
+          [transaction.message],
+          transaction.fee,
+          transaction.memo
+        )
+        .then((result) => {
 
-  response
-    .then((result) => {
-      if (result && result.code !== undefined && result.code !== 0) {
-        callback(result.log || result.rawLog);
-      } else {
-        callback(null, result);
-      }
+          callback(null, result);
+        })
+        .catch((error) => {
+          callback(error?.message);
+        })
     })
     .catch((error) => {
       callback(error && error.message);
@@ -115,11 +118,7 @@ export async function TransactionWithLedger(
 
   response
     .then((result) => {
-      if (result && result.code !== undefined && result.code !== 0) {
-        callback(result.log || result.rawLog);
-      } else {
-        callback(null, result);
-      }
+      callback(null, result);
     })
     .catch((error) => {
       callback(error && error.message);
@@ -144,10 +143,7 @@ async function Transaction(wallet, signerAddress, msgs, fee, memo = "") {
 
   const txBytes = Uint8Array.from(TxRaw.encode(txRaw).finish());
 
-  return cosmJS
-    .broadcastTx(txBytes)
-    .then((res) => console.log("res", res))
-    .catch((error) => console.log("error", error));
+  return cosmJS.broadcastTx(txBytes);
 }
 
 export const aminoSignIBCTx = (config, transaction, callback) => {
