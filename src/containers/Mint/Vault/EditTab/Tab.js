@@ -287,11 +287,6 @@ const Edit = ({
     );
   };
 
-  useEffect(() => {
-    if (currentCollateral) {
-      setNewCollateralRatio(Number(amountConversion(currentCollateral)))
-    }
-  }, [currentCollateral])
   return (
     <>
       <div className="edit-tab-card">
