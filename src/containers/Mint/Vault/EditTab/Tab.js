@@ -386,13 +386,16 @@ const Edit = ({
                     Repay
                     <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
-                  {/* <div className="maxhalf">
+                  <div className="maxhalf">
                     <button
                       className="ant-btn active"
+                      onClick={() => {
+                        setRepay(amountConversion(currentDebt))
+                      }}
                     >
                       Max
                     </button>
-                  </div> */}
+                  </div>
                 </div>
                 <CustomInput
                   value={repay}
