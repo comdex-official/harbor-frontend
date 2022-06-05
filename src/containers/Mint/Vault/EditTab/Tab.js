@@ -386,6 +386,16 @@ const Edit = ({
                     Repay
                     <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
+                  <div className="maxhalf">
+                    <button
+                      className="ant-btn active"
+                      onClick={() => {
+                        setRepay(amountConversion(currentDebt))
+                      }}
+                    >
+                      Max
+                    </button>
+                  </div>
                 </div>
                 <CustomInput
                   value={repay}
@@ -415,10 +425,10 @@ const Edit = ({
                     (collateralRatio <= 150
                       ? " red-track"
                       : collateralRatio < 200
-                      ? " orange-track"
-                      : collateralRatio >= 200
-                      ? " green-track"
-                      : " ")
+                        ? " orange-track"
+                        : collateralRatio >= 200
+                          ? " green-track"
+                          : " ")
                   }
                   defaultValue="150"
                   marks={marks}
@@ -449,7 +459,7 @@ const Edit = ({
                 inProgress ||
                 inputValidationError?.message ||
                 !Number(inputAmount) ||
-                Number(newCollateralRatio) < 150 
+                Number(newCollateralRatio) < 150
 
               }
               onClick={() => handleSubmit()}

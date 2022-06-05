@@ -202,6 +202,15 @@ const GovernDetails = ({
     ],
   };
 
+  const getUserVote = (vote) => {
+    if (vote == "veto") {
+      return "No with veto"
+    }
+    else {
+      return vote
+    }
+  }
+
   return (
     <div className="app-content-wrapper">
       <Row>
@@ -265,7 +274,7 @@ const GovernDetails = ({
           <div className="composite-card govern-card2 earn-deposite-card">
             <Row>
               <Col className="text-right">
-                {userVote == null ? <VoteNowModal /> : <Button className="back-btn" type="primary">Your Vote :  <span className="user-vote"> {userVote?.vote || " ---"}</span> </Button>}
+                {userVote == null ? <VoteNowModal /> : <Button className="back-btn" type="primary">Your Vote :  <span className="user-vote"> {getUserVote(userVote?.vote) || " ---"}</span> </Button>}
 
               </Col>
             </Row>
