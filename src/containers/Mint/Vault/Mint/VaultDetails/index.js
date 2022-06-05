@@ -79,12 +79,12 @@ const VaultDetails = ({
           </div>
           <div className="assets-row">
             <div className="asset-name">Stability Fee </div>
-            {/* TODO: Update the values properly */}
+            {/* TODO: Update the divide values properly */}
             <div className="asset-value">{((selectedExtentedPairVaultListData?.stabilityFee) / 10 ** 16) || "0"}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Closing Fee</div>
-            <div className="asset-value">{((selectedExtentedPairVaultListData?.closingFee) / 10 ** 16) || "0"}%</div>
+            <div className="asset-name">Drawdown Fee</div>
+            <div className="asset-value">{((selectedExtentedPairVaultListData?.drawDownFee) / 10 ** 16) || "0"}%</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Liquidation Ratio</div>
