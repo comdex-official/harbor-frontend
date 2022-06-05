@@ -89,7 +89,6 @@ const MyPositions = ({ address, balances }) => {
     }
   };
 
-  console.log("vaults info", vaultsInfo);
   const data = [
     {
       title: (
