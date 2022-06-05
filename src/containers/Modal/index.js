@@ -39,6 +39,7 @@ const ConnectModal = ({
       })
 
       localStorage.setItem("ac", encode(account.address));
+      localStorage.setItem("loginType", "keplr")
       showAccountConnectModal(false);
     });
   };
