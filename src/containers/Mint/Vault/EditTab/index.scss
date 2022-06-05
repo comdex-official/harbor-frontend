@@ -124,9 +124,10 @@
     }
   }
   .alert-label {
-    color: $black;
+    color: $text-color-light;
+
     .dark-mode & {
-      color: $text-color-light;
+      color: #fff;
     }
   }
 }
