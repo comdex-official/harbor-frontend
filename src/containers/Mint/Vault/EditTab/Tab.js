@@ -373,13 +373,13 @@ const Edit = ({
                     Repay
                     <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
-                  <div className="maxhalf">
+                  {/* <div className="maxhalf">
                     <button
                       className="ant-btn active"
                     >
                       Max
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 <CustomInput
                   value={repay}
