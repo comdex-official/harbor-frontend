@@ -10,7 +10,7 @@ import TooltipIcon from "../../components/TooltipIcon";
 import { queryUserLockerStats } from "../../services/locker/query";
 import { DOLLAR_DECIMALS } from "../../constants/common";
 import {
-  amountConversion,
+  amountConversionWithComma,
   denomConversion,
   getDenomBalance,
 } from "../../utils/coin";
@@ -89,6 +89,7 @@ const MyPositions = ({ address, balances }) => {
     }
   };
 
+  console.log("vaults info", vaultsInfo);
   const data = [
     {
       title: (
@@ -117,7 +118,7 @@ const MyPositions = ({ address, balances }) => {
         <>
           {earnTab && (
             <div className="stats-values">
-              <h3>{amountConversion(lockerInfo?.netBalance || 0)}</h3>
+              <h3>{amountConversionWithComma(lockerInfo?.netBalance || 0)}</h3>
               <span>CMST</span>
             </div>
           )}
@@ -125,10 +126,8 @@ const MyPositions = ({ address, balances }) => {
             <div className="stats-values">
               <h3>
                 $
-                {commaSeparator(
-                  Number(vaultsInfo?.collateralLocked ? (vaultsInfo?.collateralLocked).toNumber() : 0).toFixed(
-                    DOLLAR_DECIMALS
-                  )
+                {amountConversionWithComma(
+                  Number(vaultsInfo?.collateralLocked || 0)
                 )}
               </h3>
             </div>
@@ -136,7 +135,7 @@ const MyPositions = ({ address, balances }) => {
           {historyTab && (
             <div className="stats-values">
               <h3>
-                {amountConversion(
+                {amountConversionWithComma(
                   getDenomBalance(balances, cmst?.coinMinimalDenom) || 0
                 )}
               </h3>
@@ -173,19 +172,16 @@ const MyPositions = ({ address, balances }) => {
         <>
           {earnTab && (
             <div className="stats-values">
-              <h3>{amountConversion(lockerInfo?.returnsAccumulated || 0)}</h3>
+              <h3>
+                {amountConversionWithComma(lockerInfo?.returnsAccumulated || 0)}
+              </h3>
               <span>CMST</span>
             </div>
           )}
           {vaultTab && (
             <div className="stats-values">
               <h3>
-                $
-                {commaSeparator(
-                  Number(vaultsInfo?.totalDue ? (vaultsInfo?.totalDue).toNumber() : 0).toFixed(
-                    DOLLAR_DECIMALS
-                  )
-                )}
+                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
               </h3>
             </div>
           )}
@@ -193,10 +189,8 @@ const MyPositions = ({ address, balances }) => {
             <div className="stats-values">
               <h3>
                 $
-                {commaSeparator(
-                  Number(vaultsInfo?.collateralLocked ? (vaultsInfo?.collateralLocked).toNumber() : 0).toFixed(
-                    DOLLAR_DECIMALS
-                  )
+                {amountConversionWithComma(
+                  Number(vaultsInfo?.collateralLocked || 0)
                 )}
               </h3>
             </div>
@@ -233,7 +227,9 @@ const MyPositions = ({ address, balances }) => {
             <div className="stats-values">
               <h3>
                 {collectorInfo?.lockerSavingRate
-                  ? Number(decimalConversion(collectorInfo?.lockerSavingRate) * 100).toFixed(DOLLAR_DECIMALS)
+                  ? Number(
+                      decimalConversion(collectorInfo?.lockerSavingRate) * 100
+                    ).toFixed(DOLLAR_DECIMALS)
                   : Number().toFixed(DOLLAR_DECIMALS)}
                 %
               </h3>
@@ -243,10 +239,8 @@ const MyPositions = ({ address, balances }) => {
             <div className="stats-values">
               <h3>
                 $
-                {commaSeparator(
-                  Number(vaultsInfo?.availableToBorrow || 0).toFixed(
-                    DOLLAR_DECIMALS
-                  )
+                {amountConversionWithComma(
+                  Number(vaultsInfo?.availableToBorrow || 0)
                 )}
               </h3>
             </div>
@@ -254,12 +248,7 @@ const MyPositions = ({ address, balances }) => {
           {historyTab && (
             <div className="stats-values">
               <h3>
-                $
-                {commaSeparator(
-                  Number(vaultsInfo?.totalDue ? (vaultsInfo?.totalDue).toNumber() : 0).toFixed(
-                    DOLLAR_DECIMALS
-                  )
-                )}
+                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
               </h3>
             </div>
           )}
@@ -302,8 +291,10 @@ const MyPositions = ({ address, balances }) => {
                     <div>
                       <h4>
                         Average Collateral Ratio:{" "}
+
+
                         {vaultsInfo?.averageCrRatio
-                          ? Number(decimalConversion(vaultsInfo?.averageCrRatio)).toFixed(DOLLAR_DECIMALS)
+                          ? Number(Number(decimalConversion(vaultsInfo?.averageCrRatio)) * 100).toFixed(DOLLAR_DECIMALS)
                           : Number().toFixed(DOLLAR_DECIMALS)}
                         %
                       </h4>
