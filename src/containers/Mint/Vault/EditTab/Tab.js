@@ -56,7 +56,7 @@ const Edit = ({
   const [editType, setEditType] = useState("deposit");
   const [inputValidationError, setInputValidationError] = useState();
   const [newCollateralRatio, setNewCollateralRatio] = useState();
-  const [collateralRatio, setCollateralRatio] = useState(200);
+  const [collateralRatio, setCollateralRatio] = useState();
   const [deposit, setDeposit] = useState();
   const [withdraw, setWithdraw] = useState();
   const [repay, setRepay] = useState();
@@ -98,6 +98,7 @@ const Edit = ({
   };
 
   const currentCollateral = ownerVaultInfo?.amountIn || 0;
+
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
 
@@ -286,6 +287,11 @@ const Edit = ({
     );
   };
 
+  useEffect(() => {
+    if (currentCollateral) {
+      setNewCollateralRatio(Number(amountConversion(currentCollateral)))
+    }
+  }, [currentCollateral])
   return (
     <>
       <div className="edit-tab-card">
