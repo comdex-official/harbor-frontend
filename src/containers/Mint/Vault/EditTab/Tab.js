@@ -55,7 +55,7 @@ const Edit = ({
   const [inputAmount, setInputAmount] = useState();
   const [editType, setEditType] = useState("deposit");
   const [inputValidationError, setInputValidationError] = useState();
-  const [newCollateralRatio, setNewCollateralRatio] = useState();
+  const [newCollateralRatio, setNewCollateralRatio] = useState(200);
   const [collateralRatio, setCollateralRatio] = useState();
   const [deposit, setDeposit] = useState();
   const [withdraw, setWithdraw] = useState();
@@ -98,7 +98,6 @@ const Edit = ({
   };
 
   const currentCollateral = ownerVaultInfo?.amountIn || 0;
-
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
 
@@ -287,6 +286,14 @@ const Edit = ({
     );
   };
 
+  const getMaxRepay = () => {
+    let debtFloor = Number(amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor));
+    let intrestAccumulated = Number(amountConversion(ownerVaultInfo?.interestAccumulated));
+    let currentBorrowed = Number(amountConversion(currentDebt));
+    let maxRepay = (currentBorrowed + intrestAccumulated) - debtFloor;
+    return maxRepay;
+  }
+
   return (
     <>
       <div className="edit-tab-card">
@@ -391,7 +398,9 @@ const Edit = ({
                     <button
                       className="ant-btn active"
                       onClick={() => {
-                        setRepay(amountConversion(currentDebt))
+                        setRepay(getMaxRepay())
+                        setEditType("repay")
+                        setInputAmount(getMaxRepay())
                       }}
                     >
                       Max
@@ -423,11 +432,11 @@ const Edit = ({
                 <Slider
                   className={
                     "comdex-slider borrow-comdex-slider " +
-                    (collateralRatio <= 150
+                    (newCollateralRatio <= 150
                       ? " red-track"
-                      : collateralRatio < 200
+                      : newCollateralRatio < 200
                         ? " orange-track"
-                        : collateralRatio >= 200
+                        : newCollateralRatio >= 200
                           ? " green-track"
                           : " ")
                   }
