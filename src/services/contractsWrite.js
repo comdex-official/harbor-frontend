@@ -1,7 +1,7 @@
 import { SigningCosmWasmClient } from "cosmwasm";
 import { decode } from "js-base64";
 import { comdex } from '../config/network'
-import { KeplrWallet, contractAddr } from "./keplr";
+import { KeplrWallet, contractAddress } from "./keplr";
 
 const customFees = {
     upload: {
@@ -52,7 +52,7 @@ export const transactionForVote = async (proposalId, vote, callback) => {
                     typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
                     value: {
                         sender: walletAddress,
-                        contract: contractAddr,
+                        contract: contractAddress,
                         msg: new TextEncoder().encode(JSON.stringify(handleMsg))
                     }
                 }],
