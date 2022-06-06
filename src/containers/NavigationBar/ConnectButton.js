@@ -62,18 +62,20 @@ const ConnectButton = ({
         setAccountName(name);
       });
 
-      fetchBalances(address);
+      fetchBalances(userAddress);
     }
   }, [address, refreshBalance]);
 
   useEffect(() => {
-    fetchBalances(
-      address,
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
-      true,
-      false
-    );
+    if(address) {
+      fetchBalances(
+          address,
+          (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+          DEFAULT_PAGE_SIZE,
+          true,
+          false
+      );
+    }
   }, [address, markets]);
 
   useEffect(() => {
