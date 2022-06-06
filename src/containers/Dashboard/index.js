@@ -73,7 +73,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
           Number(totalValueLocked?.get("uatom")?.dollarValue || 0));
     }
 
-    return `$${commaSeparator(amount || 0, DOLLAR_DECIMALS)}
+    return `$${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}
 `;
   };
 
@@ -284,7 +284,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                   />
                 </p>
                 <h2>
-                  ${commaSeparator(totalDollarValue || 0, DOLLAR_DECIMALS)}
+                  ${commaSeparator(Number(totalDollarValue || 0).toFixed(DOLLAR_DECIMALS))}
                 </h2>
               </div>
               <div className="totalvalues">
@@ -297,8 +297,8 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                     <h3>
                       $
                       {commaSeparator(
-                        totalValueLocked?.get("uatom")?.dollarValue || 0,
-                        DOLLAR_DECIMALS
+                        Number(totalValueLocked?.get("uatom")?.dollarValue || 0).toFixed(
+                        DOLLAR_DECIMALS)
                       )}
                     </h3>
                   </div>
@@ -307,8 +307,8 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                     <h3>
                       $
                       {commaSeparator(
-                        totalValueLocked?.get("ucmdx")?.dollarValue || 0,
-                        DOLLAR_DECIMALS
+                        Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0).toFixed(
+                        DOLLAR_DECIMALS)
                       )}
                     </h3>{" "}
                   </div>
