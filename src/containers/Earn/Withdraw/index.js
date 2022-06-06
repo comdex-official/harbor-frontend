@@ -224,7 +224,7 @@ const Withdraw = ({
                 </div>
               </div>
               <div className="available-container">
-                <div className="available-title">Available to Withdraw</div>
+                <div className="available-title">Amount to Withdraw</div>
                 <div className="available-input">
                   <div className="input-select ">
                     <CustomInput

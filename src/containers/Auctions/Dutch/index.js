@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { amountConversion, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
-import { commaSeparator } from "../../../utils/number";
+import {commaSeparator, decimalConversion} from "../../../utils/number";
 
 const CollateralAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -133,7 +133,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
       key: "current_price",
       width: 150,
       render: (price) => (
-        <>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</>
+        <>${commaSeparator(Number(amountConversion(decimalConversion(price) || 0) || 0).toFixed(DOLLAR_DECIMALS))}</>
       ),
     },
     {

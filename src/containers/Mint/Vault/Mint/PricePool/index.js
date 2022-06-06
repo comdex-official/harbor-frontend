@@ -2,8 +2,9 @@ import { List } from "antd";
 import * as PropTypes from "prop-types";
 import {connect, useSelector} from "react-redux";
 import {commaSeparator, marketPrice} from "../../../../../utils/number";
-import {amountConversion} from "../../../../../utils/coin";
+import {amountConversion, denomConversion} from "../../../../../utils/coin";
 import {DOLLAR_DECIMALS} from "../../../../../constants/common";
+import {cmst, comdex} from "../../../../../config/network";
 
 const PricePool = ({ownerVaultInfo, markets, pair}) => {
     const selectedExtendedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData[0]);
@@ -31,7 +32,7 @@ const PricePool = ({ownerVaultInfo, markets, pair}) => {
     },
     {
       title: "Withdrawn",
-        counts: `$${commaSeparator(Number(withdrawn || 0).toFixed(DOLLAR_DECIMALS))}`
+        counts: `${commaSeparator(Number(withdrawn || 0).toFixed(comdex?.coinDecimals))} ${denomConversion(cmst?.coinMinimalDenom)}`
     },
   ];
   return (
