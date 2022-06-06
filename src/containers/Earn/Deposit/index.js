@@ -336,7 +336,7 @@ const Deposit = ({
 
           <div className="interest-rate-container mt-4">
             <Row>
-              <div className="title">Current Interest rate</div>
+              <div className="title">Current Reward Rate</div>
               <div className="value">6%</div>
             </Row>
           </div>
