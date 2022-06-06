@@ -19,7 +19,7 @@ import CustomInput from "../../../../components/CustomInput";
 import Long from "long";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
-import { commaSeparator } from "../../../../utils/number";
+import {commaSeparator, decimalConversion} from "../../../../utils/number";
 import moment from "moment";
 
 const PlaceBidModal = ({
@@ -141,12 +141,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                $
-                {commaSeparator(
-                  Number(auction?.outflowTokenCurrentPrice || 0).toFixed(
-                    DOLLAR_DECIMALS
-                  )
-                )}
+                ${commaSeparator(Number(amountConversion(decimalConversion(auction?.outflowTokenCurrentPrice) || 0) || 0).toFixed(DOLLAR_DECIMALS))}
               </label>
             </Col>
           </Row>
