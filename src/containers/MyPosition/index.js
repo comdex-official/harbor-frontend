@@ -179,7 +179,7 @@ const MyPositions = ({ address, balances }) => {
           {vaultTab && (
             <div className="stats-values">
               <h3>
-                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), DOLLAR_DECIMALS)}
+                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))} {denomConversion(cmst?.coinMinimalDenom)}
               </h3>
             </div>
           )}
@@ -236,17 +236,14 @@ const MyPositions = ({ address, balances }) => {
           {vaultTab && (
             <div className="stats-values">
               <h3>
-                $
-                {amountConversionWithComma(
-                  Number(vaultsInfo?.availableToBorrow || 0), DOLLAR_DECIMALS
-                )}
+                {amountConversionWithComma(Number(vaultsInfo?.availableToBorrow || 0))} {denomConversion(cmst?.coinMinimalDenom)}
               </h3>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
               <h3>
-                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), DOLLAR_DECIMALS)}
+                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))} {denomConversion(cmst?.coinMinimalDenom)}
               </h3>
             </div>
           )}
