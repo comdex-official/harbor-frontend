@@ -147,7 +147,7 @@ const Edit = ({
       setDeposit(0);
       setDraw(0);
       setWithdraw(0);
-      ValidateInputNumber(getAmount(value), currentDebt);
+      setInputValidationError(ValidateInputNumber(value, currentDebt));
     } else {
       const newInput =
         (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio) -
@@ -370,7 +370,7 @@ const Edit = ({
               <Col sm="6" className="mb-3">
                 <label>
                   Draw
-                  <TooltipIcon text="Borrow more cAsset from your deposited collateral" />
+                  <TooltipIcon text="Borrow more CMST from your deposited collateral" />
                 </label>
                 <CustomInput
                   value={draw}
