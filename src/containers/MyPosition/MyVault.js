@@ -111,7 +111,7 @@ const MyVault = ({ address }) => {
   ];
 
   const handleRouteChange = (item) => {
-    navigate(`/vault/${item?.pairId?.low}`);
+    navigate(`/vault/${item?.extendedPairId?.low}`);
   };
 
   const tableData =
