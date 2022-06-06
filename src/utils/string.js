@@ -77,8 +77,6 @@ export const denomToSymbol = (key) => {
       return "CMST";
     case "uharbor":
       return "HARBOR";
-    case "ucmst":
-      return "CMST";
     default:
       return "CMDX";
   }
