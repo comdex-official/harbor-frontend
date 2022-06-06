@@ -79,11 +79,11 @@ const MyVault = ({ address }) => {
       align: "center",
       render: (ratio) => (
         <>
-          <span>{Number((ratio * 100)|| 0).toFixed(DOLLAR_DECIMALS)}</span>
+          <span>{Number((ratio * 100)|| 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
           <Progress
             className="health-progress"
             style={{ width: 130 }}
-            percent={ratio}
+            percent={Number((ratio * 100)|| 0).toFixed(DOLLAR_DECIMALS)}
             size="small"
           />
         </>
