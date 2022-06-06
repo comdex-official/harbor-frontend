@@ -63,7 +63,7 @@ const Govern = ({
   const data = [
     {
       title: "Total Supply",
-      counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 : "-"
+      counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 + " HARBOR" : "-"
     },
     {
       title: "Total Proposals",
@@ -105,6 +105,7 @@ const Govern = ({
     // Calculating percentage 
     let percentage = ((currentTimeInseconds - startTimeInSec) / totalDuration) * 100
     percentage = Number(percentage).toFixed(2)
+    percentage = Math.abs(percentage)
     return percentage;
   }
   const navigate = useNavigate();
@@ -117,7 +118,6 @@ const Govern = ({
       return item.status === value
     })
     setProposalList(allFilteredProposal)
-    console.log(allFilteredProposal, "Filter proposal");
   }
 
 

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Button, message, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { iconNameFromDenom } from "../../../../utils/string";
-import { amountConversion } from "../../../../utils/coin";
+import { amountConversion, getDenomBalance } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
@@ -40,6 +40,7 @@ const Edit = ({
   setOwnerVaultInfo,
   setBalanceRefresh,
   refreshBalance,
+  balances,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -54,8 +55,8 @@ const Edit = ({
   const [inputAmount, setInputAmount] = useState();
   const [editType, setEditType] = useState("deposit");
   const [inputValidationError, setInputValidationError] = useState();
-  const [newCollateralRatio, setNewCollateralRatio] = useState();
-  const [collateralRatio, setCollateralRatio] = useState(200);
+  const [newCollateralRatio, setNewCollateralRatio] = useState(200);
+  const [collateralRatio, setCollateralRatio] = useState();
   const [deposit, setDeposit] = useState();
   const [withdraw, setWithdraw] = useState();
   const [repay, setRepay] = useState();
@@ -96,9 +97,9 @@ const Edit = ({
     setDraw();
   };
 
-  const collateralAssetBalance = ownerVaultInfo?.amountIn || 0;
+  const currentCollateral = ownerVaultInfo?.amountIn || 0;
 
-  const debtAssetBalance = ownerVaultInfo?.amountOut || 0;
+  const currentDebt = ownerVaultInfo?.amountOut || 0;
 
   const collateralPrice = marketPrice(markets, pair?.denomIn);
 
@@ -108,52 +109,53 @@ const Edit = ({
     const newRatio = value / 100; // converting value to ratio
     if (type === "deposit") {
       const newInput =
-        (Number(ownerVaultInfo?.amountOut) * debtPrice * newRatio) /
-        collateralPrice -
-        Number(ownerVaultInfo?.amountIn);
+        (Number(currentDebt) * debtPrice * newRatio) / collateralPrice -
+        Number(currentCollateral);
 
       setNewCollateralRatio(value);
       setDeposit(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput))
       setWithdraw(0);
       setDraw(0);
       setRepay(0);
       setInputValidationError(
-        ValidateInputNumber(newInput, collateralAssetBalance)
+        ValidateInputNumber(
+          getAmount(value),
+          getDenomBalance(balances, pair?.denomIn)
+        )
       );
     } else if (type === "withdraw") {
       const newInput =
-        Number(ownerVaultInfo?.amountIn) -
-        (Number(ownerVaultInfo?.amountOut) * debtPrice * newRatio) /
-        collateralPrice;
+        Number(currentCollateral) -
+        (Number(currentDebt) * debtPrice * newRatio) / collateralPrice;
 
       setNewCollateralRatio(value);
       setWithdraw(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput))
       setDeposit(0);
       setDraw(0);
       setRepay(0);
-      setInputValidationError(
-        ValidateInputNumber(newInput, ownerVaultInfo?.amountIn)
-      );
+      setInputValidationError(ValidateInputNumber(newInput, currentCollateral));
     } else if (type === "repay") {
       const newInput =
-        Number(ownerVaultInfo?.amountOut) -
-        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
-        (debtPrice * newRatio);
+        Number(currentDebt) -
+        (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio);
 
       setNewCollateralRatio(value);
       setRepay(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput))
       setDeposit(0);
       setDraw(0);
       setWithdraw(0);
-      setInputValidationError(ValidateInputNumber(newInput, debtAssetBalance));
+      ValidateInputNumber(getAmount(value), currentDebt);
     } else {
       const newInput =
-        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
-        (debtPrice * newRatio) -
-        Number(ownerVaultInfo?.amountOut);
+        (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio) -
+        Number(currentDebt);
 
       setNewCollateralRatio(value);
       setDraw(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput))
       setDeposit(0);
       setWithdraw(0);
       setRepay(0);
@@ -164,37 +166,40 @@ const Edit = ({
   const checkValidation = (value, type) => {
     if (type === "deposit") {
       const ratio =
-        ((Number(ownerVaultInfo?.amountIn) + Number(getAmount(value))) *
+        ((Number(currentCollateral) + Number(getAmount(value))) *
           collateralPrice) /
-        (Number(ownerVaultInfo?.amountOut) * debtPrice);
+        (Number(currentDebt) * debtPrice);
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(
-        ValidateInputNumber(getAmount(value), collateralAssetBalance)
+        ValidateInputNumber(
+          getAmount(value),
+          getDenomBalance(balances, pair?.denomIn)
+        )
       );
     } else if (type === "withdraw") {
       const ratio =
-        ((Number(ownerVaultInfo?.amountIn) - Number(getAmount(value))) *
+        ((Number(currentCollateral) - Number(getAmount(value))) *
           collateralPrice) /
-        (Number(ownerVaultInfo?.amountOut) * debtPrice);
+        (Number(currentDebt) * debtPrice);
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(
-        ValidateInputNumber(getAmount(value), ownerVaultInfo?.amountIn)
+        ValidateInputNumber(getAmount(value), currentCollateral)
       );
     } else if (type === "repay") {
       const ratio =
-        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
-        ((Number(ownerVaultInfo?.amountOut) - Number(getAmount(value))) * debtPrice);
+        (Number(currentCollateral) * collateralPrice) /
+        ((Number(currentDebt) - Number(getAmount(value))) * debtPrice);
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(
-        ValidateInputNumber(getAmount(value), debtAssetBalance)
+        ValidateInputNumber(getAmount(value), currentDebt)
       );
     } else {
       const ratio =
-        (Number(ownerVaultInfo?.amountIn) * collateralPrice) /
-        ((Number(ownerVaultInfo?.amountOut) + Number(getAmount(value))) * debtPrice);
+        (Number(currentCollateral) * collateralPrice) /
+        ((Number(currentDebt) + Number(getAmount(value))) * debtPrice);
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(ValidateInputNumber(getAmount(value)));
@@ -240,6 +245,7 @@ const Edit = ({
 
   const handleSubmit = () => {
     setInProgress(true);
+    message.info("Transaction initiated");
 
     signAndBroadcastTransaction(
       {
@@ -280,7 +286,14 @@ const Edit = ({
     );
   };
 
-  
+  const getMaxRepay = () => {
+    let debtFloor = Number(amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor));
+    let intrestAccumulated = Number(amountConversion(ownerVaultInfo?.interestAccumulated));
+    let currentBorrowed = Number(amountConversion(currentDebt));
+    let maxRepay = (currentBorrowed + intrestAccumulated) - debtFloor;
+    return maxRepay;
+  }
+
   return (
     <>
       <div className="edit-tab-card">
@@ -294,7 +307,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                   </div>
                 </div>
-                <h2>{amountConversion(ownerVaultInfo?.amountIn || 0)}</h2>
+                <h2>{amountConversion(currentCollateral || 0)}</h2>
               </div>
             </div>
             <div className="borrowedithead-colum">
@@ -305,7 +318,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom("ucmst")} />
                   </div>
                 </div>
-                <h2>{amountConversion(ownerVaultInfo?.amountOut || 0)}</h2>
+                <h2>{amountConversion(currentDebt || 0)}</h2>
               </div>
             </div>
           </div>
@@ -327,7 +340,9 @@ const Edit = ({
                     setInputValidationError(event.target.value);
                     checkValidation(event.target.value, editType);
                   }}
-                  validationError={inputValidationError}
+                  validationError={
+                    editType === "deposit" ? inputValidationError : ""
+                  }
                   onFocus={() => setEditType("deposit")}
                 />
               </Col>
@@ -346,6 +361,9 @@ const Edit = ({
                     setRepay(0);
                     checkValidation(event.target.value, editType);
                   }}
+                  validationError={
+                    editType === "withdraw" ? inputValidationError : ""
+                  }
                   onFocus={() => setEditType("withdraw")}
                 />
               </Col>
@@ -364,6 +382,9 @@ const Edit = ({
                     setRepay(0);
                     checkValidation(event.target.value, editType);
                   }}
+                  validationError={
+                    editType === "draw" ? inputValidationError : ""
+                  }
                   onFocus={() => setEditType("draw")}
                 />
               </Col>
@@ -376,6 +397,11 @@ const Edit = ({
                   <div className="maxhalf">
                     <button
                       className="ant-btn active"
+                      onClick={() => {
+                        setRepay(getMaxRepay())
+                        setEditType("repay")
+                        setInputAmount(getMaxRepay())
+                      }}
                     >
                       Max
                     </button>
@@ -391,6 +417,9 @@ const Edit = ({
                     setDeposit(0);
                     checkValidation(event.target.value, editType);
                   }}
+                  validationError={
+                    editType === "repay" ? inputValidationError : ""
+                  }
                   onFocus={() => setEditType("repay")}
                 />
               </Col>
@@ -403,11 +432,11 @@ const Edit = ({
                 <Slider
                   className={
                     "comdex-slider borrow-comdex-slider " +
-                    (collateralRatio <= 150
+                    (newCollateralRatio <= 150
                       ? " red-track"
-                      : collateralRatio < 200
+                      : newCollateralRatio < 200
                         ? " orange-track"
-                        : collateralRatio >= 200
+                        : newCollateralRatio >= 200
                           ? " green-track"
                           : " ")
                   }
@@ -435,10 +464,13 @@ const Edit = ({
             <Button
               type="primary"
               className="btn-filled"
+              loading={inProgress}
               disabled={
                 inProgress ||
                 inputValidationError?.message ||
-                !Number(inputAmount)
+                !Number(inputAmount) ||
+                Number(newCollateralRatio) < 150
+
               }
               onClick={() => handleSubmit()}
             >

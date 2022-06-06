@@ -1,6 +1,7 @@
 import Long from "long";
 import { createQueryClient } from "../helper";
 import { QueryClientImpl } from 'comdex-codec/build/comdex/vault/v1beta1/query'
+import {PRODUCT_ID} from "../../constants/common";
 
 
 export const queryExtendedPairVault = (productId, callback) => {
@@ -54,8 +55,9 @@ export const queryUserVaults = (
             return;
         }
         new QueryClientImpl(rpcClient)
-            .QueryVaultInfoByOwner({
-                owner: owner
+            .QueryVaultInfoByAppByOwner({
+                owner: owner,
+                appId: Long.fromNumber(PRODUCT_ID)
             })
             .then((result) => {
                 callback(null, result);
@@ -147,6 +149,29 @@ export const queryAppTVL = (appId, callback) => {
             .QueryTVLLockedByAppOfAllExtendedPairs({
                 appId: Long.fromNumber(appId),
             }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};
+
+export const queryUserVaultsStats = (
+    owner,
+    callback
+) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryClientImpl(rpcClient)
+            .QueryUserMyPositionByApp({
+                owner: owner,
+                appId: Long.fromNumber(PRODUCT_ID)
+            })
+            .then((result) => {
                 callback(null, result);
             })
             .catch((error) => {

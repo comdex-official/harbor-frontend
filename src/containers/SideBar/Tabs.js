@@ -34,6 +34,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
 
       setAccountAddress(account.address);
       localStorage.setItem("ac", encode(account.address));
+      localStorage.setItem("loginType", "keplr")
     });
   };
 

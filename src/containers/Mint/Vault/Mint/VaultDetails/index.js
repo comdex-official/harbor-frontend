@@ -6,6 +6,7 @@ import { PRODUCT_ID } from '../../../../../constants/common';
 import { queryOwnerVaults, queryOwnerVaultsInfo } from '../../../../../services/vault/query';
 import { setOwnerVaultId, setOwnerVaultInfo } from '../../../../../actions/locker';
 import moment from 'moment';
+import { decimalConversion } from '../../../../../utils/number';
 
 
 const VaultDetails = ({
@@ -78,17 +79,17 @@ const VaultDetails = ({
             <div className="asset-value">{ownerVaultId || "-"}</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">interest Rate</div>
-            {/* TODO: Update the values properly */}
-            <div className="asset-value">{((selectedExtentedPairVaultListData?.stabilityFee) / 10 ** 16) || "0"}%</div>
+            <div className="asset-name">Stability Fee </div>
+            {/* TODO: Update the divide values properly */}
+            <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.stabilityFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Closing Fee</div>
-            <div className="asset-value">{((selectedExtentedPairVaultListData?.closingFee) / 10 ** 16) || "0"}%</div>
+            <div className="asset-name">Drawdown Fee</div>
+            <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.drawDownFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Liquidation Ratio</div>
-            <div className="asset-value">{((selectedExtentedPairVaultListData?.liquidationRatio) / 10 ** 16) || "0"}%</div>
+            <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.liquidationRatio) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Vault Opening date</div>

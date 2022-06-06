@@ -62,7 +62,7 @@
     background: $secondary-color !important;
   }
   .ant-slider-handle {
-    border-color: $success-color !important;
+    border-color: $secondary-color !important;
   }
 }
 
@@ -121,6 +121,13 @@
       .dark-mode & {
         color: $white;
       }
+    }
+  }
+  .alert-label {
+    color: $text-color-light;
+
+    .dark-mode & {
+      color: #fff;
     }
   }
 }

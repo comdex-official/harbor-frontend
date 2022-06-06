@@ -127,7 +127,7 @@ const GovernDetails = ({
   const dataVote = [
     {
       title: "Total Vote",
-      counts: currentProposal ? `${calculateTotalValue() + " " + "HABOR"}` : 0,
+      counts: currentProposal ? `${(calculateTotalValue() || "0") + " " + "HARBOR"}` : 0,
     }
   ];
   const Options = {
@@ -188,7 +188,7 @@ const GovernDetails = ({
             color: "#BFA9D7",
           },
           {
-            name: "noWithVeto",
+            name: "No With Veto",
             y: Number(getVotes?.veto || 0),
             color: "#E7DDF1",
           },
@@ -201,6 +201,15 @@ const GovernDetails = ({
       },
     ],
   };
+
+  const getUserVote = (vote) => {
+    if (vote == "veto") {
+      return "No with veto"
+    }
+    else {
+      return vote
+    }
+  }
 
   return (
     <div className="app-content-wrapper">
@@ -265,7 +274,7 @@ const GovernDetails = ({
           <div className="composite-card govern-card2 earn-deposite-card">
             <Row>
               <Col className="text-right">
-                {userVote == null ? <VoteNowModal /> : <Button className="back-btn" type="primary">Your Vote :  <span className="user-vote"> {userVote?.vote || " ---"}</span> </Button>}
+                {userVote == null ? <VoteNowModal /> : <Button className="back-btn" type="primary">Your Vote :  <span className="user-vote"> {getUserVote(userVote?.vote) || " ---"}</span> </Button>}
 
               </Col>
             </Row>
@@ -309,7 +318,7 @@ const GovernDetails = ({
                       <li>
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
-                          <label>noWithVeto </label>
+                          <label>No With Veto </label>
                           <p>{getVotes?.veto || 0}%</p>
                         </div>
                       </li>

@@ -20,6 +20,7 @@ import {
 import { amountConversion } from "../../utils/coin";
 import NoData from "../../components/NoData";
 import { queryAssets, queryExtendedPairVaultById } from "../../services/asset/query";
+import { decimalConversion } from "../../utils/number";
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
@@ -85,8 +86,8 @@ const Minting = ({ address }) => {
 
 
   const getAsssetIcon = (pairID) => {
-    const selectedItem = assetList.length>0 && assetList.filter((item)=> (item?.id).toNumber() === pairID);
-    
+    const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.id).toNumber() === pairID);
+
     return selectedItem[0]?.denom || ""
   }
 
@@ -119,7 +120,7 @@ const Minting = ({ address }) => {
                       >
                         <div className="up-container">
                           <div className="icon-container">
-                             <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} />
+                            <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} />
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{item?.pairName}</div>
@@ -132,7 +133,7 @@ const Minting = ({ address }) => {
                               Liquidation Ratio <TooltipIcon text="If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt" />
                             </div>
                             <div className="value">
-                              {item?.liquidationRatio / 10 ** 16} %
+                              {decimalConversion(item?.liquidationRatio) * 100} %
                             </div>
                           </div>
                           <div className="contenet-container">
@@ -141,7 +142,7 @@ const Minting = ({ address }) => {
                               <TooltipIcon text="Minimum collateral ratio at which composite should be minted" />
                             </div>
                             <div className="value">
-                              {item?.minCr / 10 ** 16} %
+                              {decimalConversion(item?.minCr) * 100} %
                             </div>
                           </div>
                           <div className="contenet-container">
@@ -149,7 +150,7 @@ const Minting = ({ address }) => {
                               Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
                             </div>
                             <div className="value">
-                              {item?.stabilityFee / 10 ** 16} %
+                            {decimalConversion(item?.stabilityFee) * 100} %
                             </div>
                           </div>
                           <div className="contenet-container">

@@ -367,7 +367,7 @@ button {
     }
     &.green-track {
       .ant-slider-track {
-        background: $success-color;
+        background: $secondary-color;
       }
       .ant-slider-handle {
         border-color: $secondary-color !important;
@@ -881,6 +881,7 @@ button {
 }
 
 .ant-select-dropdown {
+  border-radius: 10px;
   &.asset-select-dropdown {
     background: $background-light2;
     border-radius: 4px;
@@ -1014,6 +1015,9 @@ button {
 
     @media screen and (max-width: 480px) {
       margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .dark-mode & {
@@ -1035,6 +1039,11 @@ button {
       color: $text-color-dark2;
       padding-right: 0;
 
+      @media screen and (max-width: 480px) {
+        width: 100%;
+        max-width: unset;
+        text-align: left;
+      }
       &::-webkit-placeholder {
         color: $text-color-dark2;
       }
@@ -1075,7 +1084,9 @@ button {
       align-items: center;
       justify-content: flex-end;
       font-size: $font-size-sm;
-
+      @media only screen and (max-width: 1190px) {
+        align-items: baseline;
+      }
       span {
         color: $secondary-color;
         margin: 0;
@@ -1131,7 +1142,10 @@ button {
 
     small {
       display: block;
-
+      @media screen and (max-width: 480px) {
+        width: 100%;
+        text-align: left;
+      }
       .dark-mode & {
         color: $text-color-light;
       }
