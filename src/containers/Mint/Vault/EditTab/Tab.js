@@ -114,7 +114,7 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setDeposit(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setWithdraw(0);
       setDraw(0);
       setRepay(0);
@@ -131,7 +131,7 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setWithdraw(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setDeposit(0);
       setDraw(0);
       setRepay(0);
@@ -143,7 +143,7 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setRepay(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setDeposit(0);
       setDraw(0);
       setWithdraw(0);
@@ -155,7 +155,7 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setDraw(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setDeposit(0);
       setWithdraw(0);
       setRepay(0);
@@ -287,12 +287,16 @@ const Edit = ({
   };
 
   const getMaxRepay = () => {
-    let debtFloor = Number(amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor));
-    let intrestAccumulated = Number(amountConversion(ownerVaultInfo?.interestAccumulated));
+    let debtFloor = Number(
+      amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor)
+    );
+    let intrestAccumulated = Number(
+      amountConversion(ownerVaultInfo?.interestAccumulated)
+    );
     let currentBorrowed = Number(amountConversion(currentDebt));
-    let maxRepay = (currentBorrowed + intrestAccumulated) - debtFloor;
+    let maxRepay = currentBorrowed + intrestAccumulated - debtFloor;
     return maxRepay;
-  }
+  };
 
   return (
     <>
@@ -398,9 +402,9 @@ const Edit = ({
                     <button
                       className="ant-btn active"
                       onClick={() => {
-                        setRepay(getMaxRepay())
-                        setEditType("repay")
-                        setInputAmount(getMaxRepay())
+                        setRepay(getMaxRepay());
+                        setEditType("repay");
+                        setInputAmount(getMaxRepay());
                       }}
                     >
                       Max
@@ -435,10 +439,10 @@ const Edit = ({
                     (newCollateralRatio <= 150
                       ? " red-track"
                       : newCollateralRatio < 200
-                        ? " orange-track"
-                        : newCollateralRatio >= 200
-                          ? " green-track"
-                          : " ")
+                      ? " orange-track"
+                      : newCollateralRatio >= 200
+                      ? " green-track"
+                      : " ")
                   }
                   defaultValue="150"
                   marks={marks}
@@ -469,8 +473,8 @@ const Edit = ({
                 inProgress ||
                 inputValidationError?.message ||
                 !Number(inputAmount) ||
+                Number(inputAmount) < 0 ||
                 Number(newCollateralRatio) < 150
-
               }
               onClick={() => handleSubmit()}
             >
