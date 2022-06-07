@@ -9,6 +9,8 @@ import {
 import { amountConversion, denomConversion } from "../../../../../utils/coin";
 import { DOLLAR_DECIMALS } from "../../../../../constants/common";
 import { cmst, comdex } from "../../../../../config/network";
+import { SvgIcon } from "../../../../../components/common";
+import { iconNameFromDenom } from "../../../../../utils/string";
 
 const PricePool = ({ ownerVaultInfo, markets, pair }) => {
   const selectedExtendedPairVaultListData = useSelector(
@@ -61,7 +63,22 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
   return (
     <>
       <div className="composite-card farm-content-card earn-deposite-card ">
-        <div className="card-head"></div>
+        <div className="card-head">
+          <div className="liquidation-price-container">
+            <div className="svg-icon-inner">
+              <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
+            </div>
+            <span className="das"></span>
+            <div className="svg-icon-inner">
+              <SvgIcon name={iconNameFromDenom("ucmst")} />{" "}
+            </div>
+            <span className="title">Liquidation Price </span> <span className="price"> $0.00</span>
+          </div>
+
+          <div className="oracle-price-container">
+            <span className="title">Oracle Price </span> <span className="price"> $0.00</span>
+          </div>
+        </div>
         <List
           grid={{
             gutter: 16,
