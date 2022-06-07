@@ -1,44 +1,69 @@
 import { List } from "antd";
 import * as PropTypes from "prop-types";
-import {connect, useSelector} from "react-redux";
-import {commaSeparator, decimalConversion, marketPrice} from "../../../../../utils/number";
-import {amountConversion, denomConversion} from "../../../../../utils/coin";
-import {DOLLAR_DECIMALS} from "../../../../../constants/common";
-import {cmst, comdex} from "../../../../../config/network";
+import { connect, useSelector } from "react-redux";
+import {
+  commaSeparator,
+  decimalConversion,
+  marketPrice,
+} from "../../../../../utils/number";
+import { amountConversion, denomConversion } from "../../../../../utils/coin";
+import { DOLLAR_DECIMALS } from "../../../../../constants/common";
+import { cmst, comdex } from "../../../../../config/network";
 
-const PricePool = ({ownerVaultInfo, markets, pair}) => {
-    const selectedExtendedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData[0]);
+const PricePool = ({ ownerVaultInfo, markets, pair }) => {
+  const selectedExtendedPairVaultListData = useSelector(
+    (state) => state.locker.extenedPairVaultListData[0]
+  );
+  const estimatedLiquidationPrice = useSelector(
+    (state) => state.locker.estimatedLiquidationPrice
+  );
+  const collateralDeposited =
+    Number(amountConversion(ownerVaultInfo?.amountIn)) *
+    marketPrice(markets, pair?.denomIn);
+  const withdrawn =
+    Number(amountConversion(ownerVaultInfo?.amountOut)) *
+    marketPrice(markets, pair?.denomOut);
 
-    const collateralDeposited = Number(amountConversion(ownerVaultInfo?.amountIn)) *
-        marketPrice(markets, pair?.denomIn);
-    const withdrawn = Number(amountConversion(ownerVaultInfo?.amountOut)) *
-        marketPrice(markets, pair?.denomOut);
+  const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
+  const borrowed = Number(amountConversion(ownerVaultInfo?.amountOut || 0));
 
-    const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
-    const collateralToBeTaken = 0;
-    const borrowed = Number(amountConversion(ownerVaultInfo?.amountOut || 0));
-    const debtToBeBorrowed = 0;
+  const liquidationRatio = selectedExtendedPairVaultListData?.liquidationRatio;
 
-    const liquidationRatio = selectedExtendedPairVaultListData?.liquidationRatio;
+  const liquidationPrice =
+    decimalConversion(liquidationRatio) * (borrowed / collateral);
 
-    const liquidationPrice  = (decimalConversion(liquidationRatio)) * (( borrowed + debtToBeBorrowed) / (collateral + collateralToBeTaken))
-
-    const data = [
+  const data = [
     {
       title: "Liquidation Price",
-        counts: `$${commaSeparator(Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS))}`
+      counts: `$${commaSeparator(
+        Number(
+          estimatedLiquidationPrice
+            ? estimatedLiquidationPrice
+            : liquidationPrice
+            ? liquidationPrice
+            : 0
+        ).toFixed(DOLLAR_DECIMALS)
+      )}`,
     },
     {
       title: "Collateral Deposited",
-        counts: `$${commaSeparator(Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS))}`
+      counts: `$${commaSeparator(
+        Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS)
+      )}`,
     },
     {
       title: "Oracle Price",
-        counts: `$${commaSeparator(Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(DOLLAR_DECIMALS))}`
+      counts: `$${commaSeparator(
+        Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
+          DOLLAR_DECIMALS
+        )
+      )}`,
     },
     {
       title: "Withdrawn",
-        counts: `${commaSeparator(Number(withdrawn || 0).toFixed(comdex?.coinDecimals))} ${denomConversion(cmst?.coinMinimalDenom)}`
+      counts: `${commaSeparator(
+        Number(withdrawn || 0).toFixed(comdex?.coinDecimals)
+      )} ${denomConversion(cmst?.coinMinimalDenom)}`,
     },
   ];
   return (
@@ -71,30 +96,30 @@ const PricePool = ({ownerVaultInfo, markets, pair}) => {
 };
 
 PricePool.prototype = {
-    markets: PropTypes.arrayOf(
-        PropTypes.shape({
-            rates: PropTypes.shape({
-                high: PropTypes.number,
-                low: PropTypes.number,
-                unsigned: PropTypes.bool,
-            }),
-            symbol: PropTypes.string,
-            script_id: PropTypes.string,
-        })
-    ),
-    ownerVaultInfo: PropTypes.array,
-    pair: PropTypes.shape({
-        denomIn: PropTypes.string,
-        denomOut: PropTypes.string,
-    }),
-}
+  markets: PropTypes.arrayOf(
+    PropTypes.shape({
+      rates: PropTypes.shape({
+        high: PropTypes.number,
+        low: PropTypes.number,
+        unsigned: PropTypes.bool,
+      }),
+      symbol: PropTypes.string,
+      script_id: PropTypes.string,
+    })
+  ),
+  ownerVaultInfo: PropTypes.array,
+  pair: PropTypes.shape({
+    denomIn: PropTypes.string,
+    denomOut: PropTypes.string,
+  }),
+};
 
 const stateToProps = (state) => {
-    return {
-        ownerVaultInfo: state.locker.ownerVaultInfo,
-        markets: state.oracle.market.list,
-        pair: state.asset.pair,
-    };
+  return {
+    ownerVaultInfo: state.locker.ownerVaultInfo,
+    markets: state.oracle.market.list,
+    pair: state.asset.pair,
+  };
 };
 
 export default connect(stateToProps)(PricePool);
