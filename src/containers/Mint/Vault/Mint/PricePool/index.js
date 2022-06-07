@@ -1,7 +1,7 @@
 import { List } from "antd";
 import * as PropTypes from "prop-types";
 import {connect, useSelector} from "react-redux";
-import {commaSeparator, marketPrice} from "../../../../../utils/number";
+import {commaSeparator, decimalConversion, marketPrice} from "../../../../../utils/number";
 import {amountConversion, denomConversion} from "../../../../../utils/coin";
 import {DOLLAR_DECIMALS} from "../../../../../constants/common";
 import {cmst, comdex} from "../../../../../config/network";
@@ -12,10 +12,14 @@ const PricePool = ({ownerVaultInfo, markets, pair}) => {
     const collateralDeposited = Number(amountConversion(ownerVaultInfo?.amountIn)) *
         marketPrice(markets, pair?.denomIn);
 
-    const withdrawn = Number(amountConversion(ownerVaultInfo?.amountOut)) *
-        marketPrice(markets, pair?.denomOut);
+    const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
+    const collateralToBeTaken = 0;
+    const borrowed = Number(amountConversion(ownerVaultInfo?.amountOut || 0));
+    const debtToBeBorrowed = 0;
 
-    const liquidationPrice = (selectedExtendedPairVaultListData?.liquidationRatio / (10 ** 16)) * withdrawn;
+    const liquidationRatio = selectedExtendedPairVaultListData?.liquidationRatio;
+
+    const liquidationPrice  = (decimalConversion(liquidationRatio)) * (( borrowed + debtToBeBorrowed) / (collateral + collateralToBeTaken))
 
     const data = [
     {
@@ -32,7 +36,7 @@ const PricePool = ({ownerVaultInfo, markets, pair}) => {
     },
     {
       title: "Withdrawn",
-        counts: `${commaSeparator(Number(withdrawn || 0).toFixed(comdex?.coinDecimals))} ${denomConversion(cmst?.coinMinimalDenom)}`
+        counts: `${commaSeparator(Number(borrowed || 0).toFixed(comdex?.coinDecimals))} ${denomConversion(cmst?.coinMinimalDenom)}`
     },
   ];
   return (
