@@ -1,7 +1,7 @@
 import { Button, message } from "antd";
 import Long from "long";
-import './index.scss'
-import *  as PropTypes from 'prop-types';
+import "./index.scss";
+import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Col, Row, SvgIcon } from "../../../components/common";
@@ -18,11 +18,25 @@ import {
 import { iconNameFromDenom, toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
-import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist, setOwnerVaultInfo } from '../../../actions/locker'
+import {
+  setWhiteListedAssets,
+  setAllWhiteListedAssets,
+  setIsLockerExist,
+  setOwnerVaultInfo,
+} from "../../../actions/locker";
 import "./index.scss";
 import { queryAssets } from "../../../services/asset/query";
-import { DEFAULT_FEE, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
-import { queryLockerWhiteListedAssetByProductId, queryUserLockerByProductAssetId } from "../../../services/locker/query";
+import {
+  DEFAULT_FEE,
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+  DOLLAR_DECIMALS,
+  PRODUCT_ID,
+} from "../../../constants/common";
+import {
+  queryLockerWhiteListedAssetByProductId,
+  queryUserLockerByProductAssetId,
+} from "../../../services/locker/query";
 import Snack from "../../../components/common/Snack";
 import { signAndBroadcastTransaction } from "../../../services/helper";
 import { defaultFee } from "../../../services/transaction";
@@ -49,7 +63,6 @@ const Deposit = ({
   const [loading, setLoading] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
 
-
   const whiteListedAssetData = [];
 
   const resetValues = () => {
@@ -73,8 +86,8 @@ const Deposit = ({
       if (item.id.low === whiteListedAsset[0]?.low) {
         whiteListedAssetData.push(item);
       }
-    })
-  }
+    });
+  };
 
   const handleFirstInputChange = (value) => {
     value = toDecimals(value).toString().trim();
@@ -108,15 +121,14 @@ const Deposit = ({
 
   useEffect(() => {
     fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
-  }, [whiteListedAsset])
-
+  }, [whiteListedAsset]);
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     setInProgress(true);
-    setLoading(true)
+    setLoading(true);
     queryAssets(offset, limit, countTotal, reverse, (error, data) => {
       setInProgress(false);
-      setLoading(false)
+      setLoading(false);
       if (error) {
         message.error(error);
         return;
@@ -127,49 +139,54 @@ const Deposit = ({
 
   const fetchWhiteListedAssetByid = (productId) => {
     setInProgress(true);
-    setLoading(true)
+    setLoading(true);
     queryLockerWhiteListedAssetByProductId(productId, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      setWhiteListedAssets(data?.assetIds)
-      setLoading(false)
-    })
-  }
+      setWhiteListedAssets(data?.assetIds);
+      setLoading(false);
+    });
+  };
 
   const fetchOwnerLockerExistByAssetId = (productId, assetId, address) => {
-    queryUserLockerByProductAssetId(productId, assetId, address, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
+    queryUserLockerByProductAssetId(
+      productId,
+      assetId,
+      address,
+      (error, data) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+        let lockerExist = data?.lockerInfo?.length;
+        setOwnerVaultInfo(data?.lockerInfo);
+        if (lockerExist > 0) {
+          dispatch(setIsLockerExist(true));
+        } else {
+          dispatch(setIsLockerExist(false));
+        }
       }
-      let lockerExist = data?.lockerInfo?.length;
-      setOwnerVaultInfo(data?.lockerInfo)
-      if (lockerExist > 0) {
-        dispatch(setIsLockerExist(true));
-      } else {
-        dispatch(setIsLockerExist(false));
-      }
-    })
-  }
+    );
+  };
 
   getAssetDenom();
 
-  const AvailableAssetBalance = getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
+  const AvailableAssetBalance =
+    getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo[0]?.lockerId;
 
   const handleInputMax = () => {
     if (Number(AvailableAssetBalance) > DEFAULT_FEE) {
-      return (
-        dispatch(setAmountIn(amountConversion(AvailableAssetBalance - DEFAULT_FEE)))
-
-      )
+      return dispatch(
+        setAmountIn(amountConversion(AvailableAssetBalance - DEFAULT_FEE))
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
   const handleSubmitCreateLocker = () => {
     if (!address) {
       message.error("Address not found, please connect to Keplr");
@@ -186,7 +203,7 @@ const Deposit = ({
             amount: getAmount(inAmount),
             assetId: Long.fromNumber(whiteListedAssetId),
             appMappingId: Long.fromNumber(PRODUCT_ID),
-          }
+          },
         },
         fee: defaultFee(),
       },
@@ -206,17 +223,16 @@ const Deposit = ({
           <Snack
             message={variables[lang].tx_success}
             hash={result?.transactionHash}
-          />,
+          />
         );
-        resetValues()
+        resetValues();
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
         });
       }
     );
-
-  }
+  };
   const handleSubmitAssetDepositLocker = () => {
     if (!address) {
       message.error("Address not found, please connect to Keplr");
@@ -234,7 +250,7 @@ const Deposit = ({
             amount: getAmount(inAmount),
             assetId: Long.fromNumber(whiteListedAssetId),
             appMappingId: Long.fromNumber(PRODUCT_ID),
-          }
+          },
         },
         fee: defaultFee(),
       },
@@ -254,17 +270,16 @@ const Deposit = ({
           <Snack
             message={variables[lang].tx_success}
             hash={result?.transactionHash}
-          />,
+          />
         );
-        resetValues()
+        resetValues();
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
         });
       }
     );
-
-  }
+  };
 
   return (
     <>
@@ -281,29 +296,35 @@ const Deposit = ({
                   <div className="assets-select-wrapper">
                     {/* For Single Asset */}
                     {loading ? <h1>Loading...</h1> : null}
-                    {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
-                      return (
-                        <React.Fragment key={index} >
-                          {loading ? null :
-                            <div className="farm-asset-icon-container" >
-                              <div className="select-inner">
-                                <div className="svg-icon">
-                                  <div className="svg-icon-inner">
-                                    <SvgIcon name={iconNameFromDenom(item?.denom)} />
-                                    <span style={{ textTransform: "uppercase" }}> {item?.name}</span>
+                    {whiteListedAssetData &&
+                      whiteListedAssetData.map((item, index) => {
+                        return (
+                          <React.Fragment key={index}>
+                            {loading ? null : (
+                              <div className="farm-asset-icon-container">
+                                <div className="select-inner">
+                                  <div className="svg-icon">
+                                    <div className="svg-icon-inner">
+                                      <SvgIcon
+                                        name={iconNameFromDenom(item?.denom)}
+                                      />
+                                      <span
+                                        style={{ textTransform: "uppercase" }}
+                                      >
+                                        {" "}
+                                        {item?.name}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          }
-                        </React.Fragment>
-                      )
-                    })}
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
                   </div>
                 </Col>
               </Row>
-
-
             </div>
             <div className="assets-right">
               <div className="label-right">
@@ -313,10 +334,7 @@ const Deposit = ({
                   {denomConversion(whiteListedAssetData[0]?.denom)}
                 </span>
                 <div className="maxhalf">
-                  <Button
-                    className="active"
-                    onClick={() => handleInputMax()}
-                  >
+                  <Button className="active" onClick={() => handleInputMax()}>
                     Max
                   </Button>
                 </div>
@@ -325,7 +343,7 @@ const Deposit = ({
                 <CustomInput
                   value={inAmount}
                   onChange={(event) => {
-                    handleFirstInputChange(event.target.value)
+                    handleFirstInputChange(event.target.value);
                   }}
                   validationError={inputValidationError}
                 />
@@ -336,7 +354,7 @@ const Deposit = ({
 
           <div className="interest-rate-container mt-4">
             <Row>
-              <div className="title">Current Interest rate</div>
+              <div className="title">Current Reward Rate</div>
               <div className="value">6%</div>
             </Row>
           </div>
@@ -346,18 +364,15 @@ const Deposit = ({
               <Button
                 loading={inProgress}
                 disabled={
-                  !inAmount ||
-                  inProgress ||
-                  inputValidationError?.message
+                  !inAmount || inProgress || inputValidationError?.message
                 }
                 type="primary"
                 className="btn-filled"
                 onClick={() => {
                   if (isLockerExist) {
-                    handleSubmitAssetDepositLocker()
-                  }
-                  else {
-                    handleSubmitCreateLocker()
+                    handleSubmitAssetDepositLocker();
+                  } else {
+                    handleSubmitCreateLocker();
                   }
                 }}
               >
@@ -386,7 +401,7 @@ Deposit.propTypes = {
         low: PropTypes.number,
         high: PropTypes.number,
         inSigned: PropTypes.number,
-      })
+      }),
     })
   ),
   allWhiteListedAssets: PropTypes.arrayOf(
@@ -402,7 +417,7 @@ Deposit.propTypes = {
         low: PropTypes.number,
         high: PropTypes.number,
         inSigned: PropTypes.number,
-      })
+      }),
     })
   ),
   whiteListedAsset: PropTypes.arrayOf(
@@ -412,8 +427,8 @@ Deposit.propTypes = {
           low: PropTypes.number,
           high: PropTypes.number,
           inSigned: PropTypes.number,
-        })
-      })
+        }),
+      }),
     })
   ),
   balances: PropTypes.arrayOf(
@@ -428,8 +443,7 @@ Deposit.propTypes = {
   }),
   refreshBalance: PropTypes.number.isRequired,
   ownerLockerInfo: PropTypes.array,
-
-}
+};
 const stateToProps = (state) => {
   return {
     address: state.account.address,
@@ -440,7 +454,7 @@ const stateToProps = (state) => {
     allWhiteListedAssets: state.locker._.list,
     whiteListedAsset: state.locker.whiteListedAssetById.list,
     refreshBalance: state.account.refreshBalance,
-    ownerLockerInfo: state.locker.ownerVaultInfo
+    ownerLockerInfo: state.locker.ownerVaultInfo,
   };
 };
 
@@ -452,4 +466,3 @@ const actionsToProps = {
   setOwnerVaultInfo,
 };
 export default connect(stateToProps, actionsToProps)(Deposit);
-

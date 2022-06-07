@@ -1,7 +1,7 @@
 import Long from "long";
 import { createQueryClient } from "../helper";
 import { QueryClientImpl } from "comdex-codec/build/comdex//locker/v1beta1/query";
-import {PRODUCT_ID} from "../../constants/common";
+import {CMST_ASSET_ID, PRODUCT_ID} from "../../constants/common";
 
 export const queryLockerWhiteListedAssetByProduct = (callback) => {
   createQueryClient((error, rpcClient) => {
@@ -122,8 +122,9 @@ export const queryUserLockerHistory = (
       return;
     }
     new QueryClientImpl(rpcClient)
-      .QueryOwnerTxDetailsLockerOfProductByOwner({
+      .QueryOwnerTxDetailsLockerOfProductByOwnerByAsset({
         productId: Long.fromNumber(productId),
+        assetId: Long.fromNumber(CMST_ASSET_ID),
         owner: owner,
         pagination: {
           key: "",

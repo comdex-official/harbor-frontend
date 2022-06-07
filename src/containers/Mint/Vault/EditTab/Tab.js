@@ -11,10 +11,14 @@ import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
 import { getTypeURL } from "../../../../services/transaction";
 import CustomInput from "../../../../components/CustomInput";
-import { marketPrice } from "../../../../utils/number";
+import {
+  commaSeparator,
+  decimalConversion,
+  marketPrice,
+} from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";
-import { PRODUCT_ID } from "../../../../constants/common";
-import { setExtendedPairVaultListData } from "../../../../actions/locker";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { setExtendedPairVaultListData, setEstimatedLiquidationPrice } from "../../../../actions/locker";
 import {
   queryOwnerVaults,
   queryOwnerVaultsInfo,
@@ -41,6 +45,7 @@ const Edit = ({
   setBalanceRefresh,
   refreshBalance,
   balances,
+                setEstimatedLiquidationPrice,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -61,6 +66,13 @@ const Edit = ({
   const [withdraw, setWithdraw] = useState();
   const [repay, setRepay] = useState();
   const [draw, setDraw] = useState();
+
+  const selectedExtendedPairVaultListData = useSelector(
+    (state) => state.locker.extenedPairVaultListData[0]
+  );
+  const estimatedLiquidationPrice = useSelector(
+      (state) => state.locker.estimatedLiquidationPrice,
+  );
 
   const marks = {
     0: "0%",
@@ -100,6 +112,7 @@ const Edit = ({
   const currentCollateral = ownerVaultInfo?.amountIn || 0;
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
+  console.log("the info", ownerVaultInfo);
 
   const collateralPrice = marketPrice(markets, pair?.denomIn);
 
@@ -114,7 +127,7 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setDeposit(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setWithdraw(0);
       setDraw(0);
       setRepay(0);
@@ -131,7 +144,7 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setWithdraw(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setDeposit(0);
       setDraw(0);
       setRepay(0);
@@ -143,11 +156,11 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setRepay(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setDeposit(0);
       setDraw(0);
       setWithdraw(0);
-      ValidateInputNumber(getAmount(value), currentDebt);
+      setInputValidationError(ValidateInputNumber(value, currentDebt));
     } else {
       const newInput =
         (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio) -
@@ -155,7 +168,7 @@ const Edit = ({
 
       setNewCollateralRatio(value);
       setDraw(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput))
+      setInputAmount(amountConversion(newInput));
       setDeposit(0);
       setWithdraw(0);
       setRepay(0);
@@ -287,12 +300,48 @@ const Edit = ({
   };
 
   const getMaxRepay = () => {
-    let debtFloor = Number(amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor));
-    let intrestAccumulated = Number(amountConversion(ownerVaultInfo?.interestAccumulated));
+    let debtFloor = Number(
+      amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor)
+    );
+    let intrestAccumulated = Number(
+      amountConversion(ownerVaultInfo?.interestAccumulated)
+    );
     let currentBorrowed = Number(amountConversion(currentDebt));
-    let maxRepay = (currentBorrowed + intrestAccumulated) - debtFloor;
+    let maxRepay = currentBorrowed + intrestAccumulated - debtFloor;
     return maxRepay;
-  }
+  };
+
+  useEffect(() => {
+    if (editType === "deposit") {
+      getLiquidationPrice(0, inputAmount);
+    }
+    if (editType === "withdraw") {
+      getLiquidationPrice(0, -Math.abs(inputAmount));
+    }
+    if (editType === "draw") {
+      getLiquidationPrice(inputAmount, 0);
+    }
+    if (editType === "repay") {
+      getLiquidationPrice(-Math.abs(inputAmount), 0);
+    }
+  }, [inputAmount]);
+
+  const getLiquidationPrice = (
+    debtToBeBorrowed = 0,
+    collateralToBeTaken = 0
+  ) => {
+    console.log("coming..", debtToBeBorrowed, collateralToBeTaken);
+    const collateral = amountConversion(currentCollateral);
+    const borrowed = amountConversion(currentDebt);
+    const liquidationRatio =
+      selectedExtendedPairVaultListData?.liquidationRatio;
+
+    setEstimatedLiquidationPrice(
+      decimalConversion(liquidationRatio) *
+        ((Number(borrowed) + Number(debtToBeBorrowed)) /
+          (Number(collateral) + Number(collateralToBeTaken)))
+    );
+  };
 
   return (
     <>
@@ -370,7 +419,7 @@ const Edit = ({
               <Col sm="6" className="mb-3">
                 <label>
                   Draw
-                  <TooltipIcon text="Borrow more cAsset from your deposited collateral" />
+                  <TooltipIcon text="Borrow more CMST from your deposited collateral" />
                 </label>
                 <CustomInput
                   value={draw}
@@ -398,9 +447,9 @@ const Edit = ({
                     <button
                       className="ant-btn active"
                       onClick={() => {
-                        setRepay(getMaxRepay())
-                        setEditType("repay")
-                        setInputAmount(getMaxRepay())
+                        setRepay(getMaxRepay());
+                        setEditType("repay");
+                        setInputAmount(getMaxRepay());
                       }}
                     >
                       Max
@@ -435,10 +484,10 @@ const Edit = ({
                     (newCollateralRatio <= 150
                       ? " red-track"
                       : newCollateralRatio < 200
-                        ? " orange-track"
-                        : newCollateralRatio >= 200
-                          ? " green-track"
-                          : " ")
+                      ? " orange-track"
+                      : newCollateralRatio >= 200
+                      ? " green-track"
+                      : " ")
                   }
                   defaultValue="150"
                   marks={marks}
@@ -460,6 +509,7 @@ const Edit = ({
               </div>
             </div>
           </div>
+
           <div className="assets-form-btn">
             <Button
               type="primary"
@@ -469,14 +519,31 @@ const Edit = ({
                 inProgress ||
                 inputValidationError?.message ||
                 !Number(inputAmount) ||
+                Number(inputAmount) < 0 ||
                 Number(newCollateralRatio) < 150
-
               }
               onClick={() => handleSubmit()}
             >
               {editType}
             </Button>
           </div>
+          <Row>
+            <Col sm="10" className="mt-3 mx-auto card-bottom-details">
+              <Row className="mt-1 estimated_value">
+                <Col>
+                  <label>Estimated liquidation price</label>
+                </Col>
+                <Col className="text-right">
+                  $
+                  {commaSeparator(
+                    Number(estimatedLiquidationPrice || 0).toFixed(
+                      DOLLAR_DECIMALS
+                    )
+                  )}
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </div>
       </div>
     </>
@@ -484,6 +551,7 @@ const Edit = ({
 };
 Edit.propTypes = {
   setAccountVaults: PropTypes.func.isRequired,
+  setEstimatedLiquidationPrice: PropTypes.func.isRequired,
   setPairs: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   setBalanceRefresh: PropTypes.func.isRequired,
@@ -536,5 +604,6 @@ const actionsToProps = {
   setBalanceRefresh,
   setOwnerVaultId,
   setOwnerVaultInfo,
+  setEstimatedLiquidationPrice,
 };
 export default connect(stateToProps, actionsToProps)(Edit);

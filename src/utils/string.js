@@ -77,12 +77,6 @@ export const denomToSymbol = (key) => {
       return "CMST";
     case "uharbor":
       return "HARBOR";
-    case "ucgold":
-      return "XAU";
-    case "ucsilver":
-      return "XAG";
-    case "ucoil":
-      return "OIL";
     default:
       return "CMDX";
   }

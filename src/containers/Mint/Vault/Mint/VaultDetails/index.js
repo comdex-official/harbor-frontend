@@ -92,7 +92,7 @@ const VaultDetails = ({
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.liquidationRatio) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Vault Opening date</div>
+            <div className="asset-name">Vault Opening Date</div>
             <div className="asset-value">{ownerVaultInfo?.createdAt && dateFormater(ownerVaultInfo?.createdAt) || "00.00.00"}</div>
           </div>
         </div>

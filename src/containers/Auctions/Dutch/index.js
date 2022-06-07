@@ -133,7 +133,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
       key: "current_price",
       width: 150,
       render: (price) => (
-        <>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</>
+        <>${commaSeparator(Number(amountConversion(decimalConversion(price) || 0) || 0).toFixed(DOLLAR_DECIMALS))}</>
       ),
     },
     {

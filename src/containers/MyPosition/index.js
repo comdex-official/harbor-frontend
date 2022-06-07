@@ -125,7 +125,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {amountConversionWithComma(
-                  Number(vaultsInfo?.collateralLocked || 0), 2
+                  Number(vaultsInfo?.collateralLocked || 0), DOLLAR_DECIMALS
                 )}
               </h3>
             </div>
@@ -179,8 +179,9 @@ const MyPositions = ({ address, balances }) => {
           {vaultTab && (
             <div className="stats-values">
               <h3>
-                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), 2)}
+                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
               </h3>
+              <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
           {historyTab && (
@@ -188,7 +189,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 $
                 {amountConversionWithComma(
-                  Number(vaultsInfo?.collateralLocked || 0), 2
+                  Number(vaultsInfo?.collateralLocked || 0), DOLLAR_DECIMALS
                 )}
               </h3>
             </div>
@@ -236,18 +237,17 @@ const MyPositions = ({ address, balances }) => {
           {vaultTab && (
             <div className="stats-values">
               <h3>
-                $
-                {amountConversionWithComma(
-                  Number(vaultsInfo?.availableToBorrow || 0), 2
-                )}
+                {amountConversionWithComma(Number(vaultsInfo?.availableToBorrow || 0))}
               </h3>
+              <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
               <h3>
-                ${amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), 2)}
+                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
               </h3>
+              <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
         </>

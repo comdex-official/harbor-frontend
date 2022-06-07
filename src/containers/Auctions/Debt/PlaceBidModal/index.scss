@@ -22,4 +22,9 @@
       }
     }
   }
+  .alert-label {
+    .dark-mode & {
+      color: white;
+    }
+  }
 }

@@ -10,7 +10,7 @@ import { signAndBroadcastTransaction } from "../../../../services/helper";
 import {
   amountConversion,
   getAmount,
-  getDenomBalance,
+  getDenomBalance, orderPriceConversion,
 } from "../../../../utils/coin";
 import Snack from "../../../../components/common/Snack";
 import { ValidateInputNumber } from "../../../../config/_validation";
@@ -64,7 +64,8 @@ const PlaceBidModal = ({
               denom: auction?.outflowTokenInitAmount?.denom,
               amount: getAmount(bidAmount),
             },
-            max: maxPrice,
+            max: orderPriceConversion(maxPrice || 0)?.concat("000000"),
+            // appending 6 zeros for as we have amount on top of price in BE.
             appId: Long.fromNumber(PRODUCT_ID),
             auctionMappingId: params?.dutchId,
           },
