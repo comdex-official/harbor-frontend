@@ -12,15 +12,13 @@ import { getAmount } from "../../../../utils/coin";
 import { getTypeURL } from "../../../../services/transaction";
 import CustomInput from "../../../../components/CustomInput";
 import {
+  commaSeparator,
   decimalConversion,
   marketPrice,
 } from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";
-import { PRODUCT_ID } from "../../../../constants/common";
-import {
-  setExtendedPairVaultListData,
-  setEstimatedLiquidationPrice,
-} from "../../../../actions/locker";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { setExtendedPairVaultListData, setEstimatedLiquidationPrice } from "../../../../actions/locker";
 import {
   queryOwnerVaults,
   queryOwnerVaultsInfo,
@@ -47,7 +45,7 @@ const Edit = ({
   setBalanceRefresh,
   refreshBalance,
   balances,
-  setEstimatedLiquidationPrice,
+                setEstimatedLiquidationPrice,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -71,6 +69,9 @@ const Edit = ({
 
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
+  );
+  const estimatedLiquidationPrice = useSelector(
+      (state) => state.locker.estimatedLiquidationPrice,
   );
 
   const marks = {
@@ -526,12 +527,28 @@ const Edit = ({
               {editType}
             </Button>
           </div>
+          <Row>
+            <Col sm="10" className="mt-3 mx-auto card-bottom-details">
+              <Row className="mt-1 estimated_value">
+                <Col>
+                  <label>Estimated liquidation price</label>
+                </Col>
+                <Col className="text-right">
+                  $
+                  {commaSeparator(
+                    Number(estimatedLiquidationPrice || 0).toFixed(
+                      DOLLAR_DECIMALS
+                    )
+                  )}
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </div>
       </div>
     </>
   );
 };
-
 Edit.propTypes = {
   setAccountVaults: PropTypes.func.isRequired,
   setEstimatedLiquidationPrice: PropTypes.func.isRequired,

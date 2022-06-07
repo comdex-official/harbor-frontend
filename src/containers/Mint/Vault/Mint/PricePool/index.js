@@ -14,9 +14,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
   );
-  const estimatedLiquidationPrice = useSelector(
-    (state) => state.locker.estimatedLiquidationPrice
-  );
+
   const collateralDeposited =
     Number(amountConversion(ownerVaultInfo?.amountIn)) *
     marketPrice(markets, pair?.denomIn);
@@ -36,13 +34,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
     {
       title: "Liquidation Price",
       counts: `$${commaSeparator(
-        Number(
-          estimatedLiquidationPrice
-            ? estimatedLiquidationPrice
-            : liquidationPrice
-            ? liquidationPrice
-            : 0
-        ).toFixed(DOLLAR_DECIMALS)
+        Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS)
       )}`,
     },
     {
