@@ -11,6 +11,8 @@ const PricePool = ({ownerVaultInfo, markets, pair}) => {
 
     const collateralDeposited = Number(amountConversion(ownerVaultInfo?.amountIn)) *
         marketPrice(markets, pair?.denomIn);
+    const withdrawn = Number(amountConversion(ownerVaultInfo?.amountOut)) *
+        marketPrice(markets, pair?.denomOut);
 
     const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
     const collateralToBeTaken = 0;
@@ -36,7 +38,7 @@ const PricePool = ({ownerVaultInfo, markets, pair}) => {
     },
     {
       title: "Withdrawn",
-        counts: `${commaSeparator(Number(borrowed || 0).toFixed(comdex?.coinDecimals))} ${denomConversion(cmst?.coinMinimalDenom)}`
+        counts: `${commaSeparator(Number(withdrawn || 0).toFixed(comdex?.coinDecimals))} ${denomConversion(cmst?.coinMinimalDenom)}`
     },
   ];
   return (
