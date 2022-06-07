@@ -34,19 +34,22 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
 
   const data = [
     {
-      title: "Liquidation Price",
-      counts: `$${commaSeparator(
+      title: "Collateral Ratio",
+      counts: `${commaSeparator(
         Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS)
-      )}`,
+      )} %`,
     },
     {
       title: "Collateral Deposited",
-      counts: `$${commaSeparator(
-        Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS)
-      )}`,
+      counts: <div>
+        {commaSeparator(
+          Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS)
+        )}
+        <span className="small-text">$0.00</span>
+      </div>,
     },
     {
-      title: "Oracle Price",
+      title: "Stability fee due",
       counts: `$${commaSeparator(
         Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
           DOLLAR_DECIMALS
@@ -55,9 +58,12 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
     },
     {
       title: "Withdrawn",
-      counts: `${commaSeparator(
-        Number(withdrawn || 0).toFixed(comdex?.coinDecimals)
-      )} ${denomConversion(cmst?.coinMinimalDenom)}`,
+      counts: <div>
+        ${commaSeparator(
+          Number(withdrawn || 0).toFixed(comdex?.coinDecimals)
+        )}
+        <span className="small-text">{denomConversion(cmst?.coinMinimalDenom)} </span>
+      </div>,
     },
   ];
   return (
