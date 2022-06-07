@@ -18,6 +18,61 @@
         color: #fff;
       }
     }
+    .liquidation-price-container {
+      display: flex;
+      align-items: center;
+      .svg-icon-inner {
+        .icon {
+          height: 30px;
+          width: 30px;
+        }
+      }
+      .das {
+        font-weight: 800;
+        height: 2px;
+        width: 10px;
+        margin-right: 3px;
+        background: #000;
+        .dark-mode & {
+          background: white;
+        }
+      }
+      .title {
+        font-weight: 400;
+        font-size: 16px;
+        margin-top: -8px;
+        .dark-mode & {
+          color: white;
+        }
+      }
+      .price {
+        font-weight: 600;
+        margin-left: 5px;
+        margin-top: -8px;
+        font-size: 20px;
+        .dark-mode & {
+          color: white;
+        }
+      }
+    }
+    .oracle-price-container {
+      margin-top: -10px;
+      .title {
+        font-weight: 400;
+        font-size: 16px;
+
+        .dark-mode & {
+          color: white;
+        }
+      }
+      .price {
+        font-weight: 600;
+        font-size: 20px;
+        .dark-mode & {
+          color: white;
+        }
+      }
+    }
   }
   .ant-row {
     @media only screen and (max-width: 980px) {
@@ -71,4 +126,8 @@
   .ant-slider-handle {
     border-color: $secondary-color !important;
   }
+}
+.small-text {
+  font-size: 16px;
+  padding-left: 10px;
 }
