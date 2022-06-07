@@ -11,10 +11,14 @@ import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
 import { getTypeURL } from "../../../../services/transaction";
 import CustomInput from "../../../../components/CustomInput";
-import { marketPrice } from "../../../../utils/number";
+import {
+  commaSeparator,
+  decimalConversion,
+  marketPrice,
+} from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";
-import { PRODUCT_ID } from "../../../../constants/common";
-import { setExtendedPairVaultListData } from "../../../../actions/locker";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { setExtendedPairVaultListData, setEstimatedLiquidationPrice } from "../../../../actions/locker";
 import {
   queryOwnerVaults,
   queryOwnerVaultsInfo,
@@ -41,6 +45,7 @@ const Edit = ({
   setBalanceRefresh,
   refreshBalance,
   balances,
+                setEstimatedLiquidationPrice,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -61,6 +66,13 @@ const Edit = ({
   const [withdraw, setWithdraw] = useState();
   const [repay, setRepay] = useState();
   const [draw, setDraw] = useState();
+
+  const selectedExtendedPairVaultListData = useSelector(
+    (state) => state.locker.extenedPairVaultListData[0]
+  );
+  const estimatedLiquidationPrice = useSelector(
+      (state) => state.locker.estimatedLiquidationPrice,
+  );
 
   const marks = {
     0: "0%",
@@ -100,6 +112,7 @@ const Edit = ({
   const currentCollateral = ownerVaultInfo?.amountIn || 0;
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
+  console.log("the info", ownerVaultInfo);
 
   const collateralPrice = marketPrice(markets, pair?.denomIn);
 
@@ -298,6 +311,38 @@ const Edit = ({
     return maxRepay;
   };
 
+  useEffect(() => {
+    if (editType === "deposit") {
+      getLiquidationPrice(0, inputAmount);
+    }
+    if (editType === "withdraw") {
+      getLiquidationPrice(0, -Math.abs(inputAmount));
+    }
+    if (editType === "draw") {
+      getLiquidationPrice(inputAmount, 0);
+    }
+    if (editType === "repay") {
+      getLiquidationPrice(-Math.abs(inputAmount), 0);
+    }
+  }, [inputAmount]);
+
+  const getLiquidationPrice = (
+    debtToBeBorrowed = 0,
+    collateralToBeTaken = 0
+  ) => {
+    console.log("coming..", debtToBeBorrowed, collateralToBeTaken);
+    const collateral = amountConversion(currentCollateral);
+    const borrowed = amountConversion(currentDebt);
+    const liquidationRatio =
+      selectedExtendedPairVaultListData?.liquidationRatio;
+
+    setEstimatedLiquidationPrice(
+      decimalConversion(liquidationRatio) *
+        ((Number(borrowed) + Number(debtToBeBorrowed)) /
+          (Number(collateral) + Number(collateralToBeTaken)))
+    );
+  };
+
   return (
     <>
       <div className="edit-tab-card">
@@ -464,6 +509,7 @@ const Edit = ({
               </div>
             </div>
           </div>
+
           <div className="assets-form-btn">
             <Button
               type="primary"
@@ -481,6 +527,23 @@ const Edit = ({
               {editType}
             </Button>
           </div>
+          <Row>
+            <Col sm="10" className="mt-3 mx-auto card-bottom-details">
+              <Row className="mt-1 estimated_value">
+                <Col>
+                  <label>Estimated liquidation price</label>
+                </Col>
+                <Col className="text-right">
+                  $
+                  {commaSeparator(
+                    Number(estimatedLiquidationPrice || 0).toFixed(
+                      DOLLAR_DECIMALS
+                    )
+                  )}
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </div>
       </div>
     </>
@@ -488,6 +551,7 @@ const Edit = ({
 };
 Edit.propTypes = {
   setAccountVaults: PropTypes.func.isRequired,
+  setEstimatedLiquidationPrice: PropTypes.func.isRequired,
   setPairs: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   setBalanceRefresh: PropTypes.func.isRequired,
@@ -540,5 +604,6 @@ const actionsToProps = {
   setBalanceRefresh,
   setOwnerVaultId,
   setOwnerVaultInfo,
+  setEstimatedLiquidationPrice,
 };
 export default connect(stateToProps, actionsToProps)(Edit);
