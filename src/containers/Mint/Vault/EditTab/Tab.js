@@ -72,9 +72,6 @@ const Edit = ({
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
   );
-  const estimatedLiquidationPrice = useSelector(
-    (state) => state.locker.estimatedLiquidationPrice
-  );
 
   const marks = {
     0: "0%",
