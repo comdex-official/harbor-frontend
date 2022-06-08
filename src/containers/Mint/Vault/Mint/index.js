@@ -90,12 +90,9 @@ const Mint = ({
     setAmountOut(
       calculateAmountOut(
         value,
-        // CMDX_PRICE,
         selectedTokenPrice,
         collateralRatio / 100,
-        // CMST_PRICE
         marketPrice(markets, pair && pair?.denomOut)
-        // marketPrice(markets, pair && pair?.denomIn)
       )
     );
   };
@@ -144,7 +141,6 @@ const Mint = ({
         inAmount,
         selectedTokenPrice,
         value / 100,
-        // marketPrice(markets, pair && pair?.denomIn)
         marketPrice(markets, pair && pair?.denomOut)
       )
     );
@@ -282,9 +278,7 @@ const Mint = ({
     [safeCrRatio]: `Safe`,
   };
 
-  // console.log(selectedExtentedPairVaultListData[0], "Selected vault data");
-  // console.log(minCrRatio, "Min cr");
-  // console.log(collateralRatio, "collateral Ratio");
+
   return (
     <>
       <div className="details-wrapper">
