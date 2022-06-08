@@ -32,37 +32,45 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
   const liquidationPrice =
     decimalConversion(liquidationRatio) * (borrowed / collateral);
 
-  const collateralRatio = decimalConversion(selectedExtendedPairVaultListData?.minCr) || 0;
-
   const data = [
     {
       title: "Collateral Ratio",
       counts: `${commaSeparator(
-        (Number(collateralRatio * 100) || 0).toFixed()
+        (Number((collateralDeposited / withdrawn) * 100) || 0).toFixed()
       )}%`,
     },
     {
       title: "Collateral Deposited",
-      counts: <div>
-        ${commaSeparator(Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS))}
-      </div>,
+      counts: (
+        <div>
+          $
+          {commaSeparator(
+            Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS)
+          )}
+        </div>
+      ),
     },
     {
       title: "Stability fee due",
-      counts: `$${commaSeparator(
-        Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
-          DOLLAR_DECIMALS
-        )
-      )}`,
+      counts: (
+        <>
+          {amountConversion(ownerVaultInfo?.interestAccumulated || 0)}
+          <span className="small-text">
+            {denomConversion(cmst?.coinMinimalDenom)}{" "}
+          </span>
+        </>
+      ),
     },
     {
       title: "Withdrawn",
-      counts: <div>
-        {commaSeparator(
-          Number(withdrawn || 0).toFixed(comdex?.coinDecimals)
-        )}
-        <span className="small-text">{denomConversion(cmst?.coinMinimalDenom)} </span>
-      </div>,
+      counts: (
+        <div>
+          {commaSeparator(Number(withdrawn || 0).toFixed(comdex?.coinDecimals))}
+          <span className="small-text">
+            {denomConversion(cmst?.coinMinimalDenom)}{" "}
+          </span>
+        </div>
+      ),
     },
   ];
   return (
@@ -77,13 +85,27 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
             <div className="svg-icon-inner">
               <SvgIcon name={iconNameFromDenom("ucmst")} />{" "}
             </div>
-            <span className="title">Liquidation Price </span> <span className="price"> ${commaSeparator(
-              Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS)
-          )}</span>
+            <span className="title">Liquidation Price </span>{" "}
+            <span className="price">
+              {" "}
+              $
+              {commaSeparator(
+                Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS)
+              )}
+            </span>
           </div>
 
           <div className="oracle-price-container">
-            <span className="title">Oracle Price </span> <span className="price"> ${commaSeparator(Number(marketPrice(markets,pair?.denomIn) || 0).toFixed(DOLLAR_DECIMALS))}</span>
+            <span className="title">Oracle Price </span>{" "}
+            <span className="price">
+              {" "}
+              $
+              {commaSeparator(
+                Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
+                  DOLLAR_DECIMALS
+                )
+              )}
+            </span>
           </div>
         </div>
         <List
