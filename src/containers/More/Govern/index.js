@@ -181,7 +181,7 @@ const Govern = ({
               </Select>
             </div>
             <div className="govern-card-content ">
-              {proposalList?.length > 0 ? (
+              {proposalList?.proposalList?.length > 0 ? (
                 proposalList && proposalList.map((item) => {
                   return (
                     <React.Fragment key={item?.id}>

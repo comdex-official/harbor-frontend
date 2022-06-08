@@ -134,7 +134,6 @@ const Withdraw = ({
   const lockerId = ownerLockerInfo[0]?.lockerId;
   const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated);
 
-  // **************Fetch Owner locker info*****************
   const fetchOwnerLockerExistByAssetId = (
     productId = PRODUCT_ID,
     lockerId,

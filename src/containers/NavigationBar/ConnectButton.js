@@ -100,8 +100,8 @@ const ConnectButton = ({
       if (error) {
         return;
       }
-      if (result?.markets.length > 0) {
-        setMarkets(result.markets, result.pagination);
+      if (result?.markets?.length > 0) {
+        setMarkets(result?.markets, result?.pagination);
       }
     });
   };
