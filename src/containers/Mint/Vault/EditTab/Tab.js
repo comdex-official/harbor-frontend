@@ -112,7 +112,6 @@ const Edit = ({
   const currentCollateral = ownerVaultInfo?.amountIn || 0;
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
-  console.log("the info", ownerVaultInfo);
 
   const collateralPrice = marketPrice(markets, pair?.denomIn);
 
@@ -330,7 +329,6 @@ const Edit = ({
     debtToBeBorrowed = 0,
     collateralToBeTaken = 0
   ) => {
-    console.log("coming..", debtToBeBorrowed, collateralToBeTaken);
     const collateral = amountConversion(currentCollateral);
     const borrowed = amountConversion(currentDebt);
     const liquidationRatio =

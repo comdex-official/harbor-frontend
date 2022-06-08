@@ -282,9 +282,9 @@ const Mint = ({
     [safeCrRatio]: `Safe`,
   };
 
-  console.log(selectedExtentedPairVaultListData[0], "Selected vault data");
-  console.log(minCrRatio, "Min cr");
-  console.log(collateralRatio, "collateral Ratio");
+  // console.log(selectedExtentedPairVaultListData[0], "Selected vault data");
+  // console.log(minCrRatio, "Min cr");
+  // console.log(collateralRatio, "collateral Ratio");
   return (
     <>
       <div className="details-wrapper">

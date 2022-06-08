@@ -67,13 +67,13 @@ const ConnectButton = ({
   }, [address, refreshBalance]);
 
   useEffect(() => {
-    if(address) {
+    if (address) {
       fetchBalances(
-          address,
-          (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-          DEFAULT_PAGE_SIZE,
-          true,
-          false
+        address,
+        (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+        DEFAULT_PAGE_SIZE,
+        true,
+        false
       );
     }
   }, [address, markets]);
@@ -100,8 +100,7 @@ const ConnectButton = ({
       if (error) {
         return;
       }
-
-      if(result?.markets.length > 0) {
+      if (result?.markets.length > 0) {
         setMarkets(result.markets, result.pagination);
       }
     });
