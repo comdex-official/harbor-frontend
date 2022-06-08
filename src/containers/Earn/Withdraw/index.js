@@ -52,6 +52,7 @@ const Withdraw = ({
   const [userDeposite, setuserDeposite] = useState();
   const [reward, setReward] = useState();
   const [sliderPercentage, setsliderPercentage] = useState(0);
+  const [sliderValue, setSliderValue] = useState();
 
   const whiteListedAssetData = [];
   const resetValues = () => {
@@ -87,11 +88,16 @@ const Withdraw = ({
         "macro"
       )
     );
+    let calculatedSliderValue = (value / userDeposite) * 100
+    setSliderValue(calculatedSliderValue)
     dispatch(setAmountIn(value));
+    calculatedSliderValue = Math.floor(calculatedSliderValue)
+    setsliderPercentage(calculatedSliderValue)
   };
 
   const handleSliderChange = (value) => {
     setsliderPercentage(value)
+    setSliderValue(value)
     if (value === userDeposite) {
       dispatch(setAmountIn(userDeposite));
       return
@@ -103,6 +109,7 @@ const Withdraw = ({
   };
 
   const formatter = () => {
+
     if (sliderPercentage > 100) {
       return `${100}%`
     }
@@ -258,6 +265,7 @@ const Withdraw = ({
                   <Slider
                     className={"comdex-slider "}
                     marks={marks}
+                    value={sliderValue}
                     onChange={handleSliderChange}
                     min={0}
                     tipFormatter={formatter}
