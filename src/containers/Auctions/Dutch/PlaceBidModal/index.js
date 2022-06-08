@@ -52,7 +52,6 @@ const PlaceBidModal = ({
   const handleClick = () => {
     setInProgress(true);
 
-    //TODO: update the naming after getting data from chain, camelCase
     signAndBroadcastTransaction(
       {
         message: {
