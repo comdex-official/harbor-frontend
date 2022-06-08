@@ -529,7 +529,7 @@ const Edit = ({
             <Col sm="10" className="mt-3 mx-auto card-bottom-details">
               <Row className="mt-1 estimated_value">
                 <Col>
-                  <label>Estimated liquidation price</label>
+                  <label>New liquidation price</label>
                 </Col>
                 <Col className="text-right">
                   $

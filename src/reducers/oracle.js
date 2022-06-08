@@ -8,9 +8,24 @@ const markets = [
     symbol: "CMDX",
   },
   {
+    rates: "800000",
+    script_id: "2",
+    symbol: "ATOM",
+  },
+  {
     rates: "1000000",
-    script_id: "112",
+    script_id: "3",
+    symbol: "OSMO",
+  },
+  {
+    rates: "1000000",
+    script_id: "4",
     symbol: "CMST",
+  },
+  {
+    rates: "2000000",
+    script_id: "5",
+    symbol: "HARBOR",
   },
 ];
 
