@@ -1,4 +1,4 @@
-import { Button, Slider, message } from "antd";
+import { Button, Slider, message, Spin } from "antd";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Row, SvgIcon } from "../../../../components/common";
@@ -233,7 +233,7 @@ const Mint = ({
     }
   }, [address, pairId, refreshBalance])
 
-  
+
   const fetchQueryPairValut = (pairVaultId) => {
     setLoading(true)
     queryPairVault(pairVaultId, (error, data) => {
@@ -275,6 +275,7 @@ const Mint = ({
     [safeCrRatio]: `Safe`,
   };
 
+  
 
   return (
     <>
