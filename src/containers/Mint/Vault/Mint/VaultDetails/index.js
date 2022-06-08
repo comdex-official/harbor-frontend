@@ -39,12 +39,7 @@ const VaultDetails = ({
     return date;
 
   }
-
-
-  // ******* Get Vault Query *********
-
-  // *----------Get the owner vaultId by productId, pairId , and address----------
-
+  
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
@@ -54,7 +49,6 @@ const VaultDetails = ({
       setOwnerVaultId(data?.vaultId)
     })
   }
-  // *----------Get the owner vaultDetails by ownervaultId----------
 
   const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
     queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
@@ -80,7 +74,6 @@ const VaultDetails = ({
           </div>
           <div className="assets-row">
             <div className="asset-name">Stability Fee </div>
-            {/* TODO: Update the divide values properly */}
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.stabilityFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">

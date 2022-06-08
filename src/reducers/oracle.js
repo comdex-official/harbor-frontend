@@ -4,7 +4,7 @@ import { MARKET_LIST_SET } from "../constants/oracle";
 const markets = [
   {
     rates: "150000",
-    script_id: "112",
+    script_id: "1",
     symbol: "CMDX",
   },
   {

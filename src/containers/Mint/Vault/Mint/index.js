@@ -233,9 +233,7 @@ const Mint = ({
     }
   }, [address, pairId, refreshBalance])
 
-  // *******Get Vault Query *********
-
-  // *----------Get pair vault data by extended pairVault Id----------
+  
   const fetchQueryPairValut = (pairVaultId) => {
     setLoading(true)
     queryPairVault(pairVaultId, (error, data) => {
@@ -250,7 +248,6 @@ const Mint = ({
     })
   }
 
-  // *----------Get the asset data by pairId----------
 
   const getAssetDataByPairId = (pairId) => {
     setLoading(true)
