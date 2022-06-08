@@ -42,6 +42,8 @@ import { signAndBroadcastTransaction } from "../../../services/helper";
 import { defaultFee } from "../../../services/transaction";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { queryCollectorInformation } from "../../../services/collector";
+import { decimalConversion } from "../../../utils/number";
 
 const Deposit = ({
   lang,
@@ -62,6 +64,7 @@ const Deposit = ({
   const [inProgress, setInProgress] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
+  const [collectorInfo, setCollectorInfo] = useState();
 
   const whiteListedAssetData = [];
 
@@ -121,6 +124,7 @@ const Deposit = ({
 
   useEffect(() => {
     fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+    fetchCollectorStats();
   }, [whiteListedAsset]);
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -169,6 +173,15 @@ const Deposit = ({
         }
       }
     );
+  };
+  const fetchCollectorStats = () => {
+    queryCollectorInformation((error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setCollectorInfo(result?.collectorLookup[0]);
+    });
   };
 
   getAssetDenom();
@@ -355,7 +368,11 @@ const Deposit = ({
           <div className="interest-rate-container mt-4">
             <Row>
               <div className="title">Current Reward Rate</div>
-              <div className="value">6%</div>
+              <div className="value"> {collectorInfo?.lockerSavingRate
+                ? Number(
+                  decimalConversion(collectorInfo?.lockerSavingRate) * 100
+                ).toFixed(DOLLAR_DECIMALS)
+                : Number().toFixed(DOLLAR_DECIMALS)}%</div>
             </Row>
           </div>
 

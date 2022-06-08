@@ -32,20 +32,19 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
   const liquidationPrice =
     decimalConversion(liquidationRatio) * (borrowed / collateral);
 
+  const collateralRatio = decimalConversion(selectedExtendedPairVaultListData?.minCr) || 0;
+
   const data = [
     {
       title: "Collateral Ratio",
       counts: `${commaSeparator(
-        Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS)
-      )} %`,
+        (Number(collateralRatio * 100) || 0).toFixed()
+      )}%`,
     },
     {
       title: "Collateral Deposited",
       counts: <div>
-        {commaSeparator(
-          Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS)
-        )}
-        <span className="small-text">$0.00</span>
+        ${commaSeparator(Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS))}
       </div>,
     },
     {
@@ -59,7 +58,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
     {
       title: "Withdrawn",
       counts: <div>
-        ${commaSeparator(
+        {commaSeparator(
           Number(withdrawn || 0).toFixed(comdex?.coinDecimals)
         )}
         <span className="small-text">{denomConversion(cmst?.coinMinimalDenom)} </span>
@@ -78,11 +77,13 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
             <div className="svg-icon-inner">
               <SvgIcon name={iconNameFromDenom("ucmst")} />{" "}
             </div>
-            <span className="title">Liquidation Price </span> <span className="price"> $0.00</span>
+            <span className="title">Liquidation Price </span> <span className="price"> ${commaSeparator(
+              Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS)
+          )}</span>
           </div>
 
           <div className="oracle-price-container">
-            <span className="title">Oracle Price </span> <span className="price"> $0.00</span>
+            <span className="title">Oracle Price </span> <span className="price"> ${commaSeparator(Number(marketPrice(markets,pair?.denomIn) || 0).toFixed(DOLLAR_DECIMALS))}</span>
           </div>
         </div>
         <List

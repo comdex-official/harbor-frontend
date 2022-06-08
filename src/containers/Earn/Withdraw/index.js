@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { Col } from "../../../components/common";
 import CustomInput from "../../../components/CustomInput";
 import {
+  amountConversion,
   amountConversionWithComma,
   denomConversion,
   getAmount,
@@ -50,6 +51,8 @@ const Withdraw = ({
   const [inputValidationError, setInputValidationError] = useState();
   const [userDeposite, setuserDeposite] = useState();
   const [reward, setReward] = useState();
+  const [sliderPercentage, setsliderPercentage] = useState(0);
+  const [sliderValue, setSliderValue] = useState();
 
   const whiteListedAssetData = [];
   const resetValues = () => {
@@ -85,17 +88,35 @@ const Withdraw = ({
         "macro"
       )
     );
+    let calculatedSliderValue = (value / userDeposite) * 100
+    setSliderValue(calculatedSliderValue)
     dispatch(setAmountIn(value));
+    calculatedSliderValue = Math.floor(calculatedSliderValue)
+    setsliderPercentage(calculatedSliderValue)
   };
 
   const handleSliderChange = (value) => {
-    setSliderTooltipVisible(true);
-    dispatch(setAmountIn(value));
-    setTimeout(() => {
-      setSliderTooltipVisible(false);
-    }, 2000);
+    setsliderPercentage(value)
+    setSliderValue(value)
+    if (value === userDeposite) {
+      dispatch(setAmountIn(userDeposite));
+      return
+    }
+    else {
+      let calcutatedValue = (value / 100) * userDeposite;
+      dispatch(setAmountIn(calcutatedValue));
+    }
   };
-  const formatter = () => `${inAmount}`;
+
+  const formatter = () => {
+
+    if (sliderPercentage > 100) {
+      return `${100}%`
+    }
+    else {
+      return `${sliderPercentage}%`
+    }
+  };
 
   const showInDollarValue = () => {
     const total = inAmount;
@@ -111,7 +132,7 @@ const Withdraw = ({
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo[0]?.lockerId;
-  const returnsAccumulated = ownerLockerInfo[0]?.returnsAccumulated;
+  const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated);
 
   // **************Fetch Owner locker info*****************
   const fetchOwnerLockerExistByAssetId = (
@@ -195,9 +216,8 @@ const Withdraw = ({
   };
   const marks = {
     0: "0%",
-    userDeposite: "100%",
+    [userDeposite]: "100%",
   };
-
   getAssetDenom();
 
   return (
@@ -245,11 +265,9 @@ const Withdraw = ({
                   <Slider
                     className={"comdex-slider "}
                     marks={marks}
-                    value={inAmount}
-                    max={userDeposite || 100}
+                    value={sliderValue}
                     onChange={handleSliderChange}
                     min={0}
-                    tooltipVisible={sliderTooltipVisible}
                     tipFormatter={formatter}
                   />
                 </div>

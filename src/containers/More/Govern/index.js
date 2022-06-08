@@ -10,6 +10,7 @@ import { PRODUCT_ID } from '../../../constants/common';
 import moment from "moment";
 import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 import { useState } from "react";
+import NoData from "../../../components/NoData";
 
 const { Option } = Select;
 
@@ -25,8 +26,9 @@ const Govern = ({
 }) => {
 
   const [proposalList, setProposalList] = useState()
-
+  const [loading, setLoading] = useState();
   const fetchAllProposal = (productId) => {
+
     totalProposal(productId).then((res) => {
       setAllProposal(res)
       setProposalList(res)
@@ -34,9 +36,12 @@ const Govern = ({
     })
   }
   const fetchAllProposalUpData = (productId) => {
+    setLoading(true)
     fetchProposalUpData(productId).then((res) => {
       setProposalUpData(res)
+      setLoading(false)
     }).catch((err) => {
+      setLoading(false)
     })
   }
 
@@ -119,7 +124,9 @@ const Govern = ({
     })
     setProposalList(allFilteredProposal)
   }
-
+  if (loading) {
+    return <Spin />;
+  }
 
   return (
     <div className="app-content-wrapper">
@@ -163,7 +170,6 @@ const Govern = ({
         <Col>
           <div className="comdex-card govern-card earn-deposite-card ">
             <div className="governcard-head ">
-              {/* <Button type="primary" className="btn-filled">New Proposal</Button> */}
               <a href="https://forum.comdex.one/" target="_blank"><Button type="primary" className="btn-filled">Forum</Button></a>
               <Select defaultValue="Filter" className="select-primary ml-2" onChange={(e) => filterAllProposal(e)} suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
                 <Option value="all" className="govern-select-option">All</Option>
@@ -174,42 +180,46 @@ const Govern = ({
                 <Option value="rejected">Rejected</Option>
               </Select>
             </div>
-            {!allProposal && <div className="spinner"><Spin /></div>}
             <div className="govern-card-content ">
-              {proposalList && proposalList.map((item) => {
-                return (
-                  <React.Fragment key={item?.id}>
-                    <div className="governlist-row" onClick={() => navigate(`/govern-details/${item?.id}`)} >
-                      <div className="left-section">
-                        <h3>#{item?.id}</h3>
-                        <h3>{item?.title}</h3>
-                        <p>{item?.description} </p>
+              {proposalList?.length > 0 ? (
+                proposalList && proposalList.map((item) => {
+                  return (
+                    <React.Fragment key={item?.id}>
+                      <div className="governlist-row" onClick={() => navigate(`/govern-details/${item?.id}`)} >
+                        <div className="left-section">
+                          <h3>#{item?.id}</h3>
+                          <h3>{item?.title}</h3>
+                          <p>{item?.description} </p>
+                        </div>
+                        <div className="right-section">
+                          <Row>
+                            <Col sm="6">
+                              <label>Vote Starts :</label>
+                              <p>{unixToGMTTime(item?.start_time) || "--/--/--"}</p>
+                            </Col>
+                            <Col sm="6">
+                              <label>Voting Ends :</label>
+                              <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"}</p>
+                            </Col>
+                            <Col sm="6">
+                              <label>Duration : </label>
+                              <p>{getDuration(item?.duration?.time)}</p>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time)} size="small" />
+                            </Col>
+                          </Row>
+                        </div>
                       </div>
-                      <div className="right-section">
-                        <Row>
-                          <Col sm="6">
-                            <label>Vote Starts :</label>
-                            <p>{unixToGMTTime(item?.start_time) || "--/--/--"}</p>
-                          </Col>
-                          <Col sm="6">
-                            <label>Voting Ends :</label>
-                            <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"}</p>
-                          </Col>
-                          <Col sm="6">
-                            <label>Duration : </label>
-                            <p>{getDuration(item?.duration?.time)}</p>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time)} size="small" />
-                          </Col>
-                        </Row>
-                      </div>
-                    </div>
-                  </React.Fragment>
-                )
-              })}
+                    </React.Fragment>
+                  )
+                })
+              ) : <NoData />
+
+              }
+
             </div>
           </div>
         </Col>

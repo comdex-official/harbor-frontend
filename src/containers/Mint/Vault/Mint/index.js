@@ -23,7 +23,7 @@ import {
   setAmountOut,
   setCollateralRatio,
 } from "../../../../actions/asset";
-import { marketPrice } from "../../../../utils/number";
+import { decimalConversion, marketPrice } from "../../../../utils/number";
 import "./index.scss";
 import VaultDetails from "./VaultDetails";
 import { connect, useDispatch } from "react-redux";
@@ -71,11 +71,6 @@ const Mint = ({
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
 
-  const marks = {
-    0: "0%",
-    150: "Min - 150%",
-    200: "Safe: 200%",
-  };
 
 
   const onChange = (value) => {
@@ -95,9 +90,9 @@ const Mint = ({
     setAmountOut(
       calculateAmountOut(
         value,
-        CMDX_PRICE,
+        selectedTokenPrice,
         collateralRatio / 100,
-        CMST_PRICE
+        marketPrice(markets, pair && pair?.denomOut)
       )
     );
   };
@@ -116,6 +111,9 @@ const Mint = ({
   };
 
   const selectedTokenPrice = marketPrice(markets, pair && pair?.denomIn);
+  let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
+  minCrRatio = Number(minCrRatio);
+  let safeCrRatio = minCrRatio + 50;
 
   const showInAssetValue = () => {
     const oralcePrice = marketPrice(markets, pair?.denomIn);
@@ -143,7 +141,7 @@ const Mint = ({
         inAmount,
         selectedTokenPrice,
         value / 100,
-        marketPrice(markets, pair && pair?.denomIn)
+        marketPrice(markets, pair && pair?.denomOut)
       )
     );
   };
@@ -228,7 +226,7 @@ const Mint = ({
 
   useEffect(() => {
     resetValues()
-    
+
     fetchQueryPairValut(pathVaultId);
     if (pairId) {
       getAssetDataByPairId(pairId);
@@ -266,9 +264,19 @@ const Mint = ({
   }
 
   useEffect(() => {
-    setCollateralRatio(200);
     resetValues();
   }, []);
+
+  useEffect(() => {
+    setCollateralRatio(safeCrRatio);
+  }, [safeCrRatio]);
+
+
+  const marks = {
+    0: "0%",
+    [minCrRatio]: `Min`,
+    [safeCrRatio]: `Safe`,
+  };
 
 
   return (
@@ -384,9 +392,9 @@ const Mint = ({
               <Slider
                 className={
                   "comdex-slider borrow-comdex-slider " +
-                  (collateralRatio <= 150
+                  (collateralRatio <= minCrRatio
                     ? " red-track"
-                    : collateralRatio < 200
+                    : collateralRatio < safeCrRatio
                       ? " orange-track"
                       : collateralRatio >= 200
                         ? " green-track"
