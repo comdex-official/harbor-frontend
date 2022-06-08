@@ -91,10 +91,24 @@ const Withdraw = ({
 
   const handleSliderChange = (value) => {
     setsliderPercentage(value)
-    let calcutatedValue = (value / 100) * userDeposite;
-    dispatch(setAmountIn(calcutatedValue));
+    if (value === userDeposite) {
+      dispatch(setAmountIn(userDeposite));
+      return
+    }
+    else {
+      let calcutatedValue = (value / 100) * userDeposite;
+      dispatch(setAmountIn(calcutatedValue));
+    }
   };
-  const formatter = () => `${sliderPercentage}%`;
+
+  const formatter = () => {
+    if (sliderPercentage > 100) {
+      return `${100}%`
+    }
+    else {
+      return `${sliderPercentage}%`
+    }
+  };
 
   const showInDollarValue = () => {
     const total = inAmount;
@@ -196,7 +210,6 @@ const Withdraw = ({
     0: "0%",
     [userDeposite]: "100%",
   };
-
   getAssetDenom();
 
   return (
