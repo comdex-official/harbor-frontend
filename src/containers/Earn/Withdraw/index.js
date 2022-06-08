@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { Col } from "../../../components/common";
 import CustomInput from "../../../components/CustomInput";
 import {
+  amountConversion,
   amountConversionWithComma,
   denomConversion,
   getAmount,
@@ -124,7 +125,7 @@ const Withdraw = ({
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo[0]?.lockerId;
-  const returnsAccumulated = ownerLockerInfo[0]?.returnsAccumulated;
+  const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated);
 
   // **************Fetch Owner locker info*****************
   const fetchOwnerLockerExistByAssetId = (
