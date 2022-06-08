@@ -22,6 +22,7 @@ import { setExtendedPairVaultListData, setEstimatedLiquidationPrice } from "../.
 import {
   queryOwnerVaults,
   queryOwnerVaultsInfo,
+  queryUserVaultsInfo,
 } from "../../../../services/vault/query";
 import { connect } from "react-redux";
 import { setPairs } from "../../../../actions/asset";
@@ -45,7 +46,7 @@ const Edit = ({
   setBalanceRefresh,
   refreshBalance,
   balances,
-                setEstimatedLiquidationPrice,
+  setEstimatedLiquidationPrice,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -60,7 +61,7 @@ const Edit = ({
   const [inputAmount, setInputAmount] = useState();
   const [editType, setEditType] = useState("deposit");
   const [inputValidationError, setInputValidationError] = useState();
-  const [newCollateralRatio, setNewCollateralRatio] = useState(200);
+  const [newCollateralRatio, setNewCollateralRatio] = useState();
   const [collateralRatio, setCollateralRatio] = useState();
   const [deposit, setDeposit] = useState();
   const [withdraw, setWithdraw] = useState();
@@ -71,14 +72,8 @@ const Edit = ({
     (state) => state.locker.extenedPairVaultListData[0]
   );
   const estimatedLiquidationPrice = useSelector(
-      (state) => state.locker.estimatedLiquidationPrice,
+    (state) => state.locker.estimatedLiquidationPrice,
   );
-
-  const marks = {
-    0: "0%",
-    150: "Min - 150%",
-    200: "Safe: 200%",
-  };
 
   useEffect(() => {
     fetchQueryPairValut(pathVaultId);
@@ -97,6 +92,7 @@ const Edit = ({
   useEffect(() => {
     if (ownerVaultId) {
       getOwnerVaultInfoByVaultId(ownerVaultId);
+      getOwnerVaultInfo(ownerVaultId)
     }
   }, [address, ownerVaultId]);
 
@@ -248,7 +244,19 @@ const Edit = ({
       setOwnerVaultInfo(data.vault);
     });
   };
-
+  const getOwnerVaultInfo = (ownerVaultId) => {
+    queryUserVaultsInfo(ownerVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      let ownerCollateral = decimalConversion(data?.vaultsInfo?.collateralizationRatio) * 100
+      setNewCollateralRatio(ownerCollateral)
+    });
+  };
+  let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
+  minCrRatio = Number(minCrRatio);
+  let safeCrRatio = minCrRatio + 50;
   const handleSubmit = () => {
     setInProgress(true);
     message.info("Transaction initiated");
@@ -296,11 +304,11 @@ const Edit = ({
     let debtFloor = Number(
       amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor)
     );
-    let intrestAccumulated = Number(
+    let interestAccumulated = Number(
       amountConversion(ownerVaultInfo?.interestAccumulated)
     );
     let currentBorrowed = Number(amountConversion(currentDebt));
-    let maxRepay = currentBorrowed + intrestAccumulated - debtFloor;
+    let maxRepay = currentBorrowed + interestAccumulated - debtFloor;
     return maxRepay;
   };
 
@@ -319,6 +327,10 @@ const Edit = ({
     }
   }, [inputAmount]);
 
+  useEffect(() => {
+    setCollateralRatio(safeCrRatio);
+  }, [safeCrRatio]);
+
   const getLiquidationPrice = (
     debtToBeBorrowed = 0,
     collateralToBeTaken = 0
@@ -330,10 +342,17 @@ const Edit = ({
 
     setEstimatedLiquidationPrice(
       decimalConversion(liquidationRatio) *
-        ((Number(borrowed) + Number(debtToBeBorrowed)) /
-          (Number(collateral) + Number(collateralToBeTaken)))
+      ((Number(borrowed) + Number(debtToBeBorrowed)) /
+        (Number(collateral) + Number(collateralToBeTaken)))
     );
   };
+
+  const marks = {
+    0: "0%",
+    [minCrRatio]: `Min`,
+    [safeCrRatio]: `Safe`,
+  };
+
 
   return (
     <>
@@ -473,13 +492,13 @@ const Edit = ({
                 <Slider
                   className={
                     "comdex-slider borrow-comdex-slider " +
-                    (newCollateralRatio <= 150
+                    (newCollateralRatio <= minCrRatio
                       ? " red-track"
-                      : newCollateralRatio < 200
-                      ? " orange-track"
-                      : newCollateralRatio >= 200
-                      ? " green-track"
-                      : " ")
+                      : newCollateralRatio < safeCrRatio
+                        ? " orange-track"
+                        : newCollateralRatio >= 200
+                          ? " green-track"
+                          : " ")
                   }
                   defaultValue="150"
                   marks={marks}
