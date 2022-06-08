@@ -303,7 +303,7 @@ button {
         background: $silver-color;
 
         &.ant-slider-dot-active {
-          background: #13a356;
+          background: $secondary-color;
         }
         &:first-child {
           margin-left: 0;
@@ -341,12 +341,6 @@ button {
         .dark-mode & {
           color: $white;
         }
-      }
-      span:nth-child(2) {
-        left: 27% !important;
-      }
-      span:nth-child(3) {
-        left: 43% !important;
       }
     }
     &.red-track {

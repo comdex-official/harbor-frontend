@@ -52,7 +52,7 @@ export const TransactionWithKeplr = async (transaction, address, callback) => {
   }
 
   SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
-    registry: myRegistry, aminoTypes: aminoTypes 
+    registry: myRegistry, aminoTypes: aminoTypes
   })
     .then((client) => {
       client

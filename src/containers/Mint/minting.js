@@ -52,10 +52,6 @@ const Minting = ({ address }) => {
 
   }, [address])
 
-  // ******* Get Vault Query *********
-
-  // *----------Get list of all extended pair vaults Id's across product id----------* From asset module 
-
   const fetchExtendexPairList = (productId) => {
     setLoading(true);
     queryExtendedPairVaultById(productId, (error, data) => {
@@ -68,9 +64,6 @@ const Minting = ({ address }) => {
     });
   };
 
-
-  // *----------Get list of all assets----------*
-
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     setLoading(true)
     queryAssets(offset, limit, countTotal, reverse, (error, data) => {
@@ -82,8 +75,6 @@ const Minting = ({ address }) => {
       dispatch(setAssetList(data.assets))
     });
   };
-  // *----------Get list of all extended pair vaults----------*
-
 
   const getAsssetIcon = (pairID) => {
     const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.id).toNumber() === pairID);

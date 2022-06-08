@@ -112,7 +112,6 @@ const Edit = ({
   const currentCollateral = ownerVaultInfo?.amountIn || 0;
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
-  console.log("the info", ownerVaultInfo);
 
   const collateralPrice = marketPrice(markets, pair?.denomIn);
 
@@ -219,10 +218,6 @@ const Edit = ({
     }
   };
 
-  // ******* Get Vault Query *********
-
-  // *----------Get the owner vaultId by productId, pairId , and address----------
-
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
@@ -233,7 +228,6 @@ const Edit = ({
     });
   };
 
-  // *----------Get pair vault data by extended pairVault Id----------
   const fetchQueryPairValut = (pairVaultId) => {
     queryPairVault(pairVaultId, (error, data) => {
       if (error) {
@@ -244,7 +238,6 @@ const Edit = ({
     });
   };
 
-  // *----------Get the owner vaultDetails by ownervaultId----------
 
   const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
     queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
@@ -330,7 +323,6 @@ const Edit = ({
     debtToBeBorrowed = 0,
     collateralToBeTaken = 0
   ) => {
-    console.log("coming..", debtToBeBorrowed, collateralToBeTaken);
     const collateral = amountConversion(currentCollateral);
     const borrowed = amountConversion(currentDebt);
     const liquidationRatio =
