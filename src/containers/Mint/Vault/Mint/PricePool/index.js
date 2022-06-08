@@ -49,11 +49,10 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
     },
     {
       title: "Stability fee due",
-      counts: `$${commaSeparator(
-        Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
-          DOLLAR_DECIMALS
-        )
-      )}`,
+      counts: <>
+        {amountConversion(ownerVaultInfo?.interestAccumulated || 0)}
+        <span className="small-text">{denomConversion(cmst?.coinMinimalDenom)} </span>
+      </>
     },
     {
       title: "Withdrawn",
