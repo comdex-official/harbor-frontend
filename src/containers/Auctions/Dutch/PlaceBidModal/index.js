@@ -64,8 +64,7 @@ const PlaceBidModal = ({
               denom: auction?.outflowTokenInitAmount?.denom,
               amount: getAmount(bidAmount),
             },
-            max: orderPriceConversion(maxPrice || 0)?.concat("000000"),
-            // appending 6 zeros for as we have amount on top of price in BE.
+            max: orderPriceConversion(maxPrice || 0),
             appId: Long.fromNumber(PRODUCT_ID),
             auctionMappingId: params?.dutchId,
           },
