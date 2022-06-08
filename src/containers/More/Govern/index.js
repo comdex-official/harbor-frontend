@@ -28,10 +28,10 @@ const Govern = ({
   const [proposalList, setProposalList] = useState()
   const [loading, setLoading] = useState();
   const fetchAllProposal = (productId) => {
-
     totalProposal(productId).then((res) => {
       setAllProposal(res)
-      setProposalList(res)
+      let reverseProposal = res.reverse();
+      setProposalList(reverseProposal)
     }).catch((err) => {
     })
   }
