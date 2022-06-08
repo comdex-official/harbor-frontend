@@ -50,6 +50,7 @@ const Withdraw = ({
   const [inputValidationError, setInputValidationError] = useState();
   const [userDeposite, setuserDeposite] = useState();
   const [reward, setReward] = useState();
+  const [sliderPercentage, setsliderPercentage] = useState(0);
 
   const whiteListedAssetData = [];
   const resetValues = () => {
@@ -89,13 +90,11 @@ const Withdraw = ({
   };
 
   const handleSliderChange = (value) => {
-    setSliderTooltipVisible(true);
-    dispatch(setAmountIn(value));
-    setTimeout(() => {
-      setSliderTooltipVisible(false);
-    }, 2000);
+    setsliderPercentage(value)
+    let calcutatedValue = (value / 100) * userDeposite;
+    dispatch(setAmountIn(calcutatedValue));
   };
-  const formatter = () => `${inAmount}`;
+  const formatter = () => `${sliderPercentage}%`;
 
   const showInDollarValue = () => {
     const total = inAmount;
@@ -195,7 +194,7 @@ const Withdraw = ({
   };
   const marks = {
     0: "0%",
-    userDeposite: "100%",
+    [userDeposite]: "100%",
   };
 
   getAssetDenom();
@@ -245,11 +244,8 @@ const Withdraw = ({
                   <Slider
                     className={"comdex-slider "}
                     marks={marks}
-                    value={inAmount}
-                    max={userDeposite || 100}
                     onChange={handleSliderChange}
                     min={0}
-                    tooltipVisible={sliderTooltipVisible}
                     tipFormatter={formatter}
                   />
                 </div>

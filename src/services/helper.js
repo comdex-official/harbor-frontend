@@ -44,6 +44,7 @@ export const signAndBroadcastTransaction = (transaction, address, callback) => {
 };
 
 export const TransactionWithKeplr = async (transaction, address, callback) => {
+  console.log(transaction);
   const [offlineSigner, accounts] = await KeplrWallet(comdex.chainId);
   if (address !== accounts[0].address) {
     const error = "Connected account is not active in Keplr";
@@ -52,7 +53,7 @@ export const TransactionWithKeplr = async (transaction, address, callback) => {
   }
 
   SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
-    registry: myRegistry, aminoTypes: aminoTypes 
+    registry: myRegistry, aminoTypes: aminoTypes
   })
     .then((client) => {
       client
