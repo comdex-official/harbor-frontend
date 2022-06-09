@@ -165,7 +165,6 @@ const PlaceBidModal = ({
               <CustomInput
                 value={bidAmount}
                 onChange={(event) => handleChange(event.target.value)}
-                validationError={validationError}
               />
             </Col>
           </Row>
