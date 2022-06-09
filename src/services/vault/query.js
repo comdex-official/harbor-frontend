@@ -179,3 +179,24 @@ export const queryUserVaultsStats = (
             });
     });
 };
+export const queryUserVaultsInfo = (
+    id,
+    callback
+) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryClientImpl(rpcClient)
+            .QueryVaultInfo({
+                id:id,
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};
