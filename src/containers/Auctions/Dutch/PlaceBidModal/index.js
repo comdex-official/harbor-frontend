@@ -140,7 +140,12 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                ${commaSeparator(Number(amountConversion(decimalConversion(auction?.outflowTokenCurrentPrice) || 0) || 0).toFixed(DOLLAR_DECIMALS))}
+                $
+                {commaSeparator(
+                  Number(decimalConversion(auction?.outflowTokenCurrentPrice) || 0).toFixed(
+                    DOLLAR_DECIMALS
+                  )
+                )}
               </label>
             </Col>
           </Row>

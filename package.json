@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@cosmjs/crypto": "^0.28.0",
-    "@cosmjs/encoding": "^0.28.0",
+    "@cosmjs/crypto": "^0.28.4",
+    "@cosmjs/encoding": "^0.28.4",
     "@cosmjs/ledger-amino": "^0.28.4",
-    "@cosmjs/math": "^0.28.0",
-    "@cosmjs/proto-signing": "^0.28.0",
-    "@cosmjs/stargate": "^0.28.0",
-    "@cosmjs/tendermint-rpc": "^0.28.0",
+    "@cosmjs/math": "^0.28.4",
+    "@cosmjs/proto-signing": "^0.28.4",
+    "@cosmjs/stargate": "^0.28.4",
+    "@cosmjs/tendermint-rpc": "^0.28.4",
     "@keplr-wallet/common": "^0.10.1",
     "@keplr-wallet/stores": "^0.10.1",
     "@ledgerhq/hw-transport-webusb": "^6.27.1",
@@ -71,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@cosmjs/stream": "^0.28.4",
     "axios": "^0.26.1",
     "customize-cra": "^1.0.0",
     "less": "^4.1.2",
