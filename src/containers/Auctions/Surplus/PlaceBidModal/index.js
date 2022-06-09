@@ -18,9 +18,8 @@ import { ValidateInputNumber } from "../../../../config/_validation";
 import { toDecimals } from "../../../../utils/string";
 import CustomInput from "../../../../components/CustomInput";
 import Long from "long";
-import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
-import { commaSeparator } from "../../../../utils/number";
 import moment from "moment";
 
 const PlaceBidModal = ({
@@ -51,7 +50,6 @@ const PlaceBidModal = ({
   const handleClick = () => {
     setInProgress(true);
 
-    //TODO: update the naming after getting data from chain, camelCase
     signAndBroadcastTransaction(
       {
         message: {
@@ -64,7 +62,7 @@ const PlaceBidModal = ({
               amount: getAmount(bidAmount),
             },
             appId: Long.fromNumber(PRODUCT_ID),
-            auctionMappingId: params?.debtId,
+            auctionMappingId: params?.surplusId,
           },
         },
         fee: defaultFee(),
