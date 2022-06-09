@@ -48,7 +48,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
         return;
       }
 
-      setParams(result?.params);
+      setParams(result?.auctionParams);
     });
   };
 

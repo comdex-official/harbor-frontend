@@ -46,7 +46,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
         return;
       }
 
-      setParams(result?.params);
+      setParams(result?.auctionParams);
     });
   };
 
