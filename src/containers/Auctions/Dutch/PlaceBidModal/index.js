@@ -1,5 +1,5 @@
 import * as PropTypes from "prop-types";
-import { Button, Input, Modal, message } from "antd";
+import { Button, Modal, message } from "antd";
 import { Row, Col } from "../../../../components/common";
 import { connect } from "react-redux";
 import React, { useState } from "react";

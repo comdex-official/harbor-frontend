@@ -67,7 +67,9 @@ export const queryAuctionParams = (callback) => {
     }
 
     new QueryClientImpl(rpcClient)
-      .QueryParams()
+      .QueryParams({
+        appId: Long.fromNumber(PRODUCT_ID),
+      })
       .then((result) => {
         callback(null, result);
       })
