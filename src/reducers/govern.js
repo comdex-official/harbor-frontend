@@ -9,13 +9,13 @@ const allProposal = (state = "", action) => {
 };
 const currentProposal = (state = [], action) => {
     if (action.type === SET_CURRENT_PROPOSAL) {
-        return action.value;
+        return [action.value];
     }
     return state;
 };
 const proposalUpData = (state = "", action) => {
     if (action.type === SET_PROPOSAL_UP_DATA) {
-        return action.value;
+        return [action.value];
     }
     return state;
 };

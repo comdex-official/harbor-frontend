@@ -111,7 +111,7 @@ const estimatedLiquidationPrice = (state = 0, action) => {
 };
 const colloctorData = (state = [], action) => {
   if (action.type === SET_COLLOCTOR_DATA) {
-    return action.value;
+    return [action.value];
   }
   return state;
 };

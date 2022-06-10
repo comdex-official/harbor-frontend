@@ -51,8 +51,12 @@ const GovernDetails = ({
 
   useEffect(() => {
     fetchSpecificProposal(currentProposalId)
+  }, [address])
+
+  useEffect(() => {
     fetchUserVote(currentProposalId, address)
   }, [address])
+
 
   useEffect(() => {
     calculateVotes()

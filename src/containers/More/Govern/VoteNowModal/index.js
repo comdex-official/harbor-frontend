@@ -83,7 +83,7 @@ const VoteNowModal = ({
           </Row>
           <Row className="p-0">
             <Col className="text-right mt-3">
-              <Button type="primary" className="px-5 mr-3" size="large" onClick={handleCancel} loading={loading} >
+              <Button type="primary" className="px-5 mr-3" size="large" onClick={handleCancel} disabled={loading}>
                 Cancel
               </Button>
               <Button type="primary" className="btn-filled px-5" size="large" onClick={handleOk} loading={loading}  >
