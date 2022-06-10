@@ -172,7 +172,7 @@ const GovernDetails = ({
       {
         states: {
           hover: {
-            enabled: true,
+            enabled: false,
           },
         },
         name: "",

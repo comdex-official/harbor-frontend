@@ -130,7 +130,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       {
         states: {
           hover: {
-            enabled: true,
+            enabled: false,
           },
         },
         name: "",
