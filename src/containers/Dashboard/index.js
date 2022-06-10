@@ -11,16 +11,19 @@ import { queryAppTVL, queryTotalTokenMinted } from "../../services/vault/query";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import { message } from "antd";
 import { commaSeparator, marketPrice } from "../../utils/number";
-import { amountConversion } from "../../utils/coin";
+import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import "./index.scss";
+import { fetchProposalUpData } from "../../services/contractsRead";
 
 const Dashboard = ({ lang, isDarkMode, markets }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
+  const [harborCurrentSypply, setHarborCurrentSupply] = useState();
 
   useEffect(() => {
     fetchTVL();
-
+    fetchTotalTokenMinted();
+    fetchAllProposalUpData(PRODUCT_ID)
   }, []);
 
   const fetchTVL = () => {
@@ -63,12 +66,22 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       }
     });
   };
+
+  // Todo: Update cmst circulating supply
   const fetchTotalTokenMinted = () => {
     queryTotalTokenMinted(PRODUCT_ID, (error, result) => {
       if (error) {
         message.error(error);
         return;
       }
+    })
+  }
+  const fetchAllProposalUpData = (productId) => {
+    fetchProposalUpData(productId).then((res) => {
+      setHarborCurrentSupply(res?.current_supply)
+
+    }).catch((err) => {
+      console.log(err);
     })
   }
 
@@ -278,7 +291,13 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       },
     ],
   };
-
+  const harborMarketCap = () => {
+    let supply = amountConversion(harborCurrentSypply, 2);
+    let price = marketPrice(markets, "uharbor")
+    let marketCap = supply * price;
+    marketCap = commaSeparator(marketCap)
+    return marketCap;
+  }
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>
@@ -335,7 +354,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                 <div className="col1">
                   <small>CMST Price</small>
                   <h4>
-                    $1.00 <span>0.00%</span>
+                    ${marketPrice(markets, "ucmst")} <span>0.00%</span>
                   </h4>
                 </div>
                 <div className="col2">
@@ -367,7 +386,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                   <div className="col1">
                     <small>HARBOR Price</small>
                     <h4>
-                      $5.12 <span>2.41%</span>
+                      ${marketPrice(markets, "uharbor")}<span> 2.41%</span>
                     </h4>
                   </div>
                   <div className="col2">
@@ -378,7 +397,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                       />
                     </small>
                     <p>
-                      12,500,000 <span>HARBOR</span>
+                      {harborCurrentSypply ? amountConversionWithComma(harborCurrentSypply, 2) : "0000"}<span> HARBOR</span>
                     </p>
                   </div>
                   <div className="col3">
@@ -386,7 +405,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                       Market Cap{" "}
                       <TooltipIcon text={variables[lang].tooltip_market_cap} />
                     </small>
-                    <p>$72,125,000</p>
+                    <p>${harborMarketCap() || "000"}</p>
                   </div>
                 </div>
                 <div className="right-chart">

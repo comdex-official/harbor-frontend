@@ -127,7 +127,6 @@ const Govern = ({
   if (loading) {
     return <Spin />;
   }
-
   return (
     <div className="app-content-wrapper">
       <div className="back-btn-container">
