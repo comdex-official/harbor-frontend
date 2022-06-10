@@ -58,7 +58,7 @@ const poolDeposit = (
 
 const poolBalance = (state = [], action) => {
   if (action.type === POOL_BALANCE_SET) {
-    return [action.list];
+    return action.list;
   }
 
   return state;

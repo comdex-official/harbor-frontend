@@ -22,7 +22,7 @@ const statistics = (state = {}, action) => {
 
 const volumeChart = (state = [], action) => {
   if (action.type === VOLUME_CHART_DATA_SET) {
-    return [action.data];
+    return action.data;
   }
 
   return state;
@@ -42,7 +42,7 @@ const volumeChartInProgress = (state = false, action) => {
 
 const priceChart = (state = [], action) => {
   if (action.type === PRICE_CHART_DATA_SET) {
-    return [action.data];
+    return action.data;
   }
 
   return state;
@@ -70,7 +70,7 @@ const range = (state = "d", action) => {
 
 const totalCollateralList = (state = [], action) => {
   if (action.type === TOTA_COLLATERAL_LIST_SET) {
-    return [action.data];
+    return action.data;
   }
 
   return state;
