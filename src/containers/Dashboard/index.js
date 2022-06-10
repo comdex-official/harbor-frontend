@@ -69,7 +69,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         message.error(error);
         return;
       }
-      console.log(result, "Total cmst minted");
     })
   }
 
@@ -184,9 +183,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       gridLineWidth: 1,
       gridLineColor: isDarkMode ? "#6C597B" : "#FFCEFF",
       categories: [
-        "JAN",
-        "FEB",
-        "MAR",
         "APR",
         "MAY",
         "JUN",
@@ -199,6 +195,9 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         "JAN",
         "FEB",
         "MAR",
+        "APR",
+        "MAY",
+        "JUN",
       ],
     },
     series: [
