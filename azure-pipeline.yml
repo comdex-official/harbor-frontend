@@ -1,0 +1,14 @@
+trigger:
+- surendra-development
+
+#pool:
+#  {{ pool }}
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Testing
+    echo Testing2
+  displayName: 'Run a multi-line script'
