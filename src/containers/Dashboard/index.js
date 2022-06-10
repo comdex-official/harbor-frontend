@@ -14,7 +14,7 @@ import { commaSeparator, marketPrice } from "../../utils/number";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import "./index.scss";
 import { fetchProposalUpData } from "../../services/contractsRead";
-import { harbor } from "../../config/network";
+import { cmst, harbor } from "../../config/network";
 
 const Dashboard = ({ lang, isDarkMode, markets }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
@@ -355,7 +355,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                 <div className="col1">
                   <small>CMST Price</small>
                   <h4>
-                    ${marketPrice(markets, "ucmst")} <span>0.00%</span>
+                    ${marketPrice(markets, cmst?.coinMinimalDenom)} <span>0.00%</span>
                   </h4>
                 </div>
                 <div className="col2">

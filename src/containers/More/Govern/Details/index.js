@@ -57,7 +57,7 @@ const GovernDetails = ({
   }, [voteCount])
 
   useEffect(() => {
-    if (currentProposalId) {
+    if (currentProposalId && address) {
       fetchUserVote(currentProposalId, address)
     }
   }, [address])
@@ -314,7 +314,7 @@ const GovernDetails = ({
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
                           <label>Yes</label>
-                          <p>{getVotes?.yes || 0}%</p>
+                          <p>{getVotes?.yes ? getVotes?.yes : 0.00}%</p>
                         </div>
                       </li>
                       <li>
