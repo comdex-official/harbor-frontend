@@ -1,4 +1,4 @@
-import { SET_ALL_PROPOSAL, SET_CURRENT_PROPOSAL, SET_PROPOSAL_UP_DATA, SET_USER_VOTE } from "../constants/govern";
+import { SET_ALL_PROPOSAL, SET_CURRENT_PROPOSAL, SET_PROPOSAL_UP_DATA, SET_USER_VOTE, SET_VOTE_COUNT } from "../constants/govern";
 
 export const setAllProposal = (value) => {
     return {
@@ -21,6 +21,12 @@ export const setProposalUpData = (value) => {
 export const setUserVote = (value) => {
     return {
         type: SET_USER_VOTE,
+        value,
+    };
+};
+export const setVoteCount = (value) => {
+    return {
+        type: SET_VOTE_COUNT,
         value,
     };
 };

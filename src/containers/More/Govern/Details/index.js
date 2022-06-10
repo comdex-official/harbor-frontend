@@ -23,7 +23,8 @@ const GovernDetails = ({
   currentProposal,
   setCurrentProposal,
   userVote,
-  setUserVote
+  setUserVote,
+  voteCount,
 }) => {
   const { proposalId } = useParams();
   let currentProposalId = Number(proposalId);
@@ -50,11 +51,16 @@ const GovernDetails = ({
 
 
   useEffect(() => {
-    fetchSpecificProposal(currentProposalId)
-  }, [address])
+    if (currentProposalId) {
+      console.log("UseEffect 1");
+      fetchSpecificProposal(currentProposalId)
+    }
+  }, [voteCount])
 
   useEffect(() => {
-    fetchUserVote(currentProposalId, address)
+    if (currentProposalId) {
+      fetchUserVote(currentProposalId, address)
+    }
   }, [address])
 
 
@@ -350,6 +356,7 @@ GovernDetails.propTypes = {
   address: PropTypes.string.isRequired,
   currentProposal: PropTypes.array.isRequired,
   userVote: PropTypes.array.isRequired,
+  voteCount: PropTypes.number.isRequired
 };
 
 const stateToProps = (state) => {
@@ -358,6 +365,7 @@ const stateToProps = (state) => {
     address: state.account.address,
     currentProposal: state.govern.currentProposal,
     userVote: state.govern.userVote,
+    voteCount: state.govern.voteCount,
   };
 };
 

@@ -6,11 +6,14 @@ import React, { useState } from "react";
 import "./index.scss"
 import { transactionForVote } from '../../../../services/contractsWrite'
 import { useParams } from "react-router";
+import { setVoteCount } from "../../../../actions/govern";
 
 const VoteNowModal = ({
   lang,
   address,
   currentProposal,
+  voteCount,
+  setVoteCount
 }) => {
   const { proposalId } = useParams();
   let currentProposalId = Number(proposalId);
@@ -32,6 +35,7 @@ const VoteNowModal = ({
             setLoading(false)
             return;
           }
+          setVoteCount(voteCount + 1)
           message.success("Success")
           setLoading(false)
           setIsModalVisible(false);
@@ -71,7 +75,10 @@ const VoteNowModal = ({
             <Col sm="12">
               <h3>Your Vote</h3>
               <p>#{currentProposal?.id || "-"} {currentProposal?.title || "---"}</p>
-              <Radio.Group name="radiogroup" onChange={(e) => setUserVote(e.target.value)}>
+              <Radio.Group name="radiogroup" onChange={(e) => {
+                setUserVote(e.target.value)
+
+              }}>
                 <Space direction="vertical">
                   <Radio value="yes">Yes</Radio>
                   <Radio value="no">No</Radio>
@@ -101,6 +108,7 @@ VoteNowModal.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   currentProposal: PropTypes.array.isRequired,
+  voteCount: PropTypes.number.isRequired
 };
 
 const stateToProps = (state) => {
@@ -108,10 +116,12 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     currentProposal: state.govern.currentProposal,
+    voteCount: state.govern.voteCount,
   };
 };
 
 const actionsToProps = {
+  setVoteCount,
 };
 
 export default connect(stateToProps, actionsToProps)(VoteNowModal);

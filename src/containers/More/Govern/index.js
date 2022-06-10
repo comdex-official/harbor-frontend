@@ -23,6 +23,7 @@ const Govern = ({
   setAllProposal,
   proposalUpData,
   setProposalUpData,
+  voteCount,
 }) => {
 
   const [proposalList, setProposalList] = useState()
@@ -232,6 +233,7 @@ Govern.propTypes = {
   address: PropTypes.string.isRequired,
   allProposal: PropTypes.array.isRequired,
   proposalUpData: PropTypes.array.isRequired,
+  voteCount: PropTypes.number.isRequired
 };
 
 const stateToProps = (state) => {
@@ -239,7 +241,8 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     allProposal: state.govern.allProposal,
-    proposalUpData: state.govern.proposalUpData
+    proposalUpData: state.govern.proposalUpData,
+    voteCount: state.govern.voteCount,
   };
 };
 

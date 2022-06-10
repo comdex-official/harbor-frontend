@@ -14,6 +14,7 @@ import { commaSeparator, marketPrice } from "../../utils/number";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import "./index.scss";
 import { fetchProposalUpData } from "../../services/contractsRead";
+import { harbor } from "../../config/network";
 
 const Dashboard = ({ lang, isDarkMode, markets }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
@@ -22,7 +23,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
 
   useEffect(() => {
     fetchTVL();
-    fetchTotalTokenMinted();
+    // fetchTotalTokenMinted();
     fetchAllProposalUpData(PRODUCT_ID)
   }, []);
 
@@ -292,11 +293,11 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     ],
   };
   const harborMarketCap = () => {
-    let supply = amountConversion(harborCurrentSypply, 2);
-    let price = marketPrice(markets, "uharbor")
+    let supply = Number(amountConversion(harborCurrentSypply, DOLLAR_DECIMALS));
+    let price = Number(marketPrice(markets, harbor?.coinMinimalDenom))
     let marketCap = supply * price;
     marketCap = commaSeparator(marketCap)
-    return marketCap;
+    return marketCap || 0;
   }
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
@@ -386,7 +387,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                   <div className="col1">
                     <small>HARBOR Price</small>
                     <h4>
-                      ${marketPrice(markets, "uharbor")}<span> 2.41%</span>
+                      ${marketPrice(markets, harbor?.coinMinimalDenom)}<span> 2.41%</span>
                     </h4>
                   </div>
                   <div className="col2">
@@ -397,7 +398,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                       />
                     </small>
                     <p>
-                      {harborCurrentSypply ? amountConversionWithComma(harborCurrentSypply, 2) : "0000"}<span> HARBOR</span>
+                      {harborCurrentSypply ? amountConversionWithComma(harborCurrentSypply, DOLLAR_DECIMALS) : "00.00"}<span> HARBOR</span>
                     </p>
                   </div>
                   <div className="col3">
@@ -405,7 +406,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                       Market Cap{" "}
                       <TooltipIcon text={variables[lang].tooltip_market_cap} />
                     </small>
-                    <p>${harborMarketCap() || "000"}</p>
+                    <p>${harborCurrentSypply ? harborMarketCap() : "0.00"}</p>
                   </div>
                 </div>
                 <div className="right-chart">
