@@ -133,7 +133,7 @@ const Withdraw = ({
 
   return (
     <>
-      <Button type="primary" size="small" onClick={showModal}>
+      <Button type="primary btn-filled" size="small" onClick={showModal}>
         {variables[lang].withdraw}
       </Button>
       <Modal

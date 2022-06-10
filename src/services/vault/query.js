@@ -4,6 +4,23 @@ import { QueryClientImpl } from 'comdex-codec/build/comdex/vault/v1beta1/query'
 import {PRODUCT_ID} from "../../constants/common";
 
 
+export const queryTotalTokenMinted = (productId, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        new QueryClientImpl(rpcClient)
+            .QueryTokenMintedAllProducts({
+                productId: Long.fromNumber(productId)
+            }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};
 export const queryExtendedPairVault = (productId, callback) => {
     createQueryClient((error, rpcClient) => {
         if (error) {
