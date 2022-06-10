@@ -94,6 +94,9 @@ const Edit = ({
       getOwnerVaultInfoByVaultId(ownerVaultId);
       getOwnerVaultInfo(ownerVaultId)
     }
+    else {
+      setOwnerVaultInfo('');
+    }
   }, [address, ownerVaultId]);
 
   const resetValues = () => {
@@ -241,6 +244,7 @@ const Edit = ({
         message.error(error);
         return;
       }
+      console.log(data);
       setOwnerVaultInfo(data.vault);
     });
   };
