@@ -52,7 +52,6 @@ const GovernDetails = ({
 
   useEffect(() => {
     if (currentProposalId) {
-      console.log("UseEffect 1");
       fetchSpecificProposal(currentProposalId)
     }
   }, [voteCount])
