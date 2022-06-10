@@ -81,7 +81,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       setHarborCurrentSupply(res?.current_supply)
 
     }).catch((err) => {
-      console.log(err);
+      message.error(err);
     })
   }
 
