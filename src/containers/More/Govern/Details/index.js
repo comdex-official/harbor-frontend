@@ -3,7 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import { connect } from "react-redux";
-import { Button, List } from "antd";
+import { Button, List, Spin } from "antd";
 import "./index.scss";
 import VoteNowModal from "../VoteNowModal";
 import { Link } from "react-router-dom";
@@ -28,6 +28,7 @@ const GovernDetails = ({
 }) => {
   const { proposalId } = useParams();
   let currentProposalId = Number(proposalId);
+  const [loading, setLoading] = useState()
   const [getVotes, setGetVotes] = useState({
     yes: 0,
     no: 0,
@@ -43,9 +44,12 @@ const GovernDetails = ({
     })
   }
   const fetchUserVote = (proposalId, address) => {
+    setLoading(true)
     checkUserVote(proposalId, address).then((res) => {
       setUserVote(res.vote)
+      setLoading(false)
     }).catch((err) => {
+      setLoading(false)
     })
   }
 
@@ -91,7 +95,6 @@ const GovernDetails = ({
     no = Number((no / totalValue) * 100).toFixed(2)
     veto = Number((veto / totalValue) * 100).toFixed(2)
     abstain = Number((abstain / totalValue) * 100).toFixed(2)
-
     setGetVotes({
       ...getVotes,
       yes: yes,
@@ -220,6 +223,9 @@ const GovernDetails = ({
     }
   }
 
+  if (loading) {
+    return <div className="spinner"><Spin /></div>
+  }
   return (
     <div className="app-content-wrapper">
       <Row>
@@ -314,7 +320,7 @@ const GovernDetails = ({
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
                           <label>Yes</label>
-                          <p>{getVotes?.yes ? getVotes?.yes : 0.00}%</p>
+                          <p>{getVotes?.yes || "0.00"}%</p>
                         </div>
                       </li>
                       <li>

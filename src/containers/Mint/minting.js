@@ -89,7 +89,7 @@ const Minting = ({ address }) => {
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       <div className="card-main-container">
-        {extenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose your Vault Type</h1> : ""}
+        {extenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose Your Vault Type</h1> : ""}
         {extenedPairVaultList?.length > 0 ? (
           extenedPairVaultList?.map((item, index) => {
             if (
