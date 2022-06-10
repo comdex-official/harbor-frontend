@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs } from "antd";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
@@ -10,9 +10,12 @@ import { useDispatch } from "react-redux";
 import { setAmountIn } from "../../actions/asset";
 import { useSelector } from "react-redux";
 import { toDecimals } from "../../utils/string";
-import { calculateROI } from "../../utils/number";
+import { calculateROI, decimalConversion } from "../../utils/number";
+import { DOLLAR_DECIMALS } from "../../constants/common";
 
-const Earn = () => {
+const Earn = ({
+  colloctorData
+}) => {
   const dispatch = useDispatch();
   const [defaultTabSelect, setDefaultTabSelect] = useState("1");
   const { TabPane } = Tabs;
@@ -20,7 +23,7 @@ const Earn = () => {
   const [years, setYears] = useState(1);
   const [months, setMonths] = useState(0);
   const [days, setDays] = useState(0);
-  const [interestRate, setInterestRate] = useState(6);
+  const [interestRate, setInterestRate] = useState(0);
   const [totalROI, setTotalROI] = useState();
 
   const isLockerExist = useSelector((state) => state.locker.isLockerExist);
@@ -80,6 +83,18 @@ const Earn = () => {
     dispatch(setAmountIn(0));
     setDefaultTabSelect(key);
   };
+  const getIntrestRate = () => {
+    let interest = colloctorData?.lockerSavingRate
+      ? Number(
+        decimalConversion(colloctorData?.lockerSavingRate) * 100
+      ).toFixed(DOLLAR_DECIMALS)
+      : Number().toFixed(DOLLAR_DECIMALS)
+    setInterestRate(interest)
+    return interest;
+  }
+  useEffect(() => {
+    getIntrestRate()
+  }, [colloctorData])
 
 
   return (
@@ -177,11 +192,13 @@ const Earn = () => {
 };
 Earn.propTypes = {
   lang: PropTypes.string.isRequired,
+  colloctorData: PropTypes.array.isRequired
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    colloctorData: state.locker.colloctorData,
   };
 };
 const actionsToProps = {};

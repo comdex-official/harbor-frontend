@@ -1,5 +1,6 @@
 import {
   SET_ALL_WHITELISTED_ASSET,
+  SET_COLLOCTOR_DATA,
   SET_CURRENT_PAIR_ID,
   SET_ESTIMATED_LIQUIDATION_PRICE,
   SET_EXTENDED_PAIR_ID,
@@ -84,6 +85,12 @@ export const setOwnerVaultInfo = (value) => {
 export const setEstimatedLiquidationPrice = (value) => {
   return {
     type: SET_ESTIMATED_LIQUIDATION_PRICE,
+    value,
+  };
+};
+export const setCollectorData = (value) => {
+  return {
+    type: SET_COLLOCTOR_DATA,
     value,
   };
 };

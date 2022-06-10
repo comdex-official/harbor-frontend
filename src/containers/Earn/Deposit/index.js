@@ -23,6 +23,7 @@ import {
   setAllWhiteListedAssets,
   setIsLockerExist,
   setOwnerVaultInfo,
+  setCollectorData
 } from "../../../actions/locker";
 import "./index.scss";
 import { queryAssets } from "../../../services/asset/query";
@@ -56,6 +57,7 @@ const Deposit = ({
   whiteListedAsset,
   ownerLockerInfo,
   setOwnerVaultInfo,
+  setCollectorData
 }) => {
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
@@ -180,6 +182,7 @@ const Deposit = ({
         message.error(error);
         return;
       }
+      setCollectorData(result?.collectorLookup[0])
       setCollectorInfo(result?.collectorLookup[0]);
     });
   };
@@ -481,5 +484,6 @@ const actionsToProps = {
   setAllWhiteListedAssets,
   setWhiteListedAssets,
   setOwnerVaultInfo,
+  setCollectorData,
 };
 export default connect(stateToProps, actionsToProps)(Deposit);
