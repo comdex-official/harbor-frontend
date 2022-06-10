@@ -13,7 +13,7 @@ import Date from "./Date";
 
 import "./index.scss";
 
-const History = ({address, setTransactionHistory, history}) => {
+const History = ({ address, setTransactionHistory, history }) => {
   const [inProgress, setInProgress] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -30,7 +30,6 @@ const History = ({address, setTransactionHistory, history}) => {
         message.error(error);
         return;
       }
-
       setTransactionHistory(result.txs, result.totalCount);
     });
   };

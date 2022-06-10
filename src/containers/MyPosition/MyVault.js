@@ -7,10 +7,10 @@ import { Link } from "react-router-dom";
 import TooltipIcon from "../../components/TooltipIcon";
 import { useEffect, useState } from "react";
 import { queryUserVaults } from "../../services/vault/query";
-import {amountConversion, denomConversion} from "../../utils/coin";
+import { amountConversion, denomConversion } from "../../utils/coin";
 import { useNavigate } from "react-router";
 import { DOLLAR_DECIMALS } from "../../constants/common";
-import {decimalConversion} from "../../utils/number";
+import { decimalConversion } from "../../utils/number";
 
 const MyVault = ({ address }) => {
   const [vaults, setVaults] = useState();
@@ -31,7 +31,6 @@ const MyVault = ({ address }) => {
         message.error(error);
         return;
       }
-
       setVaults(result?.vaultsInfo);
     });
   };
@@ -79,11 +78,11 @@ const MyVault = ({ address }) => {
       align: "center",
       render: (ratio) => (
         <>
-          <span>{Number((ratio * 100)|| 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
+          <span>{Number((ratio * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
           <Progress
             className="health-progress"
             style={{ width: 130 }}
-            percent={Number((ratio * 100)|| 0).toFixed(DOLLAR_DECIMALS)}
+            percent={Number((ratio * 100) || 0).toFixed(DOLLAR_DECIMALS)}
             size="small"
           />
         </>
@@ -125,7 +124,7 @@ const MyVault = ({ address }) => {
             <div className="assets-withicon">{item?.extendedPairName || ""}</div>
           </>
         ),
-        debt:<> {amountConversion(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
+        debt: <> {amountConversion(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
         apy: decimalConversion(item?.interestRate || 0),
         health: decimalConversion(item?.collateralizationRatio || 0),
         action: item,

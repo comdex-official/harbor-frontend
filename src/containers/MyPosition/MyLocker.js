@@ -41,8 +41,8 @@ const MyEarn = ({ address }) => {
           message.error(error);
           return;
         }
-
-        setLockers(result?.userTxData || []);
+        let reverseData = [...result?.userTxData].reverse()
+        setLockers(reverseData || []);
       }
     );
   };
