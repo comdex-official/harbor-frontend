@@ -145,7 +145,7 @@ const Deposit = ({
 
   return (
     <>
-      <Button type="primary" size="small" onClick={showModal}>
+      <Button type="primary btn-filled" size="small" onClick={showModal}>
         {variables[lang].deposit}
       </Button>
       <Modal

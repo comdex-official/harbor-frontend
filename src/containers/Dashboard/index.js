@@ -7,7 +7,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import Banner from "./Banner";
 import { useEffect, useState } from "react";
-import { queryAppTVL } from "../../services/vault/query";
+import { queryAppTVL, queryTotalTokenMinted } from "../../services/vault/query";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import { message } from "antd";
 import { commaSeparator, marketPrice } from "../../utils/number";
@@ -32,30 +32,30 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
 
       if (result?.tvldata && result?.tvldata?.length > 0) {
         const uniqueVaults = Array.from(
-            result?.tvldata?.reduce(
-                (m, { assetDenom, collateralLockedAmount }) =>
-                    m.set(
-                        assetDenom,
-                        (m.get(assetDenom) || 0) + Number(collateralLockedAmount)
-                    ),
-                new Map()
-            ),
-            ([assetDenom, collateralLockedAmount]) => ({
-              assetDenom,
-              collateralLockedAmount,
-            })
+          result?.tvldata?.reduce(
+            (m, { assetDenom, collateralLockedAmount }) =>
+              m.set(
+                assetDenom,
+                (m.get(assetDenom) || 0) + Number(collateralLockedAmount)
+              ),
+            new Map()
+          ),
+          ([assetDenom, collateralLockedAmount]) => ({
+            assetDenom,
+            collateralLockedAmount,
+          })
         );
 
         let total = 0;
         const totalValue = new Map(
-            uniqueVaults?.map((item) => {
-              let value =
-                  Number(amountConversion(item.collateralLockedAmount)) *
-                  marketPrice(markets, item?.assetDenom);
-              total += value;
-              item.dollarValue = value;
-              return [item.assetDenom, item];
-            })
+          uniqueVaults?.map((item) => {
+            let value =
+              Number(amountConversion(item.collateralLockedAmount)) *
+              marketPrice(markets, item?.assetDenom);
+            total += value;
+            item.dollarValue = value;
+            return [item.assetDenom, item];
+          })
         );
 
         setTotalValueLocked(totalValue);
@@ -63,6 +63,14 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       }
     });
   };
+  const fetchTotalTokenMinted = () => {
+    queryTotalTokenMinted(PRODUCT_ID, (error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+    })
+  }
 
   const calculateTotalValueLockedInDollarForOthers = () => {
     let amount = 0;
@@ -161,7 +169,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
           color: "#FFCEFF",
         },
       },
-      categories: ["1", "2", "3", "4"],
+      categories: ["0.95", "1.00", "1.05", "2.00"],
     },
     xAxis: {
       lineColor: false,
@@ -175,9 +183,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       gridLineWidth: 1,
       gridLineColor: isDarkMode ? "#6C597B" : "#FFCEFF",
       categories: [
-        "JAN",
-        "FEB",
-        "MAR",
         "APR",
         "MAY",
         "JUN",
@@ -190,6 +195,9 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         "JAN",
         "FEB",
         "MAR",
+        "APR",
+        "MAY",
+        "JUN",
       ],
     },
     series: [
@@ -198,7 +206,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         lineWidth: 2,
         lineColor: "#665aa6",
         marker: false,
-        data: [1.2, 0.9, 1.1, 1, 1, 1, 1, 1, 1.1, 1, 1, 1, 0.9, 1, 1.2],
+        data: [0.9, 0.9, 1.01, 1, 1, 1, 1, 1, 1.01, 1, 1, 1, 0.9, 1.05, 1],
       },
     ],
   };
@@ -226,7 +234,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
           color: "#FFCEFF",
         },
       },
-      categories: [null, null, "1", "2", "3", "4"],
+      categories: [null, null, "0", "2", "4", "6", "8"],
     },
     xAxis: {
       lineColor: false,
@@ -240,9 +248,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
       gridLineWidth: 1,
       gridLineColor: isDarkMode ? "#6C597B" : "#FFCEFF",
       categories: [
-        "JAN",
-        "FEB",
-        "MAR",
         "APR",
         "MAY",
         "JUN",
@@ -255,6 +260,10 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         "JAN",
         "FEB",
         "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+
       ],
     },
     series: [
@@ -264,7 +273,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         lineColor: "#665aa6",
         marker: false,
         data: [
-          2, 2.5, 2.8, 3, 4, 4.5, 4.2, 4.0, 3.8, 3.2, 4, 2.9, 3.1, 2.8, 2.7,
+          2, 2.5, 2.8, 3, 4, 4.5, 4.2, 4.0, 3.8, 3.2, 4, 2.9, 3.1, 5.1, 5.12,
         ],
       },
     ],
@@ -298,7 +307,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                       $
                       {commaSeparator(
                         Number(totalValueLocked?.get("uatom")?.dollarValue || 0).toFixed(
-                        DOLLAR_DECIMALS)
+                          DOLLAR_DECIMALS)
                       )}
                     </h3>
                   </div>
@@ -308,7 +317,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                       $
                       {commaSeparator(
                         Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0).toFixed(
-                        DOLLAR_DECIMALS)
+                          DOLLAR_DECIMALS)
                       )}
                     </h3>{" "}
                   </div>
@@ -358,7 +367,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                   <div className="col1">
                     <small>HARBOR Price</small>
                     <h4>
-                      $12.20 <span>2.41%</span>
+                      $5.12 <span>2.41%</span>
                     </h4>
                   </div>
                   <div className="col2">

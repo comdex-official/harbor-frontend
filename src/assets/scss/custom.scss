@@ -1559,3 +1559,11 @@ button {
     }
   }
 }
+
+.ant-empty-description {
+  color: #000;
+  font-weight: 500;
+  .dark-mode & {
+    color: $secondary-color;
+  }
+}
