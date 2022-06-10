@@ -115,6 +115,7 @@ const PlaceBidModal = ({
     setMaxValidationError(ValidateInputNumber(getAmount(value)));
     setMaxPrice(value);
   };
+
   return (
     <>
       <Button type="primary" size="small" className="px-3" onClick={showModal}>
@@ -140,12 +141,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                $
-                {commaSeparator(
-                  Number(decimalConversion(auction?.outflowTokenCurrentPrice) || 0).toFixed(
-                    DOLLAR_DECIMALS
-                  )
-                )}
+                ${commaSeparator(Number(amountConversion(decimalConversion(auction?.outflowTokenCurrentPrice) || 0) || 0).toFixed(DOLLAR_DECIMALS))}
               </label>
             </Col>
           </Row>
