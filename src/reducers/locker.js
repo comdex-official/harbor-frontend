@@ -1,5 +1,6 @@
 import {
   SET_ALL_WHITELISTED_ASSET,
+  SET_COLLOCTOR_DATA,
   SET_CURRENT_PAIR_ID,
   SET_ESTIMATED_LIQUIDATION_PRICE,
   SET_EXTENDED_PAIR_ID,
@@ -108,6 +109,12 @@ const estimatedLiquidationPrice = (state = 0, action) => {
   }
   return state;
 };
+const colloctorData = (state = [], action) => {
+  if (action.type === SET_COLLOCTOR_DATA) {
+    return action.value;
+  }
+  return state;
+};
 
 export default combineReducers({
   _,
@@ -122,4 +129,5 @@ export default combineReducers({
   ownerVaultId,
   ownerVaultInfo,
   estimatedLiquidationPrice,
+  colloctorData
 });
