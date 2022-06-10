@@ -244,7 +244,6 @@ const Edit = ({
         message.error(error);
         return;
       }
-      console.log(data);
       setOwnerVaultInfo(data.vault);
     });
   };
