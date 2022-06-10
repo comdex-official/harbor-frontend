@@ -1,4 +1,4 @@
-import { SET_ALL_PROPOSAL, SET_CURRENT_PROPOSAL, SET_PROPOSAL_UP_DATA, SET_USER_VOTE } from "../constants/govern";
+import { SET_ALL_PROPOSAL, SET_CURRENT_PROPOSAL, SET_PROPOSAL_UP_DATA, SET_USER_VOTE, SET_VOTE_COUNT } from "../constants/govern";
 import { combineReducers } from "redux";
 
 const allProposal = (state = "", action) => {
@@ -25,10 +25,17 @@ const userVote = (state = [], action) => {
     }
     return state;
 };
+const voteCount = (state = 0, action) => {
+    if (action.type === SET_VOTE_COUNT) {
+        return action.value;
+    }
+    return state;
+};
 
 export default combineReducers({
     allProposal,
     currentProposal,
     proposalUpData,
     userVote,
+    voteCount,
 });

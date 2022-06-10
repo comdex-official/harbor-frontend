@@ -23,7 +23,8 @@ const GovernDetails = ({
   currentProposal,
   setCurrentProposal,
   userVote,
-  setUserVote
+  setUserVote,
+  voteCount,
 }) => {
   const { proposalId } = useParams();
   let currentProposalId = Number(proposalId);
@@ -50,9 +51,17 @@ const GovernDetails = ({
 
 
   useEffect(() => {
-    fetchSpecificProposal(currentProposalId)
-    fetchUserVote(currentProposalId, address)
+    if (currentProposalId) {
+      fetchSpecificProposal(currentProposalId)
+    }
+  }, [voteCount])
+
+  useEffect(() => {
+    if (currentProposalId && address) {
+      fetchUserVote(currentProposalId, address)
+    }
   }, [address])
+
 
   useEffect(() => {
     calculateVotes()
@@ -172,7 +181,7 @@ const GovernDetails = ({
       {
         states: {
           hover: {
-            enabled: true,
+            enabled: false,
           },
         },
         name: "",
@@ -305,7 +314,7 @@ const GovernDetails = ({
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
                         <div>
                           <label>Yes</label>
-                          <p>{getVotes?.yes || 0}%</p>
+                          <p>{getVotes?.yes ? getVotes?.yes : 0.00}%</p>
                         </div>
                       </li>
                       <li>
@@ -346,6 +355,7 @@ GovernDetails.propTypes = {
   address: PropTypes.string.isRequired,
   currentProposal: PropTypes.array.isRequired,
   userVote: PropTypes.array.isRequired,
+  voteCount: PropTypes.number.isRequired
 };
 
 const stateToProps = (state) => {
@@ -354,6 +364,7 @@ const stateToProps = (state) => {
     address: state.account.address,
     currentProposal: state.govern.currentProposal,
     userVote: state.govern.userVote,
+    voteCount: state.govern.voteCount,
   };
 };
 

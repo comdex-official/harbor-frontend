@@ -14,7 +14,7 @@ import { calculateROI, decimalConversion } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
 
 const Earn = ({
-  colloctorData
+  collectorData
 }) => {
   const dispatch = useDispatch();
   const [defaultTabSelect, setDefaultTabSelect] = useState("1");
@@ -84,9 +84,9 @@ const Earn = ({
     setDefaultTabSelect(key);
   };
   const getIntrestRate = () => {
-    let interest = colloctorData?.lockerSavingRate
+    let interest = collectorData?.lockerSavingRate
       ? Number(
-        decimalConversion(colloctorData?.lockerSavingRate) * 100
+        decimalConversion(collectorData?.lockerSavingRate) * 100
       ).toFixed(DOLLAR_DECIMALS)
       : Number().toFixed(DOLLAR_DECIMALS)
     setInterestRate(interest)
@@ -94,7 +94,7 @@ const Earn = ({
   }
   useEffect(() => {
     getIntrestRate()
-  }, [colloctorData])
+  }, [collectorData])
 
 
   return (
@@ -192,13 +192,13 @@ const Earn = ({
 };
 Earn.propTypes = {
   lang: PropTypes.string.isRequired,
-  colloctorData: PropTypes.array.isRequired
+  collectorData: PropTypes.array.isRequired
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
-    colloctorData: state.locker.colloctorData,
+    collectorData: state.locker.collectorData,
   };
 };
 const actionsToProps = {};

@@ -384,8 +384,12 @@
         border-color: $secondary-color;
       }
       &:hover .tooltip-icon {
-        fill: white;
+        fill: black;
+        .dark-mode & {
+          fill: white;
+        }
       }
+
       .up-container {
         display: flex;
         column-gap: 10px;
@@ -446,5 +450,13 @@
         }
       }
     }
+  }
+}
+.choose-vault {
+  display: block;
+  width: 100%;
+  font-size: 20px;
+  .dark-mode & {
+    color: white;
   }
 }
