@@ -288,7 +288,7 @@ const Mint = ({
           <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
-                Deposit
+                Deposit  <TooltipIcon />
               </label>
               <div className="assets-select-wrapper">
                 {/* Icon Container Start  */}
