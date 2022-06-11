@@ -1,7 +1,7 @@
 @import "../../assets/scss/variables.scss";
 
 .borrw-content-card {
-  background: $background-light;
+  background: rgba($secondary-color, 0.3);
   padding: 35px;
   border-radius: $base-border-radius + 5;
   position: relative;

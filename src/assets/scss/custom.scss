@@ -947,7 +947,7 @@ button {
 }
 
 .assets-select-card {
-  background: $assets-bg-light;
+  background: rgba($secondary-color, 0.3);
   padding: 10px 25px;
   border-radius: $base-border-radius;
   box-shadow: $box-shadow-inner-light;
@@ -1079,12 +1079,16 @@ button {
       align-items: center;
       justify-content: flex-end;
       font-size: $font-size-sm;
+      font-weight: 500;
       @media only screen and (max-width: 1190px) {
         align-items: baseline;
       }
       span {
         color: $secondary-color;
         margin: 0;
+        .dark-mode & {
+          color: white;
+        }
       }
 
       .maxhalf {
@@ -1104,6 +1108,7 @@ button {
           cursor: pointer;
           border-radius: 2px;
           background: #fff;
+          text-transform: capitalize;
           .dark-mode & {
             background: #132239;
             color: $white;
