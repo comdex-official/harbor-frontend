@@ -39,7 +39,7 @@ const VaultDetails = ({
     return date;
 
   }
-  
+
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
@@ -86,7 +86,7 @@ const VaultDetails = ({
           </div>
           <div className="assets-row">
             <div className="asset-name">Vault Opening Date</div>
-            <div className="asset-value">{ownerVaultInfo?.createdAt && dateFormater(ownerVaultInfo?.createdAt) || "00.00.00"}</div>
+            <div className="asset-value">{ownerVaultId ? dateFormater(ownerVaultInfo?.createdAt) : "-"}</div>
           </div>
         </div>
       </div>

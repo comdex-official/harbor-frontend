@@ -64,6 +64,7 @@ const Mint = ({
 
   const [inProgress, setInProgress] = useState(false);
   const [validationError, setValidationError] = useState();
+  const [debtValidationError, setDebtValidationError] = useState();
   const [loading, setLoading] = useState(false);
   const [currentExtentedVaultdata, setCurrentExtentedVaultdata] = useState();
 
@@ -81,20 +82,30 @@ const Mint = ({
     );
   };
 
+  const onSecondInputChange = (value) => {
+    value = toDecimals(value).toString().trim();
+    handleAssetOutChange(value)
+  }
   // !change cmdx price value here for get actual oracle price 
   const handleAmountInChange = (value) => {
+    let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
+
     setValidationError(
       ValidateInputNumber(getAmount(value), collateralAssetBalance)
     );
     setAmountIn(value);
-    setAmountOut(
-      calculateAmountOut(
-        value,
-        selectedTokenPrice,
-        collateralRatio / 100,
-        marketPrice(markets, pair && pair?.denomOut)
-      )
+    let dataAmount = calculateAmountOut(
+      value,
+      selectedTokenPrice,
+      collateralRatio / 100,
+      marketPrice(markets, pair && pair?.denomOut)
     );
+    setAmountOut(dataAmount);
+
+    setDebtValidationError(
+      ValidateInputNumber(getAmount(dataAmount), "", "", debtFloor)
+    );
+
   };
 
   const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
@@ -111,6 +122,7 @@ const Mint = ({
   };
 
   const selectedTokenPrice = marketPrice(markets, pair && pair?.denomIn);
+
   let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
   minCrRatio = Number(minCrRatio);
   let safeCrRatio = minCrRatio + 50;
@@ -157,6 +169,23 @@ const Mint = ({
       return handleAmountInChange(amountConversion(collateralAssetBalance));
     }
   };
+  const handleOutMaxClick = () => {
+    setAmountOut(calculateWithdrawableAmount())
+    setCollateralRatio(minCrRatio)
+  };
+  const handleAssetOutChange = (value) => {
+    setAmountOut(value)
+    let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
+    setDebtValidationError(
+      ValidateInputNumber(getAmount(value), "", "", debtFloor)
+    );
+    let currentCr = collateralRatio;
+    let amountOut = value;
+    let amountInPrice = Number(selectedTokenPrice)
+    let calculateAmountIn = ((currentCr * amountOut) / amountInPrice) / 100;
+    calculateAmountIn = ((isFinite(calculateAmountIn) && calculateAmountIn) || 0).toFixed(6)
+    setAmountIn(calculateAmountIn)
+  }
 
   const resetValues = () => {
     setAmountIn(0);
@@ -261,6 +290,14 @@ const Mint = ({
     })
   }
 
+  const calculateWithdrawableAmount = () => {
+    let amountIn = Number(inAmount);
+    let amountInPrice = Number(selectedTokenPrice);
+    let minCr = minCrRatio;
+    let calculateWithdrawable = Number(((amountIn * amountInPrice) / minCr) * 100).toFixed(DOLLAR_DECIMALS)
+    return calculateWithdrawable;
+  }
+  calculateWithdrawableAmount()
   useEffect(() => {
     resetValues();
   }, []);
@@ -330,7 +367,6 @@ const Mint = ({
                   }
                   validationError={validationError}
                 />
-                {/* <small>$ 0.00</small> */}
                 <small>$ {showInAssetValue()}</small>
               </div>
             </div>
@@ -360,13 +396,13 @@ const Mint = ({
               <div className="label-right">
                 Withdrawable
                 <span className="ml-1">
-                  {amountConversionWithComma(stableAssetBalance)} CMST
+                  {calculateWithdrawableAmount()} {denomToSymbol(pair && pair?.denomOut)}
                 </span>
                 <div className="maxhalf">
                   <Button
                     className="active"
                     onClick={() => {
-                      handleMaxClick()
+                      handleOutMaxClick()
                     }
                     }
                   >
@@ -377,9 +413,11 @@ const Mint = ({
               <div className="input-select">
                 <CustomInput
                   value={outAmount}
-                  disabled
+                  onChange={(e) => {
+                    onSecondInputChange(e.target.value)
+                  }}
+                  validationError={debtValidationError}
                 />
-                {/* <small>$ 0.00</small> */}
                 <small>$ {showOutAssetValue()}</small>
               </div>
             </div>
@@ -432,6 +470,7 @@ const Mint = ({
                   !Number(inAmount) ||
                   !Number(outAmount) ||
                   validationError?.message ||
+                  debtValidationError?.message ||
                   Number(collateralRatio) < 150
                 }
                 loading={inProgress}

@@ -215,7 +215,7 @@ const Withdraw = ({
   };
   const marks = {
     0: "0%",
-    [userDeposite]: "100%",
+    100: "100%",
   };
   getAssetDenom();
 

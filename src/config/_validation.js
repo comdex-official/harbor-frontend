@@ -1,6 +1,10 @@
 import { amountConversion } from "../utils/coin";
 
-export const ValidateInputNumber = (value, max, key) => {
+export const ValidateInputNumber = (value, max, key, debtFloor) => {
+  if (value > 0 && value < debtFloor) {
+    return new Error("Input should be grater than debt floor");
+  }
+
   if (value < 0) {
     return new Error("Input must be positive number");
   }
@@ -19,6 +23,5 @@ export const ValidateInputNumber = (value, max, key) => {
   if (key === "whole" && !Number.isInteger(Number(value))) {
     return new Error("Input must be a whole number");
   }
-
   return new Error("");
 };
