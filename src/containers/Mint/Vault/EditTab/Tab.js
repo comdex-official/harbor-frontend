@@ -356,7 +356,6 @@ const Edit = ({
     [safeCrRatio]: `Safe`,
   };
 
-
   return (
     <>
       <div className="edit-tab-card">

@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, Button } from "antd";
+import { Tabs, Button, Spin, message } from "antd";
+import * as PropTypes from "prop-types";
 import "./index.scss";
 import { Col, Row } from "../../../components/common";
 import { Link } from "react-router-dom";
 import Mint from "./Mint";
 import Close from "./Close";
 import EditTab from "./EditTab";
-import { useSelector } from "react-redux";
+import { connect, useSelector } from "react-redux";
+import { queryOwnerVaults } from "../../../services/vault/query";
+import { setOwnerVaultId } from "../../../actions/locker";
 
-const Vault = () => {
-  const [activeKey, setActiveKey] = useState("1");
+const Vault = ({
+  address,
+  setOwnerVaultId,
+}) => {
+  const [activeKey, setActiveKey] = useState();
   const { TabPane } = Tabs;
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
 
@@ -17,7 +23,7 @@ const Vault = () => {
     if (ownerVaultId) {
       setActiveKey("2");
     }
-    else{
+    else {
       setActiveKey("1");
     }
   }, [ownerVaultId]);
@@ -58,5 +64,16 @@ const Vault = () => {
     </>
   );
 };
+Vault.prototype = {
+  address: PropTypes.string,
+}
+const stateToProps = (state) => {
+  return {
+    address: state.account.address,
+  };
+};
+const actionsToProps = {
+  setOwnerVaultId,
+};
 
-export default Vault;
+export default connect(stateToProps, actionsToProps)(Vault);
