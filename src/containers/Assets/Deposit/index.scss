@@ -3,6 +3,9 @@
 .ant-message-notice-content {
   background-color: $background-input-dark !important;
   color: #fff;
+  a {
+    color: $secondary-color;
+  }
 }
 
 .assets-maxhalf {
