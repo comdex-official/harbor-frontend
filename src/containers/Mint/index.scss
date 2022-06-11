@@ -289,6 +289,7 @@
     text-align: right;
     height: 48px;
     padding: 0 10px;
+    background: rgba($secondary-color, 0.2);
     font-size: $font-size-lg + 4;
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
@@ -360,7 +361,7 @@
     flex-wrap: wrap;
     cursor: pointer;
     .card-container {
-      background: $assets-bg-light;
+      background: white;
       padding: 25px 25px;
       border-radius: $base-border-radius;
       box-shadow: $box-shadow-inner-light;
@@ -380,8 +381,12 @@
         box-shadow: none;
       }
       &:hover {
-        background: $secondary-color;
-        border-color: $secondary-color;
+        background: rgba($secondary-color, 0.3);
+        border-color: rgb(199 194 226 / 30%);
+        .dark-mode & {
+          background: $secondary-color;
+          border-color: $secondary-color;
+        }
       }
       &:hover .tooltip-icon {
         fill: black;
