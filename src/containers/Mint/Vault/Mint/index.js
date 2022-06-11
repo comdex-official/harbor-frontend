@@ -239,6 +239,7 @@ const Mint = ({
     queryPairVault(pairVaultId, (error, data) => {
       if (error) {
         message.error(error);
+        setLoading(false)
         return;
       }
       setCurrentExtentedVaultdata(data?.pairVault)
@@ -275,7 +276,9 @@ const Mint = ({
     [safeCrRatio]: `Safe`,
   };
 
-  
+  if (loading) {
+    return <div className="spinner"><Spin /></div>
+  }
 
   return (
     <>
