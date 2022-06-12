@@ -306,6 +306,10 @@
     justify-content: space-between;
     align-items: center;
     margin-top: -1px;
+    color: $secondary-color;
+    .dark-mode & {
+      color: #fff;
+    }
     .maxhalf {
       margin-top: -27px;
       button {
@@ -319,6 +323,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+    }
+    .ml-1 {
+      cursor: pointer;
+    }
+    .available {
+      color: black;
+      font-weight: 500;
+      .dark-mode & {
+        color: $secondary-color;
       }
     }
   }
