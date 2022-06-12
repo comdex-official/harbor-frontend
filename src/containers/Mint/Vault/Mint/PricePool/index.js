@@ -44,7 +44,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
       counts: (
         <div className="collateral-deposit-main-box">
           <div className="collateral-deposit-up-box">
-            {Number(amountConversion(ownerVaultInfo?.amountIn))}
+            {Number(ownerVaultInfo ? amountConversion(ownerVaultInfo?.amountIn) : 0).toFixed(comdex?.coinDecimals)}
             <span className="small-text">
               {denomToSymbol(pair && pair?.denomIn)}
             </span>

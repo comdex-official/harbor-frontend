@@ -613,7 +613,23 @@ const Edit = ({
               </div>
             </div>
           </div>
-
+          <Row className="card-bottom-details-main-container">
+            <Col className="mt-3  card-bottom-details">
+              <Row className="mt-1 estimated_value">
+                <div className="title-box">
+                  <label>Expected liquidation price</label>
+                </div>
+                <div className="price-box">
+                  $
+                  {commaSeparator(
+                    Number(estimatedLiquidationPrice || 0).toFixed(
+                      DOLLAR_DECIMALS
+                    )
+                  )}
+                </div>
+              </Row>
+            </Col>
+          </Row>
           <div className="assets-form-btn">
             <Button
               type="primary"
@@ -631,23 +647,6 @@ const Edit = ({
               {editType}
             </Button>
           </div>
-          <Row>
-            <Col sm="10" className="mt-3 mx-auto card-bottom-details">
-              <Row className="mt-1 estimated_value">
-                <Col>
-                  <label>New liquidation price</label>
-                </Col>
-                <Col className="text-right">
-                  $
-                  {commaSeparator(
-                    Number(estimatedLiquidationPrice || 0).toFixed(
-                      DOLLAR_DECIMALS
-                    )
-                  )}
-                </Col>
-              </Row>
-            </Col>
-          </Row>
         </div>
       </div>
     </>

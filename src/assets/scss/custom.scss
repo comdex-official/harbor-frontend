@@ -1573,3 +1573,41 @@ button {
     color: $secondary-color;
   }
 }
+
+.ant-pagination {
+  margin: 5px 0 !important;
+  .ant-select-selector {
+    background: transparent !important;
+    border-radius: 10px !important;
+    &:hover {
+      border-color: $secondary-color !important;
+    }
+  }
+  li {
+    background: none;
+    border: 0;
+    a {
+      background: none;
+      // color: $text-color-dark;
+      font-weight: 700;
+      &:hover {
+        color: $secondary-color;
+      }
+    }
+    .ant-pagination-item-link {
+      background: none;
+      border: 0;
+      .dark-mode & {
+        color: $white;
+      }
+    }
+    &.ant-pagination-item-active {
+      a {
+        color: $secondary-color;
+        .dark-mode & {
+          color: $white;
+        }
+      }
+    }
+  }
+}
