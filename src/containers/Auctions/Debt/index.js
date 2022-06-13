@@ -107,6 +107,12 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      width: 180,
+    },
+    {
       title: "End Time",
       dataIndex: "end_time",
       key: "end_time",
@@ -150,39 +156,40 @@ const DebtAuctions = ({ setPairs, address }) => {
   const tableData =
     auctions && auctions.length > 0
       ? auctions.map((item, index) => {
-          return {
-            key: index,
-            id: item.id,
-            auctioned_asset: (
-              <>
-                <div className="assets-withicon">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(item?.auctionedToken?.denom)}
-                    />
-                  </div>
-                  {denomConversion(item?.auctionedToken?.denom)}
+        return {
+          key: index,
+          id: item.id,
+          auctioned_asset: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(item?.auctionedToken?.denom)}
+                  />
                 </div>
-              </>
-            ),
-            payable_token: (
-              <>
-                <div className="assets-withicon">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(item?.expectedUserToken?.denom)}
-                    />
-                  </div>
-                  {amountConversion(item?.expectedUserToken?.amount)}{" "}
-                  {denomConversion(item?.expectedUserToken?.denom)}
+                {denomConversion(item?.auctionedToken?.denom)}
+              </div>
+            </>
+          ),
+          payable_token: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                  />
                 </div>
-              </>
-            ),
-            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
-            max_bid: item?.expectedMintedToken,
-            action: item,
-          };
-        })
+                {amountConversion(item?.expectedUserToken?.amount)}{" "}
+                {denomConversion(item?.expectedUserToken?.denom)}
+              </div>
+            </>
+          ),
+          quantity: "",
+          end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
+          max_bid: item?.expectedMintedToken,
+          action: item,
+        };
+      })
       : [];
 
   return (
