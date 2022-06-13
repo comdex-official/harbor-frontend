@@ -432,6 +432,7 @@ const Edit = ({
     0: "0%",
     [minCrRatio]: `Min`,
     [safeCrRatio]: `Safe`,
+    500: "500%"
   };
   useEffect(() => {
     if (ownerVaultId) {
@@ -578,9 +579,6 @@ const Edit = ({
               </Col>
             </Row>
             <div className="Interest-rate-container mt-4">
-              <Row>
-                <div className="title">Set Collateral Ratio</div>
-              </Row>
               <div className="slider-numbers mt-4">
                 <Slider
                   className={
@@ -601,35 +599,47 @@ const Edit = ({
                   min={0}
                   tooltipVisible={false}
                 />
-                <CustomInput
-                  defaultValue={collateralRatio}
-                  onChange={(event) => {
-                    handleSliderChange(event.target?.value);
-                  }}
-                  placeholder="0"
-                  value={newCollateralRatio}
-                />
-                <span className="collateral-percentage">%</span>
+
+
+                {/* collateral container  */}
+                <div className="slider-input-box-container mt-2">
+                  <div className="title">
+                    <div className="title">Set Collateral Ratio</div>
+                  </div>
+                  <div className="input-box-container">
+                    <CustomInput
+                      defaultValue={collateralRatio}
+                      onChange={(event) => {
+                        handleSliderChange(event.target?.value);
+                      }}
+                      placeholder="0"
+                      value={newCollateralRatio}
+                    />
+                    <span className="collateral-percentage">%</span>
+                  </div>
+
+                </div>
+
+                {/* Liquidation Container  */}
+                <div className="slider-input-box-container mt-2">
+                  <div className="title">
+                    <div className="title">Expected liquidation price</div>
+                  </div>
+                  <div className="input-box-container">
+                    <div className="liquidation-price">
+                      $
+                      {commaSeparator(
+                        Number(estimatedLiquidationPrice || 0).toFixed(
+                          DOLLAR_DECIMALS
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>
-          <Row className="card-bottom-details-main-container">
-            <Col className="mt-3  card-bottom-details">
-              <Row className="mt-1 estimated_value">
-                <div className="title-box">
-                  <label>Expected liquidation price</label>
-                </div>
-                <div className="price-box">
-                  $
-                  {commaSeparator(
-                    Number(estimatedLiquidationPrice || 0).toFixed(
-                      DOLLAR_DECIMALS
-                    )
-                  )}
-                </div>
-              </Row>
-            </Col>
-          </Row>
           <div className="assets-form-btn">
             <Button
               type="primary"

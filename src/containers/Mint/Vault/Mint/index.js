@@ -23,7 +23,7 @@ import {
   setAmountOut,
   setCollateralRatio,
 } from "../../../../actions/asset";
-import { decimalConversion, marketPrice } from "../../../../utils/number";
+import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
 import "./index.scss";
 import VaultDetails from "./VaultDetails";
 import { connect, useDispatch } from "react-redux";
@@ -72,7 +72,17 @@ const Mint = ({
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
 
-
+  const getLiquidationPrice = () => {
+    // formula = ((Liquidiation Ratio) * (Composite already minted + Composite to be minted) )/ (Quantity of Asset Locked + Quantity of Asset to be Locked)
+    let liquidationRatio = Number(decimalConversion(selectedExtentedPairVaultListData[0]?.liquidationRatio)) // no converting into %
+    let mintedCMST = 0;
+    let currentAmountOut = Number(outAmount);
+    let lockedAmountOut = 0;
+    let currentAmountIn = Number(inAmount);
+    let calculatedAmount = (liquidationRatio * ((mintedCMST + currentAmountOut) / (lockedAmountOut + currentAmountIn)))
+    calculatedAmount = commaSeparator(Number(calculatedAmount || 0).toFixed(DOLLAR_DECIMALS));
+    return calculatedAmount;
+  };
 
   const onChange = (value) => {
     value = toDecimals(value).toString().trim();
@@ -122,6 +132,7 @@ const Mint = ({
   };
 
   const selectedTokenPrice = marketPrice(markets, pair && pair?.denomIn);
+  const stableTokenPrice = marketPrice(markets, pair && pair?.denomOut);
 
   let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
   minCrRatio = Number(minCrRatio);
@@ -182,9 +193,17 @@ const Mint = ({
     let currentCr = collateralRatio;
     let amountOut = value;
     let amountInPrice = Number(selectedTokenPrice)
+    let amountIn = inAmount;
+
+    // Calculating amountIn
     let calculateAmountIn = ((currentCr * amountOut) / amountInPrice) / 100;
     calculateAmountIn = ((isFinite(calculateAmountIn) && calculateAmountIn) || 0).toFixed(6)
-    setAmountIn(calculateAmountIn)
+    // setAmountIn(calculateAmountIn)
+
+    // Calculating current Collateral Ratio
+    let calculateCurrrentCr = ((amountIn * amountInPrice) / (value * stableTokenPrice) * 100);
+    calculateCurrrentCr = Number(calculateCurrrentCr).toFixed(DOLLAR_DECIMALS);
+    setCollateralRatio(calculateCurrrentCr)
   }
 
   const resetValues = () => {
@@ -311,6 +330,7 @@ const Mint = ({
     0: "0%",
     [minCrRatio]: `Min`,
     [safeCrRatio]: `Safe`,
+    500: "500%"
   };
 
   if (loading) {
@@ -424,9 +444,6 @@ const Mint = ({
           </div>
 
           <div className="Interest-rate-container mt-4">
-            <Row>
-              <div className="title">Set Collateral Ratio</div>
-            </Row>
             <div className="slider-numbers mt-4">
               <Slider
                 className={
@@ -447,15 +464,36 @@ const Mint = ({
                 min={0}
                 tooltipVisible={false}
               />
-              <CustomInput
-                defaultValue={collateralRatio}
-                onChange={(event) => {
-                  handleSliderChange(event.target?.value);
-                }}
-                placeholder="0"
-                value={collateralRatio}
-              />
-              <span className="collateral-percentage">%</span>
+              {/* collateral container  */}
+              <div className="slider-input-box-container mt-2">
+                <div className="title">
+                  <div className="title">Set Collateral Ratio</div>
+                </div>
+                <div className="input-box-container">
+                  <CustomInput
+                    defaultValue={collateralRatio}
+                    onChange={(event) => {
+                      handleSliderChange(event.target?.value);
+                    }}
+                    placeholder="0"
+                    value={collateralRatio}
+                  />
+                  <span className="collateral-percentage">%</span>
+                </div>
+
+              </div>
+              {/* Liquidation Container  */}
+              <div className="slider-input-box-container mt-2">
+                <div className="title">
+                  <div className="title">Expected liquidation price</div>
+                </div>
+                <div className="input-box-container">
+                  <div className="liquidation-price">
+                    ${getLiquidationPrice()}
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
 
