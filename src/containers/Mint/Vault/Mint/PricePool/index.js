@@ -10,7 +10,7 @@ import { amountConversion, denomConversion } from "../../../../../utils/coin";
 import { DOLLAR_DECIMALS } from "../../../../../constants/common";
 import { cmst, comdex } from "../../../../../config/network";
 import { SvgIcon } from "../../../../../components/common";
-import { iconNameFromDenom } from "../../../../../utils/string";
+import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
 
 const PricePool = ({ ownerVaultInfo, markets, pair }) => {
   const selectedExtendedPairVaultListData = useSelector(
@@ -42,11 +42,20 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
     {
       title: "Collateral Deposited",
       counts: (
-        <div>
-          $
-          {commaSeparator(
-            Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS)
-          )}
+        <div className="collateral-deposit-main-box">
+          <div className="collateral-deposit-up-box">
+            {Number(ownerVaultInfo ? amountConversion(ownerVaultInfo?.amountIn) : 0).toFixed(comdex?.coinDecimals)}
+            <span className="small-text">
+              {denomToSymbol(pair && pair?.denomIn)}
+            </span>
+          </div>
+          <div className="collateral-deposit-down-box">
+            $
+            {commaSeparator(
+              Number(collateralDeposited || 0).toFixed(DOLLAR_DECIMALS)
+            )}
+          </div>
+
         </div>
       ),
     },
@@ -56,7 +65,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
         <>
           {amountConversion(ownerVaultInfo?.interestAccumulated || 0)}
           <span className="small-text">
-            {denomConversion(cmst?.coinMinimalDenom)}{" "}
+            {denomToSymbol(pair && pair?.denomOut)}
           </span>
         </>
       ),

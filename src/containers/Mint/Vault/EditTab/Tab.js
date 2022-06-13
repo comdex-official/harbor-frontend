@@ -4,8 +4,8 @@ import { Col, Row, SvgIcon } from "../../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, message, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { iconNameFromDenom } from "../../../../utils/string";
-import { amountConversion, getDenomBalance } from "../../../../utils/coin";
+import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/string";
+import { amountConversion, amountConversionWithComma, getDenomBalance } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
@@ -14,7 +14,9 @@ import CustomInput from "../../../../components/CustomInput";
 import {
   commaSeparator,
   decimalConversion,
+  formatNumber,
   marketPrice,
+  truncateToDecimals,
 } from "../../../../utils/number";
 import { ValidateInputNumber } from "../../../../config/_validation";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
@@ -115,6 +117,8 @@ const Edit = ({
   const collateralPrice = marketPrice(markets, pair?.denomIn);
 
   const debtPrice = marketPrice(markets, pair?.denomOut);
+
+  const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
 
   const handleSliderChange = (value, type = editType) => {
     const newRatio = value / 100; // converting value to ratio
@@ -257,9 +261,12 @@ const Edit = ({
       setNewCollateralRatio(ownerCollateral)
     });
   };
+
   let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
   minCrRatio = Number(minCrRatio);
   let safeCrRatio = minCrRatio + 50;
+  let interestAccumulated = Number(amountConversion(ownerVaultInfo?.interestAccumulated));
+
   const handleSubmit = () => {
     setInProgress(true);
     message.info("Transaction initiated");
@@ -312,6 +319,7 @@ const Edit = ({
     );
     let currentBorrowed = Number(amountConversion(currentDebt));
     let maxRepay = currentBorrowed + interestAccumulated - debtFloor;
+    maxRepay = truncateToDecimals(maxRepay, 6)
     return maxRepay;
   };
 
@@ -350,11 +358,91 @@ const Edit = ({
     );
   };
 
+  const withdrawableCollateral = () => {
+    let depositedAsset = Number(amountConversion(ownerVaultInfo?.amountIn))
+    let minCr = minCrRatio / 100;
+    let borrowedCMST = Number(amountConversion(ownerVaultInfo?.amountOut));
+    let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
+    let collateralAssetPrice = collateralPrice;
+    let withdrawableAmount = depositedAsset - ((minCr * (borrowedCMST + intrest)) / collateralAssetPrice)
+    withdrawableAmount = truncateToDecimals(withdrawableAmount, 6)
+    if (withdrawableAmount < 0) {
+      withdrawableAmount = "0";
+    }
+    return withdrawableAmount;
+  }
+  const availableToBorrow = () => {
+    let collateralLocked = Number(amountConversion(ownerVaultInfo?.amountIn))
+    let collateralAssetPrice = collateralPrice;
+    let minCr = minCrRatio / 100;
+    let mintedCMST = Number(amountConversion(ownerVaultInfo?.amountOut));
+    let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
+    let calculatedAmount = ((collateralLocked * collateralAssetPrice) / minCr) - (mintedCMST + intrest);
+    calculatedAmount = truncateToDecimals(calculatedAmount, 6)
+    if (calculatedAmount < 0) {
+      calculatedAmount = "0";
+    }
+    return calculatedAmount;
+  }
+
+  const getDepositMax = () => {
+    let availableBalance = amountConversion(collateralAssetBalance);
+    checkValidation(availableBalance, "deposit")
+    setInputAmount(availableBalance);
+    setEditType("deposit")
+    setDeposit(availableBalance);
+    setWithdraw("");
+    setDraw("");
+    setRepay("");
+  }
+  const getWithdrawMax = () => {
+    let availableBalance = withdrawableCollateral();
+    checkValidation(availableBalance, "withdraw")
+    setInputAmount(availableBalance);
+    setEditType("withdraw")
+    setDeposit("");
+    setWithdraw(availableBalance);
+    setDraw("");
+    setRepay("");
+  }
+  const getDrawMax = () => {
+    let availableBalance = availableToBorrow();
+    checkValidation(availableBalance, "draw")
+    setInputAmount(availableBalance);
+    setEditType("draw")
+    setDeposit("");
+    setWithdraw("");
+    setDraw(availableBalance);
+    setRepay("");
+  }
+  const getRepayMax = () => {
+    let availableBalance = getMaxRepay();
+    checkValidation(availableBalance, "repay")
+    setInputAmount(availableBalance);
+    setEditType("repay")
+    setDeposit("");
+    setWithdraw("");
+    setDraw("");
+    setRepay(availableBalance);
+  }
+
+
+
   const marks = {
     0: "0%",
     [minCrRatio]: `Min`,
     [safeCrRatio]: `Safe`,
   };
+  useEffect(() => {
+    if (ownerVaultId) {
+      getOwnerVaultInfoByVaultId(ownerVaultId)
+    }
+    else {
+      setOwnerVaultInfo('');
+    }
+  }, [ownerVaultInfo])
+
+
 
   return (
     <>
@@ -362,35 +450,40 @@ const Edit = ({
         <div className="borrw-content-card">
           <div className="borrow-edit-head">
             <div className="borrowedithead-colum">
-              <label>Collateral</label>
+              <label>Withdrawable Collateral</label>
               <div className="assets-col">
                 <div className="assets-icons">
                   <div className="assets-icons-inner">
                     <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                   </div>
                 </div>
-                <h2>{amountConversion(currentCollateral || 0)}</h2>
+                <h2>{withdrawableCollateral() || "-"} {denomToSymbol(pair && pair?.denomIn)}</h2>
               </div>
             </div>
             <div className="borrowedithead-colum">
-              <label>Borrowed</label>
+              <label>Available To Borrow</label>
               <div className="assets-col">
                 <div className="assets-icons">
                   <div className="assets-icons-inner">
                     <SvgIcon name={iconNameFromDenom("ucmst")} />
                   </div>
                 </div>
-                <h2>{amountConversion(currentDebt || 0)}</h2>
+                <h2>{availableToBorrow() || "-"} {denomToSymbol(pair && pair?.denomOut)}</h2>
               </div>
             </div>
           </div>
           <div className="brrow-edit-form">
             <Row>
               <Col sm="6" className="mb-3">
-                <label>
-                  Deposit
-                  <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
-                </label>
+                <div className="label_max_button">
+                  <label>
+                    Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
+                  </label>
+                  <span className="ml-1" onClick={getDepositMax}>
+                    <span className="available">Avl.</span>   {formatNumber(amountConversion(collateralAssetBalance))} {denomToSymbol(pair && pair?.denomIn)}
+                  </span>
+                </div>
+
                 <CustomInput
                   value={deposit}
                   onChange={(event) => {
@@ -409,10 +502,14 @@ const Edit = ({
                 />
               </Col>
               <Col sm="6" className="mb-3">
-                <label>
-                  Withdraw
-                  <TooltipIcon text="Withdrawing your collateral would increase chances of liquidation" />
-                </label>
+                <div className="label_max_button">
+                  <label>
+                    Withdraw <TooltipIcon text="Withdrawing your collateral would increase chances of liquidation" />
+                  </label>
+                  <span className="ml-1" onClick={getWithdrawMax}>
+                    <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral())} {denomToSymbol(pair && pair?.denomIn)}
+                  </span>
+                </div>
                 <CustomInput
                   value={withdraw}
                   onChange={(event) => {
@@ -430,10 +527,14 @@ const Edit = ({
                 />
               </Col>
               <Col sm="6" className="mb-3">
-                <label>
-                  Draw
-                  <TooltipIcon text="Borrow more CMST from your deposited collateral" />
-                </label>
+                <div className="label_max_button">
+                  <label>
+                    Draw <TooltipIcon text="Borrow more CMST from your deposited collateral" />
+                  </label>
+                  <span className="ml-1" onClick={getDrawMax}>
+                    <span className="available">Avl.</span>   {formatNumber(availableToBorrow())} {denomToSymbol(pair && pair?.denomOut)}
+                  </span>
+                </div>
                 <CustomInput
                   value={draw}
                   onChange={(event) => {
@@ -453,21 +554,11 @@ const Edit = ({
               <Col sm="6" className="mb-3">
                 <div className="label_max_button">
                   <label>
-                    Repay
-                    <TooltipIcon text="Partially repay your borrowed cAsset" />
+                    Repay <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
-                  <div className="maxhalf">
-                    <button
-                      className="ant-btn active"
-                      onClick={() => {
-                        setRepay(getMaxRepay());
-                        setEditType("repay");
-                        setInputAmount(getMaxRepay());
-                      }}
-                    >
-                      Max
-                    </button>
-                  </div>
+                  <span className="ml-1" onClick={getRepayMax}>
+                    <span className="available">Avl.</span>   {formatNumber(getMaxRepay())} {denomToSymbol(pair && pair?.denomOut)}
+                  </span>
                 </div>
                 <CustomInput
                   value={repay}
@@ -522,7 +613,23 @@ const Edit = ({
               </div>
             </div>
           </div>
-
+          <Row className="card-bottom-details-main-container">
+            <Col className="mt-3  card-bottom-details">
+              <Row className="mt-1 estimated_value">
+                <div className="title-box">
+                  <label>Expected liquidation price</label>
+                </div>
+                <div className="price-box">
+                  $
+                  {commaSeparator(
+                    Number(estimatedLiquidationPrice || 0).toFixed(
+                      DOLLAR_DECIMALS
+                    )
+                  )}
+                </div>
+              </Row>
+            </Col>
+          </Row>
           <div className="assets-form-btn">
             <Button
               type="primary"
@@ -540,23 +647,6 @@ const Edit = ({
               {editType}
             </Button>
           </div>
-          <Row>
-            <Col sm="10" className="mt-3 mx-auto card-bottom-details">
-              <Row className="mt-1 estimated_value">
-                <Col>
-                  <label>New liquidation price</label>
-                </Col>
-                <Col className="text-right">
-                  $
-                  {commaSeparator(
-                    Number(estimatedLiquidationPrice || 0).toFixed(
-                      DOLLAR_DECIMALS
-                    )
-                  )}
-                </Col>
-              </Row>
-            </Col>
-          </Row>
         </div>
       </div>
     </>

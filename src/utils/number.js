@@ -28,6 +28,11 @@ export const decimalConversion = (data) => {
   return Decimal.fromAtomics(data, 18).toString();
 };
 
+export const truncateToDecimals=(num, dec = 2) =>{
+  const calcDec = Math.pow(10, dec);
+  return Math.trunc(num * calcDec) / calcDec;
+}
+
 export const marketPrice = (array, denom) => {
   const value = array.filter((item) => item.symbol === denomToSymbol(denom));
 
