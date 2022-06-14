@@ -22,7 +22,7 @@
     }
   }
   .Interest-rate-container {
-    padding: 0 25px;
+    padding: 0 0 0 5px;
     .row {
       justify-content: space-between;
       .dark-mode & {
@@ -75,6 +75,9 @@
           column-gap: 10px;
           .ant-input {
             background: rgba($secondary-color, 0.3) !important;
+            .dark-mode & {
+              background: #3c324c !important;
+            }
           }
           .year-container {
             position: relative;
@@ -124,7 +127,7 @@
             -moz-appearance: none;
             appearance: none;
             color: $text-color-dark2;
-            padding-right: 0;
+            padding-right: 5px;
             max-width: 100px;
             background: $background-dark1;
 
@@ -254,7 +257,7 @@
             .denom-name {
               color: #000;
               position: absolute;
-              right: 0%;
+              right: 4px;
               font-size: 15px;
               font-weight: 600;
               top: 17px;

@@ -36,6 +36,7 @@ import { setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
 import { useParams } from "react-router";
 import Long from "long";
 import { queryPairVault } from "../../../../services/asset/query";
+import { setOwnerCurrentCollateral } from "../../../../actions/mint";
 
 const Edit = ({
   address,
@@ -44,6 +45,7 @@ const Edit = ({
   ownerVaultId,
   ownerVaultInfo,
   setOwnerVaultId,
+  setOwnerCurrentCollateral,
   setOwnerVaultInfo,
   setBalanceRefresh,
   refreshBalance,
@@ -69,6 +71,10 @@ const Edit = ({
   const [withdraw, setWithdraw] = useState();
   const [repay, setRepay] = useState();
   const [draw, setDraw] = useState();
+  const [showDepositMax, setShowDepositMax] = useState(true);
+  const [showWithdrawMax, setShowWithdrawMax] = useState(false);
+  const [showDrawMax, setShowDrawMax] = useState(false);
+  const [showRepayMax, setShowRepayMax] = useState(false);
 
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
@@ -258,6 +264,8 @@ const Edit = ({
         return;
       }
       let ownerCollateral = decimalConversion(data?.vaultsInfo?.collateralizationRatio) * 100
+      ownerCollateral = Number(ownerCollateral).toFixed(DOLLAR_DECIMALS)
+      setOwnerCurrentCollateral(ownerCollateral)
       setNewCollateralRatio(ownerCollateral)
     });
   };
@@ -432,6 +440,7 @@ const Edit = ({
     0: "0%",
     [minCrRatio]: `Min`,
     [safeCrRatio]: `Safe`,
+    500: "500%"
   };
   useEffect(() => {
     if (ownerVaultId) {
@@ -479,9 +488,9 @@ const Edit = ({
                   <label>
                     Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                   </label>
-                  <span className="ml-1" onClick={getDepositMax}>
-                    <span className="available">Avl.</span>   {formatNumber(amountConversion(collateralAssetBalance))} {denomToSymbol(pair && pair?.denomIn)}
-                  </span>
+                  {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
+                    <span className="available">Avl.</span>  {formatNumber(amountConversion(collateralAssetBalance))} {denomToSymbol(pair && pair?.denomIn)}
+                  </span>}
                 </div>
 
                 <CustomInput
@@ -498,7 +507,10 @@ const Edit = ({
                   validationError={
                     editType === "deposit" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("deposit")}
+                  onFocus={() => {
+                    setShowDepositMax(true)
+                    setEditType("deposit")
+                  }}
                 />
               </Col>
               <Col sm="6" className="mb-3">
@@ -506,9 +518,9 @@ const Edit = ({
                   <label>
                     Withdraw <TooltipIcon text="Withdrawing your collateral would increase chances of liquidation" />
                   </label>
-                  <span className="ml-1" onClick={getWithdrawMax}>
+                  {showWithdrawMax && <span className="ml-1" onClick={getWithdrawMax}>
                     <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral())} {denomToSymbol(pair && pair?.denomIn)}
-                  </span>
+                  </span>}
                 </div>
                 <CustomInput
                   value={withdraw}
@@ -523,7 +535,15 @@ const Edit = ({
                   validationError={
                     editType === "withdraw" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("withdraw")}
+                  onFocus={() => {
+                    setShowDepositMax(false)
+                    setShowWithdrawMax(true)
+                    setEditType("withdraw")
+                  }}
+                  onBlur={() => {
+                    setShowWithdrawMax(false)
+                    setShowDepositMax(true)
+                  }}
                 />
               </Col>
               <Col sm="6" className="mb-3">
@@ -531,9 +551,9 @@ const Edit = ({
                   <label>
                     Draw <TooltipIcon text="Borrow more CMST from your deposited collateral" />
                   </label>
-                  <span className="ml-1" onClick={getDrawMax}>
+                  {showDrawMax && <span className="ml-1" onClick={getDrawMax}>
                     <span className="available">Avl.</span>   {formatNumber(availableToBorrow())} {denomToSymbol(pair && pair?.denomOut)}
-                  </span>
+                  </span>}
                 </div>
                 <CustomInput
                   value={draw}
@@ -548,7 +568,15 @@ const Edit = ({
                   validationError={
                     editType === "draw" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("draw")}
+                  onFocus={() => {
+                    setShowDepositMax(false)
+                    setShowDrawMax(true)
+                    setEditType("draw")
+                  }}
+                  onBlur={() => {
+                    setShowDrawMax(false)
+                    setShowDepositMax(true)
+                  }}
                 />
               </Col>
               <Col sm="6" className="mb-3">
@@ -556,9 +584,9 @@ const Edit = ({
                   <label>
                     Repay <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
-                  <span className="ml-1" onClick={getRepayMax}>
+                  {showRepayMax && <span className="ml-1" onClick={getRepayMax}>
                     <span className="available">Avl.</span>   {formatNumber(getMaxRepay())} {denomToSymbol(pair && pair?.denomOut)}
-                  </span>
+                  </span>}
                 </div>
                 <CustomInput
                   value={repay}
@@ -573,14 +601,19 @@ const Edit = ({
                   validationError={
                     editType === "repay" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("repay")}
+                  onFocus={() => {
+                    setShowDepositMax(false)
+                    setShowRepayMax(true)
+                    setEditType("repay")
+                  }}
+                  onBlur={() => {
+                    setShowRepayMax(false)
+                    setShowDepositMax(true)
+                  }}
                 />
               </Col>
             </Row>
             <div className="Interest-rate-container mt-4">
-              <Row>
-                <div className="title">Set Collateral Ratio</div>
-              </Row>
               <div className="slider-numbers mt-4">
                 <Slider
                   className={
@@ -601,35 +634,47 @@ const Edit = ({
                   min={0}
                   tooltipVisible={false}
                 />
-                <CustomInput
-                  defaultValue={collateralRatio}
-                  onChange={(event) => {
-                    handleSliderChange(event.target?.value);
-                  }}
-                  placeholder="0"
-                  value={newCollateralRatio}
-                />
-                <span className="collateral-percentage">%</span>
+
+
+                {/* collateral container  */}
+                <div className="slider-input-box-container mt-2">
+                  <div className="title">
+                    <div className="title">Set Collateral Ratio</div>
+                  </div>
+                  <div className="input-box-container">
+                    <CustomInput
+                      defaultValue={collateralRatio}
+                      onChange={(event) => {
+                        handleSliderChange(event.target?.value);
+                      }}
+                      placeholder="0"
+                      value={newCollateralRatio}
+                    />
+                    <span className="collateral-percentage">%</span>
+                  </div>
+
+                </div>
+
+                {/* Liquidation Container  */}
+                <div className="slider-input-box-container mt-2">
+                  <div className="title">
+                    <div className="title">Expected liquidation price</div>
+                  </div>
+                  <div className="input-box-container">
+                    <div className="liquidation-price">
+                      $
+                      {commaSeparator(
+                        Number(estimatedLiquidationPrice || 0).toFixed(
+                          DOLLAR_DECIMALS
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>
-          <Row className="card-bottom-details-main-container">
-            <Col className="mt-3  card-bottom-details">
-              <Row className="mt-1 estimated_value">
-                <div className="title-box">
-                  <label>Expected liquidation price</label>
-                </div>
-                <div className="price-box">
-                  $
-                  {commaSeparator(
-                    Number(estimatedLiquidationPrice || 0).toFixed(
-                      DOLLAR_DECIMALS
-                    )
-                  )}
-                </div>
-              </Row>
-            </Col>
-          </Row>
           <div className="assets-form-btn">
             <Button
               type="primary"
@@ -708,5 +753,6 @@ const actionsToProps = {
   setOwnerVaultId,
   setOwnerVaultInfo,
   setEstimatedLiquidationPrice,
+  setOwnerCurrentCollateral,
 };
 export default connect(stateToProps, actionsToProps)(Edit);

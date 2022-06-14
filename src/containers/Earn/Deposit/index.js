@@ -384,7 +384,7 @@ const Deposit = ({
               <Button
                 loading={inProgress}
                 disabled={
-                  !inAmount || inProgress || inputValidationError?.message
+                  !inAmount || inAmount <= 0 || inProgress || inputValidationError?.message
                 }
                 type="primary"
                 className="btn-filled"

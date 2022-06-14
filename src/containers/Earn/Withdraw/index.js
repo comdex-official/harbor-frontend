@@ -281,6 +281,7 @@ const Withdraw = ({
                 disabled={
                   !isLockerExist ||
                   !inAmount ||
+                  inAmount <= 0 ||
                   inProgress ||
                   inputValidationError?.message
                 }

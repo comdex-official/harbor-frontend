@@ -160,42 +160,59 @@
 }
 
 .slider-numbers {
-  display: flex;
+  // display: flex;
   .comdex-slider {
+    margin-top: 40px !important;
   }
-  .ant-input {
-    margin-bottom: 0;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 5px;
-    font-weight: 300;
-    margin-top: -14px;
-    max-width: 70px;
-    padding: 0 25px 0 10px;
-    text-align: center;
-    font-size: $font-size-lg + 3;
-    border: none;
-    background-color: $assets-bg-light;
 
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button {
-      display: none;
-      margin: 0;
+  .slider-input-box-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .title {
+      font-size: 13px;
+      padding: 0;
     }
-    .dark-mode & {
-      background: #081938;
-      border-color: #18305a;
-      color: $white;
-    }
-  }
-  .collateral-percentage {
-    margin-left: -22px;
-    margin-top: -9px;
-    padding-right: 0;
-    position: relative;
-    font-size: 20px;
-    .dark-mode & {
-      color: $white;
+    .input-box-container {
+      .ant-input {
+        margin-bottom: 0;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 5px;
+        font-weight: 300;
+        max-width: 77px;
+        padding: 0 25px 0 10px;
+        text-align: center;
+        font-size: $font-size-lg + 3;
+        border: none;
+        background: rgba($secondary-color, 0.3);
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+          display: none;
+          margin: 0;
+        }
+        .dark-mode & {
+          background: rgba($secondary-color, 0.2);
+          border-color: #18305a;
+          color: $white;
+        }
+      }
+      .collateral-percentage {
+        margin-left: -22px;
+        margin-top: -9px;
+        padding-right: 0;
+        position: relative;
+        font-size: 20px;
+        .dark-mode & {
+          color: $white;
+        }
+      }
+      .liquidation-price {
+        .dark-mode & {
+          color: white;
+        }
+      }
     }
   }
 }
@@ -244,7 +261,7 @@
           border-radius: 100%;
           padding: 2px;
           .dark-mode & {
-            background: $background-select-hover-dark;
+            background: $white;
           }
           .icon {
             width: 100%;

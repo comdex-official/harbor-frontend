@@ -12,7 +12,7 @@ import { cmst, comdex } from "../../../../../config/network";
 import { SvgIcon } from "../../../../../components/common";
 import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
 
-const PricePool = ({ ownerVaultInfo, markets, pair }) => {
+const PricePool = ({ ownerVaultInfo, markets, pair, ownerCurrrentCollateral }) => {
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
   );
@@ -35,9 +35,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair }) => {
   const data = [
     {
       title: "Collateral Ratio",
-      counts: `${commaSeparator(
-        (Number((collateralDeposited / withdrawn) * 100) || 0).toFixed()
-      )}%`,
+      counts: `${ownerCurrrentCollateral}%`,
     },
     {
       title: "Collateral Deposited",
@@ -159,6 +157,7 @@ PricePool.prototype = {
     denomIn: PropTypes.string,
     denomOut: PropTypes.string,
   }),
+  ownerCurrrentCollateral: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -166,6 +165,7 @@ const stateToProps = (state) => {
     ownerVaultInfo: state.locker.ownerVaultInfo,
     markets: state.oracle.market.list,
     pair: state.asset.pair,
+    ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
   };
 };
 

@@ -11,6 +11,7 @@ const CustomInput = ({
   placeholder,
   onChange,
   onFocus,
+  onBlur,
   validationError,
   decimals,
   min,
@@ -29,8 +30,9 @@ const CustomInput = ({
         }
         onChange={onChange}
         onFocus={onFocus}
+        onBlur={onBlur}
         min={min || 0}
-        // Restricting user from entering negative numbers
+      // Restricting user from entering negative numbers
       />
       {isError ? (
         <div className={isError ? "alert-label" : "alert-label alert-hidden"}>

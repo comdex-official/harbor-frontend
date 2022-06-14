@@ -276,6 +276,7 @@ button {
     margin-top: 15px;
     width: 100%;
     margin-bottom: 0;
+    margin-left: 1px;
 
     .ant-slider-rail {
       background: #5d6a82;
@@ -326,6 +327,11 @@ button {
 
         .dark-mode & {
           color: $white;
+        }
+      }
+      .ant-slider-mark-text {
+        &:nth-child(4) {
+          padding-right: 20px;
         }
       }
     }
@@ -1588,7 +1594,7 @@ button {
     border: 0;
     a {
       background: none;
-      // color: $text-color-dark;
+      color: $text-color-dark;
       font-weight: 700;
       &:hover {
         color: $secondary-color;
