@@ -36,6 +36,7 @@ import { setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
 import { useParams } from "react-router";
 import Long from "long";
 import { queryPairVault } from "../../../../services/asset/query";
+import { setOwnerCurrentCollateral } from "../../../../actions/mint";
 
 const Edit = ({
   address,
@@ -44,6 +45,7 @@ const Edit = ({
   ownerVaultId,
   ownerVaultInfo,
   setOwnerVaultId,
+  setOwnerCurrentCollateral,
   setOwnerVaultInfo,
   setBalanceRefresh,
   refreshBalance,
@@ -69,6 +71,10 @@ const Edit = ({
   const [withdraw, setWithdraw] = useState();
   const [repay, setRepay] = useState();
   const [draw, setDraw] = useState();
+  const [showDepositMax, setShowDepositMax] = useState(true);
+  const [showWithdrawMax, setShowWithdrawMax] = useState(false);
+  const [showDrawMax, setShowDrawMax] = useState(false);
+  const [showRepayMax, setShowRepayMax] = useState(false);
 
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
@@ -258,6 +264,8 @@ const Edit = ({
         return;
       }
       let ownerCollateral = decimalConversion(data?.vaultsInfo?.collateralizationRatio) * 100
+      ownerCollateral = Number(ownerCollateral).toFixed(DOLLAR_DECIMALS)
+      setOwnerCurrentCollateral(ownerCollateral)
       setNewCollateralRatio(ownerCollateral)
     });
   };
@@ -480,9 +488,9 @@ const Edit = ({
                   <label>
                     Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                   </label>
-                  <span className="ml-1" onClick={getDepositMax}>
-                    <span className="available">Avl.</span>   {formatNumber(amountConversion(collateralAssetBalance))} {denomToSymbol(pair && pair?.denomIn)}
-                  </span>
+                  {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
+                    <span className="available">Avl.</span>  {formatNumber(amountConversion(collateralAssetBalance))} {denomToSymbol(pair && pair?.denomIn)}
+                  </span>}
                 </div>
 
                 <CustomInput
@@ -499,7 +507,10 @@ const Edit = ({
                   validationError={
                     editType === "deposit" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("deposit")}
+                  onFocus={() => {
+                    setShowDepositMax(true)
+                    setEditType("deposit")
+                  }}
                 />
               </Col>
               <Col sm="6" className="mb-3">
@@ -507,9 +518,9 @@ const Edit = ({
                   <label>
                     Withdraw <TooltipIcon text="Withdrawing your collateral would increase chances of liquidation" />
                   </label>
-                  <span className="ml-1" onClick={getWithdrawMax}>
+                  {showWithdrawMax && <span className="ml-1" onClick={getWithdrawMax}>
                     <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral())} {denomToSymbol(pair && pair?.denomIn)}
-                  </span>
+                  </span>}
                 </div>
                 <CustomInput
                   value={withdraw}
@@ -524,7 +535,15 @@ const Edit = ({
                   validationError={
                     editType === "withdraw" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("withdraw")}
+                  onFocus={() => {
+                    setShowDepositMax(false)
+                    setShowWithdrawMax(true)
+                    setEditType("withdraw")
+                  }}
+                  onBlur={() => {
+                    setShowWithdrawMax(false)
+                    setShowDepositMax(true)
+                  }}
                 />
               </Col>
               <Col sm="6" className="mb-3">
@@ -532,9 +551,9 @@ const Edit = ({
                   <label>
                     Draw <TooltipIcon text="Borrow more CMST from your deposited collateral" />
                   </label>
-                  <span className="ml-1" onClick={getDrawMax}>
+                  {showDrawMax && <span className="ml-1" onClick={getDrawMax}>
                     <span className="available">Avl.</span>   {formatNumber(availableToBorrow())} {denomToSymbol(pair && pair?.denomOut)}
-                  </span>
+                  </span>}
                 </div>
                 <CustomInput
                   value={draw}
@@ -549,7 +568,15 @@ const Edit = ({
                   validationError={
                     editType === "draw" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("draw")}
+                  onFocus={() => {
+                    setShowDepositMax(false)
+                    setShowDrawMax(true)
+                    setEditType("draw")
+                  }}
+                  onBlur={() => {
+                    setShowDrawMax(false)
+                    setShowDepositMax(true)
+                  }}
                 />
               </Col>
               <Col sm="6" className="mb-3">
@@ -557,9 +584,9 @@ const Edit = ({
                   <label>
                     Repay <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
-                  <span className="ml-1" onClick={getRepayMax}>
+                  {showRepayMax && <span className="ml-1" onClick={getRepayMax}>
                     <span className="available">Avl.</span>   {formatNumber(getMaxRepay())} {denomToSymbol(pair && pair?.denomOut)}
-                  </span>
+                  </span>}
                 </div>
                 <CustomInput
                   value={repay}
@@ -574,7 +601,15 @@ const Edit = ({
                   validationError={
                     editType === "repay" ? inputValidationError : ""
                   }
-                  onFocus={() => setEditType("repay")}
+                  onFocus={() => {
+                    setShowDepositMax(false)
+                    setShowRepayMax(true)
+                    setEditType("repay")
+                  }}
+                  onBlur={() => {
+                    setShowRepayMax(false)
+                    setShowDepositMax(true)
+                  }}
                 />
               </Col>
             </Row>
@@ -718,5 +753,6 @@ const actionsToProps = {
   setOwnerVaultId,
   setOwnerVaultInfo,
   setEstimatedLiquidationPrice,
+  setOwnerCurrentCollateral,
 };
 export default connect(stateToProps, actionsToProps)(Edit);
