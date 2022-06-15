@@ -1,7 +1,10 @@
 import { Table, Button } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
-import { denomConversion, amountConversion } from "../../../utils/coin";
+import {
+  denomConversion,
+  amountConversionWithComma,
+} from "../../../utils/coin";
 import TooltipIcon from "../../../components/TooltipIcon";
 import moment from "moment";
 
@@ -71,7 +74,7 @@ export const Bidding = ({ biddingList }) => {
               <div className="assets-icon">
                 <SvgIcon name={iconNameFromDenom(item?.bid?.denom)} />
               </div>
-              {amountConversion(item?.bid?.amount || 0)}{" "}
+              {amountConversionWithComma(item?.bid?.amount || 0)}{" "}
               {denomConversion(item?.bid?.denom)}
             </div>
           </>
@@ -84,7 +87,9 @@ export const Bidding = ({ biddingList }) => {
                   name={iconNameFromDenom(item?.auctionedCollateral?.denom)}
                 />
               </div>
-              {amountConversion(item?.auctionedCollateral?.amount || 0)}{" "}
+              {amountConversionWithComma(
+                item?.auctionedCollateral?.amount || 0
+              )}{" "}
               {denomConversion(item?.auctionedCollateral?.denom)}
             </div>
           </>
@@ -111,10 +116,10 @@ export const Bidding = ({ biddingList }) => {
               item?.biddingStatus === "placed"
                 ? "biddin-btn bid-btn-placed"
                 : item?.biddingStatus === "success"
-                  ? "biddin-btn bid-btn-success"
-                  : item?.biddingStatus === "rejected"
-                    ? "biddin-btn bid-btn-rejected"
-                    : ""
+                ? "biddin-btn bid-btn-success"
+                : item?.biddingStatus === "rejected"
+                ? "biddin-btn bid-btn-rejected"
+                : ""
             }
           >
             {item?.biddingStatus}

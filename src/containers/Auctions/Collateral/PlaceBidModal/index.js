@@ -8,7 +8,7 @@ import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import {
-  amountConversion,
+  amountConversionWithComma,
   getAmount,
   getDenomBalance, orderPriceConversion,
 } from "../../../../utils/coin";
@@ -162,7 +162,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                ${commaSeparator(Number(amountConversion(decimalConversion(auction?.outflowTokenCurrentPrice) || 0) || 0).toFixed(DOLLAR_DECIMALS))}
+                ${commaSeparator(Number(amountConversionWithComma(decimalConversion(auction?.outflowTokenCurrentPrice) || 0) || 0).toFixed(DOLLAR_DECIMALS))}
               </label>
             </Col>
           </Row>
@@ -173,7 +173,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {amountConversion(
+                {amountConversionWithComma(
                   auction?.outflowTokenCurrentAmount?.amount || 0
                 )} CMST
               </label>

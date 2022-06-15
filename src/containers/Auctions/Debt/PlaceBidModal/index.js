@@ -8,7 +8,7 @@ import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import {
-  amountConversion,amountConversionWithComma,  denomConversion,
+  amountConversionWithComma,  denomConversion,
   getAmount,
   getDenomBalance,
 } from "../../../../utils/coin";
@@ -154,7 +154,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {amountConversion(auction?.expectedUserToken?.amount || 0)}{" "}
+                {amountConversionWithComma(auction?.expectedUserToken?.amount || 0)}{" "}
                 {denomConversion(auction?.expectedUserToken?.denom)}
               </label>
             </Col>
@@ -176,7 +176,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {amountConversion(auction?.expectedMintedToken?.amount || 0)}{" "}
+                {amountConversionWithComma(auction?.expectedMintedToken?.amount || 0)}{" "}
                 {denomConversion(auction?.expectedMintedToken?.denom)}
               </label>
             </Col>
