@@ -83,6 +83,7 @@ const Earn = ({
     dispatch(setAmountIn(0));
     setDefaultTabSelect(key);
   };
+  
   const getIntrestRate = () => {
     let interest = collectorData[0]?.lockerSavingRate
       ? Number(
@@ -175,13 +176,6 @@ const Earn = ({
                 </div>
                 <div className="content-container">
                   <div className="left-container">Expected Interest</div>
-                  {/* <div className="right-container">{
-                    collectorData[0]?.lockerSavingRate
-                      ? Number(
-                        decimalConversion(collectorData[0]?.lockerSavingRate) * 100
-                      ).toFixed(DOLLAR_DECIMALS)
-                      : Number().toFixed(DOLLAR_DECIMALS)
-                  }%</div> */}
                   <div className="right-container">{interestRate}%</div>
                 </div>
                 <div className="content-container">
