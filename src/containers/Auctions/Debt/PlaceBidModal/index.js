@@ -8,7 +8,7 @@ import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import {
-  amountConversion, denomConversion,
+  amountConversion,amountConversionWithComma,  denomConversion,
   getAmount,
   getDenomBalance,
 } from "../../../../utils/coin";
@@ -134,7 +134,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                00:00:00
+                {moment(auction && auction.endTime).fromNow()}
               </label>
             </Col>
           </Row>
@@ -144,7 +144,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                00:00:00
+              {moment(auction && auction.endTime).format("MMM DD, YYYY HH:mm")}              
               </label>
             </Col>
           </Row>
@@ -164,8 +164,9 @@ const PlaceBidModal = ({
               <p>Opening Bid </p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>
-                343 HARBOR
+            <label>
+                {amountConversionWithComma(auction?.auctionedToken?.amount || 0)}{" "}
+                {denomConversion(auction?.auctionedToken?.denom)}
               </label>
             </Col>
           </Row>
@@ -197,7 +198,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                0.5 CMST/HARBOR
+                {(Number(auction?.expectedUserToken?.amount)/ Number(auction?.expectedMintedToken?.amount).toFixed(comdex.coinDecimals))} {`${denomConversion(auction?.expectedUserToken?.denom)} / ${denomConversion(auction?.expectedMintedToken?.denom)}`}
               </label>
             </Col>
           </Row>

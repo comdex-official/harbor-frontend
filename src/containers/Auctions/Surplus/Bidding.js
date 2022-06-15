@@ -57,7 +57,7 @@ export const Bidding = ({ biddingList }) => {
     },
   ];
 
-  // biddingList.reverse(); // showing newest bid first (ascending->descending)
+  biddingList?.reverse(); // showing newest bid first (ascending->descending)
 
   const tableBiddingData =
       biddingList &&

@@ -73,7 +73,7 @@ const DebtAuctions = ({ setPairs, address }) => {
         message.error(error);
         return;
       }
-      console.log("result", result);
+      
       if (result?.auctions?.length > 0) {
         setAuctions(result && result.auctions);
       }
