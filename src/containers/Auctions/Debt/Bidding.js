@@ -10,23 +10,22 @@ export const Bidding = ({ biddingList }) => {
     {
       title: (
         <>
-          Outflow Token <TooltipIcon text="Asset to be sold in the auction" />
-        </>
-      ),
-      dataIndex: "outflowToken",
-      key: "outflowToken",
-      width: 250,
-    },
-    {
-      title: (
-        <>
-          Inflow Token{" "}
-          <TooltipIcon text="Asset used to buy the auctioned asset" />
+          Auctioned Asset <TooltipIcon text="Asset used to buy the auctioned asset" />
         </>
       ),
       dataIndex: "inflowToken",
       key: "inflowToken",
       width: 200,
+    },
+    {
+      title: (
+        <>
+          Bidding Asset <TooltipIcon text="Asset to be sold in the auction" />
+        </>
+      ),
+      dataIndex: "outflowToken",
+      key: "outflowToken",
+      width: 250,
     },
     {
       title: "Timestamp",
@@ -97,10 +96,10 @@ export const Bidding = ({ biddingList }) => {
             size="small"
             className={
               item?.auctionStatus === "active"
-                  ? "biddin-btn bid-btn-success"
-                  : item?.auctionStatus === "inactive"
-                      ? "biddin-btn bid-btn-rejected"
-                      : ""
+                ? "biddin-btn bid-btn-success"
+                : item?.auctionStatus === "inactive"
+                  ? "biddin-btn bid-btn-rejected"
+                  : ""
             }
           >
             {item?.auctionStatus}
@@ -113,10 +112,10 @@ export const Bidding = ({ biddingList }) => {
               item?.biddingStatus === "placed"
                 ? "biddin-btn bid-btn-placed"
                 : item?.biddingStatus === "success"
-                ? "biddin-btn bid-btn-success"
-                : item?.biddingStatus === "rejected"
-                ? "biddin-btn bid-btn-rejected"
-                : ""
+                  ? "biddin-btn bid-btn-success"
+                  : item?.biddingStatus === "rejected"
+                    ? "biddin-btn bid-btn-rejected"
+                    : ""
             }
           >
             {item?.biddingStatus}

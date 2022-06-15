@@ -9,24 +9,24 @@ export const Bidding = ({ biddingList }) => {
   const columnsBidding = [
     {
       title: (
+        <>
+          Auctioned Asset{" "}
+          <TooltipIcon text="Asset used to buy the auctioned asset" />
+        </>
+      ),
+      dataIndex: "inflowToken",
+      key: "inflowToken",
+      width: 200,
+    },
+    {
+      title: (
           <>
-            Outflow Token <TooltipIcon text="Asset to be sold in the auction" />
+            Bidding Asset <TooltipIcon text="Asset to be sold in the auction" />
           </>
       ),
       dataIndex: "outflowToken",
       key: "outflowToken",
       width: 250,
-    },
-    {
-      title: (
-          <>
-            Inflow Token{" "}
-            <TooltipIcon text="Asset used to buy the auctioned asset" />
-          </>
-      ),
-      dataIndex: "inflowToken",
-      key: "inflowToken",
-      width: 200,
     },
     {
       title: "Timestamp",

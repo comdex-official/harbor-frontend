@@ -170,3 +170,5 @@ const stateToProps = (state) => {
 };
 
 export default connect(stateToProps)(PricePool);
+
+

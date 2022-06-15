@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { amountConversion, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
-import {commaSeparator, decimalConversion} from "../../../utils/number";
+import { commaSeparator, decimalConversion } from "../../../utils/number";
 
 const CollateralAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -109,7 +109,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
-      title: "Inflow Asset",
+      title: "Bidding Asset",
       dataIndex: "bridge_asset",
       key: "bridge_asset",
       width: 180,
@@ -162,45 +162,45 @@ const CollateralAuctions = ({ setPairs, address }) => {
   const tableData =
     auctions && auctions.length > 0
       ? auctions.map((item, index) => {
-          return {
-            key: index,
-            id: item.id,
-            auctioned_asset: (
-              <>
-                <div className="assets-withicon">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(
-                        item?.outflowTokenInitAmount?.denom
-                      )}
-                    />
-                  </div>
-                  {denomConversion(item?.outflowTokenInitAmount?.denom)}
+        return {
+          key: index,
+          id: item.id,
+          auctioned_asset: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(
+                      item?.outflowTokenInitAmount?.denom
+                    )}
+                  />
                 </div>
-              </>
-            ),
-            bridge_asset: (
-              <>
-                <div className="assets-withicon">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(
-                        item?.inflowTokenCurrentAmount?.denom
-                      )}
-                    />
-                  </div>
-                  {denomConversion(item?.inflowTokenCurrentAmount?.denom)}
+                {denomConversion(item?.outflowTokenInitAmount?.denom)}
+              </div>
+            </>
+          ),
+          bridge_asset: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(
+                      item?.inflowTokenCurrentAmount?.denom
+                    )}
+                  />
                 </div>
-              </>
-            ),
-            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
-            quantity:
-              item?.outflowTokenCurrentAmount?.amount &&
-              amountConversion(item?.outflowTokenCurrentAmount?.amount),
-            current_price: item?.outflowTokenCurrentPrice,
-            action: item,
-          };
-        })
+                {denomConversion(item?.inflowTokenCurrentAmount?.denom)}
+              </div>
+            </>
+          ),
+          end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
+          quantity:
+            item?.outflowTokenCurrentAmount?.amount &&
+            amountConversion(item?.outflowTokenCurrentAmount?.amount),
+          current_price: item?.outflowTokenCurrentPrice,
+          action: item,
+        };
+      })
       : [];
 
   return (
