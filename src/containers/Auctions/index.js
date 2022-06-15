@@ -5,8 +5,9 @@ import { connect } from "react-redux";
 import { Col, Row } from "../../components/common";
 import SurplusAuction from "./Surplus";
 import DebtAuction from "./Debt";
-import DutchAuction from "./Dutch";
+// import DutchAuction from "./Dutch";
 import { setPairs } from "../../actions/asset";
+import Collateral from "./Collateral";
 
 const Auctions = () => {
   const [activeKey, setActiveKey] = useState("1");
@@ -26,8 +27,8 @@ const Auctions = () => {
               onChange={callback}
               activeKey={activeKey}
             >
-              <TabPane tab="Dutch " key="1">
-                <DutchAuction />
+              <TabPane tab="Collateral " key="1">
+                <Collateral />
               </TabPane>
               <TabPane tab="Debt" key="2">
                 <DebtAuction />

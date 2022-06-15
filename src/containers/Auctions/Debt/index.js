@@ -101,7 +101,7 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 180,
     },
     {
-      title: "User Payable Token",
+      title: "Bidding Asset",
       dataIndex: "payable_token",
       key: "payable_token",
       width: 180,
@@ -120,7 +120,7 @@ const DebtAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Max Bid",
+      title: "Top Bid",
       dataIndex: "max_bid",
       key: "max_bid",
       width: 150,

@@ -23,7 +23,7 @@ const markets = [
     symbol: "CMST",
   },
   {
-    rates: "5120000",
+    rates: "50000",
     script_id: "5",
     symbol: "HARBOR",
   },

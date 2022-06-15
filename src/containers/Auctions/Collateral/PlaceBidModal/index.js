@@ -19,7 +19,7 @@ import CustomInput from "../../../../components/CustomInput";
 import Long from "long";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
-import {commaSeparator, decimalConversion} from "../../../../utils/number";
+import { commaSeparator, decimalConversion } from "../../../../utils/number";
 import moment from "moment";
 
 const PlaceBidModal = ({
@@ -137,6 +137,27 @@ const PlaceBidModal = ({
         <div className="palcebid-modal-inner">
           <Row>
             <Col sm="6">
+              <p>Remaning Time </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                {moment(auction?.endTime).format("MMM DD, YYYY HH:mm")}
+              </label>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm="6">
+              <p>Opening Collateral Price</p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                $2.34
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
               <p>Collateral Current Price</p>
             </Col>
             <Col sm="6" className="text-right">
@@ -145,16 +166,7 @@ const PlaceBidModal = ({
               </label>
             </Col>
           </Row>
-          <Row>
-            <Col sm="6">
-              <p>End Time </p>
-            </Col>
-            <Col sm="6" className="text-right">
-              <label>
-                {moment(auction?.endTime).format("MMM DD, YYYY HH:mm")}
-              </label>
-            </Col>
-          </Row>
+
           <Row>
             <Col sm="6">
               <p>Quantity </p>

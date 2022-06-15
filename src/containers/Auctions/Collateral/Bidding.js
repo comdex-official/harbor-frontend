@@ -10,7 +10,7 @@ export const Bidding = ({ biddingList }) => {
     {
       title: (
           <>
-            Outflow Token <TooltipIcon text="Asset to be sold in the auction" />
+          Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
           </>
       ),
       dataIndex: "outflowToken",
@@ -20,7 +20,7 @@ export const Bidding = ({ biddingList }) => {
     {
       title: (
           <>
-            Inflow Token{" "}
+          Bidding Asset{" "}
             <TooltipIcon text="Asset used to buy the auctioned asset" />
           </>
       ),

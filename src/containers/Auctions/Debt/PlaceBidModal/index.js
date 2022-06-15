@@ -130,7 +130,7 @@ const PlaceBidModal = ({
         <div className="palcebid-modal-inner">
           <Row>
             <Col sm="6">
-              <p>End Time </p>
+              <p>Remaning Time </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
@@ -151,7 +151,17 @@ const PlaceBidModal = ({
           </Row>
           <Row>
             <Col sm="6">
-              <p>Max Bid </p>
+              <p>Opening Bid </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                343 HARBOR
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Top Bid </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
@@ -169,6 +179,16 @@ const PlaceBidModal = ({
                 value={bidAmount}
                 onChange={(event) => handleChange(event.target.value)}
               />
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Effective Bid Price</p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                0.5 CMST/HARBOR
+              </label>
             </Col>
           </Row>
           <Row className="p-0">
