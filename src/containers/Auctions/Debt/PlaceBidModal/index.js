@@ -144,7 +144,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-              {moment(auction && auction.endTime).format("MMM DD, YYYY HH:mm")}              
+              {moment(auction && auction.bidEndTime).format("MMM DD, YYYY HH:mm")}              
               </label>
             </Col>
           </Row>
