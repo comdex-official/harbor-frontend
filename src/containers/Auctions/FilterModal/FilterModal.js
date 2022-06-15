@@ -102,7 +102,17 @@ const FilterModal = ({ address, pairs, setPairs }) => {
           </Row>
           <Row>
             <Col>
+            <div className="timer-container">
               <label>Timer</label>
+                <CustomInput
+                  placeholder="0"
+                  value={sliderValue}
+                  onChange={(event) => {
+                    setSliderValue(event.target?.value);
+                  }}
+                  defaultValue="1d:12h:1m"
+                />
+            </div>
               <div className="mt-2 filter-rows pb-4">
                 <div className="slider-numbers">
                   <Slider
@@ -114,14 +124,6 @@ const FilterModal = ({ address, pairs, setPairs }) => {
                     value={sliderValue}
                     onChange={setSliderValue}
                     tooltipVisible={false}
-                  />
-                  <CustomInput
-                    placeholder="0"
-                    value={sliderValue}
-                    onChange={(event) => {
-                      setSliderValue(event.target?.value);
-                    }}
-                    defaultValue="1d:12h:1m"
                   />
                 </div>
               </div>
