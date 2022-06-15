@@ -84,9 +84,9 @@ const Earn = ({
     setDefaultTabSelect(key);
   };
   const getIntrestRate = () => {
-    let interest = collectorData?.lockerSavingRate
+    let interest = collectorData[0]?.lockerSavingRate
       ? Number(
-        decimalConversion(collectorData?.lockerSavingRate) * 100
+        decimalConversion(collectorData[0]?.lockerSavingRate) * 100
       ).toFixed(DOLLAR_DECIMALS)
       : Number().toFixed(DOLLAR_DECIMALS)
     setInterestRate(interest)
@@ -95,7 +95,6 @@ const Earn = ({
   useEffect(() => {
     getIntrestRate()
   }, [collectorData])
-
 
   return (
     <>
@@ -176,6 +175,13 @@ const Earn = ({
                 </div>
                 <div className="content-container">
                   <div className="left-container">Expected Interest</div>
+                  {/* <div className="right-container">{
+                    collectorData[0]?.lockerSavingRate
+                      ? Number(
+                        decimalConversion(collectorData[0]?.lockerSavingRate) * 100
+                      ).toFixed(DOLLAR_DECIMALS)
+                      : Number().toFixed(DOLLAR_DECIMALS)
+                  }%</div> */}
                   <div className="right-container">{interestRate}%</div>
                 </div>
                 <div className="content-container">

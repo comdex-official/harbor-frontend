@@ -104,6 +104,7 @@ const Edit = ({
     }
     else {
       setOwnerVaultInfo('');
+      setOwnerCurrentCollateral(0)
     }
   }, [address, ownerVaultId]);
 
@@ -448,6 +449,7 @@ const Edit = ({
     }
     else {
       setOwnerVaultInfo('');
+      setOwnerCurrentCollateral(0)
     }
   }, [ownerVaultInfo])
 
@@ -518,7 +520,9 @@ const Edit = ({
                   <label>
                     Withdraw <TooltipIcon text="Withdrawing your collateral would increase chances of liquidation" />
                   </label>
-                  {showWithdrawMax && <span className="ml-1" onClick={getWithdrawMax}>
+                  {showWithdrawMax && <span className="ml-1" onClick={() => {
+                    getWithdrawMax()
+                  }}>
                     <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral())} {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
