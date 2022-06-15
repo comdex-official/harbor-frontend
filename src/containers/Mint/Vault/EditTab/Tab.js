@@ -511,6 +511,9 @@ const Edit = ({
                   }
                   onFocus={() => {
                     setShowDepositMax(true)
+                    setShowWithdrawMax(false)
+                    setShowDrawMax(false)
+                    setShowRepayMax(false)
                     setEditType("deposit")
                   }}
                 />
@@ -542,11 +545,9 @@ const Edit = ({
                   onFocus={() => {
                     setShowDepositMax(false)
                     setShowWithdrawMax(true)
+                    setShowDrawMax(false)
+                    setShowRepayMax(false)
                     setEditType("withdraw")
-                  }}
-                  onBlur={() => {
-                    setShowWithdrawMax(false)
-                    setShowDepositMax(true)
                   }}
                 />
               </Col>
@@ -574,12 +575,10 @@ const Edit = ({
                   }
                   onFocus={() => {
                     setShowDepositMax(false)
+                    setShowWithdrawMax(false)
                     setShowDrawMax(true)
+                    setShowRepayMax(false)
                     setEditType("draw")
-                  }}
-                  onBlur={() => {
-                    setShowDrawMax(false)
-                    setShowDepositMax(true)
                   }}
                 />
               </Col>
@@ -607,12 +606,10 @@ const Edit = ({
                   }
                   onFocus={() => {
                     setShowDepositMax(false)
+                    setShowWithdrawMax(false)
+                    setShowDrawMax(false)
                     setShowRepayMax(true)
                     setEditType("repay")
-                  }}
-                  onBlur={() => {
-                    setShowRepayMax(false)
-                    setShowDepositMax(true)
                   }}
                 />
               </Col>
