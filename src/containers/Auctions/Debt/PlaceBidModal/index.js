@@ -198,7 +198,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {(Number(auction?.expectedUserToken?.amount)/ Number(auction?.expectedMintedToken?.amount).toFixed(comdex.coinDecimals))} {`${denomConversion(auction?.expectedUserToken?.denom)} / ${denomConversion(auction?.expectedMintedToken?.denom)}`}
+                {((Number(auction?.expectedUserToken?.amount)/ Number(auction?.expectedMintedToken?.amount)).toFixed(comdex.coinDecimals))} {`${denomConversion(auction?.expectedUserToken?.denom)} / ${denomConversion(auction?.expectedMintedToken?.denom)}`}
               </label>
             </Col>
           </Row>
