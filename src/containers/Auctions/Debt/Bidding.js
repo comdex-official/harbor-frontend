@@ -1,7 +1,7 @@
 import { Table, Button } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
-import { denomConversion, amountConversion } from "../../../utils/coin";
+import { denomConversion, amountConversionWithComma } from "../../../utils/coin";
 import TooltipIcon from "../../../components/TooltipIcon";
 import moment from "moment";
 
@@ -72,7 +72,7 @@ export const Bidding = ({ biddingList }) => {
                   name={iconNameFromDenom(item?.bid?.denom)}
                 />
               </div>
-              {amountConversion(item?.bid?.amount || 0)}{" "}
+              {amountConversionWithComma(item?.bid?.amount || 0)}{" "}
               {denomConversion(item?.bid?.denom)}
             </div>
           </>
@@ -85,7 +85,7 @@ export const Bidding = ({ biddingList }) => {
                   name={iconNameFromDenom(item?.outflowTokens?.denom)}
                 />
               </div>
-              {amountConversion(item?.outflowTokens?.amount || 0)}{" "}
+              {amountConversionWithComma(item?.outflowTokens?.amount || 0)}{" "}
               {denomConversion(item?.outflowTokens?.denom)}
             </div>
           </>

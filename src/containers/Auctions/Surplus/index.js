@@ -19,7 +19,7 @@ import {
 import { message } from "antd";
 import { useState, useEffect } from "react";
 import { iconNameFromDenom } from "../../../utils/string";
-import { amountConversion, denomConversion } from "../../../utils/coin";
+import { amountConversion,amountConversionWithComma, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 
 const SurplusAuctions = ({ setPairs, address }) => {
@@ -170,10 +170,10 @@ const SurplusAuctions = ({ setPairs, address }) => {
               <div className="assets-withicon">
                 <div className="assets-icon">
                   <SvgIcon
-                    name={iconNameFromDenom(item?.outflowToken?.denom)}
+                    name={iconNameFromDenom(item?.sellToken?.denom)}
                   />
                 </div>
-                {denomConversion(item?.outflowToken?.denom)}
+                {denomConversion(item?.sellToken?.denom)}
               </div>
             </>
           ),
@@ -182,17 +182,27 @@ const SurplusAuctions = ({ setPairs, address }) => {
               <div className="assets-withicon display-center">
                 <div className="assets-icon">
                   <SvgIcon
-                    name={iconNameFromDenom(item?.inflowToken?.denom)}
+                    name={iconNameFromDenom(item?.buyToken?.denom)}
                   />
                 </div>
-                {denomConversion(item?.inflowToken?.denom)}
+                {denomConversion(item?.buyToken?.denom)}
               </div>
             </>
           ),
           end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
-          quantity:
-            item?.outflowToken?.amount &&
-            amountConversion(item?.outflowToken?.amount),
+          quantity: (
+              <>
+                <div className="assets-withicon display-center">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.sellToken?.denom)}
+                    />
+                  </div>
+                  {amountConversionWithComma(item?.sellToken?.amount)}{" "}
+                  {denomConversion(item?.sellToken?.denom)}
+                </div>
+              </>
+            ),
           min_bid: item?.bid,
           action: item,
         };
