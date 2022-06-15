@@ -29,6 +29,10 @@
         background: $background-dark2;
         border-color: $background-dark2;
       }
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        display: none;
+      }
     }
   }
 }
