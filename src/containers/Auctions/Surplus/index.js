@@ -104,19 +104,19 @@ const SurplusAuctions = ({ setPairs, address }) => {
       title: "Auctioned Asset",
       dataIndex: "auctioned_asset",
       key: "auctioned_asset",
-      width: 180,
+      width: 150,
     },
     {
       title: "Bidding Asset",
       dataIndex: "bridge_asset",
       key: "bridge_asset",
-      width: 180,
+      width: 150,
     },
     {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
-      width: 180,
+      width: 200,
     },
     {
       title: "End Time",
@@ -179,7 +179,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
           ),
           bridge_asset: (
             <>
-              <div className="assets-withicon">
+              <div className="assets-withicon display-center">
                 <div className="assets-icon">
                   <SvgIcon
                     name={iconNameFromDenom(item?.inflowToken?.denom)}
