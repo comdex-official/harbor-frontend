@@ -127,7 +127,7 @@ const PlaceBidModal = ({
         <div className="palcebid-modal-inner">
           <Row>
             <Col sm="6">
-              <p>Remaning Time </p>
+              <p>Remaining Time </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
