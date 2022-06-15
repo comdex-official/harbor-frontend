@@ -131,7 +131,17 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {moment(auction?.end_time).format("MMM DD, YYYY HH:mm")}
+                00:00:00
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Bid Expiration Time </p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                00:00:00
               </label>
             </Col>
           </Row>

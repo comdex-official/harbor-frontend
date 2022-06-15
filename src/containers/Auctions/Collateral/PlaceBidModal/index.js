@@ -141,7 +141,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {moment(auction?.endTime).format("MMM DD, YYYY HH:mm")}
+                00:00:00
               </label>
             </Col>
           </Row>
@@ -175,7 +175,7 @@ const PlaceBidModal = ({
               <label>
                 {amountConversion(
                   auction?.outflowTokenCurrentAmount?.amount || 0
-                )}
+                )} CMST
               </label>
             </Col>
           </Row>
