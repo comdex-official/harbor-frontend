@@ -8,7 +8,7 @@ import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import {
-  amountConversion,
+  amountConversionWithComma,
   denomConversion,
   getAmount,
   getDenomBalance,
@@ -58,7 +58,7 @@ const PlaceBidModal = ({
             bidder: address,
             auctionId: auction?.auctionId,
             amount: {
-              denom: auction?.outflowToken?.denom,
+              denom: auction?.buyToken?.denom,
               amount: getAmount(bidAmount),
             },
             appId: Long.fromNumber(PRODUCT_ID),
@@ -125,13 +125,13 @@ const PlaceBidModal = ({
         closeIcon={null}
       >
         <div className="palcebid-modal-inner">
-          <Row>
+        <Row>
             <Col sm="6">
               <p>Remaining Time </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                00:00:00
+                {moment(auction && auction.endTime).fromNow()}
               </label>
             </Col>
           </Row>
@@ -141,7 +141,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                00:00:00
+              {moment(auction && auction.bidEndTime).format("MMM DD, YYYY HH:mm")}              
               </label>
             </Col>
           </Row>
@@ -151,8 +151,8 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {amountConversion(auction?.outflowToken?.amount || 0)}{" "}
-                {denomConversion(auction?.outflowToken?.denom)}
+                {amountConversionWithComma(auction?.sellToken?.amount || 0)}{" "}
+                {denomConversion(auction?.sellToken?.denom)}
               </label>
             </Col>
           </Row>
@@ -162,8 +162,8 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {amountConversion(auction?.bid?.amount || 0)}{" "}
-                {denomConversion(auction?.bid?.denom)}
+                {amountConversionWithComma(auction?.buyToken?.amount || 0)}{" "}
+                {denomConversion(auction?.buyToken?.denom)}
               </label>
             </Col>
           </Row>
@@ -173,7 +173,8 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                356 HARBOR
+                {amountConversionWithComma(auction?.bid?.amount || 0)}{" "}
+                {denomConversion(auction?.bid?.denom)}
               </label>
             </Col>
           </Row>
@@ -194,7 +195,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                0.5 CMST/HARBOR
+              {((Number(auction?.sellToken?.amount)/ Number(auction?.bid?.amount)).toFixed(comdex.coinDecimals))} {`${denomConversion(auction?.sellToken?.denom)} / ${denomConversion(auction?.bid?.denom)}`}
               </label>
             </Col>
           </Row>
