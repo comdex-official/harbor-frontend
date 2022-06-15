@@ -19,7 +19,10 @@ import {
 import { message } from "antd";
 import { useState, useEffect } from "react";
 import { iconNameFromDenom } from "../../../utils/string";
-import { amountConversion, denomConversion } from "../../../utils/coin";
+import {
+  amountConversionWithComma,
+  denomConversion,
+} from "../../../utils/coin";
 import moment from "moment";
 
 const DebtAuctions = ({ setPairs, address }) => {
@@ -70,7 +73,7 @@ const DebtAuctions = ({ setPairs, address }) => {
         message.error(error);
         return;
       }
-
+      
       if (result?.auctions?.length > 0) {
         setAuctions(result && result.auctions);
       }
@@ -126,7 +129,13 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 150,
       render: (bid) => (
         <>
-          {amountConversion(bid?.amount || 0)} {denomConversion(bid?.denom)}
+          <div className="assets-withicon display-center">
+            <div className="assets-icon">
+              <SvgIcon name={iconNameFromDenom(bid?.denom)} />
+            </div>
+            {amountConversionWithComma(bid?.amount || 0)}{" "}
+            {denomConversion(bid?.denom)}
+          </div>
         </>
       ),
     },
@@ -156,40 +165,51 @@ const DebtAuctions = ({ setPairs, address }) => {
   const tableData =
     auctions && auctions.length > 0
       ? auctions.map((item, index) => {
-        return {
-          key: index,
-          id: item.id,
-          auctioned_asset: (
-            <>
-              <div className="assets-withicon">
-                <div className="assets-icon">
-                  <SvgIcon
-                    name={iconNameFromDenom(item?.auctionedToken?.denom)}
-                  />
+          return {
+            key: index,
+            id: item.id,
+            auctioned_asset: (
+              <>
+                <div className="assets-withicon display-center">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.expectedUserToken?.denom)}
                 </div>
-                {denomConversion(item?.auctionedToken?.denom)}
-              </div>
-            </>
-          ),
-          payable_token: (
-            <>
-              <div className="assets-withicon display-center">
-                <div className="assets-icon">
-                  <SvgIcon
-                    name={iconNameFromDenom(item?.expectedUserToken?.denom)}
-                  />
+              </>
+            ),
+            payable_token: (
+              <>
+                <div className="assets-withicon">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.auctionedToken?.denom)}
+                    />
+                  </div>
+                  {denomConversion(item?.auctionedToken?.denom)}
                 </div>
-                {amountConversion(item?.expectedUserToken?.amount)}{" "}
-                {denomConversion(item?.expectedUserToken?.denom)}
-              </div>
-            </>
-          ),
-          quantity: "",
-          end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
-          max_bid: item?.expectedMintedToken,
-          action: item,
-        };
-      })
+              </>
+            ),
+            quantity: (
+              <>
+                <div className="assets-withicon display-center">
+                  <div className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                    />
+                  </div>
+                  {amountConversionWithComma(item?.expectedUserToken?.amount)}{" "}
+                  {denomConversion(item?.expectedUserToken?.denom)}
+                </div>
+              </>
+            ),
+            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
+            max_bid: item?.expectedMintedToken,
+            action: item,
+          };
+        })
       : [];
 
   return (

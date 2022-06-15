@@ -56,7 +56,7 @@ export const Bidding = ({ biddingList }) => {
     },
   ];
 
-  // biddingList.reverse(); // showing newest bid first (ascending->descending)
+  biddingList?.reverse(); // showing newest bid first (ascending->descending)
 
   const tableBiddingData =
     biddingList &&
@@ -69,11 +69,11 @@ export const Bidding = ({ biddingList }) => {
             <div className="assets-withicon">
               <div className="assets-icon">
                 <SvgIcon
-                  name={iconNameFromDenom(item?.outflowTokenAmount?.denom)}
+                  name={iconNameFromDenom(item?.bid?.denom)}
                 />
               </div>
-              {amountConversion(item?.outflowTokenAmount?.amount || 0)}{" "}
-              {denomConversion(item?.outflowTokenAmount?.denom)}
+              {amountConversion(item?.bid?.amount || 0)}{" "}
+              {denomConversion(item?.bid?.denom)}
             </div>
           </>
         ),
@@ -82,11 +82,11 @@ export const Bidding = ({ biddingList }) => {
             <div className="assets-withicon">
               <div className="assets-icon">
                 <SvgIcon
-                  name={iconNameFromDenom(item?.bid?.denom)}
+                  name={iconNameFromDenom(item?.outflowTokens?.denom)}
                 />
               </div>
-              {amountConversion(item?.bid?.amount || 0)}{" "}
-              {denomConversion(item?.bid?.denom)}
+              {amountConversion(item?.outflowTokens?.amount || 0)}{" "}
+              {denomConversion(item?.outflowTokens?.denom)}
             </div>
           </>
         ),
