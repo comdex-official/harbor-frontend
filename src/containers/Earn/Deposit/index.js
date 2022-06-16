@@ -345,7 +345,7 @@ const Deposit = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(AvailableAssetBalance)} {denomConversion(whiteListedAssetData[0]?.denom)}
+                  {amountConversionWithComma(AvailableAssetBalance)} {denomConversion(whiteListedAssetData && whiteListedAssetData[0]?.denom)}
                 </span>
                 <div className="maxhalf">
                   <Button className="active" onClick={() => handleInputMax()}>
