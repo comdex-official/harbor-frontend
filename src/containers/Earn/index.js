@@ -83,19 +83,20 @@ const Earn = ({
     dispatch(setAmountIn(0));
     setDefaultTabSelect(key);
   };
+
   const getIntrestRate = () => {
-    let interest = collectorData?.lockerSavingRate
+    let interest = collectorData && collectorData[0]?.lockerSavingRate
       ? Number(
-        decimalConversion(collectorData?.lockerSavingRate) * 100
+        decimalConversion(collectorData && collectorData[0]?.lockerSavingRate) * 100
       ).toFixed(DOLLAR_DECIMALS)
       : Number().toFixed(DOLLAR_DECIMALS)
     setInterestRate(interest)
     return interest;
   }
+
   useEffect(() => {
     getIntrestRate()
   }, [collectorData])
-
 
   return (
     <>
