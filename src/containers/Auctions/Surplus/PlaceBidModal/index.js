@@ -21,6 +21,7 @@ import Long from "long";
 import { PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import moment from "moment";
+import Timer from "../../../../components/Timer";
 
 const PlaceBidModal = ({
   lang,
@@ -125,13 +126,13 @@ const PlaceBidModal = ({
         closeIcon={null}
       >
         <div className="palcebid-modal-inner">
-        <Row>
+          <Row>
             <Col sm="6">
               <p>Remaining Time </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {moment(auction && auction.endTime).fromNow()}
+                <Timer expiryTimestamp={auction && auction.endTime} />
               </label>
             </Col>
           </Row>
@@ -141,7 +142,9 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-              {moment(auction && auction.bidEndTime).format("MMM DD, YYYY HH:mm")}              
+                {moment(auction && auction.bidEndTime).format(
+                  "MMM DD, YYYY HH:mm"
+                )}
               </label>
             </Col>
           </Row>
@@ -195,7 +198,13 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-              {((Number(auction?.sellToken?.amount)/ Number(auction?.bid?.amount)).toFixed(comdex.coinDecimals))} {`${denomConversion(auction?.sellToken?.denom)} / ${denomConversion(auction?.bid?.denom)}`}
+                {(
+                  Number(auction?.sellToken?.amount) /
+                  Number(auction?.bid?.amount)
+                ).toFixed(comdex.coinDecimals)}{" "}
+                {`${denomConversion(
+                  auction?.sellToken?.denom
+                )} / ${denomConversion(auction?.bid?.denom)}`}
               </label>
             </Col>
           </Row>

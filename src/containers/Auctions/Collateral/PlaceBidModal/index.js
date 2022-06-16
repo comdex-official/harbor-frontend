@@ -10,7 +10,8 @@ import { signAndBroadcastTransaction } from "../../../../services/helper";
 import {
   amountConversionWithComma,
   getAmount,
-  getDenomBalance, orderPriceConversion,
+  getDenomBalance,
+  orderPriceConversion,
 } from "../../../../utils/coin";
 import Snack from "../../../../components/common/Snack";
 import { ValidateInputNumber } from "../../../../config/_validation";
@@ -20,7 +21,7 @@ import Long from "long";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import { commaSeparator, decimalConversion } from "../../../../utils/number";
-import moment from "moment";
+import Timer from "../../../../components/Timer";
 
 const PlaceBidModal = ({
   lang,
@@ -141,7 +142,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                00:00:00
+                <Timer expiryTimestamp={auction && auction.endTime} />
               </label>
             </Col>
           </Row>
@@ -151,9 +152,7 @@ const PlaceBidModal = ({
               <p>Opening Collateral Price</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>
-                $2.34
-              </label>
+              <label>$2.34</label>
             </Col>
           </Row>
           <Row>
@@ -162,7 +161,14 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                ${commaSeparator(Number(amountConversionWithComma(decimalConversion(auction?.outflowTokenCurrentPrice) || 0) || 0).toFixed(DOLLAR_DECIMALS))}
+                $
+                {commaSeparator(
+                  Number(
+                    amountConversionWithComma(
+                      decimalConversion(auction?.outflowTokenCurrentPrice) || 0
+                    ) || 0
+                  ).toFixed(DOLLAR_DECIMALS)
+                )}
               </label>
             </Col>
           </Row>
@@ -175,7 +181,8 @@ const PlaceBidModal = ({
               <label>
                 {amountConversionWithComma(
                   auction?.outflowTokenCurrentAmount?.amount || 0
-                )} CMST
+                )}{" "}
+                CMST
               </label>
             </Col>
           </Row>
