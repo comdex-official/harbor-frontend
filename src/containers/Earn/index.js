@@ -87,13 +87,13 @@ const Earn = ({
   const getIntrestRate = () => {
     let interest = collectorData && collectorData[0]?.lockerSavingRate
       ? Number(
-        decimalConversion(collectorData[0]?.lockerSavingRate) * 100
+        decimalConversion(collectorData && collectorData[0]?.lockerSavingRate) * 100
       ).toFixed(DOLLAR_DECIMALS)
       : Number().toFixed(DOLLAR_DECIMALS)
     setInterestRate(interest)
     return interest;
   }
-  
+
   useEffect(() => {
     getIntrestRate()
   }, [collectorData])
