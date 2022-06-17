@@ -56,7 +56,7 @@ const MyVault = ({ address }) => {
     {
       title: (
         <>
-          Interest Rate{" "}
+          Stability Fee{" "}
           <TooltipIcon text="Current annual interest rate of Vault" />
         </>
       ),
@@ -75,7 +75,7 @@ const MyVault = ({ address }) => {
       dataIndex: "health",
       key: "health",
       width: 200,
-      align: "center",
+      align: "right",
       render: (ratio) => (
         <>
           <span>{Number((ratio * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>

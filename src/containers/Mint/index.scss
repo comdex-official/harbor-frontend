@@ -388,7 +388,7 @@
 .vault-mint-main-container {
   .card-main-container {
     display: flex;
-    gap: 15px;
+    gap: 13px;
     flex-wrap: wrap;
     cursor: pointer;
     .card-container {
@@ -479,8 +479,10 @@
             color: #fff;
           }
           .name {
+            font-size: 13px;
           }
           .value {
+            font-size: 13px;
             font-weight: 500;
           }
         }

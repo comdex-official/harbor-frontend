@@ -94,7 +94,7 @@ const MyPositions = ({ address, balances }) => {
         <>
           {earnTab && (
             <>
-              Current Balance{" "}
+              Locker Balance{" "}
               <TooltipIcon text="Current balance of Composite deposited in Locker" />
             </>
           )}
@@ -106,7 +106,7 @@ const MyPositions = ({ address, balances }) => {
           )}
           {historyTab && (
             <>
-              Current CMST Balance{" "}
+              Locker Balance{" "}
               <TooltipIcon text="Current balance of Composite deposited in Locker" />
             </>
           )}
@@ -155,7 +155,7 @@ const MyPositions = ({ address, balances }) => {
           {vaultTab && (
             <>
               Total Borrowed{" "}
-              <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+              <TooltipIcon text="Composite Debt owed across all vaults which is a sum of Composite borrowed and interest accrued" />
             </>
           )}
           {historyTab && (
@@ -202,7 +202,7 @@ const MyPositions = ({ address, balances }) => {
         <>
           {earnTab && (
             <>
-              Current interest Rate{" "}
+              Locker Savings Rate{" "}
               <TooltipIcon text="Current annual interest rate of Locker" />
             </>
           )}

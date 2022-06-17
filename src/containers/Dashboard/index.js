@@ -248,7 +248,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
           color: "#FFCEFF",
         },
       },
-      categories: [null, null, "0", "2", "4", "6", "8"],
+      categories: ["0.01", "0.10"],
     },
     xAxis: {
       lineColor: false,
@@ -287,7 +287,8 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         lineColor: "#665aa6",
         marker: false,
         data: [
-          2, 2.5, 2.8, 3, 4, 4.5, 4.2, 4.0, 3.8, 3.2, 4, 2.9, 3.1, 5.1, 5.12,
+          // 0.01, 0.03, 0.02, 0.04, 0.03, 0.05, 0.08, 0.06, 0.09, 0.07, 0.04, 0.08, 0.1, 0.07, 0.05,
+          0.01, 0.03, 0.02, 0.04, 0.03, 0.05, 0.08, 0.06, 0.09, 0.07, 0.04, 0.08, 0.1, 0.07, 0.05,
         ],
       },
     ],
@@ -339,7 +340,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                         Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0).toFixed(
                           DOLLAR_DECIMALS)
                       )}
-                    </h3>{" "}
+                    </h3>
                   </div>
                   <div className="dashboard-statics mb-0 others-dashboard-stats">
                     <p>Others</p>
@@ -374,7 +375,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                     Market Cap{" "}
                     <TooltipIcon text={variables[lang].tooltip_market_cap} />
                   </small>
-                  <p>$72,125,000</p>
+                  <p>$12,500,000</p>
                 </div>
               </div>
               <div className="right-chart">
