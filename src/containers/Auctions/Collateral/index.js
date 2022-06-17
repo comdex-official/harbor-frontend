@@ -169,6 +169,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
     },
   ];
 
+  
   const tableData =
     auctions && auctions.length > 0
       ? auctions.map((item, index) => {
