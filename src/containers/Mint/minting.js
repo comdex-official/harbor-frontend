@@ -17,7 +17,7 @@ import {
   setCurrentPairID,
   setSelectedExtentedPairvault,
 } from "../../actions/locker";
-import { amountConversion } from "../../utils/coin";
+import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import NoData from "../../components/NoData";
 import { queryAssets, queryExtendedPairVaultById } from "../../services/asset/query";
 import { decimalConversion } from "../../utils/number";
@@ -151,7 +151,7 @@ const Minting = ({ address }) => {
                             </div>
                             <div className="value">
                               {" "}
-                              {amountConversion(item?.debtFloor)} CMST
+                              {amountConversionWithComma(item?.debtFloor)} CMST
                             </div>
                           </div>
                           <div className="contenet-container">
@@ -160,7 +160,7 @@ const Minting = ({ address }) => {
                             </div>
                             <div className="value">
                               {" "}
-                              {amountConversion(item?.debtCeiling)} CMST
+                              {amountConversionWithComma(item?.debtCeiling)} CMST
                             </div>
                           </div>
                         </div>
@@ -174,7 +174,7 @@ const Minting = ({ address }) => {
           <NoData />
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
