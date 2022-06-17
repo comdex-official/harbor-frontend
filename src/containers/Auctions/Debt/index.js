@@ -200,7 +200,7 @@ const DebtAuctions = ({ setPairs, address }) => {
                       name={iconNameFromDenom(item?.expectedUserToken?.denom)}
                     />
                   </div>
-                  {amountConversionWithComma(item?.expectedUserToken?.amount)}{" "}
+                  {amountConversionWithComma(item?.expectedUserToken?.amount)}
                   {denomConversion(item?.expectedUserToken?.denom)}
                 </div>
               </>
