@@ -13,8 +13,8 @@ export const Bidding = ({ biddingList }) => {
           Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
           </>
       ),
-      dataIndex: "outflowToken",
-      key: "outflowToken",
+      dataIndex: "inflowToken",
+      key: "inflowToken",
       width: 250,
     },
     {
@@ -24,8 +24,8 @@ export const Bidding = ({ biddingList }) => {
             <TooltipIcon text="Asset used to buy the auctioned asset" />
           </>
       ),
-      dataIndex: "inflowToken",
-      key: "inflowToken",
+      dataIndex: "outflowToken",
+      key: "outflowToken",
       width: 200,
     },
     {
