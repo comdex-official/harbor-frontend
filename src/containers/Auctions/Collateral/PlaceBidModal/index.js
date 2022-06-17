@@ -8,7 +8,9 @@ import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import {
+  amountConversion,
   amountConversionWithComma,
+  denomConversion,
   getAmount,
   getDenomBalance,
   orderPriceConversion,
@@ -32,7 +34,7 @@ const PlaceBidModal = ({
   balances,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [bidAmount, setBidAmount] = useState();
+  const [bidAmount, setBidAmount] = useState(0);
   const [inProgress, setInProgress] = useState(false);
   const [validationError, setValidationError] = useState();
   const [maxPrice, setMaxPrice] = useState();
@@ -153,7 +155,7 @@ const PlaceBidModal = ({
 
           <Row>
             <Col sm="6">
-              <p>Opening Collateral Price</p>
+              <p>Opening Auction Price</p>
             </Col>
             <Col sm="6" className="text-right">
               <label> $
@@ -168,7 +170,7 @@ const PlaceBidModal = ({
           </Row>
           <Row>
             <Col sm="6">
-              <p>Collateral Current Price</p>
+              <p>Collateral Auction Price</p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
@@ -186,31 +188,45 @@ const PlaceBidModal = ({
 
           <Row>
             <Col sm="6">
-              <p>Quantity </p>
+              <p>Auctioned Quantity </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
                 {amountConversionWithComma(
                   auction?.outflowTokenCurrentAmount?.amount || 0
-                )}{" "}
-                CMDX
+                )} {denomConversion(auction?.outflowTokenCurrentAmount?.denom)}
               </label>
             </Col>
           </Row>
           <Row>
             <Col sm="6">
-              <p>Your Bid</p>
+              <p>Quantity Bid For</p>
             </Col>
             <Col sm="6" className="text-right">
               <CustomInput
                 value={bidAmount}
                 onChange={(event) => handleChange(event.target.value)}
               />
+              <label><div className="input-denom">{denomConversion(auction?.outflowTokenCurrentAmount?.denom)}</div></label>
             </Col>
           </Row>
           <Row>
             <Col sm="6">
-              <p>Max Price Per Collateral Token</p>
+              <p>Your CMST Bid</p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label >
+                {Number(bidAmount * Number(
+                  amountConversion(
+                    decimalConversion(auction?.outflowTokenCurrentPrice) || 0
+                  ) || 0
+                ).toFixed(DOLLAR_DECIMALS)).toFixed(6)} {denomConversion(auction?.inflowTokenTargetAmount?.denom)}
+              </label>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="6">
+              <p>Acceptable Max Price</p>
             </Col>
             <Col sm="6" className="text-right">
               <CustomInput
@@ -218,6 +234,7 @@ const PlaceBidModal = ({
                 onChange={(event) => handleMaxPriceChange(event.target.value)}
                 validationError={maxValidationError}
               />
+              <label><div className="input-denom">{denomConversion(auction?.inflowTokenTargetAmount?.denom)}/{denomConversion(auction?.outflowTokenCurrentAmount?.denom)}</div></label>
             </Col>
           </Row>
           <Row className="p-0">
