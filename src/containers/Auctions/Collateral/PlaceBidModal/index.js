@@ -156,7 +156,6 @@ const PlaceBidModal = ({
               <p>Opening Collateral Price</p>
             </Col>
             <Col sm="6" className="text-right">
-              {/* <label>${auction ? ((auction?.outflowTokenInitialPrice) / 10 ** 24) : 0.00}</label> */}
               <label> $
                 {commaSeparator(
                   Number(
