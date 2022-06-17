@@ -77,6 +77,8 @@ const PlaceBidModal = ({
         setInProgress(false);
         setIsModalVisible(false);
         if (error) {
+          setBidAmount(0);
+          setMaxPrice(0);
           message.error(error);
           return;
         }
@@ -87,6 +89,8 @@ const PlaceBidModal = ({
         }
 
         refreshData();
+        setBidAmount(0);
+        setMaxPrice(0);
         message.success(
           <Snack
             message={variables[lang].tx_success}
@@ -152,7 +156,14 @@ const PlaceBidModal = ({
               <p>Opening Collateral Price</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label>$2.34</label>
+              <label> $
+                {commaSeparator(
+                  Number(
+                    amountConversionWithComma(
+                      decimalConversion(auction?.outflowTokenInitialPrice) || 0
+                    ) || 0
+                  ).toFixed(DOLLAR_DECIMALS)
+                )}</label>
             </Col>
           </Row>
           <Row>
@@ -182,7 +193,7 @@ const PlaceBidModal = ({
                 {amountConversionWithComma(
                   auction?.outflowTokenCurrentAmount?.amount || 0
                 )}{" "}
-                CMST
+                CMDX
               </label>
             </Col>
           </Row>

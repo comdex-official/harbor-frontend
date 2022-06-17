@@ -516,7 +516,7 @@ const Mint = ({
                 className="btn-filled"
                 onClick={() => handleCreate()}
               >
-                Continue
+                Mint
               </Button>
             </div>
           </div>
