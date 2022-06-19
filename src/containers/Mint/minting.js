@@ -21,6 +21,7 @@ import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import NoData from "../../components/NoData";
 import { queryAssets, queryExtendedPairVaultById } from "../../services/asset/query";
 import { decimalConversion } from "../../utils/number";
+import { queryMintedTokenSpecificVaultType } from "../../services/vault/query";
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
@@ -34,7 +35,8 @@ const Minting = ({ address }) => {
   );
 
   const [loading, setLoading] = useState(false);
-
+  const [vaultDebt, setVaultDebt] = useState([])
+  let filteredVault;
   const navigateToMint = (path) => {
     navigate({
       pathname: `/vault/${path}`,
@@ -52,6 +54,12 @@ const Minting = ({ address }) => {
 
   }, [address])
 
+  useEffect(() => {
+    if (extenedPairVaultList?.length > 0) {
+      fetchMintedTokenSpecificVaultType(PRODUCT_ID, 1);
+    }
+  }, [address, extenedPairVaultList])
+
   const fetchExtendexPairList = (productId) => {
     setLoading(true);
     queryExtendedPairVaultById(productId, (error, data) => {
@@ -61,6 +69,18 @@ const Minting = ({ address }) => {
         return;
       }
       dispatch(setAllExtendedPair(data?.extendedPair));
+    });
+  };
+
+  const fetchMintedTokenSpecificVaultType = (productId, extendexPairId) => {
+    setLoading(true);
+    queryMintedTokenSpecificVaultType(productId, extendexPairId, (error, data) => {
+      setLoading(false);
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setVaultDebt((vaultDebt) => [...vaultDebt, data?.tokenMinted])
     });
   };
 
@@ -80,6 +100,22 @@ const Minting = ({ address }) => {
     const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.id).toNumber() === pairID);
 
     return selectedItem[0]?.denom || ""
+  }
+
+  useEffect(() => {
+    if (extenedPairVaultList?.length > 0) {
+      extenedPairVaultList.map((item, index) => {
+        fetchMintedTokenSpecificVaultType(PRODUCT_ID, item?.id?.low)
+      })
+    }
+  }, [extenedPairVaultList])
+
+  const filterUniqVaultDebt = (vaultDebt) => {
+    return Array.from(new Set(vaultDebt));
+  }
+
+  if (vaultDebt?.length > 1) {
+    filteredVault = filterUniqVaultDebt(vaultDebt)
   }
 
   if (loading) {
@@ -122,14 +158,6 @@ const Minting = ({ address }) => {
                         <div className="bottom-container">
                           <div className="contenet-container">
                             <div className="name">
-                              Liquidation Ratio <TooltipIcon text="If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt" />
-                            </div>
-                            <div className="value">
-                              {decimalConversion(item?.liquidationRatio) * 100} %
-                            </div>
-                          </div>
-                          <div className="contenet-container">
-                            <div className="name">
                               Min. Collateralization Ratio{" "}
                               <TooltipIcon text="Minimum collateral ratio at which composite should be minted" />
                             </div>
@@ -163,6 +191,16 @@ const Minting = ({ address }) => {
                               {amountConversionWithComma(item?.debtCeiling)} CMST
                             </div>
                           </div>
+
+                          <div className="contenet-container">
+                            <div className="name">
+                              Vault’s Global Debt <TooltipIcon text="If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt" />
+                            </div>
+                            <div className="value">
+                              {filteredVault ? amountConversionWithComma(filteredVault[item?.id?.low - 1]) : "0.000000"} CMST
+                            </div>
+                          </div>
+
                         </div>
                       </div>
                     )}

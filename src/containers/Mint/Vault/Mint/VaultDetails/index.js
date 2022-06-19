@@ -81,8 +81,8 @@ const VaultDetails = ({
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.drawDownFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Liquidation Ratio</div>
-            <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.liquidationRatio) * 100 || "0"}%</div>
+            <div className="asset-name">  Min. Collateralization Ratio</div>
+            <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.minCr) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Vault Opening Date</div>

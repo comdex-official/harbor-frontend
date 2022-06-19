@@ -74,7 +74,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair, ownerCurrrentCollateral }) =
         <div>
           {commaSeparator(Number(withdrawn || 0).toFixed(comdex?.coinDecimals))}
           <span className="small-text">
-            {denomConversion(cmst?.coinMinimalDenom)}{" "}
+            {denomConversion(cmst?.coinMinimalDenom)}
           </span>
         </div>
       ),
@@ -92,14 +92,7 @@ const PricePool = ({ ownerVaultInfo, markets, pair, ownerCurrrentCollateral }) =
             <div className="svg-icon-inner">
               <SvgIcon name={iconNameFromDenom("ucmst")} />{" "}
             </div>
-            <span className="title">Liquidation Price </span>{" "}
-            <span className="price">
-              {" "}
-              $
-              {commaSeparator(
-                Number(liquidationPrice || 0).toFixed(DOLLAR_DECIMALS)
-              )}
-            </span>
+
           </div>
 
           <div className="oracle-price-container">
