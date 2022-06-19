@@ -154,6 +154,24 @@ export const queryAllVaultByProduct = (productId, callback) => {
             });
     })
 }
+export const queryMintedTokenSpecificVaultType = (productId,extendedPairId, callback) => {
+    createQueryClient((error, rpcClient) => {
+        if (error) {
+            callback(error)
+        }
+        new QueryClientImpl(rpcClient)
+            .QueryTokenMintedAllProductsByPair({
+                productId: Long.fromNumber(productId),
+                extendedPairId: Long.fromNumber(extendedPairId),
+            }).then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+
+            });
+    })
+}
 
 export const queryAppTVL = (appId, callback) => {
     createQueryClient((error, rpcClient) => {
