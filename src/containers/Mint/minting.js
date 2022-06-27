@@ -162,7 +162,7 @@ const Minting = ({ address }) => {
                               <TooltipIcon text="Minimum collateral ratio at which composite should be minted" />
                             </div>
                             <div className="value">
-                              {decimalConversion(item?.minCr) * 100} %
+                              {(decimalConversion(item?.minCr) * 100).toFixed(2)} %
                             </div>
                           </div>
                           <div className="contenet-container">
