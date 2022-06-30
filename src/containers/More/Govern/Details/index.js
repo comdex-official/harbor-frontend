@@ -274,7 +274,7 @@ const GovernDetails = ({
                 <h3>#{currentProposal?.id || "-"}</h3>
               </Col>
               <Col className="text-right">
-                <Button type="primary" className="btn-filled">{currentProposal?.status || "-"}</Button>
+                <Button type="primary" className="btn-filled govern-status-btn">{currentProposal?.status || "-"}</Button>
               </Col>
             </Row>
             <Row>
@@ -288,9 +288,12 @@ const GovernDetails = ({
         <Col md="6">
           <div className="composite-card govern-card2 earn-deposite-card">
             <Row>
+              {/* Remove this col to add user vote and unComment user-vote-container */}
               <Col className="text-right">
+                {/* <div className="user-vote-container"> */}
+                {/* <div>User Vote : </div> */}
                 <VoteNowModal />
-
+                {/* </div> */}
               </Col>
             </Row>
             <Row>
