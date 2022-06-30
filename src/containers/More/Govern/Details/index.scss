@@ -121,5 +121,20 @@
         }
       }
     }
+    .govern-status-btn {
+      cursor: auto;
+      &:hover {
+        background: $secondary-color !important;
+      }
+      &:focus {
+        background: $secondary-color !important;
+      }
+    }
+    .user-vote-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: 2.5rem;
+    }
   }
 }
