@@ -209,7 +209,7 @@ const Minting = ({ address }) => {
 
                           <div className="contenet-container">
                             <div className="name">
-                              Vault’s Global Debt <TooltipIcon text="" />
+                              Vault’s Global Debt <TooltipIcon text="The total $CMST Debt of the protocol against this vault type" />
                             </div>
                             <div className="value">
                               {vaultDebt.length > 0 ? amountConversionWithComma(vaultDebt[0] && vaultDebt[0][index]?.collateralAmount ? vaultDebt[0] && vaultDebt[0][index]?.collateralAmount : 0.000000) : "0.000000"} CMST
