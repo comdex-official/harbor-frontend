@@ -42,7 +42,7 @@ const CloseTab = ({
 
   const returnDenom = () => {
     let assetPair = selectedExtentedPairVault && selectedExtentedPairVault[0]?.pairName;
-    
+
     switch (assetPair) {
       case "cmdx-cmst":
         return "ucmdx";
@@ -127,7 +127,7 @@ const CloseTab = ({
           typeUrl: "/comdex.vault.v1beta1.MsgCloseRequest",
           value: {
             from: address,
-            appMappingId: Long.fromNumber(PRODUCT_ID),
+            appId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
             userVaultId: ownerVaultId,
           },

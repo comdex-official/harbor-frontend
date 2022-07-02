@@ -10,7 +10,7 @@ export const queryCollectorInformation = (callback) => {
       return;
     }
     new QueryClientImpl(rpcClient)
-      .QueryCollectorLookupByProduct({
+      .QueryCollectorLookupByApp({
         appId: Long.fromNumber(PRODUCT_ID),
       })
       .then((result) => {

@@ -1,7 +1,7 @@
 import Long from "long";
 import { createQueryClient } from "../helper";
 import { QueryClientImpl } from "comdex-codec/build/comdex//locker/v1beta1/query";
-import {CMST_ASSET_ID, PRODUCT_ID} from "../../constants/common";
+import { CMST_ASSET_ID, PRODUCT_ID } from "../../constants/common";
 
 export const queryLockerWhiteListedAssetByProduct = (callback) => {
   createQueryClient((error, rpcClient) => {
@@ -26,8 +26,8 @@ export const queryLockerWhiteListedAssetByProductId = (productId, callback) => {
       return;
     }
     new QueryClientImpl(rpcClient)
-      .QueryWhiteListedAssetIDsByProductID({
-        productId: Long.fromNumber(productId),
+      .QueryWhiteListedAssetIDsByAppID({
+        appId: Long.fromNumber(productId),
       })
       .then((result) => {
         callback(null, result);
@@ -49,8 +49,8 @@ export const queryUserLockerByProductAssetId = (
       return;
     }
     new QueryClientImpl(rpcClient)
-      .QueryOwnerLockerByProductToAssetIDbyOwner({
-        productId: Long.fromNumber(productId),
+      .QueryOwnerLockerByAppToAssetIDbyOwner({
+        appId: Long.fromNumber(productId),
         assetId: Long.fromNumber(assetId),
         owner: owner,
       })
@@ -74,8 +74,8 @@ export const queryUserLockedValueInLocker = (
       return;
     }
     new QueryClientImpl(rpcClient)
-      .QueryOwnerLockerByProductToAssetID({
-        productId: Long.fromNumber(productId),
+      .QueryOwnerLockerByAppToAssetIDbyOwner({
+        appId: Long.fromNumber(productId),
         assetId: Long.fromNumber(assetId),
         owner: owner,
       })
@@ -122,8 +122,8 @@ export const queryUserLockerHistory = (
       return;
     }
     new QueryClientImpl(rpcClient)
-      .QueryOwnerTxDetailsLockerOfProductByOwnerByAsset({
-        productId: Long.fromNumber(productId),
+      .QueryOwnerTxDetailsLockerOfAppByOwnerByAsset({
+        appId: Long.fromNumber(productId),
         assetId: Long.fromNumber(CMST_ASSET_ID),
         owner: owner,
         pagination: {
@@ -144,8 +144,8 @@ export const queryUserLockerHistory = (
 };
 
 export const queryUserLockerStats = (
-    owner,
-    callback
+  owner,
+  callback
 ) => {
   createQueryClient((error, rpcClient) => {
     if (error) {
@@ -153,15 +153,15 @@ export const queryUserLockerStats = (
       return;
     }
     new QueryClientImpl(rpcClient)
-        .QueryLockerByProductByOwner({
-          productId: Long.fromNumber(PRODUCT_ID),
-          owner: owner,
-        })
-        .then((result) => {
-          callback(null, result);
-        })
-        .catch((error) => {
-          callback(error?.message);
-        });
+      .QueryLockerByAppByOwner({
+        appId: Long.fromNumber(PRODUCT_ID),
+        owner: owner,
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
   });
 };

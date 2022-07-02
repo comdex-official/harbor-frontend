@@ -4,7 +4,7 @@ import { comdex } from "../config/network"; import {
   AccountSetBase,
 } from "@keplr-wallet/stores";
 
-export const contractAddress = "comdex14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9spunaxy";
+export const contractAddress = "comdex17p9rzwnnfxcjp32un9ug7yhhzgtkhvl9jfksztgw5uh69wac2pgs4jg6dx";
 
 export const getChainConfig = () => {
   return {

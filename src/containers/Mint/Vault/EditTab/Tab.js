@@ -286,7 +286,7 @@ const Edit = ({
           typeUrl: getTypeURL(editType),
           value: {
             from: address,
-            appMappingId: Long.fromNumber(PRODUCT_ID),
+            appId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(
               selectedExtentedPairVaultListData[0]?.id?.low
             ),

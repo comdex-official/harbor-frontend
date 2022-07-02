@@ -181,7 +181,7 @@ const Withdraw = ({
             lockerId: lockerId,
             amount: getAmount(inAmount),
             assetId: Long.fromNumber(whiteListedAssetId),
-            appMappingId: Long.fromNumber(PRODUCT_ID),
+            appId: Long.fromNumber(PRODUCT_ID),
           },
         },
         fee: defaultFee(),

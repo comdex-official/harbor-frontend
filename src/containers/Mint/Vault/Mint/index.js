@@ -230,7 +230,7 @@ const Mint = ({
           typeUrl: getTypeURL("create"),
           value: {
             from: address,
-            appMappingId: Long.fromNumber(PRODUCT_ID),
+            appId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(pathVaultId),
             amountIn: getAmount(inAmount),
             amountOut: getAmount(outAmount),
