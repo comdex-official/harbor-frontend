@@ -23,8 +23,8 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
 
   useEffect(() => {
     fetchTVL();
-    fetchTotalTokenMinted(PRODUCT_ID);
-    fetchAllProposalUpData(PRODUCT_ID)
+    // fetchTotalTokenMinted(PRODUCT_ID);
+    fetchAllProposalUpData(PRODUCT_ID);
   }, []);
 
   const fetchTVL = () => {
@@ -75,7 +75,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
         message.error(error);
         return;
       }
-      // console.log(result);
+      console.log(result);
     })
   }
   const fetchAllProposalUpData = (productId) => {
