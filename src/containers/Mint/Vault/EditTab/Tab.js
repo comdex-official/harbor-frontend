@@ -491,7 +491,7 @@ const Edit = ({
                     Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                   </label>
                   {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
-                    <span className="available">Avl.</span>  {formatNumber(amountConversion(collateralAssetBalance))} {denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span>  {formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
 
@@ -526,7 +526,7 @@ const Edit = ({
                   {showWithdrawMax && <span className="ml-1" onClick={() => {
                     getWithdrawMax()
                   }}>
-                    <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral())} {denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral().toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
                 <CustomInput
@@ -557,7 +557,7 @@ const Edit = ({
                     Draw <TooltipIcon text="Borrow more CMST from your deposited collateral" />
                   </label>
                   {showDrawMax && <span className="ml-1" onClick={getDrawMax}>
-                    <span className="available">Avl.</span>   {formatNumber(availableToBorrow())} {denomToSymbol(pair && pair?.denomOut)}
+                    <span className="available">Avl.</span>   {formatNumber(availableToBorrow().toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
                   </span>}
                 </div>
                 <CustomInput
@@ -588,7 +588,7 @@ const Edit = ({
                     Repay <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
                   {showRepayMax && <span className="ml-1" onClick={getRepayMax}>
-                    <span className="available">Avl.</span>   {formatNumber(getMaxRepay())} {denomToSymbol(pair && pair?.denomOut)}
+                    <span className="available">Avl.</span>   {formatNumber(getMaxRepay().toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
                   </span>}
                 </div>
                 <CustomInput

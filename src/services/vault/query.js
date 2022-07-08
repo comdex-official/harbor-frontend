@@ -11,7 +11,7 @@ export const queryTotalTokenMinted = (productId, callback) => {
             return;
         }
         new QueryClientImpl(rpcClient)
-            .QueryTokenMintedAllProducts({
+            .QueryTokenMintedAssetWiseByApp({
                 appId: Long.fromNumber(productId)
             }).then((result) => {
                 callback(null, result);
@@ -107,7 +107,7 @@ export const queryOwnerVaults = (productId, address, extentedPairId, callback) =
             callback(error)
         }
         new QueryClientImpl(rpcClient)
-            .QueryVaultIdOfOwnerByExtendedPairAndApp({
+            .QueryVaultIDOfOwnerByExtendedPairAndApp({
                 appId: Long.fromNumber(productId),
                 owner: address,
                 extendedPairId: Long.fromNumber(extentedPairId),
@@ -115,7 +115,7 @@ export const queryOwnerVaults = (productId, address, extentedPairId, callback) =
                 callback(null, result);
             })
             .catch((error) => {
-                // callback(error?.message);
+                callback(error?.message);
                 // callback("Vault does't exist");
             });
     })
@@ -224,7 +224,7 @@ export const queryUserVaultsInfo = (
             return;
         }
         new QueryClientImpl(rpcClient)
-            .QueryVaultInfoByVaultId({
+            .QueryVaultInfoByVaultID({
                 id: id,
             })
             .then((result) => {

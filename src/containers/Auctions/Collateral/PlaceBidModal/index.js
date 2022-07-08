@@ -64,7 +64,11 @@ const PlaceBidModal = ({
             auctionId: auction?.auctionId,
             amount: {
               denom: auction?.outflowTokenInitAmount?.denom,
-              amount: getAmount(bidAmount),
+              amount: getAmount(Number(bidAmount / Number(
+                amountConversion(
+                  decimalConversion(auction?.outflowTokenCurrentPrice) || 0
+                ) || 0
+              ).toFixed(DOLLAR_DECIMALS)).toFixed(6)),
             },
             max: orderPriceConversion(maxPrice || 0),
             appId: Long.fromNumber(PRODUCT_ID),
@@ -203,11 +207,13 @@ const PlaceBidModal = ({
               <p>Quantity Bid For</p>
             </Col>
             <Col sm="6" className="text-right">
-              <CustomInput
-                value={bidAmount}
-                onChange={(event) => handleChange(event.target.value)}
-              />
-              <label><div className="input-denom">{denomConversion(auction?.outflowTokenCurrentAmount?.denom)}</div></label>
+              <label >
+                {Number(bidAmount / Number(
+                  amountConversion(
+                    decimalConversion(auction?.outflowTokenCurrentPrice) || 0
+                  ) || 0
+                ).toFixed(DOLLAR_DECIMALS)).toFixed(6)} {denomConversion(auction?.outflowTokenCurrentAmount?.denom)}
+              </label>
             </Col>
           </Row>
           <Row>
@@ -215,13 +221,12 @@ const PlaceBidModal = ({
               <p>Your CMST Bid</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label >
-                {Number(bidAmount * Number(
-                  amountConversion(
-                    decimalConversion(auction?.outflowTokenCurrentPrice) || 0
-                  ) || 0
-                ).toFixed(DOLLAR_DECIMALS)).toFixed(6)} {denomConversion(auction?.inflowTokenTargetAmount?.denom)}
-              </label>
+              <CustomInput
+                value={bidAmount}
+                onChange={(event) => handleChange(event.target.value)}
+              />
+              <label><div className="input-denom">{denomConversion(auction?.inflowTokenCurrentAmount?.denom)}</div></label>
+
             </Col>
           </Row>
           <Row>
