@@ -6,11 +6,12 @@ import { Button, List, Select, Progress, Spin } from "antd";
 import "./index.scss";
 import { fetchProposalUpData, totalProposal } from "../../../services/contractsRead";
 import React, { useEffect } from "react";
-import { PRODUCT_ID } from '../../../constants/common';
+import { DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
 import moment from "moment";
 import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 import { useState } from "react";
 import NoData from "../../../components/NoData";
+import { amountConversionWithComma } from "../../../utils/coin";
 
 const { Option } = Select;
 
@@ -69,7 +70,8 @@ const Govern = ({
   const data = [
     {
       title: "Total Supply",
-      counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 + " HARBOR" : "-"
+      counts: proposalUpData ? amountConversionWithComma(proposalUpData?.current_supply, DOLLAR_DECIMALS) + " HARBOR" : "-"
+
     },
     {
       title: "Total Proposals",
