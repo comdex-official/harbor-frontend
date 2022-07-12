@@ -328,7 +328,10 @@ const Edit = ({
     );
     let currentBorrowed = Number(amountConversion(currentDebt));
     let maxRepay = currentBorrowed + interestAccumulated - debtFloor;
-    maxRepay = truncateToDecimals(maxRepay, 6)
+    maxRepay = truncateToDecimals(maxRepay, 6);
+    if (maxRepay < 0) {
+      maxRepay = "0";
+    }
     return maxRepay;
   };
 
@@ -468,7 +471,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                   </div>
                 </div>
-                <h2>{withdrawableCollateral() || "-"} {denomToSymbol(pair && pair?.denomIn)}</h2>
+                <h2>{withdrawableCollateral() || "0"} {denomToSymbol(pair && pair?.denomIn)}</h2>
               </div>
             </div>
             <div className="borrowedithead-colum">
@@ -479,7 +482,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom("ucmst")} />
                   </div>
                 </div>
-                <h2>{availableToBorrow() || "-"} {denomToSymbol(pair && pair?.denomOut)}</h2>
+                <h2>{availableToBorrow() || "0"} {denomToSymbol(pair && pair?.denomOut)}</h2>
               </div>
             </div>
           </div>
@@ -526,7 +529,7 @@ const Edit = ({
                   {showWithdrawMax && <span className="ml-1" onClick={() => {
                     getWithdrawMax()
                   }}>
-                    <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral().toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span>   {formatNumber(Number(withdrawableCollateral()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
                 <CustomInput
@@ -557,7 +560,7 @@ const Edit = ({
                     Draw <TooltipIcon text="Borrow more CMST from your deposited collateral" />
                   </label>
                   {showDrawMax && <span className="ml-1" onClick={getDrawMax}>
-                    <span className="available">Avl.</span>   {formatNumber(availableToBorrow().toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
+                    <span className="available">Avl.</span>   {formatNumber(Number(availableToBorrow()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
                   </span>}
                 </div>
                 <CustomInput
@@ -588,7 +591,7 @@ const Edit = ({
                     Repay <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
                   {showRepayMax && <span className="ml-1" onClick={getRepayMax}>
-                    <span className="available">Avl.</span>   {formatNumber(getMaxRepay().toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
+                    <span className="available">Avl.</span>   {formatNumber(Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
                   </span>}
                 </div>
                 <CustomInput
