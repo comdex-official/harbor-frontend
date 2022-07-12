@@ -646,7 +646,7 @@ button {
                 box-shadow: $box-shadow-inner-light;
                 background: rgba($secondary-color, 0.3);
                 .dark-mode & {
-                  background: $secondary-color;
+                  background: rgba($secondary-color, 0.6);
                   box-shadow: none;
                 }
               }
@@ -665,7 +665,7 @@ button {
                 background: rgba($secondary-color, 0.3);
 
                 .dark-mode & {
-                  background: $secondary-color;
+                  background: rgba($secondary-color, 0.6);
                   box-shadow: none;
                 }
               }
