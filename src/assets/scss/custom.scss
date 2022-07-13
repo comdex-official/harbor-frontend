@@ -1588,6 +1588,12 @@ button {
     &:hover {
       border-color: $secondary-color !important;
     }
+    .ant-select-selection-item {
+      color: $secondary-color;
+      .dark-mode & {
+        color: $white;
+      }
+    }
   }
   li {
     background: none;
