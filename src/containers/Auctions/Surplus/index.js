@@ -19,7 +19,7 @@ import {
 import { message } from "antd";
 import { useState, useEffect } from "react";
 import { iconNameFromDenom } from "../../../utils/string";
-import { amountConversion,amountConversionWithComma, denomConversion } from "../../../utils/coin";
+import { amountConversion, amountConversionWithComma, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 
 const SurplusAuctions = ({ setPairs, address }) => {
@@ -191,18 +191,18 @@ const SurplusAuctions = ({ setPairs, address }) => {
           ),
           end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
           quantity: (
-              <>
-                <div className="assets-withicon display-center">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(item?.sellToken?.denom)}
-                    />
-                  </div>
-                  {amountConversionWithComma(item?.sellToken?.amount)}{" "}
-                  {denomConversion(item?.sellToken?.denom)}
+            <>
+              <div className="assets-withicon display-center">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(item?.sellToken?.denom)}
+                  />
                 </div>
-              </>
-            ),
+                {amountConversionWithComma(item?.sellToken?.amount)}{" "}
+                {denomConversion(item?.sellToken?.denom)}
+              </div>
+            </>
+          ),
           min_bid: item?.bid,
           action: item,
         };
@@ -233,7 +233,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
             </div>
           </div>
           <div className="more-bottom">
-            <h3 className="title">Your Bidding</h3>
+            <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
               <Bidding biddingList={biddings} />
             </div>

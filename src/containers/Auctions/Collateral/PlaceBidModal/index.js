@@ -174,7 +174,7 @@ const PlaceBidModal = ({
           </Row>
           <Row>
             <Col sm="6">
-              <p>Collateral Auction Price</p>
+              <p>Current Auction Price</p>
             </Col>
             <Col sm="6" className="text-right">
               <label>

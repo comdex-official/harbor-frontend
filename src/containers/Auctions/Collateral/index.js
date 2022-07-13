@@ -169,7 +169,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
     },
   ];
 
-  
+
   const tableData =
     auctions && auctions.length > 0
       ? auctions.map((item, index) => {
@@ -242,7 +242,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
             </div>
           </div>
           <div className="more-bottom">
-            <h3 className="title">Your Bidding</h3>
+            <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
               <Bidding biddingList={biddings} />
             </div>
