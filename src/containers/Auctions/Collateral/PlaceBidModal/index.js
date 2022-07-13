@@ -202,6 +202,20 @@ const PlaceBidModal = ({
               </label>
             </Col>
           </Row>
+
+          <Row>
+            <Col sm="6">
+              <p> Target CMST</p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label>
+                {commaSeparator(
+                  amountConversion(auction?.inflowTokenTargetAmount?.amount) - amountConversion(auction?.inflowTokenCurrentAmount?.amount) || 0
+                )} {denomConversion(auction?.outflowTokenCurrentAmount?.denom)}
+              </label>
+            </Col>
+          </Row>
+
           <Row>
             <Col sm="6">
               <p>Quantity Bid For</p>
