@@ -97,9 +97,9 @@ const MyEarn = ({ address }) => {
   const tableData =
     lockers &&
     lockers?.length > 0 &&
-    lockers?.map((item) => {
+    lockers?.map((item, index) => {
       return {
-        key: 1,
+        key: index,
         amount: (
           <>
             <div className="assets-withicon">

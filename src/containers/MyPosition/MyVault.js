@@ -34,6 +34,11 @@ const MyVault = ({ address }) => {
       setVaults(result?.vaultsInfo);
     });
   };
+  const calculateProgressPercentage = (number) => {
+    let ratio = 500 / number;
+    let percentage = 100 / ratio;
+    return percentage.toFixed(DOLLAR_DECIMALS);
+  }
 
   const columns = [
     {
@@ -78,12 +83,15 @@ const MyVault = ({ address }) => {
       align: "right",
       render: (ratio) => (
         <>
-          <span>{Number((ratio * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
+          <span>{Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
           <Progress
-            className="health-progress"
+            className="health-progress ml-2"
             style={{ width: 130 }}
-            percent={Number((ratio * 100) || 0).toFixed(DOLLAR_DECIMALS)}
+            percent={calculateProgressPercentage(Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS))}
+            showInfo={false}
             size="small"
+            strokeColor={((Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS)) < (Number(((decimalConversion(ratio?.minCr) * 100) || 0).toFixed(DOLLAR_DECIMALS)) + 50)) ? "orange" : ""}
+
           />
         </>
       ),
@@ -112,13 +120,12 @@ const MyVault = ({ address }) => {
   const handleRouteChange = (item) => {
     navigate(`/vault/${item?.extendedPairId?.low}`);
   };
-
   const tableData =
     vaults &&
     vaults?.length > 0 &&
     vaults?.map((item) => {
       return {
-        key: 1,
+        key: item?.id,
         vault: (
           <>
             <div className="assets-withicon">{item?.extendedPairName || ""}</div>
@@ -126,7 +133,7 @@ const MyVault = ({ address }) => {
         ),
         debt: <> {amountConversion(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
         apy: decimalConversion(item?.interestRate || 0),
-        health: decimalConversion(item?.collateralizationRatio || 0),
+        health: (item ? item : 0),
         action: item,
       };
     });
