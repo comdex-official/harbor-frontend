@@ -345,7 +345,7 @@ const Mint = ({
           <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
-                Deposit  <TooltipIcon />
+                Deposit  <TooltipIcon text="Asset that will be locked as collateral in the vault" />
               </label>
               <div className="assets-select-wrapper">
                 {/* Icon Container Start  */}
@@ -395,7 +395,7 @@ const Mint = ({
           <div className="assets-select-card mt-4">
             <div className="assets-left">
               <label className="leftlabel">
-                Withdraw <TooltipIcon />
+                Withdraw <TooltipIcon text="CMST being borrowed from the vault based on the collateral value" />
               </label>
               <div className="assets-select-wrapper">
                 {/* Icon Container Start  */}
