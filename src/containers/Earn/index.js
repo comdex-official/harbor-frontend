@@ -40,7 +40,7 @@ const Earn = ({
     monthsInput = months,
     daysInput = days
   ) => {
-    if (principal && interestRate && yearsInput) {
+    if (principal && interestRate && yearsInput || monthsInput || daysInput) {
       setTotalROI(
         calculateROI(
           principal,
