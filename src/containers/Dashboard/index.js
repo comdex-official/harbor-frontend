@@ -70,14 +70,12 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     });
   };
 
-  // Todo: Update cmst circulating supply
   const fetchTotalTokenMinted = () => {
     queryTotalTokenMinted(PRODUCT_ID, (error, result) => {
       if (error) {
         message.error(error);
         return;
       }
-      // console.log(result?.mintedData);
       setCmstCurrentSupply(result?.mintedData)
     })
   }
@@ -321,6 +319,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     marketCap = commaSeparator(marketCap)
     return marketCap || 0;
   }
+  // console.log(totalDollarValue, "totalDollarValue");
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>

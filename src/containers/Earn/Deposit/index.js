@@ -74,18 +74,6 @@ const Deposit = ({
   };
 
   const getAssetDenom = () => {
-    // When we get multiple whiteListed Asset
-    // ************************************************
-    // let filterAssets = assets?.filter((item, index) => {
-    //   return (
-    //     item.id.low === whiteListedAsset[index]?.low
-    //   )
-    // })
-    // whiteListedAssetData.push(filterAssets);
-    // ************************************************
-
-    // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
-
     assets?.map((item) => {
       if (item.id.low === whiteListedAsset[0]?.low) {
         whiteListedAssetData.push(item);
@@ -304,7 +292,7 @@ const Deposit = ({
           <div className="assets-select-card  ">
             <div className="assets-left">
               <label className="leftlabel">
-                Deposit <TooltipIcon />
+                Deposit <TooltipIcon text="Deposit Composite in locker to earn interest compounded per block" />
               </label>
               <Row>
                 <Col>
