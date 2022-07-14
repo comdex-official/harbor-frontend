@@ -254,6 +254,11 @@ const MyPositions = ({ address, balances }) => {
       ),
     },
   ];
+  const calculateProgressPercentage = (number) => {
+    let ratio = 500 / number;
+    let percentage = 100 / ratio;
+    return percentage.toFixed(DOLLAR_DECIMALS);
+  }
   return (
     <div className="app-content-wrapper">
       <Row>
@@ -302,9 +307,10 @@ const MyPositions = ({ address, balances }) => {
                     <Progress
                       percent={
                         vaultsInfo?.averageCrRatio
-                          ? Number(vaultsInfo?.averageCrRatio) * 100
+                          ? calculateProgressPercentage(Number(decimalConversion((vaultsInfo?.averageCrRatio)) * 100))
                           : 0
                       }
+                      showInfo={false}
                       size="small"
                     />
                   </div>
