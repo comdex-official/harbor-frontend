@@ -1,1 +1,1 @@
-# dex-stable-token
+# harbor-protocol-frontend
