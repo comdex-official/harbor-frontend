@@ -6,12 +6,12 @@ export const comdex = {
   coinMinimalDenom: "ucmdx",
   coinDecimals: 6,
   prefix: "comdex",
-  rpc: "https://dev.harborprotocol.one/test-harbor-rpc",
+  // rpc: "https://dev.harborprotocol.one/test-harbor-rpc",
   // Devnet
-  rest: "https://dev.harborprotocol.one/test-harbor-rest",
+  // rest: "https://dev.harborprotocol.one/test-harbor-rest",
   //  Devent
-  // rpc: "http://46.166.172.248:26657/",
-  // rest: "http://46.166.172.248:1317",
+  rpc: "http://46.166.172.248:26657/",
+  rest: "http://46.166.172.248:1317",
   // rpc: "https://int-rpc.comdex.one/",
   // rest: "https://int-rest.comdex.one/",
   explorerUrlToTx: `https://dev-explorer.comdex.one/transactions/{txHash}`,
