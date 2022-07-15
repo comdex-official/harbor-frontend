@@ -74,7 +74,7 @@ const Mint = ({
 
   const getLiquidationPrice = () => {
     // formula = ((Liquidiation Ratio) * (Composite already minted + Composite to be minted) )/ (Quantity of Asset Locked + Quantity of Asset to be Locked)
-    let liquidationRatio = Number(decimalConversion(selectedExtentedPairVaultListData[0]?.liquidationRatio)) // no converting into %
+    let liquidationRatio = Number(decimalConversion(selectedExtentedPairVaultListData[0]?.minCr)) // no converting into %
     let mintedCMST = 0;
     let currentAmountOut = Number(outAmount);
     let lockedAmountOut = 0;

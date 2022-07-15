@@ -82,7 +82,6 @@ const Edit = ({
   const estimatedLiquidationPrice = useSelector(
     (state) => state.locker.estimatedLiquidationPrice,
   );
-
   useEffect(() => {
     fetchQueryPairValut(pathVaultId);
   }, [address]);
@@ -361,7 +360,7 @@ const Edit = ({
     const collateral = amountConversion(currentCollateral);
     const borrowed = amountConversion(currentDebt);
     const liquidationRatio =
-      selectedExtendedPairVaultListData?.liquidationRatio;
+      selectedExtendedPairVaultListData?.minCr;
 
     setEstimatedLiquidationPrice(
       decimalConversion(liquidationRatio) *

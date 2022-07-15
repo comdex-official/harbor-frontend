@@ -136,7 +136,6 @@ const Minting = ({ address }) => {
   if (loading) {
     return <Spin />;
   }
-
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       <div className="card-main-container">
@@ -145,13 +144,13 @@ const Minting = ({ address }) => {
           extenedPairVaultList?.map((item, index) => {
             if (
               item &&
-              !item.isPsmPair &&
+              !item.isStableMintVault &&
               item.appId.low === PRODUCT_ID
             ) {
               return (
                 <React.Fragment key={index}>
                   {item &&
-                    !item.isPsmPair &&
+                    !item.isStableMintVault &&
                     item.appId.low === PRODUCT_ID && (
                       <div
                         className="card-container "
