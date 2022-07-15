@@ -117,8 +117,6 @@ const PlaceBidModal = ({
         amountConversion(auction?.inflowTokenTargetAmount?.amount) - amountConversion(auction?.inflowTokenCurrentAmount?.amount) || 0
       )
     );
-    console.log(value);
-    console.log(amountConversion(auction?.inflowTokenTargetAmount?.amount) - amountConversion(auction?.inflowTokenCurrentAmount?.amount) || 0);
     setBidAmount(value);
   };
 
