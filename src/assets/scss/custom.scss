@@ -1627,3 +1627,8 @@ button {
 .display-center {
   justify-content: center;
 }
+
+.alert-label{
+   color: $error-color;
+    font-size: 12px;
+}

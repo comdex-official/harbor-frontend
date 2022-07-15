@@ -113,8 +113,8 @@ const PlaceBidModal = ({
 
     setValidationError(
       ValidateInputNumber(
-        getAmount(value),
-        getDenomBalance(balances, auction?.outflowTokenInitAmount?.denom) || 0
+        value,
+        amountConversion(auction?.inflowTokenTargetAmount?.amount) - amountConversion(auction?.inflowTokenCurrentAmount?.amount) || 0
       )
     );
     setBidAmount(value);
@@ -166,9 +166,9 @@ const PlaceBidModal = ({
                 {commaSeparator(
                   Number(
                     amountConversionWithComma(
-                      decimalConversion(auction?.outflowTokenInitialPrice) || 0
+                      decimalConversion(auction?.outflowTokenInitialPrice) || 0, 4
                     ) || 0
-                  ).toFixed(DOLLAR_DECIMALS)
+                  )
                 )}</label>
             </Col>
           </Row>
@@ -182,9 +182,9 @@ const PlaceBidModal = ({
                 {commaSeparator(
                   Number(
                     amountConversionWithComma(
-                      decimalConversion(auction?.outflowTokenCurrentPrice) || 0
+                      decimalConversion(auction?.outflowTokenCurrentPrice) || 0, 4
                     ) || 0
-                  ).toFixed(DOLLAR_DECIMALS)
+                  )
                 )}
               </label>
             </Col>
@@ -211,7 +211,7 @@ const PlaceBidModal = ({
               <label>
                 {commaSeparator(
                   amountConversion(auction?.inflowTokenTargetAmount?.amount) - amountConversion(auction?.inflowTokenCurrentAmount?.amount) || 0
-                )} {denomConversion(auction?.outflowTokenCurrentAmount?.denom)}
+                )} {denomConversion(auction?.inflowTokenCurrentAmount?.denom)}
               </label>
             </Col>
           </Row>
@@ -238,6 +238,7 @@ const PlaceBidModal = ({
               <CustomInput
                 value={bidAmount}
                 onChange={(event) => handleChange(event.target.value)}
+                validationError={validationError}
               />
               <label><div className="input-denom">{denomConversion(auction?.inflowTokenCurrentAmount?.denom)}</div></label>
 
@@ -263,7 +264,7 @@ const PlaceBidModal = ({
                 className="btn-filled px-5"
                 size="large"
                 loading={inProgress}
-                disabled={!Number(bidAmount) || !Number(maxPrice)}
+                disabled={!Number(bidAmount) || !Number(maxPrice) || validationError?.message}
                 onClick={handleClick}
               >
                 Place Bid
