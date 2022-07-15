@@ -94,10 +94,10 @@ const Govern = ({
     // formula = ((currentTime - start time)/duration )*100
     let start = Number(startTime)
     let totalDuration = Number(duration)
-    // let currentTime = moment().format("hh:mm:ss")
-    let currentTime = Number(moment().format('x'))
-    console.log(start, "start Time");
-    console.log(currentTime, "currentTime");
+    let currentTime = moment().format("hh:mm:ss")
+    // let currentTime = Number(moment().format('x'))
+    // console.log(start, "start Time");
+    // console.log(currentTime, "currentTime");
     // Calculating current time in sec 
     let currentTimeInseconds = new Date(moment(currentTime, "hh:mm")).getTime()
     // ***convertimg from milisec to sec*** 
@@ -113,11 +113,11 @@ const Govern = ({
     startTimeInSec = startTimeInSec / 1000
 
     // Calculating percentage 
-    // let percentage = ((currentTimeInseconds - startTimeInSec) / totalDuration) * 100
-    let percentage = ((currentTime - start) / totalDuration) * 100
+    let percentage = ((currentTimeInseconds - startTimeInSec) / totalDuration) * 100
+    // let percentage = ((currentTime - start) / totalDuration) * 100
     percentage = Number(percentage).toFixed(2)
     percentage = Math.abs(percentage)
-    console.log(percentage, "Percentage");
+    // console.log(percentage, "Percentage");
     return percentage;
   }
   const navigate = useNavigate();
