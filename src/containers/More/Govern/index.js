@@ -90,7 +90,7 @@ const Govern = ({
     return duration;
 
   }
-  const calculateDurationPercentage = (startTime, duration, endTime) => {
+  const calculateDurationPercentage = (startTime, duration) => {
     // formula = ((currentTime - start time)/duration )*100
     let start = Number(startTime)
     let totalDuration = Number(duration)
@@ -200,7 +200,7 @@ const Govern = ({
                           </Row>
                           <Row>
                             <Col>
-                              <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time, item?.expires?.at_time)} size="small" />
+                              <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time)} size="small" />
                             </Col>
                           </Row>
                         </div>
