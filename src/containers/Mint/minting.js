@@ -17,11 +17,11 @@ import {
   setCurrentPairID,
   setSelectedExtentedPairvault,
 } from "../../actions/locker";
-import { amountConversion, amountConversionWithComma } from "../../utils/coin";
+import { amountConversionWithComma } from "../../utils/coin";
 import NoData from "../../components/NoData";
-import { queryAssets, queryExtendedPairVaultById } from "../../services/asset/query";
+import { queryAssets, queryExtendedPairVaultById, queryPair } from "../../services/asset/query";
 import { decimalConversion } from "../../utils/number";
-import { queryMintedTokenSpecificVaultType } from "../../services/vault/query";
+import { queryVaultMintedStatistic } from "../../services/vault/query";
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
@@ -36,7 +36,8 @@ const Minting = ({ address }) => {
 
   const [loading, setLoading] = useState(false);
   const [vaultDebt, setVaultDebt] = useState([])
-  let filteredVault;
+  const [pairId, setpairId] = useState({})
+
   const navigateToMint = (path) => {
     navigate({
       pathname: `/vault/${path}`,
@@ -56,8 +57,9 @@ const Minting = ({ address }) => {
 
   useEffect(() => {
     if (extenedPairVaultList?.length > 0) {
-      fetchMintedTokenSpecificVaultType(PRODUCT_ID, 1);
+      fetchVaultMintedTokenStatistic(PRODUCT_ID)
     }
+
   }, [address, extenedPairVaultList])
 
   const fetchExtendexPairList = (productId) => {
@@ -72,15 +74,15 @@ const Minting = ({ address }) => {
     });
   };
 
-  const fetchMintedTokenSpecificVaultType = (productId, extendexPairId) => {
+  const fetchVaultMintedTokenStatistic = (productId) => {
     setLoading(true);
-    queryMintedTokenSpecificVaultType(productId, extendexPairId, (error, data) => {
+    queryVaultMintedStatistic(productId, (error, data) => {
       setLoading(false);
       if (error) {
         message.error(error);
         return;
       }
-      setVaultDebt((vaultDebt) => [...vaultDebt, data?.tokenMinted])
+      setVaultDebt((vaultDebt) => [...vaultDebt, data?.pairStatisticData])
     });
   };
 
@@ -95,9 +97,24 @@ const Minting = ({ address }) => {
       dispatch(setAssetList(data.assets))
     });
   };
+  const fetchAssetIdFromPairID = (pairId, extendexPairId) => {
+    setLoading(true)
+    queryPair(pairId, (error, data) => {
+      setLoading(false)
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setpairId((prevState) => ({
+        [extendexPairId]: data?.pairInfo?.assetIn?.low,
+        ...prevState,
+      }));
 
-  const getAsssetIcon = (pairID) => {
-    const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.id).toNumber() === pairID);
+    });
+  };
+
+  const getAsssetIcon = (assetId) => {
+    const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.id).toNumber() === assetId);
 
     return selectedItem[0]?.denom || ""
   }
@@ -105,23 +122,20 @@ const Minting = ({ address }) => {
   useEffect(() => {
     if (extenedPairVaultList?.length > 0) {
       extenedPairVaultList.map((item, index) => {
-        fetchMintedTokenSpecificVaultType(PRODUCT_ID, item?.id?.low)
+        fetchAssetIdFromPairID(item?.pairId?.low, item?.id?.low)
       })
     }
   }, [extenedPairVaultList])
 
-  const filterUniqVaultDebt = (vaultDebt) => {
-    return Array.from(new Set(vaultDebt));
-  }
+  useEffect(() => {
+    setVaultDebt([])
+    setpairId({});
+  }, [])
 
-  if (vaultDebt?.length > 1) {
-    filteredVault = filterUniqVaultDebt(vaultDebt)
-  }
 
   if (loading) {
     return <Spin />;
   }
-
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       <div className="card-main-container">
@@ -130,14 +144,14 @@ const Minting = ({ address }) => {
           extenedPairVaultList?.map((item, index) => {
             if (
               item &&
-              !item.isPsmPair &&
-              item.appMappingId.low === PRODUCT_ID
+              !item.isStableMintVault &&
+              item.appId.low === PRODUCT_ID
             ) {
               return (
                 <React.Fragment key={index}>
                   {item &&
-                    !item.isPsmPair &&
-                    item.appMappingId.low === PRODUCT_ID && (
+                    !item.isStableMintVault &&
+                    item.appId.low === PRODUCT_ID && (
                       <div
                         className="card-container "
                         onClick={() => {
@@ -148,7 +162,7 @@ const Minting = ({ address }) => {
                       >
                         <div className="up-container">
                           <div className="icon-container">
-                            <SvgIcon name={iconNameFromDenom(getAsssetIcon(1))} />
+                            <SvgIcon name={iconNameFromDenom(getAsssetIcon(pairId[item?.id?.low]))} />
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{item?.pairName}</div>
@@ -194,10 +208,10 @@ const Minting = ({ address }) => {
 
                           <div className="contenet-container">
                             <div className="name">
-                              Vault’s Global Debt <TooltipIcon text="If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt" />
+                              Vault’s Global Debt <TooltipIcon text="The total $CMST Debt of the protocol against this vault type" />
                             </div>
                             <div className="value">
-                              {filteredVault ? amountConversionWithComma(filteredVault[item?.id?.low - 1]) : "0.000000"} CMST
+                              {vaultDebt.length > 0 ? amountConversionWithComma(vaultDebt[0] && vaultDebt[0][index]?.collateralAmount ? vaultDebt[0] && vaultDebt[0][index]?.collateralAmount : 0.000000) : "0.000000"} CMST
                             </div>
                           </div>
 

@@ -6,11 +6,12 @@ import { Button, List, Select, Progress, Spin } from "antd";
 import "./index.scss";
 import { fetchProposalUpData, totalProposal } from "../../../services/contractsRead";
 import React, { useEffect } from "react";
-import { PRODUCT_ID } from '../../../constants/common';
+import { DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
 import moment from "moment";
 import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 import { useState } from "react";
 import NoData from "../../../components/NoData";
+import { amountConversionWithComma } from "../../../utils/coin";
 
 const { Option } = Select;
 
@@ -69,7 +70,8 @@ const Govern = ({
   const data = [
     {
       title: "Total Supply",
-      counts: proposalUpData ? (proposalUpData?.current_supply) / 1000000 + " HARBOR" : "-"
+      counts: proposalUpData ? amountConversionWithComma(proposalUpData?.current_supply, DOLLAR_DECIMALS) + " HARBOR" : "-"
+
     },
     {
       title: "Total Proposals",
@@ -90,26 +92,16 @@ const Govern = ({
   }
   const calculateDurationPercentage = (startTime, duration) => {
     // formula = ((currentTime - start time)/duration )*100
-    let start = startTime
-    let totalDuration = duration
-    let currentTime = moment().format("hh:mm:ss")
-
-    // Calculating current time in sec 
-    let currentTimeInseconds = new Date(moment(currentTime, "hh:mm")).getTime()
-    // ***convertimg from milisec to sec*** 
-    currentTimeInseconds = currentTimeInseconds / 1000
+    let start = Number(startTime)
+    let totalDuration = Number(duration)
+    let currentTime = Math.round((new Date()).getTime() / 1000)
 
     // Calculating start time in sec 
-    // ***Removing miliSec from unix time*** 
+    // ***Removing nanosec from unix time*** 
     start = Math.floor(start / 1000000000);
-    start = moment.unix(start);
-    start = start.format(" hh:mm:ss")
-
-    let startTimeInSec = new Date(moment(start, "hh:mm")).getTime()
-    startTimeInSec = startTimeInSec / 1000
 
     // Calculating percentage 
-    let percentage = ((currentTimeInseconds - startTimeInSec) / totalDuration) * 100
+    let percentage = ((currentTime - start) / totalDuration) * 100
     percentage = Number(percentage).toFixed(2)
     percentage = Math.abs(percentage)
     return percentage;

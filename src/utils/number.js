@@ -28,7 +28,7 @@ export const decimalConversion = (data) => {
   return Decimal.fromAtomics(data, 18).toString();
 };
 
-export const truncateToDecimals=(num, dec = 2) =>{
+export const truncateToDecimals = (num, dec = 2) => {
   const calcDec = Math.pow(10, dec);
   return Math.trunc(num * calcDec) / calcDec;
 }
@@ -36,12 +36,18 @@ export const truncateToDecimals=(num, dec = 2) =>{
 export const marketPrice = (array, denom) => {
   const value = array.filter((item) => item.symbol === denomToSymbol(denom));
 
+  if (denom === "uxprt") {
+    return 0.9;
+  }
+  if (denom === "uharbor") {
+    return 0.5;
+  }
+
   if (value && value[0]) {
     return value[0] && value[0].rates / 1000000;
   }
 
-  // return 1; // returning 1 as we are using ust.
-  return CMDX_PRICE; // returning 1 as we are using ust.
+  return 1; // returning 1 as we are using ust.
 };
 
 export const calculateROI = (principal, interestRate, years, months, days) => {

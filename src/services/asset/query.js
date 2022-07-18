@@ -80,8 +80,8 @@ export const queryExtendedPairVaultById = (productId, callback) => {
       return;
     }
     new QueryClientImpl(rpcClient)
-      .QueryProductToExtendedPair({
-        productId: Long.fromNumber(productId),
+      .QueryAllExtendedPairVaultsByApp({
+        appId: Long.fromNumber(productId),
       })
       .then((result) => {
         callback(null, result);
@@ -98,9 +98,8 @@ export const queryPairVault = (pairId, callback) => {
       callback(error);
       return;
     }
-
     new QueryClientImpl(rpcClient)
-      .QueryPairVault({
+      .QueryExtendedPairVault({
         id: Long.fromNumber(pairId),
       })
       .then((result) => {
@@ -120,8 +119,8 @@ export const queryPairVaults = (callback) => {
     }
 
     new QueryClientImpl(rpcClient)
-      .QueryProductToExtendedPair({
-        productId: Long.fromNumber(1),
+      .QueryAllExtendedPairVaultsByApp({
+        appId: Long.fromNumber(1),
       })
       .then((result) => {
         callback(null, result);
@@ -140,14 +139,14 @@ export const queryAsset = (id, callback) => {
     }
 
     new QueryClientImpl(rpcClient)
-        .QueryAsset({
-          id: Long.fromNumber(id),
-        })
-        .then((result) => {
-          callback(null, result);
-        })
-        .catch((error) => {
-          callback(error?.message);
-        });
+      .QueryAsset({
+        id: Long.fromNumber(id),
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
   });
 };

@@ -20,12 +20,16 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
   const [harborCurrentSypply, setHarborCurrentSupply] = useState();
+  const [cmstCurrentSupply, setCmstCurrentSupply] = useState();
+  const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
 
   useEffect(() => {
-    fetchTVL();
-    // fetchTotalTokenMinted();
-    fetchAllProposalUpData(PRODUCT_ID)
-  }, []);
+    if (markets.length > 0) {
+      fetchTVL();
+    }
+    fetchTotalTokenMinted(PRODUCT_ID);
+    fetchAllProposalUpData(PRODUCT_ID);
+  }, [markets]);
 
   const fetchTVL = () => {
     queryAppTVL(PRODUCT_ID, (error, result) => {
@@ -61,26 +65,24 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
             return [item.assetDenom, item];
           })
         );
-
         setTotalValueLocked(totalValue);
         setTotalDollarValue(total);
       }
     });
   };
 
-  // Todo: Update cmst circulating supply
   const fetchTotalTokenMinted = () => {
     queryTotalTokenMinted(PRODUCT_ID, (error, result) => {
       if (error) {
         message.error(error);
         return;
       }
+      setCmstCurrentSupply(result?.mintedData)
     })
   }
   const fetchAllProposalUpData = (productId) => {
     fetchProposalUpData(productId).then((res) => {
       setHarborCurrentSupply(res?.current_supply)
-
     }).catch((err) => {
       message.error(err);
     })
@@ -99,6 +101,17 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
 `;
   };
 
+  useEffect(() => {
+    calculatedCmstCurrentSupply()
+  }, [cmstCurrentSupply])
+
+  const calculatedCmstCurrentSupply = () => {
+    let totalMintedAmount = 0;
+    cmstCurrentSupply && cmstCurrentSupply.map((item) => {
+      totalMintedAmount = totalMintedAmount + Number(item?.mintedAmount);
+    })
+    setCalculatedCMSTSupply(totalMintedAmount);
+  }
   const Options = {
     chart: {
       type: "pie",
@@ -299,6 +312,13 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     marketCap = commaSeparator(marketCap)
     return marketCap || 0;
   }
+  const cmstMarketCap = () => {
+    let supply = Number(amountConversion(calculatedCMSTSupply, DOLLAR_DECIMALS));
+    let price = Number(marketPrice(markets, cmst?.coinMinimalDenom))
+    let marketCap = supply * price;
+    marketCap = commaSeparator(marketCap)
+    return marketCap || 0;
+  }
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>
@@ -366,7 +386,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                     />
                   </small>
                   <p>
-                    12,500,000 <span>CMST</span>
+                    {calculatedCMSTSupply ? amountConversionWithComma(calculatedCMSTSupply, DOLLAR_DECIMALS) : "00.00"}<span> CMST</span>
                   </p>
                 </div>
                 <div className="col3">
@@ -374,7 +394,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                     Market Cap{" "}
                     <TooltipIcon text={variables[lang].tooltip_market_cap} />
                   </small>
-                  <p>$12,500,000</p>
+                  <p>${calculatedCMSTSupply ? cmstMarketCap() : "0.00"}</p>
                 </div>
               </div>
               <div className="right-chart">

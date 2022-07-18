@@ -82,7 +82,6 @@ const Edit = ({
   const estimatedLiquidationPrice = useSelector(
     (state) => state.locker.estimatedLiquidationPrice,
   );
-
   useEffect(() => {
     fetchQueryPairValut(pathVaultId);
   }, [address]);
@@ -286,7 +285,7 @@ const Edit = ({
           typeUrl: getTypeURL(editType),
           value: {
             from: address,
-            appMappingId: Long.fromNumber(PRODUCT_ID),
+            appId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(
               selectedExtentedPairVaultListData[0]?.id?.low
             ),
@@ -328,7 +327,10 @@ const Edit = ({
     );
     let currentBorrowed = Number(amountConversion(currentDebt));
     let maxRepay = currentBorrowed + interestAccumulated - debtFloor;
-    maxRepay = truncateToDecimals(maxRepay, 6)
+    maxRepay = truncateToDecimals(maxRepay, 6);
+    if (maxRepay < 0) {
+      maxRepay = "0";
+    }
     return maxRepay;
   };
 
@@ -358,7 +360,7 @@ const Edit = ({
     const collateral = amountConversion(currentCollateral);
     const borrowed = amountConversion(currentDebt);
     const liquidationRatio =
-      selectedExtendedPairVaultListData?.liquidationRatio;
+      selectedExtendedPairVaultListData?.minCr;
 
     setEstimatedLiquidationPrice(
       decimalConversion(liquidationRatio) *
@@ -468,7 +470,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                   </div>
                 </div>
-                <h2>{withdrawableCollateral() || "-"} {denomToSymbol(pair && pair?.denomIn)}</h2>
+                <h2>{withdrawableCollateral() || "0"} {denomToSymbol(pair && pair?.denomIn)}</h2>
               </div>
             </div>
             <div className="borrowedithead-colum">
@@ -479,7 +481,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom("ucmst")} />
                   </div>
                 </div>
-                <h2>{availableToBorrow() || "-"} {denomToSymbol(pair && pair?.denomOut)}</h2>
+                <h2>{availableToBorrow() || "0"} {denomToSymbol(pair && pair?.denomOut)}</h2>
               </div>
             </div>
           </div>
@@ -491,7 +493,7 @@ const Edit = ({
                     Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                   </label>
                   {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
-                    <span className="available">Avl.</span>  {formatNumber(amountConversion(collateralAssetBalance))} {denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span>  {formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
 
@@ -526,7 +528,7 @@ const Edit = ({
                   {showWithdrawMax && <span className="ml-1" onClick={() => {
                     getWithdrawMax()
                   }}>
-                    <span className="available">Avl.</span>   {formatNumber(withdrawableCollateral())} {denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span>   {formatNumber(Number(withdrawableCollateral()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
                 <CustomInput
@@ -557,7 +559,7 @@ const Edit = ({
                     Draw <TooltipIcon text="Borrow more CMST from your deposited collateral" />
                   </label>
                   {showDrawMax && <span className="ml-1" onClick={getDrawMax}>
-                    <span className="available">Avl.</span>   {formatNumber(availableToBorrow())} {denomToSymbol(pair && pair?.denomOut)}
+                    <span className="available">Avl.</span>   {formatNumber(Number(availableToBorrow()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
                   </span>}
                 </div>
                 <CustomInput
@@ -588,7 +590,7 @@ const Edit = ({
                     Repay <TooltipIcon text="Partially repay your borrowed cAsset" />
                   </label>
                   {showRepayMax && <span className="ml-1" onClick={getRepayMax}>
-                    <span className="available">Avl.</span>   {formatNumber(getMaxRepay())} {denomToSymbol(pair && pair?.denomOut)}
+                    <span className="available">Avl.</span>   {formatNumber(Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
                   </span>}
                 </div>
                 <CustomInput

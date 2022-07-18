@@ -87,7 +87,6 @@ const ConnectButton = ({
       if (error) {
         return;
       }
-
       setAccountBalances(result.balances, result.pagination);
       calculateAssetBalance(result.balances);
       calculatecAssetBalance(result.balances);

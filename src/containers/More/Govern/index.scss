@@ -82,7 +82,6 @@
 
         label {
           .dark-mode & {
-            color: $text-color-light;
           }
         }
 
@@ -91,7 +90,6 @@
           font-size: 17px;
 
           .dark-mode & {
-            color: $text-color-light;
           }
         }
       }
@@ -101,8 +99,6 @@
 .ant-select-dropdown {
   background: $secondary-color !important;
 }
-
-
 
 .spinner {
   width: 100%;

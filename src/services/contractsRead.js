@@ -25,9 +25,9 @@ export const fetchSpecificProposalData = async (proposalId) => {
     const config = await client.queryContractSmart(contractAddress, { "proposal": { "proposal_id": proposalId } });
     return await config;
 }
-export const fetchProposalUpData = async (proposalId) => {
+export const fetchProposalUpData = async (productId) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
-    const config = await client.queryContractSmart(contractAddress, { "app_all_up_data": { "app_id": proposalId } });
+    const config = await client.queryContractSmart(contractAddress, { "app_all_up_data": { "app_id": productId } });
     return await config;
 }
 export const checkUserVote = async (proposalId, address) => {

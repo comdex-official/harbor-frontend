@@ -73,7 +73,7 @@ const DebtAuctions = ({ setPairs, address }) => {
         message.error(error);
         return;
       }
-      
+
       if (result?.auctions?.length > 0) {
         setAuctions(result && result.auctions);
       }
@@ -165,51 +165,51 @@ const DebtAuctions = ({ setPairs, address }) => {
   const tableData =
     auctions && auctions.length > 0
       ? auctions.map((item, index) => {
-          return {
-            key: index,
-            id: item.id,
-            auctioned_asset: (
-              <>
-                <div className="assets-withicon display-center">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(item?.expectedUserToken?.denom)}
-                    />
-                  </div>
-                  {denomConversion(item?.expectedUserToken?.denom)}
+        return {
+          key: index,
+          id: item.id,
+          auctioned_asset: (
+            <>
+              <div className="assets-withicon display-center">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                  />
                 </div>
-              </>
-            ),
-            payable_token: (
-              <>
-                <div className="assets-withicon">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(item?.auctionedToken?.denom)}
-                    />
-                  </div>
-                  {denomConversion(item?.auctionedToken?.denom)}
+                {denomConversion(item?.expectedUserToken?.denom)}
+              </div>
+            </>
+          ),
+          payable_token: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(item?.auctionedToken?.denom)}
+                  />
                 </div>
-              </>
-            ),
-            quantity: (
-              <>
-                <div className="assets-withicon display-center">
-                  <div className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(item?.expectedUserToken?.denom)}
-                    />
-                  </div>
-                  {amountConversionWithComma(item?.expectedUserToken?.amount)}
-                  {denomConversion(item?.expectedUserToken?.denom)}
+                {denomConversion(item?.auctionedToken?.denom)}
+              </div>
+            </>
+          ),
+          quantity: (
+            <>
+              <div className="assets-withicon display-center">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                  />
                 </div>
-              </>
-            ),
-            end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
-            max_bid: item?.expectedMintedToken,
-            action: item,
-          };
-        })
+                {amountConversionWithComma(item?.expectedUserToken?.amount)}
+                {denomConversion(item?.expectedUserToken?.denom)}
+              </div>
+            </>
+          ),
+          end_time: moment(item && item.endTime).format("MMM DD, YYYY HH:mm"),
+          max_bid: item?.expectedMintedToken,
+          action: item,
+        };
+      })
       : [];
 
   return (
@@ -236,7 +236,7 @@ const DebtAuctions = ({ setPairs, address }) => {
             </div>
           </div>
           <div className="more-bottom">
-            <h3 className="title">Your Bidding</h3>
+            <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
               <Bidding biddingList={biddings} />
             </div>

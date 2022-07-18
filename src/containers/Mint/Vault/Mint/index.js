@@ -74,7 +74,7 @@ const Mint = ({
 
   const getLiquidationPrice = () => {
     // formula = ((Liquidiation Ratio) * (Composite already minted + Composite to be minted) )/ (Quantity of Asset Locked + Quantity of Asset to be Locked)
-    let liquidationRatio = Number(decimalConversion(selectedExtentedPairVaultListData[0]?.liquidationRatio)) // no converting into %
+    let liquidationRatio = Number(decimalConversion(selectedExtentedPairVaultListData[0]?.minCr)) // no converting into %
     let mintedCMST = 0;
     let currentAmountOut = Number(outAmount);
     let lockedAmountOut = 0;
@@ -230,7 +230,7 @@ const Mint = ({
           typeUrl: getTypeURL("create"),
           value: {
             from: address,
-            appMappingId: Long.fromNumber(PRODUCT_ID),
+            appId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(pathVaultId),
             amountIn: getAmount(inAmount),
             amountOut: getAmount(outAmount),
@@ -345,7 +345,7 @@ const Mint = ({
           <div className="assets-select-card">
             <div className="assets-left">
               <label className="leftlabel">
-                Deposit  <TooltipIcon />
+                Deposit  <TooltipIcon text="Asset that will be locked as collateral in the vault" />
               </label>
               <div className="assets-select-wrapper">
                 {/* Icon Container Start  */}
@@ -395,7 +395,7 @@ const Mint = ({
           <div className="assets-select-card mt-4">
             <div className="assets-left">
               <label className="leftlabel">
-                Withdraw <TooltipIcon />
+                Withdraw <TooltipIcon text="CMST being borrowed from the vault based on the collateral value" />
               </label>
               <div className="assets-select-wrapper">
                 {/* Icon Container Start  */}

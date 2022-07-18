@@ -6,29 +6,60 @@ import "./index.scss";
 import TooltipIcon from "../../components/TooltipIcon";
 import { queryUserLockerHistory } from "../../services/locker/query";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
   PRODUCT_ID,
 } from "../../constants/common";
 import { amountConversion } from "../../utils/coin";
+import { setAssetList } from '../../actions/asset';
 import moment from "moment";
+import { queryAssets } from '../../services/asset/query';
 
 const MyEarn = ({ address }) => {
+  const dispatch = useDispatch();
+  const assetList = useSelector((state) => state.asset?.assetList);
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [lockers, setLockers] = useState();
   const [inProgress, setInProgress] = useState(false);
+  const [cmstAssetId, setCmstAssetId] = useState();
 
   useEffect(() => {
-    if (address) {
-      fetchLockers((pageNumber - 1) * pageSize, pageSize, true, false);
+    if (address && cmstAssetId) {
+      fetchLockers(cmstAssetId, (pageNumber - 1) * pageSize, pageSize, true, false);
     }
-  }, [address]);
+  }, [address, cmstAssetId]);
 
-  const fetchLockers = (offset, limit, isTotal, isReverse) => {
+  useEffect(() => {
+    fetchAssets(
+      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+      DEFAULT_PAGE_SIZE,
+      true,
+      false
+    );
+
+  }, [address])
+
+  useEffect(() => {
+    getCMSTAsssetId()
+  }, [assetList])
+
+  const fetchAssets = (offset, limit, countTotal, reverse) => {
+    queryAssets(offset, limit, countTotal, reverse, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      dispatch(setAssetList(data.assets))
+    });
+  };
+
+  const fetchLockers = (assetId, offset, limit, isTotal, isReverse) => {
     setInProgress(true);
     queryUserLockerHistory(
+      assetId,
       PRODUCT_ID,
       address,
       offset,
@@ -36,17 +67,21 @@ const MyEarn = ({ address }) => {
       isTotal,
       isReverse,
       (error, result) => {
-        setInProgress(false);
         if (error) {
           message.error(error);
           return;
         }
         let reverseData = [...result?.userTxData].reverse()
         setLockers(reverseData || []);
+        setInProgress(false);
       }
     );
   };
 
+  const getCMSTAsssetId = () => {
+    const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.denom) === "ucmst");
+    setCmstAssetId(selectedItem[0]?.id?.low || "")
+  }
   const handleChange = (value) => {
     setPageNumber(value.current - 1);
     setPageSize(value.pageSize);
@@ -97,9 +132,9 @@ const MyEarn = ({ address }) => {
   const tableData =
     lockers &&
     lockers?.length > 0 &&
-    lockers?.map((item) => {
+    lockers?.map((item, index) => {
       return {
-        key: 1,
+        key: index,
         amount: (
           <>
             <div className="assets-withicon">

@@ -158,6 +158,8 @@
   visibility: visible;
   margin-bottom: 4px;
   width: 100%;
+  .dark-mode & {
+  }
 }
 
 .alert-hidden {

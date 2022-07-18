@@ -40,10 +40,14 @@ const CollateralAuctions = ({ setPairs, address }) => {
     queryParams();
   }, [address]);
 
-  const fetchData = () => {
+  useEffect(() => {
     fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
+  }, [address, auctions])
+
+  const fetchData = () => {
     fetchBiddings(address);
   };
+
 
   const queryParams = () => {
     queryAuctionParams((error, result) => {
@@ -67,14 +71,12 @@ const CollateralAuctions = ({ setPairs, address }) => {
   };
 
   const fetchAuctions = (offset, limit, isTotal, isReverse) => {
-    setInProgress(true);
     queryDutchAuctionList(
       offset,
       limit,
       isTotal,
       isReverse,
       (error, result) => {
-        setInProgress(false);
 
         if (error) {
           message.error(error);
@@ -99,7 +101,8 @@ const CollateralAuctions = ({ setPairs, address }) => {
       }
 
       if (result?.biddings?.length > 0) {
-        setBiddings(result && result.biddings);
+        let reverseData = (result && result.biddings).reverse();
+        setBiddings(reverseData);
       }
     });
   };
@@ -169,7 +172,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
     },
   ];
 
-  
+
   const tableData =
     auctions && auctions.length > 0
       ? auctions.map((item, index) => {
@@ -241,10 +244,11 @@ const CollateralAuctions = ({ setPairs, address }) => {
               />
             </div>
           </div>
+
           <div className="more-bottom">
-            <h3 className="title">Your Bidding</h3>
+            <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
-              <Bidding biddingList={biddings} />
+              <Bidding biddingList={biddings} inProgress={inProgress} />
             </div>
           </div>
         </Col>
