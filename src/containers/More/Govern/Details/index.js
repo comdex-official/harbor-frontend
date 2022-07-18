@@ -64,7 +64,7 @@ const GovernDetails = ({
     if (currentProposalId && address) {
       fetchUserVote(currentProposalId, address)
     }
-  }, [address])
+  }, [address, currentProposal])
 
 
   useEffect(() => {
@@ -215,7 +215,7 @@ const GovernDetails = ({
   };
 
   const getUserVote = (vote) => {
-    if (vote == "veto") {
+    if (vote === "veto") {
       return "No with veto"
     }
     else {
@@ -289,12 +289,17 @@ const GovernDetails = ({
           <div className="composite-card govern-card2 earn-deposite-card">
             <Row>
               {/* Remove this col to add user vote and unComment user-vote-container */}
-              <Col className="text-right">
-                {/* <div className="user-vote-container"> */}
-                {/* <div>User Vote : </div> */}
-                <VoteNowModal />
-                {/* </div> */}
-              </Col>
+              {userVote ?
+                <Col className="text-right">
+                  <div className="user-vote-container">
+                    {userVote && <div>Your Vote : <span className="vote_msg"> {getUserVote(userVote?.vote)} </span>  </div>}
+                    <VoteNowModal />
+                  </div>
+                </Col> :
+                <Col className="text-right">
+                  <VoteNowModal />
+                </Col>
+              }
             </Row>
             <Row>
               <Col>
