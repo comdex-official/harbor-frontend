@@ -163,8 +163,8 @@ export const embedChainInfo = [
       "https://test-core-1.explorer.persistence.one/transactions/{txHash}",
   },
   {
-    rpc: "https://rpc.osmo-test.ccvalidators.com",
-    rest: "https://lcd.osmo-test.ccvalidators.com",
+    rpc: "https://osmosis-testnet.rpc.zenscape.one/",
+    rest: "https://osmosis-testnet.rest.zenscape.one/",
     chainId: "osmo-test-4",
     chainName: "Osmosis-Test",
     stakeCurrency: {
