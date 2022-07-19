@@ -288,8 +288,7 @@ const GovernDetails = ({
         <Col md="6">
           <div className="composite-card govern-card2 earn-deposite-card">
             <Row>
-              {/* Remove this col to add user vote and unComment user-vote-container */}
-              {userVote ?
+              {userVote !== null ?
                 <Col className="text-right">
                   <div className="user-vote-container">
                     {userVote && <div>Your Vote : <span className="vote_msg"> {getUserVote(userVote?.vote)} </span>  </div>}
