@@ -132,8 +132,8 @@ const Withdraw = ({
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo[0]?.lockerId;
-  const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated);
-  const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo[0]?.netBalance);
+  const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated || 0);
+  const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo[0]?.netBalance || 0);
 
   const fetchOwnerLockerExistByAssetId = (
     productId = PRODUCT_ID,
@@ -231,7 +231,6 @@ const Withdraw = ({
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
                   <div className="stats-value">
-                    {/* {amountConversionWithComma(userLockedAmountInLocker)}{" "} */}
                     {userBalanceInLocker}
                     {denomConversion("ucmst")}
                   </div>
