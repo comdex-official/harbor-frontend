@@ -1,4 +1,4 @@
-import { List } from "antd";
+import { List, message } from "antd";
 import * as PropTypes from "prop-types";
 import { connect, useSelector } from "react-redux";
 import {
@@ -11,8 +11,10 @@ import { DOLLAR_DECIMALS } from "../../../../../constants/common";
 import { cmst, comdex } from "../../../../../config/network";
 import { SvgIcon } from "../../../../../components/common";
 import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
-
-const PricePool = ({ ownerVaultInfo, markets, pair, ownerCurrrentCollateral }) => {
+import { queryUserVaultsInfo } from "../../../../../services/vault/query";
+import { setOwnerCurrentCollateral } from "../../../../../actions/mint";
+import { useEffect } from "react";
+const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, ownerCurrrentCollateral }) => {
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
   );
@@ -31,6 +33,25 @@ const PricePool = ({ ownerVaultInfo, markets, pair, ownerCurrrentCollateral }) =
 
   const liquidationPrice =
     decimalConversion(liquidationRatio) * (borrowed / collateral);
+
+  useEffect(() => {
+    if (ownerVaultInfo?.id) {
+      getOwnerVaultInfo(ownerVaultInfo?.id)
+    }
+  }, [])
+
+  const getOwnerVaultInfo = (ownerVaultId) => {
+    queryUserVaultsInfo(ownerVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log(data, "data");
+      let ownerCollateral = decimalConversion(data?.vaultsInfo?.collateralizationRatio) * 100
+      ownerCollateral = Number(ownerCollateral).toFixed(DOLLAR_DECIMALS)
+      setOwnerCurrentCollateral(ownerCollateral)
+    });
+  };
 
   const data = [
     {
@@ -161,7 +182,9 @@ const stateToProps = (state) => {
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
   };
 };
-
-export default connect(stateToProps)(PricePool);
+const actionsToProps = {
+  setOwnerCurrentCollateral,
+};
+export default connect(stateToProps, actionsToProps)(PricePool);
 
 
