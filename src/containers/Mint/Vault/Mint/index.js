@@ -353,8 +353,8 @@ const Mint = ({
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        <SvgIcon name={!loading ? iconNameFromDenom(pair && pair?.denomIn) : ""} />{" "}
-                        <span> {!loading ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}</span>
+                        <SvgIcon name={pair && pair.denomIn ? iconNameFromDenom(pair && pair?.denomIn) : ""} />
+                        <span> {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}</span>
                       </div>
                     </div>
                   </div>
