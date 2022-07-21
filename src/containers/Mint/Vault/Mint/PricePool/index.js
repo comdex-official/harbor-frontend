@@ -46,7 +46,6 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
         message.error(error);
         return;
       }
-      console.log(data, "data");
       let ownerCollateral = decimalConversion(data?.vaultsInfo?.collateralizationRatio) * 100
       ownerCollateral = Number(ownerCollateral).toFixed(DOLLAR_DECIMALS)
       setOwnerCurrentCollateral(ownerCollateral)
