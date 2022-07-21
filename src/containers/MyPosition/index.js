@@ -32,11 +32,16 @@ const MyPositions = ({ address, balances }) => {
 
   useEffect(() => {
     if (address) {
-      fetchLockerStats();
       fetchCollectorStats();
       fetchVaultStats();
     }
   }, [address]);
+
+  useEffect(() => {
+    if (address) {
+      fetchLockerStats();
+    }
+  }, [address, lockerInfo]);
 
   const fetchCollectorStats = () => {
     queryCollectorInformation((error, result) => {
@@ -135,11 +140,8 @@ const MyPositions = ({ address, balances }) => {
           {historyTab && (
             <div className="stats-values">
               {/* Locker Balance */}
-              <h3>
-                {amountConversionWithComma(
-                  getDenomBalance(balances, cmst?.coinMinimalDenom) || 0, DOLLAR_DECIMALS
-                )}
-              </h3>
+              <h3>{amountConversionWithComma(lockerInfo?.netBalance || 0, DOLLAR_DECIMALS)}</h3>
+
               <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
@@ -175,7 +177,7 @@ const MyPositions = ({ address, balances }) => {
             <div className="stats-values">
               {/* Total interest Earned */}
               <h3>
-                {amountConversionWithComma(lockerInfo?.returnsAccumulated || 0, DOLLAR_DECIMALS)}
+                {amountConversionWithComma(lockerInfo?.returnsAccumulated || 0)}
               </h3>
               <span>CMST</span>
             </div>
