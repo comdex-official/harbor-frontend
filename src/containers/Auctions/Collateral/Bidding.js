@@ -38,7 +38,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
     {
       title: (
         <>
-          Auction Status <TooltipIcon text="Auction status" />
+          Auction Status <TooltipIcon text="Status of auctions" />
         </>
       ),
       dataIndex: "auctionStatus",
@@ -48,7 +48,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
     {
       title: (
         <>
-          Bidding Status <TooltipIcon text="Bidding status" />
+          Bidding Status <TooltipIcon text="Bidding status of auctions" />
         </>
       ),
       dataIndex: "action",
