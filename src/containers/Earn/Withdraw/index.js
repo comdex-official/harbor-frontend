@@ -236,7 +236,7 @@ const Withdraw = ({
                   </div>
                 </div>
                 <div className="withdraw-stats">
-                  <div className="stats-title">Interest</div>
+                  <div className="stats-title">Interest Earned</div>
                   <div className="stats-value">
                     {returnsAccumulated || 0}{" "}
                     {denomConversion(whiteListedAssetData[0]?.denom)}{" "}
