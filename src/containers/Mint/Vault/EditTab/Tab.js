@@ -338,29 +338,28 @@ const Edit = ({
       getLiquidationPrice(0, inputAmount);
     }
     if (editType === "withdraw") {
-      getLiquidationPrice(0, -Math.abs(inputAmount));
+      getLiquidationPrice(0, -Math.abs(inputAmount || 0));
     }
     if (editType === "draw") {
       getLiquidationPrice(inputAmount, 0);
     }
     if (editType === "repay") {
-      getLiquidationPrice(-Math.abs(inputAmount), 0);
+      getLiquidationPrice(-Math.abs(inputAmount|| 0), 0);
     }
-  }, [inputAmount]);
+  }, [inputAmount, newCollateralRatio]);
 
   useEffect(() => {
     setCollateralRatio(safeCrRatio);
   }, [safeCrRatio]);
 
   const getLiquidationPrice = (
-    debtToBeBorrowed = 0,
-    collateralToBeTaken = 0
+    debtToBeBorrowed = Number(0),
+    collateralToBeTaken = Number(0)
   ) => {
     const collateral = amountConversion(currentCollateral);
     const borrowed = amountConversion(currentDebt);
     const liquidationRatio =
       selectedExtendedPairVaultListData?.minCr;
-
     setEstimatedLiquidationPrice(
       decimalConversion(liquidationRatio) *
       ((Number(borrowed) + Number(debtToBeBorrowed)) /
