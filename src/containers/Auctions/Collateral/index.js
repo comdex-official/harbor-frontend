@@ -33,7 +33,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
   const [auctions, setAuctions] = useState();
-  const [biddings, setBiddings] = useState();
+  const [biddings, setBiddings] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -47,7 +47,6 @@ const CollateralAuctions = ({ setPairs, address }) => {
   const fetchData = () => {
     fetchBiddings(address);
   };
-
 
   const queryParams = () => {
     queryAuctionParams((error, result) => {
@@ -86,6 +85,9 @@ const CollateralAuctions = ({ setPairs, address }) => {
         if (result?.auctions?.length > 0) {
           setAuctions(result && result.auctions);
         }
+        else{
+          setAuctions("");
+        }
       }
     );
   };
@@ -103,6 +105,8 @@ const CollateralAuctions = ({ setPairs, address }) => {
       if (result?.biddings?.length > 0) {
         let reverseData = (result && result.biddings).reverse();
         setBiddings(reverseData);
+      } else {
+        setBiddings("");
       }
     });
   };
