@@ -15,7 +15,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
       ),
       dataIndex: "inflowToken",
       key: "inflowToken",
-      width: 250,
+      width: 200,
     },
     {
       title: (
@@ -44,6 +44,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
       dataIndex: "auctionStatus",
       key: "auctionStatus",
       align: "center",
+      width: 150,
     },
     {
       title: (
@@ -54,6 +55,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
       dataIndex: "action",
       key: "action",
       align: "right",
+      width: 150,
     },
   ];
 
@@ -125,7 +127,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
 
   return (
     <Table
-      className="custom-table more-table  bidding-bottom-table"
+      className="custom-table more-table liquidation-table bidding-bottom-table"
       dataSource={tableBiddingData}
       columns={columnsBidding}
       pagination={false}

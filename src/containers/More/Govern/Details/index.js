@@ -120,15 +120,15 @@ const GovernDetails = ({
   const data = [
     {
       title: "Voting Starts",
-      counts: votingStartTime != "Invalid date" ? votingStartTime : "--/--/-- 00:00:00"
+      counts: votingStartTime !== "Invalid date" ? votingStartTime : "--/--/-- 00:00:00"
     },
     {
       title: "Voting Ends",
-      counts: votingEndTime != "Invalid date" ? votingEndTime : "--/--/-- 00:00:00"
+      counts: votingEndTime !== "Invalid date" ? votingEndTime : "--/--/-- 00:00:00"
     },
     {
       title: "Duration",
-      counts: votingEndTime != "Invalid date" ? `${duration.days()} Days ${duration.hours()} Hours` : "--/--/-- 00:00:00"
+      counts: votingEndTime !== "Invalid date" ? `${duration.days()} Days ${duration.hours()} Hours` : "--/--/-- 00:00:00"
     },
     {
       title: "Proposer",
