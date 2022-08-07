@@ -1,7 +1,7 @@
 import { Button, Slider, message, Spin } from "antd";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { Row, SvgIcon } from "../../../../components/common";
+import { SvgIcon } from "../../../../components/common";
 import CustomInput from "../../../../components/CustomInput";
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { useParams } from "react-router";
@@ -37,7 +37,6 @@ import { getTypeURL } from "../../../../services/transaction";
 import Snack from "../../../../components/common/Snack";
 import { useSelector } from "react-redux";
 import Long from "long";
-import { CMDX_PRICE, CMST_PRICE } from "../../../../services/oracle/price";
 import { queryPair, queryPairVault } from "../../../../services/asset/query";
 import { setExtendedPairVaultListData, setSelectedExtentedPairvault } from "../../../../actions/locker";
 
@@ -111,7 +110,6 @@ const Mint = ({
       marketPrice(markets, pair && pair?.denomOut)
     );
     setAmountOut(dataAmount);
-
     setDebtValidationError(
       ValidateInputNumber(getAmount(dataAmount), "", "", debtFloor)
     );
@@ -119,6 +117,7 @@ const Mint = ({
   };
 
   const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
+  // eslint-disable-next-line no-unused-vars
   const stableAssetBalance = getDenomBalance(balances, 'ucmst') || 0;
 
   const calculateAmountOut = (
@@ -156,8 +155,10 @@ const Mint = ({
     )}`;
   };
 
-
+  // console.log(outAmount, "outAmount");
   const handleSliderChange = (value) => {
+    let amountOutCalculated;
+    let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
     setCollateralRatio(value);
     setAmountOut(
       calculateAmountOut(
@@ -166,6 +167,16 @@ const Mint = ({
         value / 100,
         marketPrice(markets, pair && pair?.denomOut)
       )
+    );
+    amountOutCalculated = calculateAmountOut(
+      inAmount,
+      selectedTokenPrice,
+      value / 100,
+      marketPrice(markets, pair && pair?.denomOut)
+    )
+
+    setDebtValidationError(
+      ValidateInputNumber(getAmount(amountOutCalculated), "", "", debtFloor)
     );
   };
 
@@ -197,6 +208,7 @@ const Mint = ({
 
     // Calculating amountIn
     let calculateAmountIn = ((currentCr * amountOut) / amountInPrice) / 100;
+    // eslint-disable-next-line no-unused-vars
     calculateAmountIn = ((isFinite(calculateAmountIn) && calculateAmountIn) || 0).toFixed(6)
     // setAmountIn(calculateAmountIn)
 
@@ -509,7 +521,7 @@ const Mint = ({
                   !Number(outAmount) ||
                   validationError?.message ||
                   debtValidationError?.message ||
-                  Number(collateralRatio) < 150
+                  Number(collateralRatio) < minCrRatio
                 }
                 loading={inProgress}
                 type="primary"

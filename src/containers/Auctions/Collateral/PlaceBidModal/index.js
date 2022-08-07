@@ -12,7 +12,6 @@ import {
   amountConversionWithComma,
   denomConversion,
   getAmount,
-  getDenomBalance,
   orderPriceConversion,
 } from "../../../../utils/coin";
 import Snack from "../../../../components/common/Snack";
@@ -240,7 +239,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label >
-               {calculatedQuantityBid}{" "}
+                {calculatedQuantityBid}{" "}
                 {denomConversion(auction?.outflowTokenCurrentAmount?.denom)}
               </label>
             </Col>

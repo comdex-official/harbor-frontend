@@ -12,11 +12,10 @@ import { DOLLAR_DECIMALS } from "../../constants/common";
 import {
   amountConversionWithComma,
   denomConversion,
-  getDenomBalance,
 } from "../../utils/coin";
 import { queryCollectorInformation } from "../../services/collector";
 import { queryUserVaultsStats } from "../../services/vault/query";
-import { commaSeparator, decimalConversion } from "../../utils/number";
+import { decimalConversion } from "../../utils/number";
 import { cmst } from "../../config/network";
 import "./index.scss";
 

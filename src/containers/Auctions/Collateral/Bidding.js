@@ -1,4 +1,4 @@
-import { Table, Button, message } from "antd";
+import { Table, Button } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversionWithComma } from "../../../utils/coin";
@@ -38,7 +38,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
     {
       title: (
         <>
-          Auction Status <TooltipIcon text="Status of auctions" />
+          Auction Status <TooltipIcon text="Status of auction" />
         </>
       ),
       dataIndex: "auctionStatus",
@@ -48,7 +48,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
     {
       title: (
         <>
-          Bidding Status <TooltipIcon text="Bidding status of auctions" />
+          Bidding Status <TooltipIcon text="Bidding status of auction" />
         </>
       ),
       dataIndex: "action",
