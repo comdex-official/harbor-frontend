@@ -122,7 +122,7 @@ const Minting = ({ address }) => {
   useEffect(() => {
     if (extenedPairVaultList?.length > 0) {
       extenedPairVaultList.map((item, index) => {
-        fetchAssetIdFromPairID(item?.pairId?.low, item?.id?.low)
+        return fetchAssetIdFromPairID(item?.pairId?.low, item?.id?.low)
       })
     }
   }, [extenedPairVaultList])
@@ -150,8 +150,7 @@ const Minting = ({ address }) => {
               return (
                 <React.Fragment key={index}>
                   {item &&
-                    !item.isStableMintVault &&
-                    item.appId.low === PRODUCT_ID && (
+                    (
                       <div
                         className="card-container "
                         onClick={() => {
@@ -220,6 +219,9 @@ const Minting = ({ address }) => {
                     )}
                 </React.Fragment>
               );
+            }
+            else {
+              return ""
             }
           })
         ) : (
