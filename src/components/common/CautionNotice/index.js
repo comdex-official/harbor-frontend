@@ -45,6 +45,7 @@ const CautionNotice = () => {
               disabled={!isChecked}
               name="Agree"
               type="primary"
+              // eslint-disable-next-line react/jsx-no-duplicate-props
               onClick={() => {
                 setIsVisible(false);
                 localStorage.setItem("agreement_accepted", "true");

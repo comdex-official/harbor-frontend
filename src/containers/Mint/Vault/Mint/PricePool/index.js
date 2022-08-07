@@ -31,6 +31,7 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
 
   const liquidationRatio = selectedExtendedPairVaultListData?.liquidationRatio;
 
+  // eslint-disable-next-line no-unused-vars
   const liquidationPrice =
     decimalConversion(liquidationRatio) * (borrowed / collateral);
 

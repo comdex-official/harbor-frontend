@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
 import { DOLLAR_DECIMALS } from "../constants/common";
-import { CMDX_PRICE } from "../services/oracle/price";
 import { denomToSymbol } from "./string";
 
 export const formatNumber = (number) => {

@@ -10,7 +10,7 @@ import {
 import { queryPairs } from "../../../services/asset/query";
 import { denomConversion } from "../../../utils/coin";
 import { message } from "antd";
-import { uniqueDenoms } from "../../../utils/string";
+
 const marks = {
   0: "00:00hrs",
   100: "3d:00h:00m",
@@ -102,8 +102,8 @@ const FilterModal = ({ address, pairs, setPairs }) => {
           </Row>
           <Row>
             <Col>
-            <div className="timer-container">
-              <label>Timer</label>
+              <div className="timer-container">
+                <label>Timer</label>
                 <CustomInput
                   placeholder="0"
                   value={sliderValue}
@@ -112,7 +112,7 @@ const FilterModal = ({ address, pairs, setPairs }) => {
                   }}
                   defaultValue="1d:12h:1m"
                 />
-            </div>
+              </div>
               <div className="mt-2 filter-rows pb-4">
                 <div className="slider-numbers">
                   <Slider
