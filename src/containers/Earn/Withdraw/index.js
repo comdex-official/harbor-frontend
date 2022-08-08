@@ -118,6 +118,7 @@ const Withdraw = ({
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const showInDollarValue = () => {
     const total = inAmount;
     return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(

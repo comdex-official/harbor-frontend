@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, Button, Spin, message } from "antd";
+import { Tabs, Button } from "antd";
 import * as PropTypes from "prop-types";
 import "./index.scss";
 import { Col, Row } from "../../../components/common";
@@ -8,7 +8,6 @@ import Mint from "./Mint";
 import Close from "./Close";
 import EditTab from "./EditTab";
 import { connect, useSelector } from "react-redux";
-import { queryOwnerVaults } from "../../../services/vault/query";
 import { setOwnerVaultId } from "../../../actions/locker";
 
 const Vault = ({

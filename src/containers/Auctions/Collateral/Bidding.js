@@ -1,4 +1,4 @@
-import { Table, Button, message } from "antd";
+import { Table, Button } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversionWithComma } from "../../../utils/coin";
@@ -15,7 +15,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
       ),
       dataIndex: "inflowToken",
       key: "inflowToken",
-      width: 250,
+      width: 200,
     },
     {
       title: (
@@ -38,22 +38,24 @@ export const Bidding = ({ biddingList, inProgress }) => {
     {
       title: (
         <>
-          Auction Status <TooltipIcon text="Status of auctions" />
+          Auction Status <TooltipIcon text="Status of auction" />
         </>
       ),
       dataIndex: "auctionStatus",
       key: "auctionStatus",
       align: "center",
+      width: 150,
     },
     {
       title: (
         <>
-          Bidding Status <TooltipIcon text="Bidding status of auctions" />
+          Bidding Status <TooltipIcon text="Bidding status of auction" />
         </>
       ),
       dataIndex: "action",
       key: "action",
       align: "right",
+      width: 150,
     },
   ];
 
@@ -125,7 +127,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
 
   return (
     <Table
-      className="custom-table more-table  bidding-bottom-table"
+      className="custom-table more-table liquidation-table bidding-bottom-table"
       dataSource={tableBiddingData}
       columns={columnsBidding}
       pagination={false}

@@ -26,6 +26,7 @@ import {
 import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
 import { commaSeparator, decimalConversion } from "../../../utils/number";
+import TooltipIcon from "../../../components/TooltipIcon";
 
 const CollateralAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -85,7 +86,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
         if (result?.auctions?.length > 0) {
           setAuctions(result && result.auctions);
         }
-        else{
+        else {
           setAuctions("");
         }
       }
@@ -113,35 +114,56 @@ const CollateralAuctions = ({ setPairs, address }) => {
 
   const columns = [
     {
-      title: "Auctioned Asset",
+      title: (
+        <>
+          Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
+        </>
+      ),
       dataIndex: "auctioned_asset",
       key: "auctioned_asset",
       width: 150,
     },
     {
-      title: "Bidding Asset",
+      title: (
+        <>
+          Bidding Asset{" "}
+          <TooltipIcon text="Asset used to buy the auctioned asset" />
+        </>
+      ),
       dataIndex: "bridge_asset",
       key: "bridge_asset",
       width: 150,
     },
     {
-      title: "Auctioned Quantity",
+      title: (
+        <>
+          Auctioned Quantity <TooltipIcon text="Amount of Auctioned asset being sold" />
+        </>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       width: 200,
     },
     {
-      title: "End Time",
+      title: (
+        <>
+          End Time <TooltipIcon text="Auction closing time" />
+        </>
+      ),
       dataIndex: "end_time",
       key: "end_time",
       width: 200,
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Current Price",
+      title: (
+        <>
+          Current Auction Price <TooltipIcon text="Current price of auction asset" />
+        </>
+      ),
       dataIndex: "current_price",
       key: "current_price",
-      width: 150,
+      width: 200,
       render: (price) => (
         <>
           $
@@ -162,7 +184,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
       dataIndex: "action",
       key: "action",
       align: "right",
-      width: 140,
+      width: 80,
       render: (item) => (
         <>
           <PlaceBidModal
