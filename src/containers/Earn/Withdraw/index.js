@@ -118,6 +118,9 @@ const Withdraw = ({
     }
   };
 
+  const handleMaxClick = () => {
+    dispatch(setAmountIn(userBalanceInLocker));
+  }
   // eslint-disable-next-line no-unused-vars
   const showInDollarValue = () => {
     const total = inAmount;
@@ -231,9 +234,19 @@ const Withdraw = ({
               <div className="withdraw-stats-container">
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
-                  <div className="stats-value">
+                  <div className="stats-value flex">
                     {userBalanceInLocker}
-                    {denomConversion("ucmst")}
+                    {denomConversion("ucmst")} {" "}
+                    <span className="maxhalf">
+                      <Button
+                        className="active"
+                        onClick={() =>
+                          handleMaxClick()
+                        }
+                      >
+                        max
+                      </Button>
+                    </span>
                   </div>
                 </div>
                 <div className="withdraw-stats">
