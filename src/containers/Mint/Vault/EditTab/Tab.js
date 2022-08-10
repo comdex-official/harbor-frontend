@@ -4,7 +4,7 @@ import { Col, Row, SvgIcon } from "../../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, message, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { denomToSymbol, iconNameFromDenom} from "../../../../utils/string";
+import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
 import { amountConversion, getDenomBalance } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
@@ -233,7 +233,7 @@ const Edit = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId);
+      setOwnerVaultId(data?.vaultId?.low);
     });
   };
 
@@ -344,7 +344,7 @@ const Edit = ({
       getLiquidationPrice(inputAmount, 0);
     }
     if (editType === "repay") {
-      getLiquidationPrice(-Math.abs(inputAmount|| 0), 0);
+      getLiquidationPrice(-Math.abs(inputAmount || 0), 0);
     }
   }, [inputAmount, newCollateralRatio]);
 

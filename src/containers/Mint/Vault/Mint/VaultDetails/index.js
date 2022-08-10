@@ -46,7 +46,7 @@ const VaultDetails = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId)
+      setOwnerVaultId(data?.vaultId?.low)
     })
   }
 

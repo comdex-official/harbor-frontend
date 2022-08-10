@@ -134,7 +134,6 @@ const Minting = ({ address }) => {
       })
     }
   }, [extenedPairVaultList])
-
   useEffect(() => {
     setVaultDebt([])
     setpairId({});
