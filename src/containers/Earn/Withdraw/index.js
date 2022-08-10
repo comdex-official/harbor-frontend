@@ -235,7 +235,7 @@ const Withdraw = ({
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
                   <div className="stats-value flex">
-                    {userBalanceInLocker}
+                    {userBalanceInLocker} {" "}
                     {denomConversion("ucmst")} {" "}
                     <span className="maxhalf">
                       <Button
