@@ -161,13 +161,14 @@ const MyEarn = ({ address }) => {
                 columns={columns}
                 loading={inProgress}
                 onChange={(event) => handleChange(event)}
-                pagination={{
-                  total:
-                    lockers && lockers.pagination && lockers.pagination.total,
-                  showSizeChanger: true,
-                  defaultPageSize: pageSize,
-                  pageSizeOptions: ["5", "10", "20", "50"],
-                }}
+                // pagination={{
+                //   total:
+                //     lockers && lockers.pagination && lockers.pagination.total,
+                //   showSizeChanger: true,
+                //   defaultPageSize: pageSize,
+                //   pageSizeOptions: ["5", "10", "20", "50"],
+                // }}
+                pagination={false}
                 scroll={{ x: "100%" }}
               />
             </div>
