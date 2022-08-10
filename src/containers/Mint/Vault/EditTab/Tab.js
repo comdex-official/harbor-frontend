@@ -4,8 +4,8 @@ import { Col, Row, SvgIcon } from "../../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, message, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/string";
-import { amountConversion, amountConversionWithComma, getDenomBalance } from "../../../../utils/coin";
+import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
+import { amountConversion, getDenomBalance } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { getAmount } from "../../../../utils/coin";
@@ -82,7 +82,6 @@ const Edit = ({
   const estimatedLiquidationPrice = useSelector(
     (state) => state.locker.estimatedLiquidationPrice,
   );
-
   useEffect(() => {
     fetchQueryPairValut(pathVaultId);
   }, [address]);
@@ -130,10 +129,10 @@ const Edit = ({
   const handleSliderChange = (value, type = editType) => {
     const newRatio = value / 100; // converting value to ratio
     if (type === "deposit") {
-      const newInput =
+      let newInput =
         (Number(currentDebt) * debtPrice * newRatio) / collateralPrice -
         Number(currentCollateral);
-
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setDeposit(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -147,10 +146,11 @@ const Edit = ({
         )
       );
     } else if (type === "withdraw") {
-      const newInput =
+      let newInput =
         Number(currentCollateral) -
         (Number(currentDebt) * debtPrice * newRatio) / collateralPrice;
 
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setWithdraw(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -159,10 +159,11 @@ const Edit = ({
       setRepay(0);
       setInputValidationError(ValidateInputNumber(newInput, currentCollateral));
     } else if (type === "repay") {
-      const newInput =
+      let newInput =
         Number(currentDebt) -
         (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio);
 
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setRepay(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -171,10 +172,11 @@ const Edit = ({
       setWithdraw(0);
       setInputValidationError(ValidateInputNumber(value, currentDebt));
     } else {
-      const newInput =
+      let newInput =
         (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio) -
         Number(currentDebt);
 
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setDraw(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -234,7 +236,7 @@ const Edit = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId);
+      setOwnerVaultId(data?.vaultId?.low);
     });
   };
 
@@ -266,7 +268,6 @@ const Edit = ({
       }
       let ownerCollateral = decimalConversion(data?.vaultsInfo?.collateralizationRatio) * 100
       ownerCollateral = Number(ownerCollateral).toFixed(DOLLAR_DECIMALS)
-      setOwnerCurrentCollateral(ownerCollateral)
       setNewCollateralRatio(ownerCollateral)
     });
   };
@@ -340,29 +341,28 @@ const Edit = ({
       getLiquidationPrice(0, inputAmount);
     }
     if (editType === "withdraw") {
-      getLiquidationPrice(0, -Math.abs(inputAmount));
+      getLiquidationPrice(0, -Math.abs(inputAmount || 0));
     }
     if (editType === "draw") {
       getLiquidationPrice(inputAmount, 0);
     }
     if (editType === "repay") {
-      getLiquidationPrice(-Math.abs(inputAmount), 0);
+      getLiquidationPrice(-Math.abs(inputAmount || 0), 0);
     }
-  }, [inputAmount]);
+  }, [inputAmount, newCollateralRatio]);
 
   useEffect(() => {
     setCollateralRatio(safeCrRatio);
   }, [safeCrRatio]);
 
   const getLiquidationPrice = (
-    debtToBeBorrowed = 0,
-    collateralToBeTaken = 0
+    debtToBeBorrowed = Number(0),
+    collateralToBeTaken = Number(0)
   ) => {
     const collateral = amountConversion(currentCollateral);
     const borrowed = amountConversion(currentDebt);
     const liquidationRatio =
-      selectedExtendedPairVaultListData?.liquidationRatio;
-
+      selectedExtendedPairVaultListData?.minCr;
     setEstimatedLiquidationPrice(
       decimalConversion(liquidationRatio) *
       ((Number(borrowed) + Number(debtToBeBorrowed)) /

@@ -12,11 +12,10 @@ import { DOLLAR_DECIMALS } from "../../constants/common";
 import {
   amountConversionWithComma,
   denomConversion,
-  getDenomBalance,
 } from "../../utils/coin";
 import { queryCollectorInformation } from "../../services/collector";
 import { queryUserVaultsStats } from "../../services/vault/query";
-import { commaSeparator, decimalConversion } from "../../utils/number";
+import { decimalConversion } from "../../utils/number";
 import { cmst } from "../../config/network";
 import "./index.scss";
 
@@ -32,11 +31,16 @@ const MyPositions = ({ address, balances }) => {
 
   useEffect(() => {
     if (address) {
-      fetchLockerStats();
       fetchCollectorStats();
       fetchVaultStats();
     }
   }, [address]);
+
+  useEffect(() => {
+    if (address) {
+      fetchLockerStats();
+    }
+  }, [address, lockerInfo]);
 
   const fetchCollectorStats = () => {
     queryCollectorInformation((error, result) => {
@@ -116,12 +120,14 @@ const MyPositions = ({ address, balances }) => {
         <>
           {earnTab && (
             <div className="stats-values">
-              <h3>{amountConversionWithComma(lockerInfo?.netBalance || 0)}</h3>
+              {/* Locker Balance */}
+              <h3>{amountConversionWithComma(lockerInfo?.netBalance || 0, DOLLAR_DECIMALS)}</h3>
               <span>CMST</span>
             </div>
           )}
           {vaultTab && (
             <div className="stats-values">
+              {/* Collateral Locked */}
               <h3>
                 $
                 {amountConversionWithComma(
@@ -132,11 +138,9 @@ const MyPositions = ({ address, balances }) => {
           )}
           {historyTab && (
             <div className="stats-values">
-              <h3>
-                {amountConversionWithComma(
-                  getDenomBalance(balances, cmst?.coinMinimalDenom) || 0
-                )}
-              </h3>
+              {/* Locker Balance */}
+              <h3>{amountConversionWithComma(lockerInfo?.netBalance || 0, DOLLAR_DECIMALS)}</h3>
+
               <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
@@ -170,6 +174,7 @@ const MyPositions = ({ address, balances }) => {
         <>
           {earnTab && (
             <div className="stats-values">
+              {/* Total interest Earned */}
               <h3>
                 {amountConversionWithComma(lockerInfo?.returnsAccumulated || 0)}
               </h3>
@@ -178,14 +183,16 @@ const MyPositions = ({ address, balances }) => {
           )}
           {vaultTab && (
             <div className="stats-values">
+              {/* Total Borrowed */}
               <h3>
-                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
+                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), DOLLAR_DECIMALS)}
               </h3>
               <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
+              {/* Collateral Locked */}
               <h3>
                 $
                 {amountConversionWithComma(
@@ -224,6 +231,7 @@ const MyPositions = ({ address, balances }) => {
         <>
           {earnTab && (
             <div className="stats-values">
+              {/* Locker Savings Rate */}
               <h3>
                 {collectorInfo?.lockerSavingRate
                   ? Number(
@@ -236,16 +244,18 @@ const MyPositions = ({ address, balances }) => {
           )}
           {vaultTab && (
             <div className="stats-values">
+              {/* Available to borrow */}
               <h3>
-                {amountConversionWithComma(Number(vaultsInfo?.availableToBorrow || 0))}
+                {amountConversionWithComma(Number(vaultsInfo?.availableToBorrow || 0), DOLLAR_DECIMALS)}
               </h3>
               <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>
           )}
           {historyTab && (
             <div className="stats-values">
+              {/* Total Borrowed */}
               <h3>
-                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0))}
+                {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), DOLLAR_DECIMALS)}
               </h3>
               <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
             </div>

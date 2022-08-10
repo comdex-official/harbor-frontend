@@ -23,8 +23,12 @@
     }
   }
   .alert-label {
+        color: $error-color;
+    font-size: 12px;
     .dark-mode & {
       color: white;
+       color: $error-color;
+    font-size: 12px;
     }
   }
 }

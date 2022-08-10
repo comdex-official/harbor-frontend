@@ -8,7 +8,7 @@ import "./index.scss";
 import { iconNameFromDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
 import React, { useEffect, useState } from "react";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, PRODUCT_ID } from "../../constants/common";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import { setAssetList, setPairs } from "../../actions/asset";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -119,14 +119,21 @@ const Minting = ({ address }) => {
     return selectedItem[0]?.denom || ""
   }
 
+  const calculateGlobalDebt = (value) => {
+    let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.low === value?.id?.low)
+    if (matchData[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
+      return amountConversionWithComma(matchData[0]?.mintedAmount);
+    }
+    return (0).toFixed(6)
+  }
+
   useEffect(() => {
     if (extenedPairVaultList?.length > 0) {
       extenedPairVaultList.map((item, index) => {
-        fetchAssetIdFromPairID(item?.pairId?.low, item?.id?.low)
+        return fetchAssetIdFromPairID(item?.pairId?.low, item?.id?.low)
       })
     }
   }, [extenedPairVaultList])
-
   useEffect(() => {
     setVaultDebt([])
     setpairId({});
@@ -136,7 +143,6 @@ const Minting = ({ address }) => {
   if (loading) {
     return <Spin />;
   }
-
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       <div className="card-main-container">
@@ -145,14 +151,13 @@ const Minting = ({ address }) => {
           extenedPairVaultList?.map((item, index) => {
             if (
               item &&
-              !item.isPsmPair &&
+              !item.isStableMintVault &&
               item.appId.low === PRODUCT_ID
             ) {
               return (
                 <React.Fragment key={index}>
                   {item &&
-                    !item.isPsmPair &&
-                    item.appId.low === PRODUCT_ID && (
+                    (
                       <div
                         className="card-container "
                         onClick={() => {
@@ -194,7 +199,7 @@ const Minting = ({ address }) => {
                             </div>
                             <div className="value">
                               {" "}
-                              {amountConversionWithComma(item?.debtFloor)} CMST
+                              {amountConversionWithComma(item?.debtFloor, DOLLAR_DECIMALS)} CMST
                             </div>
                           </div>
                           <div className="contenet-container">
@@ -203,7 +208,7 @@ const Minting = ({ address }) => {
                             </div>
                             <div className="value">
                               {" "}
-                              {amountConversionWithComma(item?.debtCeiling)} CMST
+                              {amountConversionWithComma(item?.debtCeiling, DOLLAR_DECIMALS)} CMST
                             </div>
                           </div>
 
@@ -212,7 +217,12 @@ const Minting = ({ address }) => {
                               Vault’s Global Debt <TooltipIcon text="The total $CMST Debt of the protocol against this vault type" />
                             </div>
                             <div className="value">
-                              {vaultDebt.length > 0 ? amountConversionWithComma(vaultDebt[0] && vaultDebt[0][index]?.collateralAmount ? vaultDebt[0] && vaultDebt[0][index]?.collateralAmount : 0.000000) : "0.000000"} CMST
+                              {vaultDebt.length > 0
+                                ?
+                                calculateGlobalDebt(item)
+                                :
+                                "0.000000"
+                              } CMST
                             </div>
                           </div>
 
@@ -221,6 +231,9 @@ const Minting = ({ address }) => {
                     )}
                 </React.Fragment>
               );
+            }
+            else {
+              return ""
             }
           })
         ) : (

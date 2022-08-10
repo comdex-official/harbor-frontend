@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
 import { DOLLAR_DECIMALS } from "../constants/common";
-import { CMDX_PRICE } from "../services/oracle/price";
 import { denomToSymbol } from "./string";
 
 export const formatNumber = (number) => {
@@ -36,9 +35,6 @@ export const truncateToDecimals = (num, dec = 2) => {
 export const marketPrice = (array, denom) => {
   const value = array.filter((item) => item.symbol === denomToSymbol(denom));
 
-  if (denom === "uxprt") {
-    return 0.9;
-  }
   if (denom === "uharbor") {
     return 0.5;
   }

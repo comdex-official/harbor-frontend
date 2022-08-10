@@ -81,7 +81,7 @@ const CloseTab = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId)
+      setOwnerVaultId(data?.vaultId?.low)
     })
   }
 
@@ -161,8 +161,8 @@ const CloseTab = ({
       <div className="close-tab-content">
         <div className="close-tab-row">
           <div className="text-left">
-            {variables[lang].burn_amount}{" "}
-            <TooltipIcon text={variables[lang].tooltip_burn_amount} />
+            CMST Payable{" "}
+            <TooltipIcon text="CMST to be repaid" />
           </div>
           <div className="text-right">
             {amountConversion(ownerVaultInfo?.amountOut || 0)} CMST
@@ -170,8 +170,8 @@ const CloseTab = ({
         </div>
         <div className="close-tab-row">
           <div className="text-left">
-            {variables[lang].withdraw_amount}{" "}
-            <TooltipIcon text={variables[lang].tooltip_withdraw_amount} />
+            Collateral Receivable{" "}
+            <TooltipIcon text="Collateral to be received" />
           </div>
           <div className="text-right">
             {amountConversion(ownerVaultInfo?.amountIn || 0)} {denomToSymbol(returnDenom())}

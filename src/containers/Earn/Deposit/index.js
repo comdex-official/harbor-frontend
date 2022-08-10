@@ -112,9 +112,13 @@ const Deposit = ({
   }, [address]);
 
   useEffect(() => {
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
     fetchCollectorStats();
   }, [whiteListedAsset]);
+
+  useEffect(() => {
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+  }, [whiteListedAsset, ownerLockerInfo])
+
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     setInProgress(true);

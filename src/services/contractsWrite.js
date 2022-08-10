@@ -36,11 +36,7 @@ export const transactionForVote = async (proposalId, vote, callback) => {
         }
     };
 
-    const [offlineSigner, accounts] = await KeplrWallet(comdex?.chainId);
-
-    const accountFromSigner = (await offlineSigner.getAccounts()).find(
-        (account) => account.address === walletAddress,
-    );
+    const [offlineSigner] = await KeplrWallet(comdex?.chainId);
 
     await SigningCosmWasmClient.connectWithSigner(
         httpUrl,

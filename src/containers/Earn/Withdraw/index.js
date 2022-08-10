@@ -118,6 +118,10 @@ const Withdraw = ({
     }
   };
 
+  const handleMaxClick = () => {
+    dispatch(setAmountIn(userBalanceInLocker));
+  }
+  // eslint-disable-next-line no-unused-vars
   const showInDollarValue = () => {
     const total = inAmount;
     return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
@@ -132,16 +136,17 @@ const Withdraw = ({
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo[0]?.lockerId;
-  const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated);
+  const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated || 0);
+  const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo[0]?.netBalance || 0);
 
   const fetchOwnerLockerExistByAssetId = (
     productId = PRODUCT_ID,
-    lockerId,
+    whiteListedAssetId,
     address
   ) => {
     queryUserLockerByProductAssetId(
       productId,
-      lockerId,
+      whiteListedAssetId,
       address,
       (error, data) => {
         if (error) {
@@ -229,13 +234,23 @@ const Withdraw = ({
               <div className="withdraw-stats-container">
                 <div className="withdraw-stats">
                   <div className="stats-title">Balance</div>
-                  <div className="stats-value">
-                    {amountConversionWithComma(userLockedAmountInLocker)}{" "}
-                    {denomConversion("ucmst")}
+                  <div className="stats-value flex">
+                    {userBalanceInLocker}
+                    {denomConversion("ucmst")} {" "}
+                    <span className="maxhalf">
+                      <Button
+                        className="active"
+                        onClick={() =>
+                          handleMaxClick()
+                        }
+                      >
+                        max
+                      </Button>
+                    </span>
                   </div>
                 </div>
                 <div className="withdraw-stats">
-                  <div className="stats-title">Interest</div>
+                  <div className="stats-title">Interest Earned</div>
                   <div className="stats-value">
                     {returnsAccumulated || 0}{" "}
                     {denomConversion(whiteListedAssetData[0]?.denom)}{" "}

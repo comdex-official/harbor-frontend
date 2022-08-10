@@ -78,9 +78,6 @@ const ConnectButton = ({
     }
   }, [address, markets]);
 
-  useEffect(() => {
-    // getVaults();
-  }, [pools]);
 
   const fetchBalances = (address) => {
     queryAllBalances(address, (error, result) => {

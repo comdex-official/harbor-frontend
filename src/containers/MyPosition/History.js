@@ -33,7 +33,7 @@ const History = ({ address, setTransactionHistory, history }) => {
       setTransactionHistory(result.txs, result.totalCount);
     });
   };
-
+  
   const tableData =
     history &&
     history.list &&

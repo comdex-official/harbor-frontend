@@ -6,7 +6,6 @@ import "./index.scss";
 import { Spin } from "antd";
 import { queryPair } from "../../../../services/asset/query";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router";
 
 const EditTab = () => {
   const [loading, setLoading] = useState();

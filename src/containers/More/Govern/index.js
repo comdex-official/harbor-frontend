@@ -92,26 +92,16 @@ const Govern = ({
   }
   const calculateDurationPercentage = (startTime, duration) => {
     // formula = ((currentTime - start time)/duration )*100
-    let start = startTime
-    let totalDuration = duration
-    let currentTime = moment().format("hh:mm:ss")
-
-    // Calculating current time in sec 
-    let currentTimeInseconds = new Date(moment(currentTime, "hh:mm")).getTime()
-    // ***convertimg from milisec to sec*** 
-    currentTimeInseconds = currentTimeInseconds / 1000
+    let start = Number(startTime)
+    let totalDuration = Number(duration)
+    let currentTime = Math.round((new Date()).getTime() / 1000)
 
     // Calculating start time in sec 
-    // ***Removing miliSec from unix time*** 
+    // ***Removing nanosec from unix time*** 
     start = Math.floor(start / 1000000000);
-    start = moment.unix(start);
-    start = start.format(" hh:mm:ss")
-
-    let startTimeInSec = new Date(moment(start, "hh:mm")).getTime()
-    startTimeInSec = startTimeInSec / 1000
 
     // Calculating percentage 
-    let percentage = ((currentTimeInseconds - startTimeInSec) / totalDuration) * 100
+    let percentage = ((currentTime - start) / totalDuration) * 100
     percentage = Number(percentage).toFixed(2)
     percentage = Math.abs(percentage)
     return percentage;
@@ -172,7 +162,7 @@ const Govern = ({
         <Col>
           <div className="comdex-card govern-card earn-deposite-card ">
             <div className="governcard-head ">
-              <a href="https://forum.comdex.one/" target="_blank"><Button type="primary" className="btn-filled">Forum</Button></a>
+              <a href="https://forum.comdex.one/" target="_blank" rel="noreferrer"><Button type="primary" className="btn-filled">Forum</Button></a>
               <Select defaultValue="Filter" className="select-primary ml-2" onChange={(e) => filterAllProposal(e)} suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
                 <Option value="all" className="govern-select-option">All</Option>
                 <Option value="open" >Open</Option>

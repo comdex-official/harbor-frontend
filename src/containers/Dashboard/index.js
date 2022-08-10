@@ -24,10 +24,12 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
   const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
 
   useEffect(() => {
-    fetchTVL();
+    if (markets.length > 0) {
+      fetchTVL();
+    }
     fetchTotalTokenMinted(PRODUCT_ID);
     fetchAllProposalUpData(PRODUCT_ID);
-  }, []);
+  }, [markets]);
 
   const fetchTVL = () => {
     queryAppTVL(PRODUCT_ID, (error, result) => {
@@ -63,7 +65,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
             return [item.assetDenom, item];
           })
         );
-
         setTotalValueLocked(totalValue);
         setTotalDollarValue(total);
       }
@@ -111,7 +112,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     })
     setCalculatedCMSTSupply(totalMintedAmount);
   }
-
   const Options = {
     chart: {
       type: "pie",
@@ -319,7 +319,6 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     marketCap = commaSeparator(marketCap)
     return marketCap || 0;
   }
-  // console.log(totalDollarValue, "totalDollarValue");
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>

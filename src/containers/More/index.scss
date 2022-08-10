@@ -20,11 +20,22 @@
     display: block;
     height: 100%;
     width: 100%;
-    background-color: rgba($black, 0.3);
+    background-color: rgba($black, 0);
     z-index: -1;
   }
   .dark-mode & {
     box-shadow: none;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      height: 100%;
+      width: 100%;
+      background-color: rgba($black, 0.3);
+      z-index: -1;
+    }
   }
 
   .more-card-inner {

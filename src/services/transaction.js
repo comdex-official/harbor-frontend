@@ -27,33 +27,41 @@ export const messageTypeToText = (type) => {
     case "/cosmos.bank.v1beta1.MsgSend":
       return "Send";
     case "/comdex.vault.v1beta1.MsgCreateRequest":
-      return "CreateVault";
+      return "Create Vault";
     case "/comdex.vault.v1beta1.MsgDepositRequest":
-      return "VaultDepositCollateral";
+      return "Vault Deposit Collateral";
     case "/comdex.vault.v1beta1.MsgWithdrawRequest":
-      return "VaultWithdrawCollateral";
+      return "Vault Withdraw Collateral";
     case "/comdex.vault.v1beta1.MsgDrawRequest":
-      return "VaultDrawDebt";
+      return "Vault Draw Debt";
     case "/comdex.vault.v1beta1.MsgRepayRequest":
-      return "VaultRepayDebt";
+      return "Vault Repay Debt";
     case "/comdex.vault.v1beta1.MsgCloseRequest":
-      return "CloseVault";
+      return "Close Vault";
     case "/comdex.liquidity.v1beta1.MsgDeposit":
-      return "PoolDeposit";
+      return "Pool Deposit";
     case "/comdex.liquidity.v1beta1.MsgWithdraw":
-      return "PoolWithdraw";
+      return "Pool Withdraw";
     case "/comdex.liquidity.v1beta1.MsgSwapWithinBatch":
-      return "PoolSwap";
+      return "Pool Swap";
     case "/ibc.applications.transfer.v1.MsgTransfer":
       return "IBC-Transfer";
     case "/comdex.auction.v1beta1.MsgPlaceBidRequest":
-      return "PlaceBid";
+      return "Place Bid";
     case "/comdex.locker.v1beta1.MsgWithdrawAssetRequest":
-      return "WithdrawAsset";
+      return "Withdraw Asset";
     case "/comdex.locker.v1beta1.MsgCreateLockerRequest":
-      return "CreateLocker";
+      return "Create Locker";
+    case "/cosmwasm.wasm.v1.MsgExecuteContract":
+      return "Contract Executed";
     case "/comdex.locker.v1beta1.MsgDepositAssetRequest":
-      return "DepositAssetRequest";
+      return "Deposit Asset Request";
+    case "/comdex.auction.v1beta1.MsgPlaceDutchBidRequest":
+      return "Place Dutch Bid";
+    case "/comdex.auction.v1beta1.MsgPlaceSurplusBidRequest":
+      return "Place Surplus Bid";
+    case "/comdex.auction.v1beta1.MsgPlaceDebtBidRequest":
+      return "Place Debt Bid";
     default:
       return type;
   }
@@ -100,6 +108,6 @@ export const fetchTxHistory = (address, pageNumber, pageSize, callback) => {
 export const getTransactionTimeFromHeight = async (height) => {
   const tmClient = await Tendermint34Client.connect(comdex?.rpc);
   const block = await tmClient.block(height);
-  
+
   return block?.block?.header?.time;
 };

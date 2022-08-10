@@ -40,7 +40,8 @@ const Earn = ({
     monthsInput = months,
     daysInput = days
   ) => {
-    if (principal && interestRate && yearsInput) {
+    // eslint-disable-next-line no-mixed-operators
+    if (principal && interestRate && yearsInput || monthsInput || daysInput) {
       setTotalROI(
         calculateROI(
           principal,
