@@ -35,9 +35,6 @@ export const truncateToDecimals = (num, dec = 2) => {
 export const marketPrice = (array, denom) => {
   const value = array.filter((item) => item.symbol === denomToSymbol(denom));
 
-  if (denom === "uxprt") {
-    return 0.9;
-  }
   if (denom === "uharbor") {
     return 0.5;
   }
