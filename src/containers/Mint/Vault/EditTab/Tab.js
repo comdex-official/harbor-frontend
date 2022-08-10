@@ -4,7 +4,7 @@ import { Col, Row, SvgIcon } from "../../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, message, Slider } from "antd";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { denomToSymbol, iconNameFromDenom} from "../../../../utils/string";
+import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
 import { amountConversion, getDenomBalance } from "../../../../utils/coin";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
@@ -129,10 +129,10 @@ const Edit = ({
   const handleSliderChange = (value, type = editType) => {
     const newRatio = value / 100; // converting value to ratio
     if (type === "deposit") {
-      const newInput =
+      let newInput =
         (Number(currentDebt) * debtPrice * newRatio) / collateralPrice -
         Number(currentCollateral);
-
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setDeposit(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -146,10 +146,11 @@ const Edit = ({
         )
       );
     } else if (type === "withdraw") {
-      const newInput =
+      let newInput =
         Number(currentCollateral) -
         (Number(currentDebt) * debtPrice * newRatio) / collateralPrice;
 
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setWithdraw(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -158,10 +159,11 @@ const Edit = ({
       setRepay(0);
       setInputValidationError(ValidateInputNumber(newInput, currentCollateral));
     } else if (type === "repay") {
-      const newInput =
+      let newInput =
         Number(currentDebt) -
         (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio);
 
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setRepay(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -170,10 +172,11 @@ const Edit = ({
       setWithdraw(0);
       setInputValidationError(ValidateInputNumber(value, currentDebt));
     } else {
-      const newInput =
+      let newInput =
         (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio) -
         Number(currentDebt);
 
+      newInput = Math.max(newInput, 0)
       setNewCollateralRatio(value);
       setDraw(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -233,7 +236,7 @@ const Edit = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId);
+      setOwnerVaultId(data?.vaultId?.low);
     });
   };
 
@@ -344,7 +347,7 @@ const Edit = ({
       getLiquidationPrice(inputAmount, 0);
     }
     if (editType === "repay") {
-      getLiquidationPrice(-Math.abs(inputAmount|| 0), 0);
+      getLiquidationPrice(-Math.abs(inputAmount || 0), 0);
     }
   }, [inputAmount, newCollateralRatio]);
 

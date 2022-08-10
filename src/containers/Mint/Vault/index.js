@@ -17,7 +17,7 @@ const Vault = ({
   const [activeKey, setActiveKey] = useState();
   const { TabPane } = Tabs;
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
-
+  
   useEffect(() => {
     if (ownerVaultId) {
       setActiveKey("2");

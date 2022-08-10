@@ -81,7 +81,7 @@ const CloseTab = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId)
+      setOwnerVaultId(data?.vaultId?.low)
     })
   }
 

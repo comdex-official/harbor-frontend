@@ -127,7 +127,7 @@ export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
         }
         new QueryClientImpl(rpcClient)
             .QueryVault({
-                id: ownerVaultId,
+                id: Long.fromNumber(ownerVaultId),
             }).then((result) => {
                 callback(null, result);
             })
@@ -225,7 +225,7 @@ export const queryUserVaultsInfo = (
         }
         new QueryClientImpl(rpcClient)
             .QueryVaultInfoByVaultID({
-                id: id,
+                id: Long.fromNumber(id),
             })
             .then((result) => {
                 callback(null, result);

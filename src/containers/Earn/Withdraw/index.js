@@ -141,12 +141,12 @@ const Withdraw = ({
 
   const fetchOwnerLockerExistByAssetId = (
     productId = PRODUCT_ID,
-    lockerId,
+    whiteListedAssetId,
     address
   ) => {
     queryUserLockerByProductAssetId(
       productId,
-      lockerId,
+      whiteListedAssetId,
       address,
       (error, data) => {
         if (error) {
