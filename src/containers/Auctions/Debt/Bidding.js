@@ -129,7 +129,7 @@ export const Bidding = ({ biddingList }) => {
       className="custom-table more-table  bidding-bottom-table"
       dataSource={tableBiddingData}
       columns={columnsBidding}
-      pagination={false}
+      pagination={{ defaultPageSize: 5 }}
       scroll={{ x: "100%" }}
     />
   );

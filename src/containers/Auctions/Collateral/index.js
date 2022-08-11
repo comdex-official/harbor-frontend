@@ -178,7 +178,8 @@ const CollateralAuctions = ({ setPairs, address }) => {
     {
       title: (
         <>
-          <FilterModal setPairs={setPairs} />
+          {/* <FilterModal setPairs={setPairs} /> */}
+          Bid
         </>
       ),
       dataIndex: "action",
