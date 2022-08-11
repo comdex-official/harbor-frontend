@@ -142,7 +142,8 @@ const DebtAuctions = ({ setPairs, address }) => {
     {
       title: (
         <>
-          <FilterModal setPairs={setPairs} />
+          {/* <FilterModal setPairs={setPairs} /> */}
+          Bid
         </>
       ),
       dataIndex: "action",
@@ -224,13 +225,14 @@ const DebtAuctions = ({ setPairs, address }) => {
                 columns={columns}
                 loading={inProgress}
                 onChange={(event) => handleChange(event)}
-                pagination={{
-                  total:
-                    auctions &&
-                    auctions.pagination &&
-                    auctions.pagination.total,
-                  pageSize,
-                }}
+                // pagination={{
+                //   total:
+                //     auctions &&
+                //     auctions.pagination &&
+                //     auctions.pagination.total,
+                //   pageSize,
+                // }}
+                pagination={{ defaultPageSize: 10 }}
                 scroll={{ x: "100%" }}
               />
             </div>

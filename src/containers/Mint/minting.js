@@ -190,7 +190,7 @@ const Minting = ({ address }) => {
                               Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
                             </div>
                             <div className="value">
-                              {decimalConversion(item?.stabilityFee) * 100} %
+                              {(decimalConversion(item?.stabilityFee) * 100).toFixed(2)} %
                             </div>
                           </div>
                           <div className="contenet-container">
