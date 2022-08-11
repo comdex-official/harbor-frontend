@@ -390,7 +390,6 @@
     display: flex;
     gap: 13px;
     flex-wrap: wrap;
-    cursor: pointer;
     .card-container {
       background: white;
       padding: 25px 25px;
@@ -414,6 +413,7 @@
       &:hover {
         background: rgba($secondary-color, 0.3);
         border-color: rgb(199 194 226 / 30%);
+        cursor: pointer;
         .dark-mode & {
           background: $secondary-color;
           border-color: $secondary-color;
