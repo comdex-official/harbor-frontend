@@ -6,40 +6,40 @@ import { comdex } from "../config/network"; import {
 
 export const contractAddress = "comdex1j08452mqwadp8xu25kn9rleyl2gufgfjnv0sn8dvynynakkjukcqp8p0w7";
 
-export const getChainConfig = () => {
+export const getChainConfig = (chain = comdex) => {
   return {
-    chainId: comdex?.chainId,
-    chainName: comdex?.chainName,
-    rpc: comdex?.rpc,
-    rest: comdex?.rest,
+    chainId: chain?.chainId,
+    chainName: chain?.chainName,
+    rpc: chain?.rpc,
+    rest: chain?.rest,
     stakeCurrency: {
-      coinDenom: comdex?.coinDenom,
-      coinMinimalDenom: comdex?.coinMinimalDenom,
-      coinDecimals: comdex?.coinDecimals,
+      coinDenom: chain?.coinDenom,
+      coinMinimalDenom: chain?.coinMinimalDenom,
+      coinDecimals: chain?.coinDecimals,
     },
     bip44: {
       coinType: 118,
     },
     bech32Config: {
-      bech32PrefixAccAddr: `${comdex?.prefix}`,
-      bech32PrefixAccPub: `${comdex?.prefix}pub`,
-      bech32PrefixValAddr: `${comdex?.prefix}valoper`,
-      bech32PrefixValPub: `${comdex?.prefix}valoperpub`,
-      bech32PrefixConsAddr: `${comdex?.prefix}valcons`,
-      bech32PrefixConsPub: `${comdex?.prefix}valconspub`,
+      bech32PrefixAccAddr: `${chain?.prefix}`,
+      bech32PrefixAccPub: `${chain?.prefix}pub`,
+      bech32PrefixValAddr: `${chain?.prefix}valoper`,
+      bech32PrefixValPub: `${chain?.prefix}valoperpub`,
+      bech32PrefixConsAddr: `${chain?.prefix}valcons`,
+      bech32PrefixConsPub: `${chain?.prefix}valconspub`,
     },
     currencies: [
       {
-        coinDenom: comdex?.coinDenom,
-        coinMinimalDenom: comdex?.coinMinimalDenom,
-        coinDecimals: comdex?.coinDecimals,
+        coinDenom: chain?.coinDenom,
+        coinMinimalDenom: chain?.coinMinimalDenom,
+        coinDecimals: chain?.coinDecimals,
       },
     ],
     feeCurrencies: [
       {
-        coinDenom: comdex?.coinDenom,
-        coinMinimalDenom: comdex?.coinMinimalDenom,
-        coinDecimals: comdex?.coinDecimals,
+        coinDenom: chain?.coinDenom,
+        coinMinimalDenom: chain?.coinMinimalDenom,
+        coinDecimals: chain?.coinDecimals,
       },
     ],
     coinType: 118,

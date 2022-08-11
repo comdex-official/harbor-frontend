@@ -12,8 +12,7 @@ import {
   amountConversionWithComma,
   denomConversion,
 } from "../../utils/coin";
-import { ibcAssetsInfo } from "../../config/ibc";
-import { embedChainInfo } from "../../config/chain";
+
 import { message } from "antd";
 import { iconNameFromDenom } from "../../utils/string";
 import { cmst, comdex, harbor } from "../../config/network";
@@ -21,6 +20,8 @@ import Lodash from "lodash";
 import { marketPrice } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
 import { commaSeparator } from "../../utils/number";
+import AssetList from "../../config/ibc_assets.json";
+import { getChainConfig } from "../../services/keplr";
 
 const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
   const columns = [
@@ -95,42 +96,26 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
     return marketPrice(markets, denom) || 0;
   };
 
-  const ibcBalances = ibcAssetsInfo.map((channelInfo) => {
-    const chainInfo = embedChainInfo.filter(
-      (item) => item.chainId === channelInfo.counterpartyChainId
-    )[0];
-
-    const originCurrency =
-      chainInfo &&
-      chainInfo.currencies.find(
-        (cur) => cur.coinMinimalDenom === channelInfo.coinMinimalDenom
-      );
-
-    if (!originCurrency) {
-      message.info(
-        `Unknown currency ${channelInfo.coinMinimalDenom} for ${channelInfo.counterpartyChainId}`
-      );
-    }
-
+  let ibcBalances = AssetList?.tokens.map((token) => {
     const ibcBalance = balances.find(
-      (item) => item.denom === channelInfo?.ibcDenomHash
+      (item) => item.denom === token?.ibcDenomHash
     );
+
     const value = getPrice(ibcBalance?.denom) * ibcBalance?.amount;
 
     return {
-      chainInfo: chainInfo,
-      denom: originCurrency?.coinMinimalDenom,
+      chainInfo: getChainConfig(token),
+      coinMinimalDenom: token?.coinMinimalDenom,
       balance: {
         amount: ibcBalance?.amount ? amountConversion(ibcBalance.amount) : 0,
         value: value || 0,
       },
-      ibc: ibcBalance,
-      sourceChannelId: channelInfo.sourceChannelId,
-      destChannelId: channelInfo.destChannelId,
-      isUnstable: channelInfo.isUnstable,
-      currency: originCurrency,
+      sourceChannelId: token.comdexChannel,
+      destChannelId: token.channel,
+      ibcDenomHash: token?.ibcDenomHash,
     };
   });
+
   const nativeCoin = balances.filter(
     (item) => item.denom === comdex?.coinMinimalDenom
   )[0];
@@ -147,7 +132,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
 
   const currentChainData = [
     {
-      key: comdex.coinMinimalDenom,
+      key: comdex.chainId,
       asset: (
         <>
           <div className="assets-withicon">
@@ -212,16 +197,14 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom(item.currency?.coinMinimalDenom)}
-                />
+                <SvgIcon name={iconNameFromDenom(item?.coinMinimalDenom)} />
               </div>
-              {item.currency?.coinDenom}{" "}
+              {denomConversion(item?.coinMinimalDenom)}{" "}
             </div>
           </>
         ),
         noOfTokens: item?.balance?.amount,
-        oraclePrice: getPrice(item.currency?.coinMinimalDenom),
+        price: getPrice(item?.coinMinimalDenom),
         amount: item.balance,
         ibcdeposit: item,
         ibcwithdraw: item,
