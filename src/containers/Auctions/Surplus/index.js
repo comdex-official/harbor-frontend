@@ -139,7 +139,8 @@ const SurplusAuctions = ({ setPairs, address }) => {
     {
       title: (
         <>
-          <FilterModal setPairs={setPairs} />
+          {/* <FilterModal setPairs={setPairs} /> */}
+          Bid
         </>
       ),
       dataIndex: "action",

@@ -58,7 +58,7 @@ const Deposit = ({
       queryBalance(
         chain?.chainInfo?.rpc,
         account?.address,
-        chain?.denom,
+        chain?.coinMinimalDenom,
         (error, result) => {
           setBalanceInProgress(false);
 
@@ -92,7 +92,7 @@ const Deposit = ({
           source_port: "transfer",
           source_channel: chain.destChannelId,
           token: {
-            denom: chain.denom,
+            denom: chain.coinMinimalDenom,
             amount: getAmount(amount),
           },
           sender: sourceAddress,
@@ -195,10 +195,7 @@ const Deposit = ({
                         availableBalance.amount &&
                         amountConversion(availableBalance.amount)) ||
                         0}{" "}
-                      {(chain.currency &&
-                        chain.currency.coinDenom &&
-                        denomConversion(chain.currency.coinDenom)) ||
-                        ""}
+                        {denomConversion(chain?.coinMinimalDenom || "")}
                     </span>
                     <span className="assets-maxhalf">
                       <Button
