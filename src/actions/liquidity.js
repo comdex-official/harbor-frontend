@@ -8,7 +8,7 @@ import {
   SECOND_RESERVE_COIN_DENOM_SET,
   POOL_TOKEN_SUPPLY_SET,
   POOL_BALANCES_SET,
-  POOLS_LIQUIDITY_LIST_SET, BASE_COIN_POOL_PRICE_SET,
+  POOLS_LIQUIDITY_LIST_SET, BASE_COIN_POOL_PRICE_SET, POOL_PRICE_SET,
 } from "../constants/liquidity";
 
 export const setPools = (list, pagination) => {
@@ -88,5 +88,13 @@ export const setBaseCoinPoolPrice = (value) => {
   return {
     type: BASE_COIN_POOL_PRICE_SET,
     value,
+  };
+};
+
+export const setPoolPrice = (denom, value) => {
+  return {
+    type: POOL_PRICE_SET,
+    value,
+    denom,
   };
 };
