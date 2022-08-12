@@ -152,7 +152,7 @@ const Minting = ({ address }) => {
             if (
               item &&
               !item.isStableMintVault &&
-              item.appId.low ===PRODUCT_ID
+              item.appId.low === PRODUCT_ID
             ) {
               return (
                 <React.Fragment key={index}>

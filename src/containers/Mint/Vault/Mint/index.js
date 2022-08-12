@@ -464,7 +464,7 @@ const Mint = ({
                     ? " red-track"
                     : collateralRatio < safeCrRatio
                       ? " orange-track"
-                      : collateralRatio >= 200
+                      : collateralRatio >= safeCrRatio
                         ? " green-track"
                         : " ")
                 }
