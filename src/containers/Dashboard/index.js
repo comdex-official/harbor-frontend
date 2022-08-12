@@ -16,7 +16,8 @@ import "./index.scss";
 import { fetchProposalUpData } from "../../services/contractsRead";
 import { cmst, harbor } from "../../config/network";
 
-const Dashboard = ({ lang, isDarkMode, markets }) => {
+const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
+
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
   const [harborCurrentSypply, setHarborCurrentSupply] = useState();
@@ -105,6 +106,9 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     calculatedCmstCurrentSupply()
   }, [cmstCurrentSupply])
 
+  const getPrice = (denom) => {
+    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
+  };
   const calculatedCmstCurrentSupply = () => {
     let totalMintedAmount = 0;
     cmstCurrentSupply && cmstCurrentSupply.map((item) => {
@@ -307,8 +311,9 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
   };
   const harborMarketCap = () => {
     let supply = Number(amountConversion(harborCurrentSypply, DOLLAR_DECIMALS));
-    let price = Number(marketPrice(markets, harbor?.coinMinimalDenom))
+    let price = Number(getPrice(harbor?.coinMinimalDenom)).toFixed(DOLLAR_DECIMALS)
     let marketCap = supply * price;
+    marketCap = Number(marketCap).toFixed(DOLLAR_DECIMALS)
     marketCap = commaSeparator(marketCap)
     return marketCap || 0;
   }
@@ -407,7 +412,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                   <div className="col1">
                     <small>HARBOR Price</small>
                     <h4>
-                      ${marketPrice(markets, harbor?.coinMinimalDenom)}<span> 2.41%</span>
+                      ${Number(getPrice(harbor?.coinMinimalDenom)).toFixed(DOLLAR_DECIMALS)}<span> 2.41%</span>
                     </h4>
                   </div>
                   <div className="col2">
@@ -448,6 +453,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
 Dashboard.propTypes = {
   isDarkMode: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
+  poolPriceMap: PropTypes.object,
   markets: PropTypes.arrayOf(
     PropTypes.shape({
       rates: PropTypes.shape({
@@ -466,6 +472,7 @@ const stateToProps = (state) => {
     lang: state.language,
     isDarkMode: state.theme.theme.darkThemeEnabled,
     markets: state.oracle.market.list,
+    poolPriceMap: state.liquidity.poolPriceMap,
   };
 };
 
