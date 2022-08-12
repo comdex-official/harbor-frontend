@@ -2,7 +2,7 @@ import { message } from 'antd';
 import * as PropTypes from "prop-types";
 import React, { useEffect } from 'react'
 import { connect, useSelector } from 'react-redux';
-import { PRODUCT_ID } from '../../../../../constants/common';
+import { DOLLAR_DECIMALS, PRODUCT_ID } from '../../../../../constants/common';
 import { queryOwnerVaults, queryOwnerVaultsInfo } from '../../../../../services/vault/query';
 import { setOwnerVaultId, setOwnerVaultInfo } from '../../../../../actions/locker';
 import moment from 'moment';
@@ -74,7 +74,7 @@ const VaultDetails = ({
           </div>
           <div className="assets-row">
             <div className="asset-name">Stability Fee </div>
-            <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.stabilityFee) * 100 || "0"}%</div>
+            <div className="asset-value">{(decimalConversion(selectedExtentedPairVaultListData?.stabilityFee) * 100 || 0).toFixed(DOLLAR_DECIMALS)}%</div>
           </div>
           <div className="assets-row">
             <div className="asset-name">Drawdown Fee</div>

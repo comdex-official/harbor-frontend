@@ -23,7 +23,8 @@ import { commaSeparator } from "../../utils/number";
 import AssetList from "../../config/ibc_assets.json";
 import { getChainConfig } from "../../services/keplr";
 
-const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPriceMap }) => {
+
   const columns = [
     {
       title: "Asset",
@@ -93,7 +94,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
   ];
 
   const getPrice = (denom) => {
-    return marketPrice(markets, denom) || 0;
+    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
   };
 
   let ibcBalances = AssetList?.tokens.map((token) => {
@@ -204,7 +205,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
           </>
         ),
         noOfTokens: item?.balance?.amount,
-        price: getPrice(item?.coinMinimalDenom),
+        oraclePrice: getPrice(item?.coinMinimalDenom),
         amount: item.balance,
         ibcdeposit: item,
         ibcwithdraw: item,
@@ -256,6 +257,7 @@ Assets.propTypes = {
       amount: PropTypes.string,
     })
   ),
+  poolPriceMap: PropTypes.object,
   markets: PropTypes.arrayOf(
     PropTypes.shape({
       rates: PropTypes.shape({
@@ -276,6 +278,7 @@ const stateToProps = (state) => {
     balances: state.account.balances.list,
     markets: state.oracle.market.list,
     refreshBalance: state.account.refreshBalance,
+    poolPriceMap: state.liquidity.poolPriceMap,
   };
 };
 
