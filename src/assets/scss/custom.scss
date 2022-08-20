@@ -1158,6 +1158,65 @@ button {
     }
   }
 }
+.ant-space {
+  width: 100%;
+  .ant-picker {
+    width: 100%;
+    border: 0;
+    background: none;
+    font-size: 1.3rem;
+    line-height: 1;
+    text-align: right;
+    margin-bottom: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color: $text-color-dark2;
+    padding-right: 0;
+    .ant-picker-input {
+      input {
+        font-weight: 700;
+
+        width: 100%;
+        border: 0;
+        background: none;
+        font-size: 1.3rem;
+        line-height: 1;
+        text-align: right;
+        margin-bottom: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding-right: 0;
+
+        .dark-mode & {
+          color: white;
+        }
+      }
+    }
+    .ant-picker-suffix {
+      font-size: 1.6rem;
+      .dark-mode & {
+        color: white;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      width: 100%;
+      max-width: unset;
+      text-align: left;
+    }
+    &::-webkit-placeholder {
+      color: $text-color-dark2;
+      color: red;
+    }
+
+    &::placeholder {
+      color: $text-color-dark2;
+      color: red;
+    }
+  }
+}
 
 .buysell-arrow {
   padding: 20px;
@@ -1628,7 +1687,7 @@ button {
   justify-content: center;
 }
 
-.alert-label{
-   color: $error-color;
-    font-size: 12px;
+.alert-label {
+  color: $error-color;
+  font-size: 12px;
 }
