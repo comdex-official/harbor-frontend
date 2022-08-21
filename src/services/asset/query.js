@@ -2,14 +2,39 @@ import { QueryClientImpl } from "comdex-codec/build/comdex/asset/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
 
+
+
+
+let myClient = null;
+
+export const getQueryService = (callback) => {
+  if (myClient) {
+    const queryService = new QueryClientImpl(myClient);
+
+    return callback(null, queryService);
+  } else {
+    createQueryClient((error, client) => {
+      if (error) {
+        callback(error);
+      }
+      myClient = client;
+      const queryService = new QueryClientImpl(client);
+
+      return callback(null, queryService);
+    });
+  }
+};
+
+
+
 export const queryPairs = (offset, limit, countTotal, reverse, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryPairs({
         pagination: {
           key: "",
@@ -27,14 +52,39 @@ export const queryPairs = (offset, limit, countTotal, reverse, callback) => {
       });
   });
 };
+// export const queryPairs = (offset, limit, countTotal, reverse, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryPairs({
+//         pagination: {
+//           key: "",
+//           offset: Long.fromNumber(offset),
+//           limit: Long.fromNumber(limit),
+//           countTotal: countTotal,
+//           reverse: reverse,
+//         },
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
 
 export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryAssets({
         pagination: {
           key: "",
@@ -53,14 +103,39 @@ export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
   });
 };
 
+// export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+//     new QueryClientImpl(rpcClient)
+//       .QueryAssets({
+//         pagination: {
+//           key: "",
+//           offset: Long.fromNumber(offset),
+//           limit: Long.fromNumber(limit),
+//           countTotal: countTotal,
+//           reverse: reverse,
+//         },
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
 export const queryPair = (pairId, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryPair({
         id: Long.fromNumber(pairId),
       })
@@ -73,13 +148,32 @@ export const queryPair = (pairId, callback) => {
   });
 };
 
+// export const queryPair = (pairId, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryPair({
+//         id: Long.fromNumber(pairId),
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+
 export const queryExtendedPairVaultById = (productId, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryAllExtendedPairVaultsByApp({
         appId: Long.fromNumber(productId),
       })
@@ -91,14 +185,35 @@ export const queryExtendedPairVaultById = (productId, callback) => {
       });
   });
 };
+// };
+
+
+// export const queryExtendedPairVaultById = (productId, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+//     new QueryClientImpl(rpcClient)
+//       .QueryAllExtendedPairVaultsByApp({
+//         appId: Long.fromNumber(productId),
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
 
 export const queryPairVault = (pairId, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryExtendedPairVault({
         id: Long.fromNumber(pairId),
       })
@@ -111,14 +226,34 @@ export const queryPairVault = (pairId, callback) => {
   });
 };
 
+// export const queryPairVault = (pairId, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+//     new QueryClientImpl(rpcClient)
+//       .QueryExtendedPairVault({
+//         id: Long.fromNumber(pairId),
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
+
 export const queryPairVaults = (callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryAllExtendedPairVaultsByApp({
         appId: Long.fromNumber(1),
       })
@@ -131,14 +266,34 @@ export const queryPairVaults = (callback) => {
   });
 };
 
+// export const queryPairVaults = (callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryAllExtendedPairVaultsByApp({
+//         appId: Long.fromNumber(1),
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
 export const queryAsset = (id, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryAsset({
         id: Long.fromNumber(id),
       })
@@ -150,3 +305,23 @@ export const queryAsset = (id, callback) => {
       });
   });
 };
+
+// export const queryAsset = (id, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryAsset({
+//         id: Long.fromNumber(id),
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };

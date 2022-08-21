@@ -53,10 +53,10 @@ const routes = [
     path: "/govern-details/:proposalId",
     element: <GovernDetails />,
   },
-  {
-    path: "/airdrop",
-    element: <Airdrop />,
-  },
+  // {
+  //   path: "/airdrop",
+  //   element: <Airdrop />,
+  // },
   {
     path: "/locker",
     element: <Locker />,
