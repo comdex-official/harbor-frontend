@@ -66,7 +66,7 @@ const CloseLocker = ({ address, ownerLockerInfo }) => {
                         </div>
                         <div className="assets-right">
                             <div className="label-right">
-                                35463 CMST
+                                0.000000 CMST
                             </div>
 
                         </div>

@@ -135,9 +135,9 @@ const Withdraw = ({
   }, [address, userDeposite]);
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
-  const lockerId = ownerLockerInfo[0]?.lockerId;
-  const returnsAccumulated = amountConversion(ownerLockerInfo[0]?.returnsAccumulated || 0);
-  const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo[0]?.netBalance || 0);
+  const lockerId = ownerLockerInfo?.lockerId;
+  const returnsAccumulated = amountConversion(ownerLockerInfo?.returnsAccumulated || 0);
+  const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo?.netBalance || 0);
 
   const fetchOwnerLockerExistByAssetId = (
     productId = PRODUCT_ID,
@@ -153,13 +153,12 @@ const Withdraw = ({
           message.error(error);
           return;
         }
-
         let balance;
-        balance = (data?.lockerInfo[0]?.netBalance || "0") / 1000000;
+        balance = (data?.lockerInfo?.netBalance || "0") / 1000000;
         setOwnerVaultInfo(data?.lockerInfo);
-        setReward(data?.lockerInfo[0]?.returnsAccumulated);
+        setReward(data?.lockerInfo?.returnsAccumulated);
         setuserDeposite(balance);
-        setUserLockedValue(data?.lockerInfo[0]?.netBalance || "0");
+        setUserLockedValue(data?.lockerInfo?.netBalance || "0");
         let lockerExist = data?.lockerInfo?.length;
         if (lockerExist > 0) {
           dispatch(setIsLockerExist(true));
@@ -352,7 +351,7 @@ Withdraw.propTypes = {
   refreshBalance: PropTypes.number.isRequired,
   userLockedAmountInLocker: PropTypes.string.isRequired,
   sliderTooltipVisible: PropTypes.bool.isRequired,
-  ownerLockerInfo: PropTypes.array,
+  ownerLockerInfo: PropTypes.object,
 };
 const stateToProps = (state) => {
   return {

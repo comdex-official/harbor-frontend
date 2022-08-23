@@ -57,14 +57,14 @@ const routes = [
   //   path: "/airdrop",
   //   element: <Airdrop />,
   // },
-  {
-    path: "/locker",
-    element: <Locker />,
-  },
-  {
-    path: "/vote",
-    element: <Vote />,
-  },
+  // {
+  //   path: "/locker",
+  //   element: <Locker />,
+  // },
+  // {
+  //   path: "/vote",
+  //   element: <Vote />,
+  // },
 ];
 
 export default routes;
