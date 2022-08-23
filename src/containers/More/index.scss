@@ -1,12 +1,9 @@
 @import "../../assets/scss/variables.scss";
 
 .more-card {
-  // background: $background-light;
   position: relative;
   background: url("../../assets/images/more-card-bg.svg");
-  // background-size: cover;
   padding: 10px 5px 5px 5px;
-  // background-repeat: no-repeat;
   border-radius: $base-border-radius;
   box-shadow: $box-shadow-inner-light;
   border: 0.5px solid rgba(255, 255, 255, 0.7);
@@ -66,7 +63,6 @@
         width: 100%;
         .ant-btn {
           margin-top: auto;
-          // margin-left: 0;
           padding: 0 35px;
           margin-top: 10px;
         }
@@ -101,4 +97,22 @@
 .user-vote {
   text-transform: capitalize;
   padding-left: 2px;
+}
+
+.reward-collect-modal {
+  .ant-modal-content {
+  }
+
+  .custom-table .ant-table .ant-table-content table .ant-table-tbody tr {
+    .dark-mode & {
+      background: rgba($black, 0.3) !important;
+    }
+  }
+  .rewards-title {
+    font-weight: 600;
+    font-size: 1.4rem;
+    .dark-mode & {
+      color: white;
+    }
+  }
 }

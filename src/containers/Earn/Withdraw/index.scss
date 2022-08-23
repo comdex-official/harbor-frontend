@@ -1,6 +1,42 @@
 @import "../../../assets/scss/style.scss";
 
 .earn-main-container {
+  height: 100%;
+  .farm-modal-tab {
+    height: 100%;
+    .ant-tabs-content-holder {
+      height: 100%;
+      .ant-tabs-content {
+        height: 100%;
+        .col {
+          height: 100%;
+          .locker-close-card {
+            // height: 100%;
+            .locker-close-card-details {
+              background-color: transparent;
+              box-shadow: none;
+
+              .assets-left {
+                .leftlabel {
+                  font-size: 1.1rem;
+                  letter-spacing: 1px;
+                  font-weight: 500;
+                  .dark-mode & {
+                    color: white;
+                  }
+                }
+              }
+              .assets-right {
+                .label-right {
+                  font-size: 1.1rem;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   @media only screen and (max-width: 960px) {
     flex-direction: column;
   }
