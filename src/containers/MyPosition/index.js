@@ -38,7 +38,7 @@ const MyPositions = ({ address, balances }) => {
 
   useEffect(() => {
     if (address) {
-      fetchLockerStats();
+      // fetchLockerStats();
     }
   }, [address]);
 
@@ -73,6 +73,7 @@ const MyPositions = ({ address, balances }) => {
       setVaultsInfo(result);
     });
   };
+
   const callback = (key) => {
     if (key === "1") {
       setHistoryTab(false);
