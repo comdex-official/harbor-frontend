@@ -28,7 +28,7 @@ const MyEarn = ({ address }) => {
 
   useEffect(() => {
     if (address && cmstAssetId) {
-      fetchLockers(cmstAssetId, (pageNumber - 1) * pageSize, pageSize, true, false);
+      // fetchLockers(cmstAssetId, (pageNumber - 1) * pageSize, pageSize, true, false);
     }
   }, [address, cmstAssetId]);
 

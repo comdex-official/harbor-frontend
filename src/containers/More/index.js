@@ -172,7 +172,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Locker</h2>
                 <p>
-                  Perform tasks to claim your HARBOR airdrop.
+                  More tokens locked for longer = greater voting power = higher rewards.
                 </p>
                 <div className="button-container">
                   <Button
@@ -195,7 +195,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Vote</h2>
                 <p>
-                  Perform tasks to claim your HARBOR airdrop.
+                  Earn a share of your pool’s transaction fees, bribes, and emission rewards.
                 </p>
                 <div className="button-container">
                   <Button
@@ -218,7 +218,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Rewards</h2>
                 <p>
-                  Perform tasks to claim your HARBOR airdrop.
+                 Rewards displayed are an estimation of the trading fees, voting rewards and rebases that you can claim.
                 </p>
                 <div className="button-container">
                   <Button

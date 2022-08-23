@@ -131,7 +131,7 @@ const Withdraw = ({
 
   useEffect(() => {
     resetValues();
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+    // fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
   }, [address, userDeposite]);
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
@@ -209,7 +209,7 @@ const Withdraw = ({
           />
         );
         resetValues();
-        fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+        // fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
