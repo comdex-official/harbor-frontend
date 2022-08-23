@@ -66,10 +66,23 @@ const Mint = ({
   const [debtValidationError, setDebtValidationError] = useState();
   const [loading, setLoading] = useState(false);
   const [currentExtentedVaultdata, setCurrentExtentedVaultdata] = useState();
+  const [editType, setEditType] = useState("Mint")
 
   const dispatch = useDispatch();
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
+  const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
+
+
+  useEffect(() => {
+    if (ownerVaultId) {
+      setEditType("Deposit And Draw")
+    }
+    else {
+      setEditType("Mint")
+    }
+  }, [ownerVaultId])
+
 
   const getLiquidationPrice = () => {
     // formula = ((Liquidiation Ratio) * (Composite already minted + Composite to be minted) )/ (Quantity of Asset Locked + Quantity of Asset to be Locked)
@@ -95,7 +108,6 @@ const Mint = ({
     value = toDecimals(value).toString().trim();
     handleAssetOutChange(value)
   }
-  // !change cmdx price value here for get actual oracle price 
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
 
@@ -229,59 +241,108 @@ const Mint = ({
       return;
     }
 
-    if (vault?.id) {
-      message.info("This vault already exits. Try editing");
-      return;
-    }
+    if (ownerVaultId) {
 
-    setInProgress(true);
-    message.info("Transaction initiated");
-    signAndBroadcastTransaction(
-      {
-        message: {
-          typeUrl: getTypeURL("create"),
-          value: {
-            from: address,
-            appId: Long.fromNumber(PRODUCT_ID),
-            extendedPairVaultId: Long.fromNumber(pathVaultId),
-            amountIn: getAmount(inAmount),
-            amountOut: getAmount(outAmount),
+      setInProgress(true);
+      message.info("Transaction initiated");
+      signAndBroadcastTransaction(
+        {
+          message: {
+            typeUrl: getTypeURL("drawAndRepay"),
+            value: {
+              from: address,
+              appId: Long.fromNumber(PRODUCT_ID),
+              extendedPairVaultId: Long.fromNumber(pathVaultId),
+              userVaultId: Long.fromNumber(ownerVaultId),
+              amount: getAmount(inAmount),
+            },
+          },
+          fee: {
+            amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+            gas: "2500000",
           },
         },
-        fee: {
-          amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-          gas: "2500000",
+        address,
+        (error, result) => {
+          setInProgress(false);
+          if (error) {
+            message.error(error);
+            resetValues();
+            return;
+          }
+
+          if (result?.code) {
+            message.info(result?.rawLog);
+            resetValues();
+            return;
+          }
+
+          setComplete(true);
+          message.success(
+            <Snack
+              message={variables[lang].tx_success}
+              hash={result?.transactionHash}
+            />
+          );
+          resetValues();
+          dispatch({
+            type: "BALANCE_REFRESH_SET",
+            value: refreshBalance + 1,
+          });
+        }
+      );
+      return;
+    } else {
+
+      setInProgress(true);
+      message.info("Transaction initiated");
+      signAndBroadcastTransaction(
+        {
+          message: {
+            typeUrl: getTypeURL("create"),
+            value: {
+              from: address,
+              appId: Long.fromNumber(PRODUCT_ID),
+              extendedPairVaultId: Long.fromNumber(pathVaultId),
+              amountIn: getAmount(inAmount),
+              amountOut: getAmount(outAmount),
+            },
+          },
+          fee: {
+            amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+            gas: "2500000",
+          },
         },
-      },
-      address,
-      (error, result) => {
-        setInProgress(false);
-        if (error) {
-          message.error(error);
-          resetValues();
-          return;
-        }
+        address,
+        (error, result) => {
+          setInProgress(false);
+          if (error) {
+            message.error(error);
+            resetValues();
+            return;
+          }
 
-        if (result?.code) {
-          message.info(result?.rawLog);
-          resetValues();
-          return;
-        }
+          if (result?.code) {
+            message.info(result?.rawLog);
+            resetValues();
+            return;
+          }
 
-        setComplete(true);
-        message.success(
-          <Snack
-            message={variables[lang].tx_success}
-            hash={result?.transactionHash}
-          />
-        );
-        resetValues();
-        dispatch({
-          type: "BALANCE_REFRESH_SET",
-          value: refreshBalance + 1,
-        });
-      }
-    );
+          setComplete(true);
+          message.success(
+            <Snack
+              message={variables[lang].tx_success}
+              hash={result?.transactionHash}
+            />
+          );
+          resetValues();
+          dispatch({
+            type: "BALANCE_REFRESH_SET",
+            value: refreshBalance + 1,
+          });
+        }
+      );
+    }
   };
 
   useEffect(() => {
@@ -528,7 +589,7 @@ const Mint = ({
                 className="btn-filled"
                 onClick={() => handleCreate()}
               >
-                Mint
+                {editType}
               </Button>
             </div>
           </div>

@@ -117,7 +117,7 @@ const Deposit = ({
 
   useEffect(() => {
     fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
-  }, [whiteListedAsset, ownerLockerInfo])
+  }, [whiteListedAsset])
 
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -195,6 +195,7 @@ const Deposit = ({
     }
   };
   const handleSubmitCreateLocker = () => {
+    console.log("Run create");
     if (!address) {
       message.error("Address not found, please connect to Keplr");
       return;
@@ -241,6 +242,7 @@ const Deposit = ({
     );
   };
   const handleSubmitAssetDepositLocker = () => {
+    console.log("Run Deposit");
     if (!address) {
       message.error("Address not found, please connect to Keplr");
       return;
@@ -452,7 +454,7 @@ Deposit.propTypes = {
     denom: PropTypes.string,
   }),
   refreshBalance: PropTypes.number.isRequired,
-  ownerLockerInfo: PropTypes.array,
+  ownerLockerInfo: PropTypes.string,
 };
 const stateToProps = (state) => {
   return {

@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { toDecimals } from "../../utils/string";
 import { calculateROI, decimalConversion } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
+import CloseLocker from "./Close";
 
 const Earn = ({
   collectorData
@@ -116,6 +117,9 @@ const Earn = ({
               </TabPane>
               <TabPane tab="Withdraw" key="2" disabled={!isLockerExist}>
                 <Withdraw />
+              </TabPane>
+              <TabPane tab="Close" key="3" disabled={!isLockerExist}>
+                <CloseLocker />
               </TabPane>
             </Tabs>
           </Col>

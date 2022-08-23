@@ -17,15 +17,6 @@ const Vault = ({
   const [activeKey, setActiveKey] = useState();
   const { TabPane } = Tabs;
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
-  
-  useEffect(() => {
-    if (ownerVaultId) {
-      setActiveKey("2");
-    }
-    else {
-      setActiveKey("1");
-    }
-  }, [ownerVaultId]);
 
   const BackButton = {
     right: (
@@ -47,7 +38,7 @@ const Vault = ({
               activeKey={activeKey}
               tabBarExtraContent={BackButton}
             >
-              <TabPane tab="Mint" key="1" disabled={ownerVaultId}>
+              <TabPane tab="Mint" key="1" >
                 <Mint />
               </TabPane>
               <TabPane tab="Edit" key="2" disabled={!ownerVaultId}>

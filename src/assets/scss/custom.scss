@@ -1686,6 +1686,9 @@ button {
 .display-center {
   justify-content: center;
 }
+.display-right {
+  justify-content: flex-end;
+}
 
 .alert-label {
   color: $error-color;
