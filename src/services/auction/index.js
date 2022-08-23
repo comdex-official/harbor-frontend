@@ -1,7 +1,62 @@
 import { QueryClientImpl } from "comdex-codec/build/comdex/auction/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
-import {PRODUCT_ID} from "../../constants/common";
+import { PRODUCT_ID } from "../../constants/common";
+
+let myClient = null;
+
+
+export const getQueryService = (callback) => {
+  if (myClient) {
+    const queryService = new QueryClientImpl(myClient);
+
+    return callback(null, queryService);
+  } else {
+    createQueryClient((error, client) => {
+      if (error) {
+        callback(error);
+      }
+      myClient = client;
+      const queryService = new QueryClientImpl(client);
+
+      return callback(null, queryService);
+    });
+  }
+};
+
+// export const queryDutchAuctionList = (
+//   offset,
+//   limit,
+//   countTotal,
+//   reverse,
+//   callback
+// ) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryDutchAuctions({
+//         appId: Long.fromNumber(PRODUCT_ID),
+//         pagination: {
+//           key: "",
+//           offset: Long.fromNumber(offset),
+//           limit: Long.fromNumber(limit),
+//           countTotal: countTotal,
+//           reverse: reverse,
+//         },
+//       })
+//       .then((result) => {
+
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
 
 export const queryDutchAuctionList = (
   offset,
@@ -10,13 +65,13 @@ export const queryDutchAuctionList = (
   reverse,
   callback
 ) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryDutchAuctions({
         appId: Long.fromNumber(PRODUCT_ID),
         pagination: {
@@ -28,7 +83,7 @@ export const queryDutchAuctionList = (
         },
       })
       .then((result) => {
-        
+
         callback(null, result);
       })
       .catch((error) => {
@@ -37,14 +92,37 @@ export const queryDutchAuctionList = (
   });
 };
 
+// export const queryDutchBiddingList = (bidder, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryDutchBiddings({
+//         bidder,
+//         appId: Long.fromNumber(PRODUCT_ID),
+//         history: false,
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
+
 export const queryDutchBiddingList = (bidder, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryDutchBiddings({
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
@@ -59,14 +137,32 @@ export const queryDutchBiddingList = (bidder, callback) => {
   });
 };
 
+// export const queryAuctionParams = (callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryAuctionParams({
+//         appId: Long.fromNumber(PRODUCT_ID),
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => callback(error?.message));
+//   });
+// };
+
 export const queryAuctionParams = (callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryAuctionParams({
         appId: Long.fromNumber(PRODUCT_ID),
       })
@@ -77,6 +173,41 @@ export const queryAuctionParams = (callback) => {
   });
 };
 
+// export const queryDebtAuctionList = (
+//   offset,
+//   limit,
+//   countTotal,
+//   reverse,
+//   callback
+// ) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryDebtAuctions({
+//         appId: Long.fromNumber(PRODUCT_ID),
+//         pagination: {
+//           key: "",
+//           offset: Long.fromNumber(offset),
+//           limit: Long.fromNumber(limit),
+//           countTotal: countTotal,
+//           reverse: reverse,
+//         },
+//       })
+//       .then((result) => {
+
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
+
 export const queryDebtAuctionList = (
   offset,
   limit,
@@ -84,13 +215,13 @@ export const queryDebtAuctionList = (
   reverse,
   callback
 ) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryDebtAuctions({
         appId: Long.fromNumber(PRODUCT_ID),
         pagination: {
@@ -102,7 +233,7 @@ export const queryDebtAuctionList = (
         },
       })
       .then((result) => {
-        
+
         callback(null, result);
       })
       .catch((error) => {
@@ -111,14 +242,36 @@ export const queryDebtAuctionList = (
   });
 };
 
+// export const queryDebtBiddingList = (bidder, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QueryDebtBiddings({
+//         bidder,
+//         appId: Long.fromNumber(PRODUCT_ID),
+//         history: false,
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
 export const queryDebtBiddingList = (bidder, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QueryDebtBiddings({
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
@@ -133,6 +286,40 @@ export const queryDebtBiddingList = (bidder, callback) => {
   });
 };
 
+// export const querySurplusAuctionList = (
+//   offset,
+//   limit,
+//   countTotal,
+//   reverse,
+//   callback
+// ) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QuerySurplusAuctions({
+//         appId: Long.fromNumber(PRODUCT_ID),
+//         pagination: {
+//           key: "",
+//           offset: Long.fromNumber(offset),
+//           limit: Long.fromNumber(limit),
+//           countTotal: countTotal,
+//           reverse: reverse,
+//         },
+//       })
+//       .then((result) => {
+
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
 export const querySurplusAuctionList = (
   offset,
   limit,
@@ -140,13 +327,13 @@ export const querySurplusAuctionList = (
   reverse,
   callback
 ) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QuerySurplusAuctions({
         appId: Long.fromNumber(PRODUCT_ID),
         pagination: {
@@ -158,7 +345,7 @@ export const querySurplusAuctionList = (
         },
       })
       .then((result) => {
-        
+
         callback(null, result);
       })
       .catch((error) => {
@@ -167,14 +354,36 @@ export const querySurplusAuctionList = (
   });
 };
 
+// export const querySurplusBiddingList = (bidder, callback) => {
+//   createQueryClient((error, rpcClient) => {
+//     if (error) {
+//       callback(error);
+//       return;
+//     }
+
+//     new QueryClientImpl(rpcClient)
+//       .QuerySurplusBiddings({
+//         bidder,
+//         appId: Long.fromNumber(PRODUCT_ID),
+//         history: false,
+//       })
+//       .then((result) => {
+//         callback(null, result);
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   });
+// };
+
 export const querySurplusBiddingList = (bidder, callback) => {
-  createQueryClient((error, rpcClient) => {
+  getQueryService((error, queryService) => {
     if (error) {
       callback(error);
       return;
     }
 
-    new QueryClientImpl(rpcClient)
+    queryService
       .QuerySurplusBiddings({
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
