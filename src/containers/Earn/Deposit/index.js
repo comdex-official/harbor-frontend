@@ -194,7 +194,7 @@ const Deposit = ({
       return null;
     }
   };
-  
+
   const handleSubmitCreateLocker = () => {
     console.log("Run create");
     if (!address) {
@@ -377,9 +377,10 @@ const Deposit = ({
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
-                disabled={
-                  !inAmount || inAmount <= 0 || inProgress || inputValidationError?.message
-                }
+                // disabled={
+                //   !inAmount || inAmount <= 0 || inProgress || inputValidationError?.message
+                // }
+                disabled={true}
                 type="primary"
                 className="btn-filled"
                 onClick={() => {

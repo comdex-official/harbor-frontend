@@ -40,7 +40,7 @@ const MyPositions = ({ address, balances }) => {
     if (address) {
       fetchLockerStats();
     }
-  }, [address, lockerInfo]);
+  }, [address]);
 
   const fetchCollectorStats = () => {
     queryCollectorInformation((error, result) => {

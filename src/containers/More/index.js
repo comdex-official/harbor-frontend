@@ -179,6 +179,7 @@ const More = () => {
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("/locker")}
+                    disabled={true}
                   >
                     Lock
                   </Button>
@@ -201,6 +202,7 @@ const More = () => {
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("/vote")}
+                    disabled={true}
                   >
                     Vote
                   </Button>
@@ -223,6 +225,7 @@ const More = () => {
                     type="primary"
                     className="btn-filled"
                     onClick={showModal}
+                    disabled={true}
                   // onClick={() => handleRouteChange("/rewards")}
                   >
                     Claim
@@ -257,15 +260,6 @@ const More = () => {
                               className="custom-table liquidation-table"
                               dataSource={tableData}
                               columns={columns}
-                              // loading={inProgress}
-                              // onChange={(event) => handleChange(event)}
-                              // pagination={{
-                              //   total:
-                              //     auctions &&
-                              //     auctions.pagination &&
-                              //     auctions.pagination.total,
-                              //   pageSize,
-                              // }}
                               pagination={false}
                               scroll={{ x: "100%" }}
                             />
