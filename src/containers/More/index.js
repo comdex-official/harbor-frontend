@@ -127,7 +127,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2> Governance</h2>
                 <p>
-                  Use HARBOR token to drive key decision for the protocol via proposals
+                  Use veHARBOR token to drive key decision for the protocol via proposals
                 </p>
                 <div className="button-container">
                   <Button
@@ -195,7 +195,8 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Vote</h2>
                 <p>
-                  Earn a share of your pool’s transaction fees, bribes, and emission rewards.
+                  Earn a share of vault's surplus, bribes, and rebase rewards.
+
                 </p>
                 <div className="button-container">
                   <Button
@@ -218,7 +219,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Rewards</h2>
                 <p>
-                 Rewards displayed are an estimation of the trading fees, voting rewards and rebases that you can claim.
+                  Rewards displayed are an estimation of the bribes and surplus rewards that you can claim.
                 </p>
                 <div className="button-container">
                   <Button
