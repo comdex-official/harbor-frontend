@@ -57,9 +57,6 @@ const ConnectButton = ({
     const savedAddress = localStorage.getItem("ac");
     const userAddress = savedAddress ? decode(savedAddress) : address;
 
-    fetchMarkets();
-    // getVaults();
-
     if (userAddress) {
       setAccountAddress(userAddress);
 
@@ -70,6 +67,10 @@ const ConnectButton = ({
       fetchBalances(userAddress);
     }
   }, [address, refreshBalance, markets, poolPriceMap]);
+
+  useEffect(() => {
+    fetchMarkets();
+  }, [])
 
   useEffect(() => {
     calculateAssetBalance(balances);

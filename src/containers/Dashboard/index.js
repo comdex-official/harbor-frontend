@@ -112,7 +112,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
   const calculatedCmstCurrentSupply = () => {
     let totalMintedAmount = 0;
     cmstCurrentSupply && cmstCurrentSupply.map((item) => {
-      totalMintedAmount = totalMintedAmount + Number(item?.mintedAmount);
+      return totalMintedAmount = totalMintedAmount + Number(item?.mintedAmount);
     })
     setCalculatedCMSTSupply(totalMintedAmount);
   }
