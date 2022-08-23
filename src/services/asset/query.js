@@ -52,31 +52,7 @@ export const queryPairs = (offset, limit, countTotal, reverse, callback) => {
       });
   });
 };
-// export const queryPairs = (offset, limit, countTotal, reverse, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
 
-//     new QueryClientImpl(rpcClient)
-//       .QueryPairs({
-//         pagination: {
-//           key: "",
-//           offset: Long.fromNumber(offset),
-//           limit: Long.fromNumber(limit),
-//           countTotal: countTotal,
-//           reverse: reverse,
-//         },
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
   getQueryService((error, queryService) => {
@@ -103,30 +79,7 @@ export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
   });
 };
 
-// export const queryAssets = (offset, limit, countTotal, reverse, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryAssets({
-//         pagination: {
-//           key: "",
-//           offset: Long.fromNumber(offset),
-//           limit: Long.fromNumber(limit),
-//           countTotal: countTotal,
-//           reverse: reverse,
-//         },
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
+
 
 export const queryPair = (pairId, callback) => {
   getQueryService((error, queryService) => {
@@ -148,24 +101,6 @@ export const queryPair = (pairId, callback) => {
   });
 };
 
-// export const queryPair = (pairId, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-
-//     new QueryClientImpl(rpcClient)
-//       .QueryPair({
-//         id: Long.fromNumber(pairId),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
 
 export const queryExtendedPairVaultById = (productId, callback) => {
   getQueryService((error, queryService) => {
@@ -185,27 +120,8 @@ export const queryExtendedPairVaultById = (productId, callback) => {
       });
   });
 };
-// };
 
 
-// export const queryExtendedPairVaultById = (productId, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryAllExtendedPairVaultsByApp({
-//         appId: Long.fromNumber(productId),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 export const queryPairVault = (pairId, callback) => {
   getQueryService((error, queryService) => {
@@ -226,24 +142,6 @@ export const queryPairVault = (pairId, callback) => {
   });
 };
 
-// export const queryPairVault = (pairId, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryExtendedPairVault({
-//         id: Long.fromNumber(pairId),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 
 export const queryPairVaults = (callback) => {
@@ -266,25 +164,6 @@ export const queryPairVaults = (callback) => {
   });
 };
 
-// export const queryPairVaults = (callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-
-//     new QueryClientImpl(rpcClient)
-//       .QueryAllExtendedPairVaultsByApp({
-//         appId: Long.fromNumber(1),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 export const queryAsset = (id, callback) => {
   getQueryService((error, queryService) => {
@@ -305,23 +184,3 @@ export const queryAsset = (id, callback) => {
       });
   });
 };
-
-// export const queryAsset = (id, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-
-//     new QueryClientImpl(rpcClient)
-//       .QueryAsset({
-//         id: Long.fromNumber(id),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
