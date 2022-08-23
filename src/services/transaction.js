@@ -64,6 +64,8 @@ export const messageTypeToText = (type) => {
       return "Place Surplus Bid";
     case "/comdex.auction.v1beta1.MsgPlaceDebtBidRequest":
       return "Place Debt Bid";
+    case "/comdex.vault.v1beta1.MsgDepositAndDrawRequest":
+      return "Deposit and Draw";
     default:
       return type;
   }
