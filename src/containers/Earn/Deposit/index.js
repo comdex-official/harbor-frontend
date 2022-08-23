@@ -194,6 +194,7 @@ const Deposit = ({
       return null;
     }
   };
+  
   const handleSubmitCreateLocker = () => {
     console.log("Run create");
     if (!address) {
@@ -241,6 +242,7 @@ const Deposit = ({
       }
     );
   };
+
   const handleSubmitAssetDepositLocker = () => {
     console.log("Run Deposit");
     if (!address) {
