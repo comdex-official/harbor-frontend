@@ -116,7 +116,7 @@ const Deposit = ({
   }, [whiteListedAsset]);
 
   useEffect(() => {
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+    // fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
   }, [whiteListedAsset])
 
 
