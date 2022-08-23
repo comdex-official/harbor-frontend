@@ -139,7 +139,7 @@ const GovernDetails = ({
   const dataVote = [
     {
       title: "Total Vote",
-      counts: currentProposal ? `${(calculateTotalValue() || "0") + " " + "HARBOR"}` : 0,
+      counts: currentProposal ? `${(calculateTotalValue() || "0") + " " + "veHARBOR"}` : 0,
     }
   ];
   const Options = {
