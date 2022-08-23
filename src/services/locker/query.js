@@ -24,22 +24,7 @@ const getQueryService = (callback) => {
   }
 };
 
-// export const queryLockerWhiteListedAssetByProduct = (callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryWhiteListedAssetByAllProduct()
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
+
 
 export const queryLockerWhiteListedAssetByProduct = (callback) => {
   getQueryService((error, queryService) => {
@@ -58,24 +43,7 @@ export const queryLockerWhiteListedAssetByProduct = (callback) => {
   });
 };
 
-// export const queryLockerWhiteListedAssetByProductId = (productId, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryWhiteListedAssetIDsByAppID({
-//         appId: Long.fromNumber(productId),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
+
 
 
 export const queryLockerWhiteListedAssetByProductId = (productId, callback) => {
@@ -97,31 +65,7 @@ export const queryLockerWhiteListedAssetByProductId = (productId, callback) => {
   });
 };
 
-// export const queryUserLockerByProductAssetId = (
-//   productId,
-//   assetId,
-//   owner,
-//   callback
-// ) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryOwnerLockerByAppToAssetIDbyOwner({
-//         appId: Long.fromNumber(productId),
-//         assetId: Long.fromNumber(assetId),
-//         owner: owner,
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
+
 
 export const queryUserLockerByProductAssetId = (
   productId,
@@ -149,31 +93,6 @@ export const queryUserLockerByProductAssetId = (
   });
 };
 
-// export const queryUserLockedValueInLocker = (
-//   productId,
-//   assetId,
-//   owner,
-//   callback
-// ) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryOwnerLockerByAppToAssetIDbyOwner({
-//         appId: Long.fromNumber(productId),
-//         assetId: Long.fromNumber(assetId),
-//         owner: owner,
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 
 export const queryUserLockedValueInLocker = (
@@ -202,24 +121,6 @@ export const queryUserLockedValueInLocker = (
   });
 };
 
-// export const queryLockerLookupTableByApp = (productId, callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryLockerLookupTableByApp({
-//         appId: Long.fromNumber(productId),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 export const queryLockerLookupTableByApp = (productId, callback) => {
   getQueryService((error, queryService) => {
@@ -241,42 +142,6 @@ export const queryLockerLookupTableByApp = (productId, callback) => {
 };
 
 
-// export const queryUserLockerHistory = (
-//   assetId,
-//   productId,
-//   owner,
-//   offset,
-//   limit,
-//   countTotal,
-//   reverse,
-//   callback
-// ) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryOwnerTxDetailsLockerOfAppByOwnerByAsset({
-//         appId: Long.fromNumber(productId),
-//         assetId: Long.fromNumber(assetId),
-//         owner: owner,
-//         pagination: {
-//           key: "",
-//           offset: Long.fromNumber(offset),
-//           limit: Long.fromNumber(limit),
-//           countTotal: countTotal,
-//           reverse: reverse,
-//         },
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 export const queryUserLockerHistory = (
   assetId,
@@ -315,28 +180,6 @@ export const queryUserLockerHistory = (
   });
 };
 
-// export const queryUserLockerStats = (
-//   owner,
-//   callback
-// ) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryLockerByAppByOwner({
-//         appId: Long.fromNumber(PRODUCT_ID),
-//         owner: owner,
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
 
 export const queryUserLockerStats = (
   owner,

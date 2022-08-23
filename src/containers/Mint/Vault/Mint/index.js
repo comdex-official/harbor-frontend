@@ -39,6 +39,8 @@ import { useSelector } from "react-redux";
 import Long from "long";
 import { queryPair, queryPairVault } from "../../../../services/asset/query";
 import { setExtendedPairVaultListData, setSelectedExtentedPairvault } from "../../../../actions/locker";
+import { queryUserVaultsInfo } from "../../../../services/vault/query";
+import { setOwnerCurrentCollateral } from "../../../../actions/mint";
 
 const Mint = ({
   lang,
@@ -56,6 +58,9 @@ const Mint = ({
   setCollateralRatio,
   vault,
   refreshBalance,
+  setOwnerCurrentCollateral,
+  ownerVaultInfo,
+  ownerCurrrentCollateral
 }) => {
   // pathVaultId ----> extentedPairvaultId
   const { pathVaultId } = useParams();
@@ -83,6 +88,24 @@ const Mint = ({
     }
   }, [ownerVaultId])
 
+  useEffect(() => {
+    if (ownerVaultInfo?.id) {
+      getOwnerVaultInfo(ownerVaultInfo?.id)
+    }
+  }, [ownerVaultInfo])
+
+  const getOwnerVaultInfo = (ownerVaultId) => {
+    queryUserVaultsInfo(ownerVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      let ownerCollateral = decimalConversion(data?.vaultsInfo?.collateralizationRatio) * 100
+      ownerCollateral = Number(ownerCollateral).toFixed(DOLLAR_DECIMALS)
+      setOwnerCurrentCollateral(ownerCollateral)
+    });
+  };
+
 
   const getLiquidationPrice = () => {
     // formula = ((Liquidiation Ratio) * (Composite already minted + Composite to be minted) )/ (Quantity of Asset Locked + Quantity of Asset to be Locked)
@@ -98,7 +121,12 @@ const Mint = ({
 
   const onChange = (value) => {
     value = toDecimals(value).toString().trim();
-    handleAmountInChange(value);
+
+    if (ownerVaultId) {
+      handleAmountInChangeWhenVaultExist(value)
+    } else {
+      handleAmountInChange(value);
+    }
     setValidationError(
       ValidateInputNumber(getAmount(value), collateralAssetBalance)
     );
@@ -107,6 +135,24 @@ const Mint = ({
   const onSecondInputChange = (value) => {
     value = toDecimals(value).toString().trim();
     handleAssetOutChange(value)
+  }
+  const handleAmountInChangeWhenVaultExist = (value) => {
+    let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
+
+    setValidationError(
+      ValidateInputNumber(getAmount(value), collateralAssetBalance)
+    );
+    setAmountIn(value);
+    let dataAmount = calculateAmountOut(
+      value,
+      selectedTokenPrice,
+      Number(ownerCurrrentCollateral) / 100,
+      marketPrice(markets, pair && pair?.denomOut)
+    );
+    setAmountOut(dataAmount);
+    // setDebtValidationError(
+    //   ValidateInputNumber(getAmount(dataAmount), "", "", debtFloor)
+    // );
   }
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
@@ -465,7 +511,7 @@ const Mint = ({
             </div>
           </div>
 
-          <div className="assets-select-card mt-4">
+          <div className={ownerVaultId ? "assets-select-card  vault-exist-margin" : "assets-select-card mt-4"}>
             <div className="assets-left">
               <label className="leftlabel">
                 Withdraw <TooltipIcon text="CMST being borrowed from the vault based on the collateral value" />
@@ -486,7 +532,8 @@ const Mint = ({
               </div>
             </div>
             <div className="assets-right">
-              <div className="label-right">
+
+              {!ownerVaultId && <div className="label-right">
                 Withdrawable
                 <span className="ml-1">
                   {calculateWithdrawableAmount()} {denomToSymbol(pair && pair?.denomOut)}
@@ -503,6 +550,7 @@ const Mint = ({
                   </Button>
                 </div>
               </div>
+              }
               <div className="input-select">
                 <CustomInput
                   value={outAmount}
@@ -510,13 +558,14 @@ const Mint = ({
                     onSecondInputChange(e.target.value)
                   }}
                   validationError={debtValidationError}
+                  disabled={ownerVaultId ? true : false}
                 />
                 <small>$ {showOutAssetValue()}</small>
               </div>
             </div>
           </div>
 
-          <div className="Interest-rate-container mt-4">
+          {!ownerVaultId && <div className="Interest-rate-container mt-4">
             <div className="slider-numbers mt-4">
               <Slider
                 className={
@@ -569,6 +618,7 @@ const Mint = ({
               </div>
             </div>
           </div>
+          }
 
           {/* <Info /> */}
           <div className="assets PoolSelect-btn">
@@ -586,7 +636,7 @@ const Mint = ({
                 }
                 loading={inProgress}
                 type="primary"
-                className="btn-filled"
+                className={ownerVaultId ? "btn-filled mt-4" : "btn-filled"}
                 onClick={() => handleCreate()}
               >
                 {editType}
@@ -665,6 +715,8 @@ Mint.prototype = {
       low: PropTypes.number,
     }),
   }),
+  ownerVaultInfo: PropTypes.array,
+  ownerCurrrentCollateral: PropTypes.number.isRequired,
   vaults: PropTypes.arrayOf(
     PropTypes.shape({
       collateral: PropTypes.shape({
@@ -697,6 +749,8 @@ const stateToProps = (state) => {
     vaults: state.account.vaults.list,
     vault: state.account.vault,
     refreshBalance: state.account.refreshBalance,
+    ownerVaultInfo: state.locker.ownerVaultInfo,
+    ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
   };
 };
 
@@ -709,5 +763,6 @@ const actionsToProps = {
   setAmountIn,
   setAmountOut,
   setCollateralRatio,
+  setOwnerCurrentCollateral,
 };
 export default connect(stateToProps, actionsToProps)(Mint);

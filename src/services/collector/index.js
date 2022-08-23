@@ -26,25 +26,6 @@ const getQueryService = (callback) => {
 
 
 
-// export const queryCollectorInformation = (callback) => {
-//   createQueryClient((error, rpcClient) => {
-//     if (error) {
-//       callback(error);
-//       return;
-//     }
-//     new QueryClientImpl(rpcClient)
-//       .QueryCollectorLookupByApp({
-//         appId: Long.fromNumber(PRODUCT_ID),
-//       })
-//       .then((result) => {
-//         callback(null, result);
-//       })
-//       .catch((error) => {
-//         callback(error?.message);
-//       });
-//   });
-// };
-
 export const queryCollectorInformation = (callback) => {
   getQueryService((error, queryService) => {
     if (error) {
