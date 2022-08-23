@@ -331,12 +331,12 @@ const Edit = ({
   const withdrawableCollateral = () => {
     let depositedAsset = Number(amountConversion(ownerVaultInfo?.amountIn))
     let minCr = minCrRatio / 100;
-    let safeMinCr = (minCrRatio / 100) + 1;
+    // let safeMinCr = (minCrRatio / 100) + 1;
     let borrowedCMST = Number(amountConversion(ownerVaultInfo?.amountOut));
     let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
     let collateralAssetPrice = collateralPrice;
-    // let withdrawableAmount = depositedAsset - ((minCr * (borrowedCMST + intrest)) / collateralAssetPrice)
-    let withdrawableAmount = depositedAsset - ((safeMinCr * (borrowedCMST + intrest)) / collateralAssetPrice)
+    let withdrawableAmount = depositedAsset - ((minCr * (borrowedCMST + intrest)) / collateralAssetPrice)
+    // let withdrawableAmount = depositedAsset - ((safeMinCr * (borrowedCMST + intrest)) / collateralAssetPrice)
     withdrawableAmount = truncateToDecimals(withdrawableAmount, 6)
     if (withdrawableAmount < 0) {
       withdrawableAmount = "0";
@@ -347,10 +347,10 @@ const Edit = ({
     let collateralLocked = Number(amountConversion(ownerVaultInfo?.amountIn))
     let collateralAssetPrice = collateralPrice;
     let minCr = minCrRatio / 100;
-    let safeMinCr = (minCrRatio / 100) + 1;
+    // let safeMinCr = (minCrRatio / 100) + 1;
     let mintedCMST = Number(amountConversion(ownerVaultInfo?.amountOut));
     let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
-    let calculatedAmount = ((collateralLocked * collateralAssetPrice) / safeMinCr) - (mintedCMST + intrest);
+    let calculatedAmount = ((collateralLocked * collateralAssetPrice) / minCr) - (mintedCMST + intrest);
     calculatedAmount = truncateToDecimals(calculatedAmount, 6)
     if (calculatedAmount < 0) {
       calculatedAmount = "0";
