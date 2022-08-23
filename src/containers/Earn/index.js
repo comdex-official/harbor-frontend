@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { toDecimals } from "../../utils/string";
 import { calculateROI, decimalConversion } from "../../utils/number";
 import { DOLLAR_DECIMALS } from "../../constants/common";
+import CloseLocker from "./Close";
 
 const Earn = ({
   collectorData
@@ -111,11 +112,14 @@ const Earn = ({
               onChange={callback}
               className="comdex-tabs farm-modal-tab"
             >
-              <TabPane tab="Deposit" key="1">
+              <TabPane tab="Deposit" key="1" disabled={isLockerExist}>
                 <Deposit />
               </TabPane>
-              <TabPane tab="Withdraw" key="2" disabled={!isLockerExist}>
+              <TabPane tab="Withdraw" key="2" disabled={true}>
                 <Withdraw />
+              </TabPane>
+              <TabPane tab="Close" key="3" disabled={true}>
+                <CloseLocker />
               </TabPane>
             </Tabs>
           </Col>

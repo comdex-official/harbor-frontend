@@ -227,8 +227,8 @@ CloseTab.propTypes = {
       low: PropTypes.number,
     }),
   }),
-  ownerVaultId: PropTypes.string,
-  ownerVaultInfo: PropTypes.array,
+  ownerVaultId: PropTypes.number,
+  ownerVaultInfo: PropTypes.object,
 };
 
 const stateToProps = (state) => {

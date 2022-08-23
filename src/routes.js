@@ -9,6 +9,8 @@ import More from './containers/More'
 import Govern from './containers/More/Govern'
 import GovernDetails from './containers/More/Govern/Details'
 import Airdrop from "./containers/More/Airdrop";
+import Locker from "./containers/More/Locker";
+import Vote from "./containers/More/Vote";
 
 const routes = [
   {
@@ -51,10 +53,18 @@ const routes = [
     path: "/govern-details/:proposalId",
     element: <GovernDetails />,
   },
-  {
-    path: "/airdrop",
-    element: <Airdrop />,
-  },
+  // {
+  //   path: "/airdrop",
+  //   element: <Airdrop />,
+  // },
+  // {
+  //   path: "/locker",
+  //   element: <Locker />,
+  // },
+  // {
+  //   path: "/vote",
+  //   element: <Vote />,
+  // },
 ];
 
 export default routes;

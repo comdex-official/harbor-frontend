@@ -3,14 +3,51 @@ import { createQueryClient } from "../helper";
 import { QueryClientImpl } from 'comdex-codec/build/comdex/vault/v1beta1/query'
 import { PRODUCT_ID } from "../../constants/common";
 
+let myClient = null;
+
+const getQueryService = (callback) => {
+    if (myClient) {
+        const queryService = new QueryClientImpl(myClient);
+
+        return callback(null, queryService);
+    } else {
+        createQueryClient((error, client) => {
+            if (error) {
+                callback(error);
+            }
+            myClient = client;
+            const queryService = new QueryClientImpl(client);
+
+            return callback(null, queryService);
+        });
+    }
+};
+
+// export const queryTotalTokenMinted = (productId, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryTokenMintedAssetWiseByApp({
+//                 appId: Long.fromNumber(productId)
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
 
 export const queryTotalTokenMinted = (productId, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryTokenMintedAssetWiseByApp({
                 appId: Long.fromNumber(productId)
             }).then((result) => {
@@ -21,13 +58,33 @@ export const queryTotalTokenMinted = (productId, callback) => {
             });
     });
 };
+
+// export const queryExtendedPairVault = (productId, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryExtendedPairIDsByApp({
+//                 appId: Long.fromNumber(productId)
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
+
+
 export const queryExtendedPairVault = (productId, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryExtendedPairIDsByApp({
                 appId: Long.fromNumber(productId)
             }).then((result) => {
@@ -39,17 +96,38 @@ export const queryExtendedPairVault = (productId, callback) => {
     });
 };
 
+// export const queryVaultByProductId = (
+//     product,
+//     callback
+// ) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryAllVaultsByApp({
+//                 appId: Long.fromNumber(product)
+//             })
+//             .then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
 
 export const queryVaultByProductId = (
     product,
     callback
 ) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryAllVaultsByApp({
                 appId: Long.fromNumber(product)
             })
@@ -62,16 +140,39 @@ export const queryVaultByProductId = (
     });
 };
 
+// export const queryUserVaults = (
+//     owner,
+//     callback
+// ) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryVaultInfoOfOwnerByApp({
+//                 appId: Long.fromNumber(PRODUCT_ID),
+//                 owner: owner
+//             })
+//             .then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
+
 export const queryUserVaults = (
     owner,
     callback
 ) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryVaultInfoOfOwnerByApp({
                 appId: Long.fromNumber(PRODUCT_ID),
                 owner: owner
@@ -85,12 +186,28 @@ export const queryUserVaults = (
     });
 };
 
+// export const queryVaults = (id, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error)
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryVault({
+//                 id: id
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     })
+// }
 export const queryVaults = (id, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error)
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryVault({
                 id: id
             }).then((result) => {
@@ -101,12 +218,33 @@ export const queryVaults = (id, callback) => {
             });
     })
 }
+
+// export const queryOwnerVaults = (productId, address, extentedPairId, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error)
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryVaultIDOfOwnerByExtendedPairAndApp({
+//                 appId: Long.fromNumber(productId),
+//                 owner: address,
+//                 extendedPairId: Long.fromNumber(extentedPairId),
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//                 // callback("Vault does't exist");
+//             });
+//     })
+// }
+
 export const queryOwnerVaults = (productId, address, extentedPairId, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error)
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryVaultIDOfOwnerByExtendedPairAndApp({
                 appId: Long.fromNumber(productId),
                 owner: address,
@@ -120,12 +258,31 @@ export const queryOwnerVaults = (productId, address, extentedPairId, callback) =
             });
     })
 }
+
+// export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error)
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryVault({
+//                 id: Long.fromNumber(ownerVaultId),
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+
+//             });
+//     })
+// }
+
 export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error)
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryVault({
                 id: Long.fromNumber(ownerVaultId),
             }).then((result) => {
@@ -137,12 +294,30 @@ export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
             });
     })
 }
+
+// export const queryAllVaultByProduct = (productId, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error)
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryVaultIdsByAppInAllExtendedPairs({
+//                 appId: Long.fromNumber(productId),
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+
+//             });
+//     })
+// }
 export const queryAllVaultByProduct = (productId, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error)
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryVaultIdsByAppInAllExtendedPairs({
                 appId: Long.fromNumber(productId),
             }).then((result) => {
@@ -154,12 +329,32 @@ export const queryAllVaultByProduct = (productId, callback) => {
             });
     })
 }
+
+// export const queryMintedTokenSpecificVaultType = (productId, extendedPairId, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error)
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryTokenMintedByAppAndExtendedPair({
+//                 appId: Long.fromNumber(productId),
+//                 extendedPairId: Long.fromNumber(extendedPairId),
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+
+//             });
+//     })
+// }
+
 export const queryMintedTokenSpecificVaultType = (productId, extendedPairId, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error)
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryTokenMintedByAppAndExtendedPair({
                 appId: Long.fromNumber(productId),
                 extendedPairId: Long.fromNumber(extendedPairId),
@@ -173,14 +368,33 @@ export const queryMintedTokenSpecificVaultType = (productId, extendedPairId, cal
     })
 }
 
+// export const queryAppTVL = (appId, callback) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+
+//         new QueryClientImpl(rpcClient)
+//             .QueryTVLByAppOfAllExtendedPairs({
+//                 appId: Long.fromNumber(appId),
+//             }).then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
+
 export const queryAppTVL = (appId, callback) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
 
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryTVLByAppOfAllExtendedPairs({
                 appId: Long.fromNumber(appId),
             }).then((result) => {
@@ -192,16 +406,39 @@ export const queryAppTVL = (appId, callback) => {
     });
 };
 
+// export const queryUserVaultsStats = (
+//     owner,
+//     callback
+// ) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryUserMyPositionByApp({
+//                 owner: owner,
+//                 appId: Long.fromNumber(PRODUCT_ID)
+//             })
+//             .then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
+
 export const queryUserVaultsStats = (
     owner,
     callback
 ) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryUserMyPositionByApp({
                 owner: owner,
                 appId: Long.fromNumber(PRODUCT_ID)
@@ -214,16 +451,38 @@ export const queryUserVaultsStats = (
             });
     });
 };
+
+// export const queryUserVaultsInfo = (
+//     id,
+//     callback
+// ) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryVaultInfoByVaultID({
+//                 id: Long.fromNumber(id),
+//             })
+//             .then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
 export const queryUserVaultsInfo = (
     id,
     callback
 ) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryVaultInfoByVaultID({
                 id: Long.fromNumber(id),
             })
@@ -235,16 +494,40 @@ export const queryUserVaultsInfo = (
             });
     });
 };
+
+// export const queryVaultMintedStatistic = (
+//     productId,
+//     callback
+// ) => {
+//     createQueryClient((error, rpcClient) => {
+//         if (error) {
+//             callback(error);
+//             return;
+//         }
+//         new QueryClientImpl(rpcClient)
+//             .QueryPairsLockedAndMintedStatisticByApp({
+//                 appId: Long.fromNumber(PRODUCT_ID),
+//             })
+//             .then((result) => {
+//                 callback(null, result);
+//             })
+//             .catch((error) => {
+//                 callback(error?.message);
+//             });
+//     });
+// };
+
+
 export const queryVaultMintedStatistic = (
     productId,
     callback
 ) => {
-    createQueryClient((error, rpcClient) => {
+    getQueryService((error, queryService) => {
         if (error) {
             callback(error);
             return;
         }
-        new QueryClientImpl(rpcClient)
+        queryService
             .QueryPairsLockedAndMintedStatisticByApp({
                 appId: Long.fromNumber(PRODUCT_ID),
             })

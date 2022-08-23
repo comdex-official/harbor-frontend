@@ -187,48 +187,7 @@ const Edit = ({
     }
   };
 
-  const checkValidation = (value, type) => {
-    if (type === "deposit") {
-      const ratio =
-        ((Number(currentCollateral) + Number(getAmount(value))) *
-          collateralPrice) /
-        (Number(currentDebt) * debtPrice);
 
-      setNewCollateralRatio((ratio * 100).toFixed(1));
-      setInputValidationError(
-        ValidateInputNumber(
-          getAmount(value),
-          getDenomBalance(balances, pair?.denomIn)
-        )
-      );
-    } else if (type === "withdraw") {
-      const ratio =
-        ((Number(currentCollateral) - Number(getAmount(value))) *
-          collateralPrice) /
-        (Number(currentDebt) * debtPrice);
-
-      setNewCollateralRatio((ratio * 100).toFixed(1));
-      setInputValidationError(
-        ValidateInputNumber(getAmount(value), currentCollateral)
-      );
-    } else if (type === "repay") {
-      const ratio =
-        (Number(currentCollateral) * collateralPrice) /
-        ((Number(currentDebt) - Number(getAmount(value))) * debtPrice);
-
-      setNewCollateralRatio((ratio * 100).toFixed(1));
-      setInputValidationError(
-        ValidateInputNumber(getAmount(value), currentDebt)
-      );
-    } else {
-      const ratio =
-        (Number(currentCollateral) * collateralPrice) /
-        ((Number(currentDebt) + Number(getAmount(value))) * debtPrice);
-
-      setNewCollateralRatio((ratio * 100).toFixed(1));
-      setInputValidationError(ValidateInputNumber(getAmount(value)));
-    }
-  };
 
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
@@ -249,7 +208,6 @@ const Edit = ({
       dispatch(setExtendedPairVaultListData(data?.pairVault));
     });
   };
-
 
   const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
     queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
@@ -438,6 +396,50 @@ const Edit = ({
     setRepay(availableBalance);
   }
 
+  const checkValidation = (value, type) => {
+    if (type === "deposit") {
+      const ratio =
+        ((Number(currentCollateral) + Number(getAmount(value))) *
+          collateralPrice) /
+        (Number(currentDebt) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      setInputValidationError(
+        ValidateInputNumber(
+          getAmount(value),
+          getDenomBalance(balances, pair?.denomIn)
+        )
+      );
+    } else if (type === "withdraw") {
+      const ratio =
+        ((Number(currentCollateral) - Number(getAmount(value))) *
+          collateralPrice) /
+        (Number(currentDebt) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      let withdrawableAmount = Number(withdrawableCollateral()).toFixed(DOLLAR_DECIMALS);
+      setInputValidationError(
+        // ValidateInputNumber(getAmount(value), currentCollateral)
+        ValidateInputNumber(value, withdrawableAmount)
+      );
+    } else if (type === "repay") {
+      const ratio =
+        (Number(currentCollateral) * collateralPrice) /
+        ((Number(currentDebt) - Number(getAmount(value))) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      setInputValidationError(
+        ValidateInputNumber(value, Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS))
+      );
+    } else {
+      const ratio =
+        (Number(currentCollateral) * collateralPrice) /
+        ((Number(currentDebt) + Number(getAmount(value))) * debtPrice);
+
+      setNewCollateralRatio((ratio * 100).toFixed(1));
+      setInputValidationError(ValidateInputNumber(value, Number(availableToBorrow()).toFixed(DOLLAR_DECIMALS)));
+    }
+  };
 
 
   const marks = {
@@ -454,7 +456,7 @@ const Edit = ({
       setOwnerVaultInfo('');
       setOwnerCurrentCollateral(0)
     }
-  }, [ownerVaultInfo])
+  }, [])
 
 
 
@@ -510,7 +512,7 @@ const Edit = ({
                     checkValidation(event.target.value, editType);
                   }}
                   validationError={
-                    editType === "deposit" ? inputValidationError : ""
+                    editType === "deposit" ? inputValidationError : false
                   }
                   onFocus={() => {
                     setShowDepositMax(true)
@@ -543,7 +545,7 @@ const Edit = ({
                     checkValidation(event.target.value, editType);
                   }}
                   validationError={
-                    editType === "withdraw" ? inputValidationError : ""
+                    editType === "withdraw" ? inputValidationError : false
                   }
                   onFocus={() => {
                     setShowDepositMax(false)
@@ -574,7 +576,7 @@ const Edit = ({
                     checkValidation(event.target.value, editType);
                   }}
                   validationError={
-                    editType === "draw" ? inputValidationError : ""
+                    editType === "draw" ? inputValidationError : false
                   }
                   onFocus={() => {
                     setShowDepositMax(false)
@@ -605,7 +607,7 @@ const Edit = ({
                     checkValidation(event.target.value, editType);
                   }}
                   validationError={
-                    editType === "repay" ? inputValidationError : ""
+                    editType === "repay" ? inputValidationError : false
                   }
                   onFocus={() => {
                     setShowDepositMax(false)
@@ -733,8 +735,8 @@ Edit.propTypes = {
       message: PropTypes.string.isRequired,
     }),
   ]),
-  ownerVaultId: PropTypes.string,
-  ownerVaultInfo: PropTypes.array,
+  ownerVaultId: PropTypes.number,
+  ownerVaultInfo: PropTypes.object,
 };
 const stateToProps = (state) => {
   return {

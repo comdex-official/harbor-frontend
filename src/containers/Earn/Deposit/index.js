@@ -117,7 +117,7 @@ const Deposit = ({
 
   useEffect(() => {
     fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
-  }, [whiteListedAsset, ownerLockerInfo])
+  }, [whiteListedAsset])
 
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -194,7 +194,9 @@ const Deposit = ({
       return null;
     }
   };
+
   const handleSubmitCreateLocker = () => {
+    console.log("Run create");
     if (!address) {
       message.error("Address not found, please connect to Keplr");
       return;
@@ -240,7 +242,9 @@ const Deposit = ({
       }
     );
   };
+
   const handleSubmitAssetDepositLocker = () => {
+    console.log("Run Deposit");
     if (!address) {
       message.error("Address not found, please connect to Keplr");
       return;
@@ -373,9 +377,10 @@ const Deposit = ({
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
-                disabled={
-                  !inAmount || inAmount <= 0 || inProgress || inputValidationError?.message
-                }
+                // disabled={
+                //   !inAmount || inAmount <= 0 || inProgress || inputValidationError?.message
+                // }
+                disabled={true}
                 type="primary"
                 className="btn-filled"
                 onClick={() => {
@@ -452,7 +457,7 @@ Deposit.propTypes = {
     denom: PropTypes.string,
   }),
   refreshBalance: PropTypes.number.isRequired,
-  ownerLockerInfo: PropTypes.array,
+  ownerLockerInfo: PropTypes.string,
 };
 const stateToProps = (state) => {
   return {
