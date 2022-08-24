@@ -195,7 +195,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Vote</h2>
                 <p>
-                  Earn a share of vault's surplus, bribes, and rebase rewards.
+                  Earn a share of vault's surplus and external incentives.
 
                 </p>
                 <div className="button-container">
@@ -219,7 +219,7 @@ const More = () => {
               <div className="morecard-left">
                 <h2>Rewards</h2>
                 <p>
-                  Rewards displayed are an estimation of the bribes and surplus rewards that you can claim.
+                  Rewards displayed are an estimation of the external incentives and surplus rewards that you can claim.
                 </p>
                 <div className="button-container">
                   <Button
