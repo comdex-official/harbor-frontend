@@ -93,19 +93,36 @@ const Edit = ({
         address,
         selectedExtentedPairVaultListData[0]?.id?.low
       );
+    } else {
+      setOwnerVaultId("")
     }
   }, [address, vault]);
 
   useEffect(() => {
     if (ownerVaultId) {
       getOwnerVaultInfoByVaultId(ownerVaultId);
-      getOwnerVaultInfo(ownerVaultId)
     }
     else {
       setOwnerVaultInfo('');
       setOwnerCurrentCollateral(0)
+      setNewCollateralRatio(0)
     }
   }, [address, ownerVaultId]);
+  useEffect(() => {
+    if (ownerVaultInfo?.id) {
+      if (ownerVaultId) {
+        getOwnerVaultInfo(ownerVaultId)
+      }
+      else {
+        setOwnerCurrentCollateral(0)
+        setNewCollateralRatio(0)
+      }
+    }
+    else {
+      setOwnerCurrentCollateral(0)
+      setNewCollateralRatio(0)
+    }
+  }, [address, ownerVaultInfo]);
 
   const resetValues = () => {
     setInputValidationError();

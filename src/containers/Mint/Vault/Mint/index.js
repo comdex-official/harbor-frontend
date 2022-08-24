@@ -60,7 +60,7 @@ const Mint = ({
   refreshBalance,
   setOwnerCurrentCollateral,
   ownerVaultInfo,
-  ownerCurrrentCollateral
+  ownerCurrrentCollateral,
 }) => {
   // pathVaultId ----> extentedPairvaultId
   const { pathVaultId } = useParams();
@@ -92,8 +92,16 @@ const Mint = ({
     if (ownerVaultInfo?.id) {
       getOwnerVaultInfo(ownerVaultInfo?.id)
     }
+    else {
+      setOwnerCurrentCollateral(0)
+    }
   }, [ownerVaultInfo])
 
+  useEffect(() => {
+    if (!ownerVaultId) {
+      setOwnerCurrentCollateral(0)
+    }
+  }, [ownerVaultId, ownerVaultInfo])
   const getOwnerVaultInfo = (ownerVaultId) => {
     queryUserVaultsInfo(ownerVaultId, (error, data) => {
       if (error) {
@@ -717,6 +725,7 @@ Mint.prototype = {
   }),
   ownerVaultInfo: PropTypes.array,
   ownerCurrrentCollateral: PropTypes.number.isRequired,
+  ownerVaultId: PropTypes.string,
   vaults: PropTypes.arrayOf(
     PropTypes.shape({
       collateral: PropTypes.shape({
@@ -751,6 +760,7 @@ const stateToProps = (state) => {
     refreshBalance: state.account.refreshBalance,
     ownerVaultInfo: state.locker.ownerVaultInfo,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
+    ownerVaultId: state.locker.ownerVaultId,
   };
 };
 

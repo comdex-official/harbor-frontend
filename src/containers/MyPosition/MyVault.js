@@ -67,12 +67,12 @@ const MyVault = ({ address }) => {
       dataIndex: "apy",
       key: "apy",
       width: 150,
-      render: (apy) => <>{(apy * 100) || 0}%</>,
+      render: (apy) => <>{Number((apy * 100) || 0).toFixed(DOLLAR_DECIMALS)}%</>,
     },
     {
       title: (
         <>
-          Collateralization ratio{" "}
+          Collateralization Ratio{" "}
           <TooltipIcon text="The collateral ratio of the vault which is equal to collateral deposited by composite borrowed" />
         </>
       ),

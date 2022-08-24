@@ -93,7 +93,7 @@ const Create = () => {
                         <div className="amount-available-main-container">
                             <div className="amount-container">Expires</div>
                         </div>
-                        <div className="radio-input-main-container ">
+                        <div className="radio-input-main-container mt-2">
                             <div className="assets-right">
                                 <div className="input-select">
                                     <Radio.Group onChange={onRadioInputChange} value={radioValue}>
@@ -108,12 +108,12 @@ const Create = () => {
                     </div>
 
 
-                    <div className="voting-main-container mt-3 ml-1">
+                    <div className="voting-main-container mt-4 ml-1">
                         <div className="voting-title">Your voting power will be:</div>
                         <div className="value-main-container">
-                            <div className="harbor-value">0 VHARBOR</div>
+                            <div className="harbor-value">0 veHARBOR</div>
                             <div className="harbor-locked-value">
-                                1000 HARBOR locked for a week gets only 4.8 VHARBOR
+
                             </div>
                         </div>
                     </div>
