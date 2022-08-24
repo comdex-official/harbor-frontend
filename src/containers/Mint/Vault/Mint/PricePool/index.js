@@ -89,7 +89,7 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
       ),
     },
     {
-      title: "Stability fee due",
+      title: "Stability Fee Due",
       counts: (
         <>
           {amountConversion(ownerVaultInfo?.interestAccumulated || 0)}

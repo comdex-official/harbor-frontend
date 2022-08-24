@@ -72,7 +72,7 @@ const MyVault = ({ address }) => {
     {
       title: (
         <>
-          Collateralization ratio{" "}
+          Collateralization Ratio{" "}
           <TooltipIcon text="The collateral ratio of the vault which is equal to collateral deposited by composite borrowed" />
         </>
       ),
