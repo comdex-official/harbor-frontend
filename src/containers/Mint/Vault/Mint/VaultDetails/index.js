@@ -20,16 +20,20 @@ const VaultDetails = ({
 
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData[0]);
 
-
   useEffect(() => {
     if (address && selectedExtentedPairVaultListData?.id?.low) {
       getOwnerVaultId(PRODUCT_ID, address, selectedExtentedPairVaultListData?.id?.low);
+    } else {
+      setOwnerVaultId("")
     }
   }, [address, item])
 
   useEffect(() => {
     if (ownerVaultId) {
       getOwnerVaultInfoByVaultId(ownerVaultId)
+    }
+    else {
+      setOwnerVaultInfo('');
     }
   }, [address, ownerVaultId])
 

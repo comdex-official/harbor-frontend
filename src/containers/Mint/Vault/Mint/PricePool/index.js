@@ -12,13 +12,13 @@ import { cmst, comdex } from "../../../../../config/network";
 import { SvgIcon } from "../../../../../components/common";
 import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
 import { queryUserVaultsInfo } from "../../../../../services/vault/query";
+import { setOwnerVaultInfo } from '../../../../../actions/locker';
 import { setOwnerCurrentCollateral } from "../../../../../actions/mint";
-import { useEffect } from "react";
-const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, ownerCurrrentCollateral }) => {
+import { useEffect, useState } from "react";
+const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, ownerCurrrentCollateral, ownerVaultId, setOwnerVaultInfo, }) => {
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
   );
-
   const collateralDeposited =
     Number(amountConversion(ownerVaultInfo?.amountIn)) *
     marketPrice(markets, pair?.denomIn);
@@ -37,9 +37,19 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
 
   useEffect(() => {
     if (ownerVaultInfo?.id) {
-      getOwnerVaultInfo(ownerVaultInfo?.id)
+      if (ownerVaultId) {
+        getOwnerVaultInfo(ownerVaultInfo?.id)
+      }
+      else {
+        setOwnerVaultInfo('');
+        setOwnerCurrentCollateral(0)
+      }
     }
-  }, [])
+    else {
+      setOwnerVaultInfo('');
+      setOwnerCurrentCollateral(0)
+    }
+  }, [ownerVaultInfo, ownerCurrrentCollateral])
 
   const getOwnerVaultInfo = (ownerVaultId) => {
     queryUserVaultsInfo(ownerVaultId, (error, data) => {
@@ -166,6 +176,7 @@ PricePool.prototype = {
       script_id: PropTypes.string,
     })
   ),
+  ownerVaultId: PropTypes.string,
   ownerVaultInfo: PropTypes.array,
   pair: PropTypes.shape({
     denomIn: PropTypes.string,
@@ -179,11 +190,13 @@ const stateToProps = (state) => {
     ownerVaultInfo: state.locker.ownerVaultInfo,
     markets: state.oracle.market.list,
     pair: state.asset.pair,
+    ownerVaultId: state.locker.ownerVaultId,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
   };
 };
 const actionsToProps = {
   setOwnerCurrentCollateral,
+  setOwnerVaultInfo,
 };
 export default connect(stateToProps, actionsToProps)(PricePool);
 

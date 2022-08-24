@@ -67,7 +67,7 @@ const MyVault = ({ address }) => {
       dataIndex: "apy",
       key: "apy",
       width: 150,
-      render: (apy) => <>{(apy * 100) || 0}%</>,
+      render: (apy) => <>{Number((apy * 100) || 0).toFixed(DOLLAR_DECIMALS)}%</>,
     },
     {
       title: (

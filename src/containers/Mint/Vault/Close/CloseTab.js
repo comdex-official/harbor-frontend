@@ -62,11 +62,17 @@ const CloseTab = ({
     if (address && selectedExtentedPairVaultListData[0]?.id?.low) {
       getOwnerVaultId(PRODUCT_ID, address, selectedExtentedPairVaultListData[0]?.id?.low);
     }
+    else {
+      setOwnerVaultId("")
+    }
   }, [address, vault])
 
   useEffect(() => {
     if (ownerVaultId) {
       getOwnerVaultInfoByVaultId(ownerVaultId)
+    }
+    else {
+      setOwnerVaultInfo('');
     }
   }, [address, ownerVaultId])
 

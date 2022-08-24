@@ -37,11 +37,11 @@ const More = () => {
     {
       title: (
         <>
-          Pool
+          Asset
         </>
       ),
-      dataIndex: "pool",
-      key: "pool",
+      dataIndex: "asset",
+      key: "asset",
       width: 150,
     },
     {
@@ -63,7 +63,7 @@ const More = () => {
 
       key: 1,
       id: 1,
-      pool: (
+      asset: (
         <>
           <div className="assets-withicon">
             <div className="assets-icon">
@@ -89,7 +89,7 @@ const More = () => {
 
       key: 2,
       id: 1,
-      pool: (
+      asset: (
         <>
           <div className="assets-withicon">
             <div className="assets-icon">
@@ -170,7 +170,7 @@ const More = () => {
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
-                <h2>Locker</h2>
+                <h2>Vest</h2>
                 <p>
                   More tokens locked for longer = greater voting power = higher rewards.
                 </p>
@@ -226,7 +226,7 @@ const More = () => {
                     type="primary"
                     className="btn-filled"
                     onClick={showModal}
-                    disabled={true}
+                  // disabled={true}
                   // onClick={() => handleRouteChange("/rewards")}
                   >
                     Claim
