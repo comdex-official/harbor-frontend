@@ -1,4 +1,5 @@
-import { comdex } from "../config/network"; import {
+import { cmst, comdex, harbor } from "../config/network";
+import {
   ChainStore,
   getKeplrFromWindow,
   AccountSetBase,
@@ -33,6 +34,16 @@ export const getChainConfig = (chain = comdex) => {
         coinDenom: chain?.coinDenom,
         coinMinimalDenom: chain?.coinMinimalDenom,
         coinDecimals: chain?.coinDecimals,
+      },
+      {
+        coinDenom: cmst?.coinDenom,
+        coinMinimalDenom: cmst?.coinMinimalDenom,
+        coinDecimals: cmst?.coinDecimals,
+      },
+      {
+        coinDenom: harbor?.coinDenom,
+        coinMinimalDenom: harbor?.coinMinimalDenom,
+        coinDecimals: harbor?.coinDecimals,
       },
     ],
     feeCurrencies: [
