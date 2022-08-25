@@ -114,7 +114,7 @@ const PlaceBidModal = ({
     setValidationError(
       ValidateInputNumber(
         value,
-        Number(amountConversion(auction?.inflowTokenTargetAmount?.amount) - amountConversion(auction?.inflowTokenCurrentAmount?.amount)).toFixed(6) || 0
+        Number(amountConversion(auction?.inflowTokenTargetAmount?.amount) - amountConversion(auction?.inflowTokenCurrentAmount?.amount)).toFixed(6) || 0, "", "", "Bid must be less than target CMST"
       )
     );
     setBidAmount(value);
