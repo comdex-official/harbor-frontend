@@ -1,6 +1,6 @@
 import { amountConversion } from "../utils/coin";
 
-export const ValidateInputNumber = (value, max, key, debtFloor) => {
+export const ValidateInputNumber = (value, max, key, debtFloor, errorMsg) => {
   if (value > 0 && value < debtFloor) {
     return new Error("Input should be grater than min. borrow amt.");
   }
@@ -14,7 +14,7 @@ export const ValidateInputNumber = (value, max, key, debtFloor) => {
   }
 
   if (max && Number(max) < value) {
-    return new Error("Insufficient funds");
+    return new Error(errorMsg || "Insufficient funds");
   }
 
   if (key === "macro" && value !== 0 && amountConversion(value) <= 0.0001) {

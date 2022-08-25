@@ -33,9 +33,9 @@ const Auctions = () => {
               <TabPane tab="Debt" key="2">
                 <DebtAuction />
               </TabPane>
-              <TabPane tab="Surplus" key="3">
+              {/* <TabPane tab="Surplus" key="3">
                 <SurplusAuction />
-              </TabPane>
+              </TabPane> */}
             </Tabs>
           </Col>
         </Row>

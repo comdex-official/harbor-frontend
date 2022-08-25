@@ -356,6 +356,7 @@ const Deposit = ({
                     handleFirstInputChange(event.target.value);
                   }}
                   validationError={inputValidationError}
+                  disabled={true}
                 />
                 <small>{showInDollarValue()}</small>
               </div>

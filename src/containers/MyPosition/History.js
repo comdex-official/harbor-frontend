@@ -78,7 +78,7 @@ const History = ({ address, setTransactionHistory, history }) => {
       width: 300,
     },
     {
-      title: "Tnx Hash",
+      title: "Tx Hash",
       dataIndex: "tnx_hash",
       key: "tnx_hash",
       width: 300,

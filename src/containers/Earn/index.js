@@ -181,7 +181,7 @@ const Earn = ({
                   </div>
                 </div>
                 <div className="content-container">
-                  <div className="left-container">Expected Interest</div>
+                  <div className="left-container">Expected Interest Rate</div>
                   <div className="right-container">{interestRate}%</div>
                 </div>
                 <div className="content-container">
