@@ -28,7 +28,8 @@ import { defaultFee } from "../../../services/transaction";
 import Long from "long";
 import { signAndBroadcastTransaction } from "../../../services/helper";
 import Snack from "../../../components/common/Snack";
-import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
+import TooltipIcon from "../../../components/TooltipIcon";
 
 const Withdraw = ({
   lang,
@@ -46,8 +47,9 @@ const Withdraw = ({
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
   const isLockerExist = useSelector((state) => state.locker.isLockerExist);
-
   const [inProgress, setInProgress] = useState(false);
+  const [inProgressCal, setInProgressCal] = useState(false);
+
   const [inputValidationError, setInputValidationError] = useState();
   const [userDeposite, setuserDeposite] = useState();
   const [reward, setReward] = useState();
@@ -58,7 +60,6 @@ const Withdraw = ({
   const resetValues = () => {
     dispatch(setAmountIn(0));
   };
-
   const getAssetDenom = () => {
     // When we get multiple whiteListed Asset
     // ************************************************
@@ -118,26 +119,20 @@ const Withdraw = ({
     }
   };
 
-  const handleMaxClick = () => {
-    dispatch(setAmountIn(userBalanceInLocker));
-  }
-  // eslint-disable-next-line no-unused-vars
-  const showInDollarValue = () => {
-    const total = inAmount;
-    return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
-      DOLLAR_DECIMALS
-    )}`;
-  };
-
   useEffect(() => {
     resetValues();
-    // fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
-  }, [address, userDeposite]);
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+  }, [address, userDeposite, refreshBalance]);
 
   const whiteListedAssetId = whiteListedAsset[0]?.low;
   const lockerId = ownerLockerInfo?.lockerId;
   const returnsAccumulated = amountConversion(ownerLockerInfo?.returnsAccumulated || 0);
   const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo?.netBalance || 0);
+
+  const handleMaxClick = () => {
+    let amount = amountConversion(ownerLockerInfo?.netBalance || 0)
+    dispatch(setAmountIn(amount));
+  }
 
   const fetchOwnerLockerExistByAssetId = (
     productId = PRODUCT_ID,
@@ -159,7 +154,7 @@ const Withdraw = ({
         setReward(data?.lockerInfo?.returnsAccumulated);
         setuserDeposite(balance);
         setUserLockedValue(data?.lockerInfo?.netBalance || "0");
-        let lockerExist = data?.lockerInfo?.length;
+        let lockerExist = data?.lockerInfo?.lockerId?.low;
         if (lockerExist > 0) {
           dispatch(setIsLockerExist(true));
         } else {
@@ -169,6 +164,7 @@ const Withdraw = ({
       }
     );
   };
+
   const handleSubmitAssetWithdrawLocker = () => {
     if (!address) {
       message.error("Address not found, please connect to Keplr");
@@ -209,7 +205,6 @@ const Withdraw = ({
           />
         );
         resetValues();
-        // fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
@@ -217,6 +212,61 @@ const Withdraw = ({
       }
     );
   };
+
+  const submitLockerInterestCalculate = () => {
+    if (!address) {
+      message.error("Address not found, please connect to Keplr");
+      return;
+    }
+    // setInProgressCal(true);
+    setInProgress(true);
+    message.info("Transaction initiated");
+    signAndBroadcastTransaction(
+      {
+        message: {
+          typeUrl: "/comdex.locker.v1beta1.MsgLockerRewardCalcRequest",
+          value: {
+            from: address,
+            appId: Long.fromNumber(PRODUCT_ID),
+            lockerId: lockerId,
+          },
+        },
+        fee: {
+          amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+          gas: "2500000",
+        },
+      },
+      address,
+      (error, result) => {
+        // setInProgressCal(false);
+        setInProgress(false);
+        if (error) {
+          console.log(error);
+          message.error(error);
+          // resetValues();
+          return;
+        }
+
+        if (result?.code) {
+          message.info(result?.rawLog);
+          // resetValues();
+          return;
+        }
+        message.success(
+          <Snack
+            message={variables[lang].tx_success}
+            hash={result?.transactionHash}
+          />
+        );
+        // resetValues();
+        dispatch({
+          type: "BALANCE_REFRESH_SET",
+          value: refreshBalance + 1,
+        });
+      }
+    );
+
+  }
   const marks = {
     0: "0%",
     100: "100%",
@@ -247,9 +297,25 @@ const Withdraw = ({
                       </Button>
                     </span>
                   </div>
+
+                  <div className="reward-claim-main-container-btn mt-1">
+                    <div className="reward-claim-btn-container">
+                      <span className="maxhalf claim-tx-btn">
+                        <Button
+                          className="active"
+                          onClick={() => submitLockerInterestCalculate()}
+                          loading={inProgress}
+                          disabled={inProgress}
+                        >
+                          Fetch Rewards
+                        </Button>
+                      </span>
+                    </div>
+                  </div>
+
                 </div>
                 <div className="withdraw-stats">
-                  <div className="stats-title">Interest Earned</div>
+                  <div className="stats-title">Rewards Accumulated <TooltipIcon text="" /></div>
                   <div className="stats-value">
                     {returnsAccumulated || 0}{" "}
                     {denomConversion(whiteListedAssetData[0]?.denom)}{" "}

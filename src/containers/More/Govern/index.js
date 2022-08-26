@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, List, Select, Progress, Spin } from "antd";
 import "./index.scss";
-import { fetchProposalUpData, totalProposal } from "../../../services/contractsRead";
+import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
 import React, { useEffect } from "react";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
 import moment from "moment";
@@ -28,7 +28,9 @@ const Govern = ({
 }) => {
 
   const [proposalList, setProposalList] = useState()
+  const [totalSupply, setTotalSupply] = useState(0)
   const [loading, setLoading] = useState();
+
   const fetchAllProposal = (productId) => {
     totalProposal(productId).then((res) => {
       setAllProposal(res)
@@ -37,10 +39,20 @@ const Govern = ({
     }).catch((err) => {
     })
   }
+
   const fetchAllProposalUpData = (productId) => {
     setLoading(true)
     fetchProposalUpData(productId).then((res) => {
       setProposalUpData(res)
+      setLoading(false)
+    }).catch((err) => {
+      setLoading(false)
+    })
+  }
+  const fetchTotalveHarborSupply = () => {
+    setLoading(true)
+    totalveHarborSupply().then((res) => {
+      setTotalSupply(res)
       setLoading(false)
     }).catch((err) => {
       setLoading(false)
@@ -57,12 +69,13 @@ const Govern = ({
   useEffect(() => {
     fetchAllProposal(PRODUCT_ID)
     fetchAllProposalUpData(PRODUCT_ID)
+    fetchTotalveHarborSupply()
   }, [address])
 
   const calculateAverageParticipation = () => {
     let avgParticipation = proposalUpData?.active_participation_supply
     avgParticipation = avgParticipation / proposalUpData?.proposal_count
-    avgParticipation = avgParticipation / ((proposalUpData?.current_supply))
+    avgParticipation = avgParticipation / (totalSupply?.vtoken)
     avgParticipation = Number(avgParticipation * 100).toFixed(2)
     return avgParticipation;
   }
@@ -70,7 +83,7 @@ const Govern = ({
   const data = [
     {
       title: "Total Supply",
-      counts: proposalUpData ? amountConversionWithComma(proposalUpData?.current_supply, DOLLAR_DECIMALS) + " HARBOR" : "-"
+      counts: totalSupply ? amountConversionWithComma(totalSupply?.vtoken, DOLLAR_DECIMALS) + " veHARBOR" : "-"
 
     },
     {

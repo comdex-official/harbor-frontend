@@ -13,14 +13,15 @@ import { message } from "antd";
 import { commaSeparator, marketPrice } from "../../utils/number";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import "./index.scss";
-import { fetchProposalUpData } from "../../services/contractsRead";
+import { fetchProposalUpData, totalveHarborSupply } from "../../services/contractsRead";
 import { cmst, harbor } from "../../config/network";
 
 const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
 
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
-  const [harborCurrentSypply, setHarborCurrentSupply] = useState();
+  const [harborSupply, setHarborSupply] = useState(0)
+  const [harborCurrentSypply, setHarborCurrentSupply] = useState(0);
   const [cmstCurrentSupply, setCmstCurrentSupply] = useState();
   const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
 
@@ -81,11 +82,20 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
       setCmstCurrentSupply(result?.mintedData)
     })
   }
+
   const fetchAllProposalUpData = (productId) => {
     fetchProposalUpData(productId).then((res) => {
       setHarborCurrentSupply(res?.current_supply)
     }).catch((err) => {
       message.error(err);
+    })
+  }
+
+  const fetchTotalveHarborSupply = () => {
+    totalveHarborSupply().then((res) => {
+      setHarborSupply(res?.token)
+    }).catch((err) => {
+      console.log(err);
     })
   }
 
@@ -101,10 +111,24 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
     return `$${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}
 `;
   };
+  
+  const calculateHarborSypply = () => {
+    let amount = harborCurrentSypply - amountConversion(harborSupply);
+    amount = Number(amount).toFixed(DOLLAR_DECIMALS);
+    setHarborCurrentSupply(amount);
+  }
 
   useEffect(() => {
     calculatedCmstCurrentSupply()
   }, [cmstCurrentSupply])
+
+  useEffect(() => {
+      fetchTotalveHarborSupply()
+  }, [])
+  useEffect(() => {
+    calculateHarborSypply()
+  }, [harborSupply])
+
 
   const getPrice = (denom) => {
     return poolPriceMap[denom] || marketPrice(markets, denom) || 0;

@@ -3,16 +3,25 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../components/common";
 import { Table } from "antd";
 import { connect } from "react-redux";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Button, Modal, message } from "antd";
-import { iconNameFromDenom } from "../../utils/string";
+import { denomToSymbol, iconNameFromDenom } from "../../utils/string";
 import { amountConversionWithComma, denomConversion } from "../../utils/coin";
+import { setBalanceRefresh } from "../../actions/account";
+import { claimableRewards } from "../../services/rewardContractsWrite";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
+import { transactionClaimRewards } from "../../services/rewardContractsRead";
 
-const More = () => {
+const More = ({
+  address,
+  refreshBalance,
+  setBalanceRefresh,
+}) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [claimableRewardsData, setClaimableRewardsData] = useState()
   const handleRouteChange = (path) => {
     navigate({
       pathname: path,
@@ -21,6 +30,7 @@ const More = () => {
 
 
   const showModal = () => {
+    fetchClaimeableRewards(PRODUCT_ID, address)
     setIsModalVisible(true);
   };
 
@@ -32,6 +42,41 @@ const More = () => {
     setIsModalVisible(false);
   };
 
+
+  // Query 
+  const fetchClaimeableRewards = (productId, address) => {
+    setLoading(true)
+    claimableRewards(productId, address).then((res) => {
+      setClaimableRewardsData(res)
+      setLoading(false)
+    }).catch((error) => {
+      console.log(error);
+      setLoading(false)
+    })
+  }
+  const claimReward = () => {
+    setLoading(true)
+    if (address) {
+      transactionClaimRewards(address, PRODUCT_ID, (error, result) => {
+        if (error) {
+          message.error(error)
+          setLoading(false)
+          return;
+        }
+        message.success("Success")
+        setBalanceRefresh(refreshBalance + 1);
+        setLoading(false)
+      })
+    }
+    else {
+      setLoading(false)
+      message.error("Please Connect Wallet")
+    }
+  }
+  // UseEffect calls 
+  useEffect(() => {
+    fetchClaimeableRewards(PRODUCT_ID, address)
+  }, [address, refreshBalance])
 
   const columns = [
     {
@@ -58,62 +103,33 @@ const More = () => {
 
   ];
 
-  const tableData = [
-    {
-
-      key: 1,
-      id: 1,
-      asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon
-                name={iconNameFromDenom(
-                  "uharbor"
-                )}
-              />
+  const tableData =
+    claimableRewardsData && claimableRewardsData.map((item, index) => {
+      return {
+        key: index,
+        asset: (
+          <>
+            <div className="assets-withicon">
+              <div className="assets-icon">
+                <SvgIcon
+                  name={iconNameFromDenom(
+                    item?.denom
+                  )}
+                />
+              </div>
+              {denomToSymbol(item.denom)}
             </div>
-            HARBOR
-          </div>
-        </>
-      ),
-      you_earned: (
-        <>
-          <div className="assets-withicon display-right">
-            1  ATOM
-          </div>
-        </>
-      ),
-    },
-    {
-
-      key: 2,
-      id: 1,
-      asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon
-                name={iconNameFromDenom(
-                  "uharbor"
-                )}
-              />
+          </>
+        ),
+        you_earned: (
+          <>
+            <div className="assets-withicon display-right">
+              {amountConversionWithComma(item?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item.denom)}
             </div>
-            HARBOR
-          </div>
-        </>
-      ),
-      you_earned: (
-        <>
-          <div className="assets-withicon display-right">
-            1  ATOM
-          </div>
-        </>
-      ),
-    }
-
-  ]
-
+          </>
+        ),
+      }
+    })
 
 
   return (
@@ -178,8 +194,8 @@ const More = () => {
                   <Button
                     type="primary"
                     className="btn-filled"
-                    onClick={() => handleRouteChange("/locker")}
-                    disabled={true}
+                    onClick={() => handleRouteChange("/vesting")}
+                  // disabled={true}
                   >
                     Lock
                   </Button>
@@ -203,7 +219,6 @@ const More = () => {
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("/vote")}
-                    disabled={true}
                   >
                     Vote
                   </Button>
@@ -226,8 +241,6 @@ const More = () => {
                     type="primary"
                     className="btn-filled"
                     onClick={showModal}
-                  // disabled={true}
-                  // onClick={() => handleRouteChange("/rewards")}
                   >
                     Claim
                   </Button>
@@ -242,6 +255,7 @@ const More = () => {
                     width={550}
                     closable={false}
                     onOk={handleOk}
+                    loading={loading}
                     onCancel={handleCancel}
                     closeIcon={null}
                   >
@@ -274,6 +288,9 @@ const More = () => {
                             type="primary"
                             className="btn-filled "
                             size="sm"
+                            onClick={() => claimReward()}
+                            loading={loading}
+                            disabled={!claimableRewardsData?.length > 0}
                           >
                             Claim All
                           </Button>
@@ -295,12 +312,18 @@ const More = () => {
 
 More.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
+  refreshBalance: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
+    refreshBalance: state.account.refreshBalance,
   };
 };
-
-export default connect(stateToProps)(More);
+const actionsToProps = {
+  setBalanceRefresh,
+};
+export default connect(stateToProps, actionsToProps)(More);

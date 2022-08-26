@@ -122,7 +122,7 @@ const Minting = ({ address }) => {
   const calculateGlobalDebt = (value) => {
     let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.low === value?.id?.low)
     if (matchData[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
-      return amountConversionWithComma(matchData[0]?.mintedAmount);
+      return amountConversionWithComma(matchData[0]?.mintedAmount, DOLLAR_DECIMALS);
     }
     return (0).toFixed(6)
   }

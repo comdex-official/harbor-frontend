@@ -8,6 +8,7 @@ import Withdraw from "./Withdraw";
 import CustomInput from "../../components/CustomInput";
 import { useDispatch } from "react-redux";
 import { setAmountIn } from "../../actions/asset";
+import { setLockerDefaultSelectTab } from "../../actions/locker";
 import { useSelector } from "react-redux";
 import { toDecimals } from "../../utils/string";
 import { calculateROI, decimalConversion } from "../../utils/number";
@@ -15,10 +16,11 @@ import { DOLLAR_DECIMALS } from "../../constants/common";
 import CloseLocker from "./Close";
 
 const Earn = ({
-  collectorData
+  collectorData,
+  lockerDefaultSelectTab,
+  setLockerDefaultSelectTab
 }) => {
   const dispatch = useDispatch();
-  const [defaultTabSelect, setDefaultTabSelect] = useState("1");
   const { TabPane } = Tabs;
   const [principal, setPrincipal] = useState();
   const [years, setYears] = useState(1);
@@ -83,7 +85,7 @@ const Earn = ({
 
   const callback = (key) => {
     dispatch(setAmountIn(0));
-    setDefaultTabSelect(key);
+    setLockerDefaultSelectTab(key)
   };
 
   const getIntrestRate = () => {
@@ -95,7 +97,6 @@ const Earn = ({
     setInterestRate(interest)
     return interest;
   }
-
   useEffect(() => {
     getIntrestRate()
   }, [collectorData])
@@ -108,17 +109,17 @@ const Earn = ({
             <Tabs
               className="comdex-tabs"
               type="card"
-              activeKey={defaultTabSelect}
+              activeKey={lockerDefaultSelectTab}
               onChange={callback}
               className="comdex-tabs farm-modal-tab"
             >
-              <TabPane tab="Deposit" key="1" disabled={isLockerExist}>
+              <TabPane tab="Deposit" key="1" >
                 <Deposit />
               </TabPane>
-              <TabPane tab="Withdraw" key="2" disabled={true}>
+              <TabPane tab="Withdraw" key="2" disabled={!isLockerExist}>
                 <Withdraw />
               </TabPane>
-              <TabPane tab="Close" key="3" disabled={true}>
+              <TabPane tab="Close" key="3" disabled={!isLockerExist}>
                 <CloseLocker />
               </TabPane>
             </Tabs>
@@ -198,14 +199,18 @@ const Earn = ({
 };
 Earn.propTypes = {
   lang: PropTypes.string.isRequired,
-  collectorData: PropTypes.array.isRequired
+  collectorData: PropTypes.array.isRequired,
+  lockerDefaultSelectTab: PropTypes.string
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     collectorData: state.locker.collectorData,
+    lockerDefaultSelectTab: state.locker.lockerDefaultSelectTab
   };
 };
-const actionsToProps = {};
+const actionsToProps = {
+  setLockerDefaultSelectTab,
+};
 export default connect(stateToProps, actionsToProps)(Earn);

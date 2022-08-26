@@ -6,6 +6,37 @@ import {
 } from "@keplr-wallet/stores";
 
 export const contractAddress = process.env.REACT_APP_GOVERNANCE_CONTRACT;
+export const lockingContractAddress = process.env.REACT_APP_LOCKING_CONTRACT;
+
+const getCurrencies = (chain) => {
+  if (chain?.rpc === comdex?.rpc) {
+    return [
+      {
+        coinDenom: chain?.coinDenom,
+        coinMinimalDenom: chain?.coinMinimalDenom,
+        coinDecimals: chain?.coinDecimals,
+      },
+      {
+        coinDenom: cmst?.coinDenom,
+        coinMinimalDenom: cmst?.coinMinimalDenom,
+        coinDecimals: cmst?.coinDecimals,
+      },
+      {
+        coinDenom: harbor?.coinDenom,
+        coinMinimalDenom: harbor?.coinMinimalDenom,
+        coinDecimals: harbor?.coinDecimals,
+      },
+    ];
+  } else {
+    return [
+      {
+        coinDenom: chain?.coinDenom,
+        coinMinimalDenom: chain?.coinMinimalDenom,
+        coinDecimals: chain?.coinDecimals,
+      },
+    ];
+  }
+};
 
 export const getChainConfig = (chain = comdex) => {
   return {
@@ -29,23 +60,7 @@ export const getChainConfig = (chain = comdex) => {
       bech32PrefixConsAddr: `${chain?.prefix}valcons`,
       bech32PrefixConsPub: `${chain?.prefix}valconspub`,
     },
-    currencies: [
-      {
-        coinDenom: chain?.coinDenom,
-        coinMinimalDenom: chain?.coinMinimalDenom,
-        coinDecimals: chain?.coinDecimals,
-      },
-      {
-        coinDenom: cmst?.coinDenom,
-        coinMinimalDenom: cmst?.coinMinimalDenom,
-        coinDecimals: cmst?.coinDecimals,
-      },
-      {
-        coinDenom: harbor?.coinDenom,
-        coinMinimalDenom: harbor?.coinMinimalDenom,
-        coinDecimals: harbor?.coinDecimals,
-      },
-    ],
+    currencies: getCurrencies(chain),
     feeCurrencies: [
       {
         coinDenom: chain?.coinDenom,

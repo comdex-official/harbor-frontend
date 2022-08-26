@@ -15,14 +15,6 @@ const Footer = () => {
           <SvgIcon name="discord" viewbox="0 0 29.539 22.155" />
         </a>
         <a
-          aria-label="Github"
-          target="_blank"
-          rel="noreferrer"
-          href="https://github.com/comdex-official"
-        >
-          <SvgIcon name="github" viewbox="0 0 22.154 21.607" />
-        </a>
-        <a
           aria-label="Telegram"
           target="_blank"
           rel="noreferrer"
@@ -42,9 +34,26 @@ const Footer = () => {
           aria-label="Medium"
           target="_blank"
           rel="noreferrer"
-          href="https://twitter.com/Harbor_Protocol"
+          href="https://medium.com/@Harbor_Protocol"
         >
           <SvgIcon name="medium" viewbox="0 0 25.825 20.66" />
+        </a>
+      
+        <a
+          aria-label="Linkedin"
+          target="_blank"
+          rel="noreferrer"
+          href="https://www.linkedin.com/showcase/compositemoney/"
+        >
+          <SvgIcon name="linkedin" viewbox="0 0 25.825 20.66" />
+        </a>
+        <a
+          aria-label="Forum"
+          target="_blank"
+          rel="noreferrer"
+          href="https://forum.comdex.one/"
+        >
+          <SvgIcon name="forum" viewbox="0 0 25.825 20.66" />
         </a>
       </div>
     </div>

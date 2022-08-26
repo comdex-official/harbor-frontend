@@ -6,6 +6,7 @@ import {
   SET_EXTENDED_PAIR_ID,
   SET_EXTENDED_PAIR_VAULT_DATA_BY_ID,
   SET_ISLOCKER_EXIST,
+  SET_LOCKER_DEFAULT_SELECT_TAB,
   SET_OWNER_VAULT_ID,
   SET_OWNER_VAULT_INFO,
   SET_SELECT_EXTENTED_PAIR_VAULT,
@@ -91,6 +92,12 @@ export const setEstimatedLiquidationPrice = (value) => {
 export const setCollectorData = (value) => {
   return {
     type: SET_COLLECTOR_DATA,
+    value,
+  };
+};
+export const setLockerDefaultSelectTab = (value) => {
+  return {
+    type: SET_LOCKER_DEFAULT_SELECT_TAB,
     value,
   };
 };

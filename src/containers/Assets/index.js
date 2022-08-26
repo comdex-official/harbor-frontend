@@ -114,6 +114,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       sourceChannelId: token.comdexChannel,
       destChannelId: token.channel,
       ibcDenomHash: token?.ibcDenomHash,
+      explorerUrlToTx: token?.explorerUrlToTx,
     };
   });
 

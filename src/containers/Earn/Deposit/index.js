@@ -116,8 +116,8 @@ const Deposit = ({
   }, [whiteListedAsset]);
 
   useEffect(() => {
-    // fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
-  }, [whiteListedAsset])
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+  }, [whiteListedAsset, refreshBalance])
 
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
@@ -157,9 +157,9 @@ const Deposit = ({
           message.error(error);
           return;
         }
-        let lockerExist = data?.lockerInfo?.length;
+        let lockerExist = data?.lockerInfo?.lockerId?.low;
         setOwnerVaultInfo(data?.lockerInfo);
-        if (lockerExist > 0) {
+        if (lockerExist) {
           dispatch(setIsLockerExist(true));
         } else {
           dispatch(setIsLockerExist(false));
@@ -183,7 +183,7 @@ const Deposit = ({
   const AvailableAssetBalance =
     getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
   const whiteListedAssetId = whiteListedAsset[0]?.low;
-  const lockerId = ownerLockerInfo[0]?.lockerId;
+  const lockerId = ownerLockerInfo?.lockerId;
 
   const handleInputMax = () => {
     if (Number(AvailableAssetBalance) > DEFAULT_FEE) {
@@ -196,7 +196,6 @@ const Deposit = ({
   };
 
   const handleSubmitCreateLocker = () => {
-    console.log("Run create");
     if (!address) {
       message.error("Address not found, please connect to Keplr");
       return;
@@ -244,7 +243,6 @@ const Deposit = ({
   };
 
   const handleSubmitAssetDepositLocker = () => {
-    console.log("Run Deposit");
     if (!address) {
       message.error("Address not found, please connect to Keplr");
       return;
@@ -291,7 +289,6 @@ const Deposit = ({
       }
     );
   };
-
   return (
     <>
       <Col>
@@ -356,7 +353,7 @@ const Deposit = ({
                     handleFirstInputChange(event.target.value);
                   }}
                   validationError={inputValidationError}
-                  disabled={true}
+                // disabled={true}
                 />
                 <small>{showInDollarValue()}</small>
               </div>
@@ -378,10 +375,6 @@ const Deposit = ({
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
-                // disabled={
-                //   !inAmount || inAmount <= 0 || inProgress || inputValidationError?.message
-                // }
-                disabled={true}
                 type="primary"
                 className="btn-filled"
                 onClick={() => {
@@ -392,7 +385,7 @@ const Deposit = ({
                   }
                 }}
               >
-                Deposit
+                {isLockerExist ? "Deposit " : "Create"}
               </Button>
             </div>
           </div>
