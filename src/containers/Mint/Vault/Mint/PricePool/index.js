@@ -178,7 +178,10 @@ const PricePool = ({ setOwnerCurrentCollateral,
                   onClick={() =>
                     submitVaultInterestCalculate()
                   }
-                  disabled={inProgress}
+                  disabled={
+                    inProgress
+                    || !ownerVaultId
+                  }
                 >
                   Fetch Interest
                 </Button>

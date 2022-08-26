@@ -21,6 +21,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
   const [harborSupply, setHarborSupply] = useState(0)
+  const [harborCirculatingSupply, setHarborCirculatingSypply] = useState(0)
   const [harborCurrentSypply, setHarborCurrentSupply] = useState(0);
   const [cmstCurrentSupply, setCmstCurrentSupply] = useState();
   const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
@@ -111,23 +112,25 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
     return `$${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}
 `;
   };
-  
-  const calculateHarborSypply = () => {
-    let amount = harborCurrentSypply - amountConversion(harborSupply);
-    amount = Number(amount).toFixed(DOLLAR_DECIMALS);
-    setHarborCurrentSupply(amount);
-  }
 
+  const calculateHarborSypply = () => {
+    let amount = amountConversion(harborCurrentSypply) - amountConversion(harborSupply);
+    amount = Number(amount).toFixed(DOLLAR_DECIMALS);
+    setHarborCirculatingSypply(amount)
+  }
   useEffect(() => {
     calculatedCmstCurrentSupply()
   }, [cmstCurrentSupply])
 
   useEffect(() => {
-      fetchTotalveHarborSupply()
+    fetchTotalveHarborSupply()
   }, [])
+
   useEffect(() => {
-    calculateHarborSypply()
-  }, [harborSupply])
+    if (harborSupply) {
+      calculateHarborSypply()
+    }
+  }, [harborSupply ])
 
 
   const getPrice = (denom) => {
@@ -447,7 +450,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                       />
                     </small>
                     <p>
-                      {harborCurrentSypply ? amountConversionWithComma(harborCurrentSypply, DOLLAR_DECIMALS) : "00.00"}<span> HARBOR</span>
+                      {harborCirculatingSupply ? commaSeparator(harborCirculatingSupply) : "00.00"}<span> HARBOR</span>
                     </p>
                   </div>
                   <div className="col3">
