@@ -95,7 +95,7 @@ const Mint = ({
     else {
       setOwnerCurrentCollateral(0)
     }
-  }, [ownerVaultInfo])
+  }, [ownerVaultInfo, refreshBalance])
 
   useEffect(() => {
     if (!ownerVaultId) {

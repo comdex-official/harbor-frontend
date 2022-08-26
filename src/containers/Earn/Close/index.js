@@ -1,11 +1,29 @@
-import { Button } from 'antd';
+import { Button, message } from 'antd';
+import Long from 'long';
 import * as PropTypes from "prop-types";
-import React from 'react'
-import { connect } from 'react-redux';
+import React, { useState } from 'react'
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import { Col } from '../../../components/common';
+import Snack from '../../../components/common/Snack';
 import TooltipIcon from '../../../components/TooltipIcon';
+import { PRODUCT_ID } from '../../../constants/common';
+import { signAndBroadcastTransaction } from '../../../services/helper';
+import { defaultFee } from '../../../services/transaction';
+import { amountConversionWithComma, denomConversion } from '../../../utils/coin';
+import variables from '../../../utils/variables';
+import { setLockerDefaultSelectTab } from "../../../actions/locker";
 
-const CloseLocker = ({ address, ownerLockerInfo }) => {
+
+const CloseLocker = ({ lang, address, ownerLockerInfo, whiteListedAsset, refreshBalance, setLockerDefaultSelectTab }) => {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo?.netBalance || 0);
+    const isLockerExist = useSelector((state) => state.locker.isLockerExist);
+    const lockerId = ownerLockerInfo?.lockerId;
+    const whiteListedAssetId = whiteListedAsset[0]?.low;
+    const [inProgress, setInProgress] = useState(false);
 
     const handleCloseLocker = () => {
         if (!address) {
@@ -45,7 +63,7 @@ const CloseLocker = ({ address, ownerLockerInfo }) => {
                         hash={result?.transactionHash}
                     />
                 );
-                resetValues();
+                setLockerDefaultSelectTab("1")
                 dispatch({
                     type: "BALANCE_REFRESH_SET",
                     value: refreshBalance + 1,
@@ -61,12 +79,13 @@ const CloseLocker = ({ address, ownerLockerInfo }) => {
                     <div className="assets-select-card locker-close-card-details  ">
                         <div className="assets-left">
                             <label className="leftlabel">
-                                Payable Amount <TooltipIcon />
+                                Net Receivable  <TooltipIcon text="Total receivable Composite" />
                             </label>
                         </div>
                         <div className="assets-right">
                             <div className="label-right">
-                                0.000000 CMST
+                                {userBalanceInLocker} {" "}
+                                {denomConversion("ucmst")}
                             </div>
 
                         </div>
@@ -75,10 +94,10 @@ const CloseLocker = ({ address, ownerLockerInfo }) => {
                     <div className="assets PoolSelect-btn">
                         <div className="assets-form-btn text-center  mb-2">
                             <Button
-                                // loading={inProgress}
-                                // disabled={
-                                //     !inAmount || inAmount <= 0 || inProgress || inputValidationError?.message
-                                // }
+                                loading={inProgress}
+                                disabled={
+                                    inProgress
+                                }
                                 type="primary"
                                 className="btn-filled"
                                 onClick={() => {
@@ -100,14 +119,29 @@ const CloseLocker = ({ address, ownerLockerInfo }) => {
 CloseLocker.propTypes = {
     address: PropTypes.string.isRequired,
     ownerLockerInfo: PropTypes.array,
+    whiteListedAsset: PropTypes.arrayOf(
+        PropTypes.shape({
+            list: PropTypes.shape({
+                id: PropTypes.shape({
+                    low: PropTypes.number,
+                    high: PropTypes.number,
+                    inSigned: PropTypes.number,
+                }),
+            }),
+        })
+    ),
+    refreshBalance: PropTypes.number.isRequired,
 };
 const stateToProps = (state) => {
     return {
         address: state.account.address,
         lang: state.language,
         ownerLockerInfo: state.locker.ownerVaultInfo,
+        whiteListedAsset: state.locker.whiteListedAssetById.list,
+        refreshBalance: state.account.refreshBalance,
     };
 };
 const actionsToProps = {
+    setLockerDefaultSelectTab,
 };
 export default connect(stateToProps, actionsToProps)(CloseLocker);

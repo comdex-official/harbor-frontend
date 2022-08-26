@@ -38,7 +38,7 @@ const MyPositions = ({ address, balances }) => {
 
   useEffect(() => {
     if (address) {
-      // fetchLockerStats();
+      fetchLockerStats();
     }
   }, [address]);
 

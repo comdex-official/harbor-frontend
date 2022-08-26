@@ -1,133 +1,151 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as PropTypes from "prop-types";
 import { connect } from "react-redux";
 import TooltipIcon from '../../../components/TooltipIcon';
 import { Col, Row, SvgIcon } from '../../../components/common';
 import { Table } from 'antd';
-import { iconNameFromDenom } from '../../../utils/string';
+import { denomToSymbol, iconNameFromDenom } from '../../../utils/string';
+import { vestingLockNFTId } from '../../../services/vestingContractsRead';
+import { setBalanceRefresh } from "../../../actions/account";
+import { amountConversionWithComma } from '../../../utils/coin';
+import moment from 'moment';
 
-const Lock = ({ address }) => {
 
+const Lock = ({
+    address,
+    refreshBalance,
+    setBalanceRefresh,
+}) => {
 
+    const [vestingNFTId, setVestingNFTId] = useState();
+    const [inProcess, setInProcess] = useState(false)
 
+    // Query 
+    const fetchVestingLockNFTId = () => {
+        setInProcess(true)
+        vestingLockNFTId(address).then((res) => {
+            setVestingNFTId(res?.nft)
+            setInProcess(false)
+        }).catch((error) => {
+            setVestingNFTId('')
+            setInProcess(false)
+            console.log(error);
+        })
+    }
 
+    const unixToGMTTime = (time) => {
+        // *Removing miliSec from unix time 
+        let newTime = Math.floor(time / 1000000000);
+        var timestamp = moment.unix(newTime);
+        timestamp = timestamp.format("DD-MMMM-YYYY")
+        return timestamp;
+    }
 
+    // UseEffect calls 
+    useEffect(() => {
+        fetchVestingLockNFTId()
+    }, [address, refreshBalance])
 
 
     const columns = [
         {
-            title: "Pair",
+            title: "NFT ID",
             dataIndex: "pair",
             key: "pair",
-            width: 300,
+            // width: 200,
         },
         {
             title: (
                 <>
-                    Amount{" "}
-                    <TooltipIcon text="Type of transaction ( Withdraw or Deposit)" />
+                    Locked HARBOR{" "}
+                    <TooltipIcon text="Locked HARBOR" />
                 </>
             ),
             dataIndex: "amount",
             key: "balance",
-            width: 300,
+            // width: 300,
         },
         {
-            title: "Value",
+            title: <>
+                Issued veHARBOR{" "}
+                <TooltipIcon text="Total veHARBOR issued for the locked HARBOR" />
+            </>,
             dataIndex: "value",
             key: "value",
-            width: 300,
+            // width: 300,
         },
         {
             title: (
                 <>
-                    Expires <TooltipIcon text="Balance after transaction" />
+                    Locked Date <TooltipIcon text="Date of HARBOR locked" />
+                </>
+            ),
+            dataIndex: "opening",
+            key: "opening",
+            // width: 300,
+        },
+        {
+            title: (
+                <>
+                    Unlock Date <TooltipIcon text="Date of unlocking for locked HARBOR" />
                 </>
             ),
             dataIndex: "expires",
             key: "expires",
-            width: 300,
+            // width: 300,
         },
     ];
 
 
-    const tableData = [
-        {
-            key: 1,
-            pair: <>
-                <div className="assets-withicon">
-                    <div className="assets-icon">
-                        <SvgIcon
-                            name={iconNameFromDenom('uharbor')}
-                        />
+    const tableData =
+        vestingNFTId && vestingNFTId?.vtokens?.reverse().map((item, index) => {
+            return {
+                key: index,
+                pair: <>
+                    <div className="assets-withicon">
+                        <div className="assets-icon">
+                            <SvgIcon
+                                name={iconNameFromDenom('uharbor')}
+                            />
+                        </div>
+                        <div className="nft-container">
+                            <div className="nft-id">{vestingNFTId?.token_id}</div>
+                            <div className="name">NFT ID</div>
+                        </div>
                     </div>
-                    <div className="nft-container">
-                        <div className="nft-id">1234</div>
-                        <div className="name">NFT ID</div>
+                </>,
+                amount: <>
+                    <div className="amount-container">
+                        <div className="amount">{amountConversionWithComma(item?.token?.amount)}</div>
+                        <div className="denom">{denomToSymbol(item?.token?.denom)}</div>
                     </div>
-                </div>
-            </>,
-            amount: <>
-                <div className="amount-container">
-                    <div className="amount">0.45</div>
-                    <div className="denom">HRBOR</div>
-                </div>
-            </>,
-            value: <>
-                <div className="amount-container">
-                    <div className="amount">0.45</div>
-                    <div className="denom">veHRBOR</div>
-                </div>
-            </>,
-            expires: <>
-                <div className="amount-container">
-                    <div className="amount">08-08-2022</div>
-                    <div className="denom">Expires 20 days ago</div>
-                </div>
-            </>,
+                </>,
+                value: <>
+                    <div className="amount-container">
+                        <div className="amount">{amountConversionWithComma(item?.vtoken?.amount)}</div>
+                        <div className="denom">veHARBOR</div>
+                    </div>
+                </>,
+                opening: <>
+                    <div className="amount-container opening-time-badge">
+                        <div className="amount">{unixToGMTTime(item?.start_time)}</div>
+                        {/* <div className="denom">Expires 20 days ago</div> */}
+                    </div>
+                </>,
+                expires: <>
+                    <div className="amount-container">
+                        <div className="amount">{unixToGMTTime(item?.end_time)}</div>
+                        {/* <div className="denom">Expires 20 days ago</div> */}
+                    </div>
+                </>,
+            }
+        })
 
-        },
-        {
-            key: 2,
-            pair: <>
-                <div className="assets-withicon">
-                    <div className="assets-icon">
-                        <SvgIcon
-                            name={iconNameFromDenom('uharbor')}
-                        />
-                    </div>
-                    <div className="nft-container">
-                        <div className="nft-id">1234</div>
-                        <div className="name">NFT ID</div>
-                    </div>
-                </div>
-            </>,
-            amount: <>
-                <div className="amount-container">
-                    <div className="amount">0.45</div>
-                    <div className="denom">HRBOR</div>
-                </div>
-            </>,
-            value: <>
-                <div className="amount-container">
-                    <div className="amount">0.45</div>
-                    <div className="denom">veHRBOR</div>
-                </div>
-            </>,
-            expires: <>
-                <div className="amount-container">
-                    <div className="amount">08-08-2022</div>
-                    <div className="denom">Expires 20 days ago</div>
-                </div>
-            </>,
 
-        }
-
-    ]
 
     return (
         <>
-            <div className="app-content-wrappers earn-table-container more-locker-lock-table">
+            <div className="app-content-wrappers  more-locker-lock-table">
 
                 <Row>
                     <Col>
@@ -135,7 +153,8 @@ const Lock = ({ address }) => {
                             className="custom-table"
                             dataSource={tableData}
                             columns={columns}
-                            pagination={false}
+                            loading={inProcess}
+                            pagination={{ defaultPageSize: 10 }}
                             scroll={{ x: "100%" }}
                         />
                     </Col>
@@ -148,14 +167,18 @@ const Lock = ({ address }) => {
 Lock.propTypes = {
     lang: PropTypes.string.isRequired,
     address: PropTypes.string,
+    refreshBalance: PropTypes.number.isRequired,
 };
 const stateToProps = (state) => {
     return {
         lang: state.language,
         address: state.account.address,
+        refreshBalance: state.account.refreshBalance,
     };
 };
-const actionsToProps = {};
+const actionsToProps = {
+    setBalanceRefresh,
+};
 
 
 export default connect(stateToProps, actionsToProps)(Lock);

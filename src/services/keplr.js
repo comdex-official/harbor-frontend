@@ -6,6 +6,7 @@ import {
 } from "@keplr-wallet/stores";
 
 export const contractAddress = process.env.REACT_APP_GOVERNANCE_CONTRACT;
+export const lockingContractAddress = process.env.REACT_APP_LOCKING_CONTRACT;
 
 export const getChainConfig = (chain = comdex) => {
   return {

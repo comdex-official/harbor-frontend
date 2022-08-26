@@ -1694,3 +1694,15 @@ button {
   color: $error-color;
   font-size: 12px;
 }
+
+.claim-tx-btn {
+  width: 100% !important;
+  .ant-btn {
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    font-weight: 500;
+    height: 20px !important;
+    padding: 1px 10px !important;
+    margin-left: 0 !important;
+  }
+}

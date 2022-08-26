@@ -143,68 +143,6 @@ const Edit = ({
 
   const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
 
-  const handleSliderChange = (value, type = editType) => {
-    const newRatio = value / 100; // converting value to ratio
-    if (type === "deposit") {
-      let newInput =
-        (Number(currentDebt) * debtPrice * newRatio) / collateralPrice -
-        Number(currentCollateral);
-      newInput = Math.max(newInput, 0)
-      setNewCollateralRatio(value);
-      setDeposit(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput));
-      setWithdraw(0);
-      setDraw(0);
-      setRepay(0);
-      setInputValidationError(
-        ValidateInputNumber(
-          getAmount(value),
-          getDenomBalance(balances, pair?.denomIn)
-        )
-      );
-    } else if (type === "withdraw") {
-      let newInput =
-        Number(currentCollateral) -
-        (Number(currentDebt) * debtPrice * newRatio) / collateralPrice;
-
-      newInput = Math.max(newInput, 0)
-      setNewCollateralRatio(value);
-      setWithdraw(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput));
-      setDeposit(0);
-      setDraw(0);
-      setRepay(0);
-      setInputValidationError(ValidateInputNumber(newInput, currentCollateral));
-    } else if (type === "repay") {
-      let newInput =
-        Number(currentDebt) -
-        (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio);
-
-      newInput = Math.max(newInput, 0)
-      setNewCollateralRatio(value);
-      setRepay(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput));
-      setDeposit(0);
-      setDraw(0);
-      setWithdraw(0);
-      setInputValidationError(ValidateInputNumber(value, currentDebt));
-    } else {
-      let newInput =
-        (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio) -
-        Number(currentDebt);
-
-      newInput = Math.max(newInput, 0)
-      setNewCollateralRatio(value);
-      setDraw(amountConversion(newInput));
-      setInputAmount(amountConversion(newInput));
-      setDeposit(0);
-      setWithdraw(0);
-      setRepay(0);
-      setInputValidationError(ValidateInputNumber(newInput));
-    }
-  };
-
-
 
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
@@ -235,6 +173,7 @@ const Edit = ({
       setOwnerVaultInfo(data.vault);
     });
   };
+
   const getOwnerVaultInfo = (ownerVaultId) => {
     queryUserVaultsInfo(ownerVaultId, (error, data) => {
       if (error) {
@@ -416,6 +355,82 @@ const Edit = ({
     setRepay(availableBalance);
   }
 
+  const handleSliderChange = (value, type = editType) => {
+    console.log(value);
+    const newRatio = value / 100; // converting value to ratio
+    console.log(newRatio, "newRatio");
+    if (type === "deposit") {
+      let newInput =
+        (Number(currentDebt) * debtPrice * newRatio) / collateralPrice -
+        Number(currentCollateral);
+      newInput = Math.max(newInput, 0).toFixed(6)
+      console.log(newInput, "new Input");
+      setNewCollateralRatio(value);
+      setDeposit(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput));
+      setWithdraw(0);
+      setDraw(0);
+      setRepay(0);
+      newInput = amountConversion(newInput, 6)
+      setInputValidationError(
+        ValidateInputNumber(
+          Number(getAmount(newInput)),
+          Number(getDenomBalance(balances, pair?.denomIn))
+        )
+      );
+    } else if (type === "withdraw") {
+      let newInput =
+        Number(currentCollateral) -
+        (Number(currentDebt) * debtPrice * newRatio) / collateralPrice;
+
+      newInput = Math.max(newInput, 0)
+      setNewCollateralRatio(value);
+      setWithdraw(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput));
+      setDeposit(0);
+      setDraw(0);
+      setRepay(0);
+      newInput = amountConversion(newInput, 6)
+      setInputValidationError(ValidateInputNumber(
+        Number(getAmount(newInput)),
+        Number(getAmount(withdrawableCollateral()))
+      ));
+    } else if (type === "repay") {
+      let newInput =
+        Number(currentDebt) -
+        (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio);
+
+      newInput = Math.max(newInput, 0)
+      setNewCollateralRatio(value);
+      setRepay(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput));
+      setDeposit(0);
+      setDraw(0);
+      setWithdraw(0);
+      newInput = amountConversion(newInput, 6)
+      setInputValidationError(ValidateInputNumber(
+        Number(getAmount(newInput)),
+        Number(getAmount(getMaxRepay()))));
+    } else {
+      let newInput =
+        (Number(currentCollateral) * collateralPrice) / (debtPrice * newRatio) -
+        Number(currentDebt);
+
+      newInput = Math.max(newInput, 0)
+      setNewCollateralRatio(value);
+      setDraw(amountConversion(newInput));
+      setInputAmount(amountConversion(newInput));
+      setDeposit(0);
+      setWithdraw(0);
+      setRepay(0);
+      newInput = amountConversion(newInput, 6)
+      setInputValidationError(ValidateInputNumber(
+        Number(getAmount(newInput)),
+        Number(getAmount(availableToBorrow()))
+      ));
+    }
+  };
+
   const checkValidation = (value, type) => {
     if (type === "deposit") {
       const ratio =
@@ -426,8 +441,8 @@ const Edit = ({
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(
         ValidateInputNumber(
-          getAmount(value),
-          getDenomBalance(balances, pair?.denomIn)
+          Number(getAmount(value)),
+          Number(getDenomBalance(balances, pair?.denomIn))
         )
       );
     } else if (type === "withdraw") {
@@ -439,8 +454,9 @@ const Edit = ({
       setNewCollateralRatio((ratio * 100).toFixed(1));
       let withdrawableAmount = Number(withdrawableCollateral()).toFixed(6);
       setInputValidationError(
-        // ValidateInputNumber(getAmount(value), currentCollateral)
-        ValidateInputNumber(value, withdrawableAmount)
+        ValidateInputNumber(
+          Number(getAmount(value)),
+          Number(getAmount(withdrawableAmount)))
       );
     } else if (type === "repay") {
       const ratio =
@@ -449,7 +465,9 @@ const Edit = ({
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(
-        ValidateInputNumber(value, Number(getMaxRepay()).toFixed(6))
+        ValidateInputNumber(
+          Number(getAmount(value)),
+          Number(getAmount(getMaxRepay())))
       );
     } else {
       const ratio =
@@ -457,10 +475,12 @@ const Edit = ({
         ((Number(currentDebt) + Number(getAmount(value))) * debtPrice);
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
-      setInputValidationError(ValidateInputNumber(value, Number(availableToBorrow()).toFixed(6)));
+      setInputValidationError(ValidateInputNumber(
+        Number(getAmount(value)),
+        Number(getAmount(availableToBorrow()))
+      ));
     }
   };
-
 
   const marks = {
     0: "0%",
@@ -711,7 +731,7 @@ const Edit = ({
                 inputValidationError?.message ||
                 !Number(inputAmount) ||
                 Number(inputAmount) < 0 ||
-                Number(newCollateralRatio) < 150
+                Number(newCollateralRatio) < minCrRatio
               }
               onClick={() => handleSubmit()}
             >
@@ -723,6 +743,7 @@ const Edit = ({
     </>
   );
 };
+
 Edit.propTypes = {
   setAccountVaults: PropTypes.func.isRequired,
   setEstimatedLiquidationPrice: PropTypes.func.isRequired,

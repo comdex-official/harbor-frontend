@@ -18,6 +18,7 @@ const Vault = ({
   const { TabPane } = Tabs;
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
 
+
   const BackButton = {
     right: (
       <Link to="/mint">
@@ -27,6 +28,7 @@ const Vault = ({
       </Link>
     ),
   };
+
   return (
     <>
       <div className="app-content-wrapper">

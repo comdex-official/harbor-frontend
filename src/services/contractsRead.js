@@ -1,6 +1,6 @@
 import { CosmWasmClient } from "cosmwasm";
 import { comdex } from '../config/network'
-import { contractAddress } from "./keplr";
+import { contractAddress, lockingContractAddress } from "./keplr";
 
 const configin = {
     chainId: comdex?.chainId,
@@ -33,5 +33,10 @@ export const fetchProposalUpData = async (productId) => {
 export const checkUserVote = async (proposalId, address) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
     const config = await client.queryContractSmart(contractAddress, { "vote": { "proposal_id": proposalId, "voter": address } });
+    return await config;
+}
+export const totalveHarborSupply = async () => {
+    const client = await CosmWasmClient.connect(configin.rpcEndpoint);
+    const config = await client.queryContractSmart(lockingContractAddress, { "supply": { "denom": "uharbor" } });
     return await config;
 }

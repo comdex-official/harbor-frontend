@@ -1,21 +1,39 @@
-import { List, message } from "antd";
+import { Button, List, message } from "antd";
 import * as PropTypes from "prop-types";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
   commaSeparator,
   decimalConversion,
   marketPrice,
 } from "../../../../../utils/number";
 import { amountConversion, denomConversion } from "../../../../../utils/coin";
-import { DOLLAR_DECIMALS } from "../../../../../constants/common";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../../constants/common";
 import { cmst, comdex } from "../../../../../config/network";
 import { SvgIcon } from "../../../../../components/common";
 import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
+import variables from "../../../../../utils/variables";
 import { queryUserVaultsInfo } from "../../../../../services/vault/query";
 import { setOwnerVaultInfo } from '../../../../../actions/locker';
 import { setOwnerCurrentCollateral } from "../../../../../actions/mint";
 import { useEffect, useState } from "react";
-const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, ownerCurrrentCollateral, ownerVaultId, setOwnerVaultInfo, }) => {
+import { signAndBroadcastTransaction } from "../../../../../services/helper";
+import Long from "long";
+import Snack from "../../../../../components/common/Snack";
+import { setBalanceRefresh } from "../../../../../actions/account";
+const PricePool = ({ setOwnerCurrentCollateral,
+  ownerVaultInfo,
+  markets,
+  pair,
+  ownerCurrrentCollateral,
+  ownerVaultId,
+  setOwnerVaultInfo,
+  lang,
+  address,
+  setBalanceRefresh,
+  refreshBalance,
+}) => {
+
+  const dispatch = useDispatch();
   const selectedExtendedPairVaultListData = useSelector(
     (state) => state.locker.extenedPairVaultListData[0]
   );
@@ -30,6 +48,7 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
   const borrowed = Number(amountConversion(ownerVaultInfo?.amountOut || 0));
 
   const liquidationRatio = selectedExtendedPairVaultListData?.liquidationRatio;
+  const [inProgress, setInProgress] = useState(false);
 
   // eslint-disable-next-line no-unused-vars
   const liquidationPrice =
@@ -49,7 +68,59 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
       setOwnerVaultInfo('');
       setOwnerCurrentCollateral(0)
     }
-  }, [ownerVaultInfo, ownerCurrrentCollateral])
+  }, [ownerVaultInfo, ownerCurrrentCollateral, refreshBalance])
+
+  const submitVaultInterestCalculate = () => {
+    if (!address) {
+      message.error("Address not found, please connect to Keplr");
+      return;
+    }
+    setInProgress(true);
+    message.info("Transaction initiated");
+    signAndBroadcastTransaction(
+      {
+        message: {
+          typeUrl: "/comdex.vault.v1beta1.MsgVaultInterestCalcRequest",
+          value: {
+            from: address,
+            appId: Long.fromNumber(PRODUCT_ID),
+            userVaultId: Long.fromNumber(ownerVaultId),
+          },
+        },
+        fee: {
+          amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+          gas: "2500000",
+        },
+      },
+      address,
+      (error, result) => {
+        setInProgress(false);
+        if (error) {
+          message.error(error);
+          return;
+        }
+
+        if (result?.code) {
+          message.info(result?.rawLog);
+          // resetValues();
+          return;
+        }
+
+        message.success(
+          <Snack
+            message={variables[lang].tx_success}
+            hash={result?.transactionHash}
+          />
+        );
+        // resetValues();
+        dispatch({
+          type: "BALANCE_REFRESH_SET",
+          value: refreshBalance + 1,
+        });
+      }
+    );
+
+  }
 
   const getOwnerVaultInfo = (ownerVaultId) => {
     queryUserVaultsInfo(ownerVaultId, (error, data) => {
@@ -96,6 +167,24 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
           <span className="small-text">
             {denomToSymbol(pair && pair?.denomOut)}
           </span>
+          <div className="vault-fee-calculate-main-container-btn">
+            <div className="fee-calculate-container-btn">
+              <span className=" fee-claim-tx-btn">
+                <Button
+                  className="active"
+                  type="primary"
+                  className="btn-filled"
+                  loading={inProgress}
+                  onClick={() =>
+                    submitVaultInterestCalculate()
+                  }
+                  disabled={inProgress}
+                >
+                  Fetch Interest
+                </Button>
+              </span>
+            </div>
+          </div>
         </>
       ),
     },
@@ -165,6 +254,10 @@ const PricePool = ({ setOwnerCurrentCollateral, ownerVaultInfo, markets, pair, o
 };
 
 PricePool.prototype = {
+  lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
+  refreshBalance: PropTypes.number.isRequired,
+  setBalanceRefresh: PropTypes.func.isRequired,
   markets: PropTypes.arrayOf(
     PropTypes.shape({
       rates: PropTypes.shape({
@@ -187,16 +280,20 @@ PricePool.prototype = {
 
 const stateToProps = (state) => {
   return {
+    lang: state.language,
+    address: state.account.address,
     ownerVaultInfo: state.locker.ownerVaultInfo,
     markets: state.oracle.market.list,
     pair: state.asset.pair,
     ownerVaultId: state.locker.ownerVaultId,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 const actionsToProps = {
   setOwnerCurrentCollateral,
   setOwnerVaultInfo,
+  setBalanceRefresh,
 };
 export default connect(stateToProps, actionsToProps)(PricePool);
 

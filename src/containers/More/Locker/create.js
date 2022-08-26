@@ -1,9 +1,11 @@
-import { Button } from 'antd';
-import React, { useState } from 'react'
+import { Button, message } from 'antd';
+import * as PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from 'react'
+import { connect } from "react-redux";
 import { Col, Row, SvgIcon } from '../../../components/common';
 import CustomInput from '../../../components/CustomInput';
 import TooltipIcon from '../../../components/TooltipIcon';
-import { amountConversionWithComma, denomConversion, getAmount } from '../../../utils/coin';
+import { amountConversion, amountConversionWithComma, denomConversion, getAmount, getDenomBalance } from '../../../utils/coin';
 import { iconNameFromDenom, toDecimals } from '../../../utils/string';
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -11,20 +13,81 @@ import { ValidateInputNumber } from '../../../config/_validation';
 import { setAmountIn } from '../../../actions/asset';
 import { DatePicker, Space } from 'antd';
 import { Radio } from 'antd';
+import { vestingCreateWeightage } from '../../../services/vestingContractsRead';
+import { transactionForCreateVesting } from '../../../services/vestingContractsWrite';
+import { PRODUCT_ID } from '../../../constants/common';
+import { setBalanceRefresh } from "../../../actions/account";
+import { setVestingRadioInput } from "../../../actions/vesting";
+import { marketPrice } from '../../../utils/number';
+import moment from 'moment';
 
-const Create = () => {
+
+const Create = ({
+    lang,
+    address,
+    refreshBalance,
+    setBalanceRefresh,
+    balances,
+    markets,
+    vestingRadioInput,
+}) => {
     const dispatch = useDispatch();
     const inAmount = useSelector((state) => state.asset.inAmount);
-    const [inputValidationError, setInputValidationError] = useState();
-    const [radioValue, setRadioValue] = useState(1);
+
+    const [loading, setLoading] = useState(false);
+    const [inputValidationError, setInputValidationError] = useState(false);
+    const [radioValue, setRadioValue] = useState("t1");
+    const [totalVestingData, setTotalVestingData] = useState();
+    const [veHarbor, setVeHarbor] = useState(0);
+    const [unlockDate, setUnlockDate] = useState(moment().add(1, 'week').format("DD - MMMM - YYYY"));
+    const dateFormat = 'DD-MMMM-YYYY';
+
+
+    // Query 
+    const fetchVestingCreateWeightage = () => {
+        vestingCreateWeightage().then((res) => {
+            setTotalVestingData(res)
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
+
+    const handleSubmit = () => {
+        setLoading(true)
+        if (address) {
+            if (inAmount) {
+                transactionForCreateVesting(address, PRODUCT_ID, radioValue, inAmount, (error, result) => {
+                    if (error) {
+                        message.error(error)
+                        setLoading(false)
+                        return;
+                    }
+                    message.success("Success")
+                    dispatch(setAmountIn());
+                    setVeHarbor(0)
+                    setBalanceRefresh(refreshBalance + 1);
+                    setLoading(false)
+                })
+            } else {
+                setLoading(false)
+                dispatch(setAmountIn());
+                setVeHarbor(0)
+                message.error("Please enter amount")
+            }
+        }
+        else {
+            setLoading(false)
+            message.error("Please Connect Wallet")
+        }
+    }
 
     const onRadioInputChange = (e) => {
-        console.log('radio checked', e.target.value);
-        setRadioValue(e.target.value);
-    };
 
-    const onChange = (date, dateString) => {
-        console.log(date, dateString);
+        setRadioValue(e.target.value);
+        dispatch(setVestingRadioInput(e.target.value))
+        calculateveHarbor(inAmount, e.target.value)
+        let newUnlockDate = calculateDateValue(e.target.value);
+        setUnlockDate(newUnlockDate)
     };
 
     const handleFirstInputChange = (value) => {
@@ -32,12 +95,76 @@ const Create = () => {
         setInputValidationError(
             ValidateInputNumber(
                 Number(getAmount(value)),
-                "",
-                "macro"
+                getDenomBalance(balances, "uharbor")
             )
         );
         dispatch(setAmountIn(value));
+        calculateveHarbor(value, vestingRadioInput);
     };
+
+    const calculateveHarbor = (value, vestingRadioInput = "t1") => {
+        if (vestingRadioInput === "t1") {
+            let amount = getAmount(value)
+            let calculateveharborAmount = amount * totalVestingData?.t1?.weight;
+            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            setVeHarbor(calculateveharborAmount);
+
+        }
+        else if (vestingRadioInput === "t2") {
+            let amount = getAmount(value)
+            let calculateveharborAmount = amount * totalVestingData?.t2?.weight;
+            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            setVeHarbor(calculateveharborAmount);
+
+        }
+        else if (vestingRadioInput === "t3") {
+            let amount = getAmount(value)
+            let calculateveharborAmount = amount * totalVestingData?.t3?.weight;
+            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            setVeHarbor(calculateveharborAmount);
+        }
+        else if (vestingRadioInput === "t4") {
+            let amount = getAmount(value)
+            let calculateveharborAmount = amount * totalVestingData?.t4?.weight;
+            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            setVeHarbor(calculateveharborAmount);
+        }
+    }
+
+    const handleMaxClick = () => {
+        let maxValue = amountConversion(getDenomBalance(balances, "uharbor"))
+
+        dispatch(setAmountIn(maxValue));
+    }
+
+    const calculateDateValue = (value = "t1") => {
+        let currentData = moment().format(dateFormat)
+        if (value === "t1") {
+            let new_date = moment(currentData, "DD-MMMM-YYYY").add(1, 'week').format(dateFormat);
+            return new_date;
+        }
+        else if (value === "t2") {
+            let new_date = moment(currentData, "DD-MMMM-YYYY").add(1, 'month').format(dateFormat);
+            return new_date;
+        }
+        else if (value === "t3") {
+            let new_date = moment(currentData, "DD-MMMM-YYYY").add(1, 'year').format(dateFormat);
+            return new_date;
+        }
+        else if (value === "t4") {
+            let new_date = moment(currentData, "DD-MMMM-YYYY").add(4, 'year').format(dateFormat);
+            return new_date;
+        }
+        console.log(currentData, "current date");
+        console.log(new_date, "newData");
+    }
+
+    // calculateDateValue()
+
+    // UseEffect calls 
+    useEffect(() => {
+        fetchVestingCreateWeightage()
+    }, [address, refreshBalance])
 
     return (
         <>
@@ -50,10 +177,10 @@ const Create = () => {
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(35627876672)} {denomConversion("uharbor")}
+                                    {amountConversionWithComma(getDenomBalance(balances, "uharbor"))} {denomConversion("uharbor")}
                                 </span>
                                 <div className="maxhalf">
-                                    <Button className="active" >
+                                    <Button className="active" onClick={() => handleMaxClick()} >
                                         Max
                                     </Button>
                                 </div>
@@ -76,13 +203,13 @@ const Create = () => {
 
                     <div className="date-main-container mt-4">
                         <div className="amount-available-main-container">
-                            <div className="amount-container">Date</div>
+                            <div className="amount-container">Date <TooltipIcon text="Expected unlock date for locked HARBOR" /></div>
                         </div>
                         <div className="assets-select-card  ">
                             <div className="assets-right">
                                 <div className="input-select">
                                     <Space direction="vertical">
-                                        <DatePicker onChange={onChange} />
+                                        <DatePicker value={moment(unlockDate, dateFormat)} format={dateFormat} disabled />
                                     </Space>
                                 </div>
                             </div>
@@ -97,10 +224,10 @@ const Create = () => {
                             <div className="assets-right">
                                 <div className="input-select">
                                     <Radio.Group onChange={onRadioInputChange} value={radioValue}>
-                                        <Radio value={1}>1 Week</Radio>
-                                        <Radio value={2}>1 Month</Radio>
-                                        <Radio value={3}>1 Years</Radio>
-                                        <Radio value={4}>4 Years</Radio>
+                                        <Radio value="t1" >1 Week</Radio>
+                                        <Radio value="t2" >1 Month</Radio>
+                                        <Radio value="t3" >1 Years</Radio>
+                                        <Radio value="t4" >4 Years</Radio>
                                     </Radio.Group>
                                 </div>
                             </div>
@@ -111,18 +238,23 @@ const Create = () => {
                     <div className="voting-main-container mt-4 ml-1">
                         <div className="voting-title">Your voting power will be:</div>
                         <div className="value-main-container">
-                            <div className="harbor-value">0 veHARBOR</div>
+                            <div className="harbor-value">{veHarbor} veHARBOR</div>
                             <div className="harbor-locked-value">
 
                             </div>
                         </div>
                     </div>
+                    <div className="lock-summery-main-container ml-1  mt-4">
+                        <div className="lock-summery-container">
+                            Upon locking 1000 HARBOR for :
+                        </div>
 
-                    <div className="rewards-calculator-main-box ml-1 mt-4">
-                        <div className="reward-value-1  reward-value-common-class">1 week = 100/208 (208 weeks in 4 years)</div>
-                        <div className="reward-value-2 reward-value-common-class">1 year = 1000/4 (to calculate single year)</div>
-                        <div className="reward-value-3 reward-value-common-class">1 month = 1000/48 (48 months in 4 year)</div>
-                        <div className="reward-value-4 reward-value-common-class">4 year = 1000</div>
+                        <div className="rewards-calculator-main-box ">
+                            <div className="reward-value-1  reward-value-common-class">1 week - 1000/208 = 4.80 veHARBOR</div>
+                            <div className="reward-value-2 reward-value-common-class">1 year - 1000/4 = 250 veHARBOR</div>
+                            <div className="reward-value-3 reward-value-common-class">1 month - 1000/48 = 20.83 veHARBOR</div>
+                            <div className="reward-value-4 reward-value-common-class">4 year = 1000 veHARBOR</div>
+                        </div>
                     </div>
 
                     <div className="assets-poolSelect-btn">
@@ -130,8 +262,14 @@ const Create = () => {
                             <Button
                                 type="primary"
                                 className="btn-filled"
+                                loading={loading}
+                                onClick={() => handleSubmit()}
+                                disabled={
+                                    !Number(inAmount) ||
+                                    inputValidationError?.message
+                                }
                             >
-                                Proceed
+                                Lock
                             </Button>
                         </div>
                     </div>
@@ -140,5 +278,43 @@ const Create = () => {
         </>
     )
 }
+Create.prototype = {
+    lang: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    refreshBalance: PropTypes.number.isRequired,
+    balances: PropTypes.arrayOf(
+        PropTypes.shape({
+            denom: PropTypes.string.isRequired,
+            amount: PropTypes.string,
+        })
+    ),
+    markets: PropTypes.arrayOf(
+        PropTypes.shape({
+            rates: PropTypes.shape({
+                high: PropTypes.number,
+                low: PropTypes.number,
+                unsigned: PropTypes.bool,
+            }),
+            symbol: PropTypes.string,
+            script_id: PropTypes.string,
+        })
+    ),
+    vestingRadioInput: PropTypes.string,
 
-export default Create
+}
+const stateToProps = (state) => {
+    return {
+        lang: state.language,
+        address: state.account.address,
+        refreshBalance: state.account.refreshBalance,
+        balances: state.account.balances.list,
+        markets: state.oracle.market.list,
+        vestingRadioInput: state.vesting.vestingRadioInput,
+    };
+};
+const actionsToProps = {
+    setBalanceRefresh,
+    // setVestingRadioInput,
+};
+
+export default connect(stateToProps, actionsToProps)(Create);
