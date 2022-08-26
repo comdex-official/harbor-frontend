@@ -63,7 +63,8 @@ const Vote = ({
     setLoading(true)
     votingTotalVotes(proposalId, extendedPairId).then((res) => {
       settotalVotes((prevState) => ({
-        [extendedPairId]: res, ...prevState
+        ...prevState,
+        [extendedPairId]: res
       }))
       setLoading(false)
     }).catch((error) => {
@@ -77,7 +78,7 @@ const Vote = ({
     setLoading(true)
     votingTotalBribs(proposalId, extendedPairId).then((res) => {
       setMyExternalIncentive((prevState) => ({
-        [extendedPairId]: res, ...prevState
+        ...prevState, [extendedPairId]: res
       }))
       setLoading(false)
     }).catch((error) => {
@@ -91,7 +92,7 @@ const Vote = ({
     setLoading(true)
     votingUserVote(proposalId, address).then((res) => {
       setMyVote((prevState) => ({
-        [res?.extended_pair]: res?.vote_weight, ...prevState
+        [res?.extended_pair]: res?.vote_weight
       }))
       setLoading(false)
     }).catch((error) => {
@@ -119,10 +120,10 @@ const Vote = ({
       }
 
       setPairIdData((prevState) => ({
-        [extendedPairId]: data?.pairVault?.pairId?.low, ...prevState
+        ...prevState, [extendedPairId]: data?.pairVault?.pairId?.low
       }))
       setPairValutData((prevState) => ({
-        [extendedPairId]: data?.pairVault?.pairName, ...prevState
+        ...prevState, [extendedPairId]: data?.pairVault?.pairName
       }))
       setLoading(false)
     })
@@ -141,7 +142,7 @@ const Vote = ({
         return;
       }
       setVaultId((prevState) => ({
-        [extentedPairId]: data?.vaultId?.low, ...prevState
+        ...prevState, [extentedPairId]: data?.vaultId?.low
       }))
     })
   }
@@ -153,7 +154,7 @@ const Vote = ({
         return;
       }
       setMyBorrowed((prevData) => ({
-        [data?.vault?.extendedPairVaultId?.low]: data?.vault?.amountOut, ...prevData
+        ...prevData, [data?.vault?.extendedPairVaultId?.low]: data?.vault?.amountOut
       }))
     })
   }
@@ -167,7 +168,7 @@ const Vote = ({
         return;
       }
       setTotalBorrowed((prevState) => ({
-        [extendedPairId]: data?.tokenMinted, ...prevState
+        ...prevState, [extendedPairId]: data?.tokenMinted
       }))
       setLoading(false)
     })
@@ -191,7 +192,7 @@ const Vote = ({
     } else {
       setProposalExtenderPair("")
     }
-  }, [address, proposalId])
+  }, [address, proposalId, refreshBalance])
 
   const getPairFromExtendedPair = () => {
     proposalExtenderPair && proposalExtenderPair.map((item) => {
@@ -230,7 +231,7 @@ const Vote = ({
     proposalExtenderPair && proposalExtenderPair.map((item) => {
       getOwnerVaultInfoByVaultId(vaultId[item])
     })
-  }, [vaultId])
+  }, [vaultId, refreshBalance])
 
   useEffect(() => {
     if (proposalId) {
@@ -240,7 +241,7 @@ const Vote = ({
 
   useEffect(() => {
     fetchTotalVTokens(address)
-  }, [address])
+  }, [address, refreshBalance])
 
   useEffect(() => {
     fetchAssets(
@@ -253,7 +254,7 @@ const Vote = ({
 
   useEffect(() => {
     getPairFromExtendedPair()
-  }, [proposalExtenderPair])
+  }, [proposalExtenderPair, refreshBalance])
 
   const columns = [
     {
