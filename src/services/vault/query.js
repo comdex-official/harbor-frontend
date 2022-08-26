@@ -23,23 +23,7 @@ const getQueryService = (callback) => {
     }
 };
 
-// export const queryTotalTokenMinted = (productId, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryTokenMintedAssetWiseByApp({
-//                 appId: Long.fromNumber(productId)
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
+
 
 export const queryTotalTokenMinted = (productId, callback) => {
     getQueryService((error, queryService) => {
@@ -59,23 +43,6 @@ export const queryTotalTokenMinted = (productId, callback) => {
     });
 };
 
-// export const queryExtendedPairVault = (productId, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryExtendedPairIDsByApp({
-//                 appId: Long.fromNumber(productId)
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
 
 
 export const queryExtendedPairVault = (productId, callback) => {
@@ -96,27 +63,7 @@ export const queryExtendedPairVault = (productId, callback) => {
     });
 };
 
-// export const queryVaultByProductId = (
-//     product,
-//     callback
-// ) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryAllVaultsByApp({
-//                 appId: Long.fromNumber(product)
-//             })
-//             .then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
+
 
 export const queryVaultByProductId = (
     product,
@@ -140,28 +87,7 @@ export const queryVaultByProductId = (
     });
 };
 
-// export const queryUserVaults = (
-//     owner,
-//     callback
-// ) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryVaultInfoOfOwnerByApp({
-//                 appId: Long.fromNumber(PRODUCT_ID),
-//                 owner: owner
-//             })
-//             .then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
+
 
 export const queryUserVaults = (
     owner,
@@ -186,22 +112,7 @@ export const queryUserVaults = (
     });
 };
 
-// export const queryVaults = (id, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error)
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryVault({
-//                 id: id
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     })
-// }
+
 export const queryVaults = (id, callback) => {
     getQueryService((error, queryService) => {
         if (error) {
@@ -219,25 +130,7 @@ export const queryVaults = (id, callback) => {
     })
 }
 
-// export const queryOwnerVaults = (productId, address, extentedPairId, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error)
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryVaultIDOfOwnerByExtendedPairAndApp({
-//                 appId: Long.fromNumber(productId),
-//                 owner: address,
-//                 extendedPairId: Long.fromNumber(extentedPairId),
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//                 // callback("Vault does't exist");
-//             });
-//     })
-// }
+
 
 export const queryOwnerVaults = (productId, address, extentedPairId, callback) => {
     getQueryService((error, queryService) => {
@@ -259,23 +152,6 @@ export const queryOwnerVaults = (productId, address, extentedPairId, callback) =
     })
 }
 
-// export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error)
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryVault({
-//                 id: Long.fromNumber(ownerVaultId),
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-
-//             });
-//     })
-// }
 
 export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
     getQueryService((error, queryService) => {
@@ -295,23 +171,7 @@ export const queryOwnerVaultsInfo = (ownerVaultId, callback) => {
     })
 }
 
-// export const queryAllVaultByProduct = (productId, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error)
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryVaultIdsByAppInAllExtendedPairs({
-//                 appId: Long.fromNumber(productId),
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
 
-//             });
-//     })
-// }
 export const queryAllVaultByProduct = (productId, callback) => {
     getQueryService((error, queryService) => {
         if (error) {
@@ -330,24 +190,7 @@ export const queryAllVaultByProduct = (productId, callback) => {
     })
 }
 
-// export const queryMintedTokenSpecificVaultType = (productId, extendedPairId, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error)
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryTokenMintedByAppAndExtendedPair({
-//                 appId: Long.fromNumber(productId),
-//                 extendedPairId: Long.fromNumber(extendedPairId),
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
 
-//             });
-//     })
-// }
 
 export const queryMintedTokenSpecificVaultType = (productId, extendedPairId, callback) => {
     getQueryService((error, queryService) => {
@@ -368,24 +211,7 @@ export const queryMintedTokenSpecificVaultType = (productId, extendedPairId, cal
     })
 }
 
-// export const queryAppTVL = (appId, callback) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
 
-//         new QueryClientImpl(rpcClient)
-//             .QueryTVLByAppOfAllExtendedPairs({
-//                 appId: Long.fromNumber(appId),
-//             }).then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
 
 export const queryAppTVL = (appId, callback) => {
     getQueryService((error, queryService) => {
@@ -406,28 +232,7 @@ export const queryAppTVL = (appId, callback) => {
     });
 };
 
-// export const queryUserVaultsStats = (
-//     owner,
-//     callback
-// ) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryUserMyPositionByApp({
-//                 owner: owner,
-//                 appId: Long.fromNumber(PRODUCT_ID)
-//             })
-//             .then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
+
 
 export const queryUserVaultsStats = (
     owner,
@@ -452,27 +257,7 @@ export const queryUserVaultsStats = (
     });
 };
 
-// export const queryUserVaultsInfo = (
-//     id,
-//     callback
-// ) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryVaultInfoByVaultID({
-//                 id: Long.fromNumber(id),
-//             })
-//             .then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
+
 export const queryUserVaultsInfo = (
     id,
     callback
@@ -494,28 +279,6 @@ export const queryUserVaultsInfo = (
             });
     });
 };
-
-// export const queryVaultMintedStatistic = (
-//     productId,
-//     callback
-// ) => {
-//     createQueryClient((error, rpcClient) => {
-//         if (error) {
-//             callback(error);
-//             return;
-//         }
-//         new QueryClientImpl(rpcClient)
-//             .QueryPairsLockedAndMintedStatisticByApp({
-//                 appId: Long.fromNumber(PRODUCT_ID),
-//             })
-//             .then((result) => {
-//                 callback(null, result);
-//             })
-//             .catch((error) => {
-//                 callback(error?.message);
-//             });
-//     });
-// };
 
 
 export const queryVaultMintedStatistic = (
