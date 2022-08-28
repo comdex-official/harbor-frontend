@@ -267,6 +267,7 @@ const Withdraw = ({
     );
 
   }
+  
   const marks = {
     0: "0%",
     100: "100%",
@@ -315,7 +316,7 @@ const Withdraw = ({
 
                 </div>
                 <div className="withdraw-stats">
-                  <div className="stats-title">Rewards Accumulated <TooltipIcon text="" /></div>
+                  <div className="stats-title">Rewards Accumulated <TooltipIcon text="Rewards earned on locked CMST" /></div>
                   <div className="stats-value">
                     {returnsAccumulated || 0}{" "}
                     {denomConversion(whiteListedAssetData[0]?.denom)}{" "}
