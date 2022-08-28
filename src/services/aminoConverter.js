@@ -3,14 +3,14 @@ export const customAminoTypes = {
     aminoType: "comdex/vault/MsgCreateRequest",
     toAmino: ({
       from,
-      appMappingId,
+      appId,
       extendedPairVaultId,
       amountIn,
       amountOut,
     }) => {
       return {
         from,
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
         extended_pair_vault_id: String(extendedPairVaultId),
         amount_in: amountIn,
         amount_out: amountOut,
@@ -18,14 +18,14 @@ export const customAminoTypes = {
     },
     fromAmino: ({
       from,
-      app_mapping_id,
+      app_id,
       extended_pair_vault_id,
       amount_in,
       amount_out,
     }) => {
       return {
         from,
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
         extendedPairVaultId: Number(extended_pair_vault_id),
         amountIn: amount_in,
         amountOut: amount_out,
@@ -36,31 +36,31 @@ export const customAminoTypes = {
     aminoType: "comdex/vault/MsgDepositRequest",
     toAmino: ({
       from,
-      appMappingId,
+      appId,
       extendedPairVaultId,
       userVaultId,
       amount,
     }) => {
       return {
         from,
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
         extended_pair_vault_id: String(extendedPairVaultId),
-        user_vault_id: userVaultId,
+        user_vault_id: String(userVaultId),
         amount: amount,
       };
     },
     fromAmino: ({
       from,
-      app_mapping_id,
+      app_id,
       extended_pair_vault_id,
       user_vault_id,
       amount,
     }) => {
       return {
         from,
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
         extendedPairVaultId: Number(extended_pair_vault_id),
-        userVaultId: user_vault_id,
+        userVaultId: Number(user_vault_id),
         amount: amount,
       };
     },
@@ -69,31 +69,31 @@ export const customAminoTypes = {
     aminoType: "comdex/vault/MsgWithdrawRequest",
     toAmino: ({
       from,
-      appMappingId,
+      appId,
       extendedPairVaultId,
       userVaultId,
       amount,
     }) => {
       return {
         from,
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
         extended_pair_vault_id: String(extendedPairVaultId),
-        user_vault_id: userVaultId,
+        user_vault_id: String(userVaultId),
         amount: amount,
       };
     },
     fromAmino: ({
       from,
-      app_mapping_id,
+      app_id,
       extended_pair_vault_id,
       user_vault_id,
       amount,
     }) => {
       return {
         from,
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
         extendedPairVaultId: Number(extended_pair_vault_id),
-        userVaultId: user_vault_id,
+        userVaultId: Number(user_vault_id),
         amount: amount,
       };
     },
@@ -102,31 +102,31 @@ export const customAminoTypes = {
     aminoType: "comdex/vault/MsgDrawRequest",
     toAmino: ({
       from,
-      appMappingId,
+      appId,
       extendedPairVaultId,
       userVaultId,
       amount,
     }) => {
       return {
         from,
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
         extended_pair_vault_id: String(extendedPairVaultId),
-        user_vault_id: userVaultId,
+        user_vault_id: String(userVaultId),
         amount: amount,
       };
     },
     fromAmino: ({
       from,
-      app_mapping_id,
+      app_id,
       extended_pair_vault_id,
       user_vault_id,
       amount,
     }) => {
       return {
         from,
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
         extendedPairVaultId: Number(extended_pair_vault_id),
-        userVaultId: user_vault_id,
+        userVaultId: Number(user_vault_id),
         amount: amount,
       };
     },
@@ -135,61 +135,62 @@ export const customAminoTypes = {
     aminoType: "comdex/vault/MsgRepayRequest",
     toAmino: ({
       from,
-      appMappingId,
+      appId,
       extendedPairVaultId,
       userVaultId,
       amount,
     }) => {
       return {
         from,
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
         extended_pair_vault_id: String(extendedPairVaultId),
-        user_vault_id: userVaultId,
+        user_vault_id: String(userVaultId),
         amount: amount,
       };
     },
     fromAmino: ({
       from,
-      app_mapping_id,
+      app_id,
       extended_pair_vault_id,
       user_vault_id,
       amount,
     }) => {
       return {
         from,
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
         extendedPairVaultId: Number(extended_pair_vault_id),
-        userVaultId: user_vault_id,
+        userVaultId: Number(user_vault_id),
         amount: amount,
       };
     },
   },
+
   "/comdex.vault.v1beta1.MsgCloseRequest": {
     aminoType: "comdex/vault/MsgCloseRequest",
     toAmino: ({
       from,
-      appMappingId,
+      appId,
       extendedPairVaultId,
       userVaultId,
     }) => {
       return {
         from,
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
         extended_pair_vault_id: String(extendedPairVaultId),
-        user_vault_id: userVaultId,
+        user_vault_id: String(userVaultId),
       };
     },
     fromAmino: ({
       from,
-      app_mapping_id,
+      app_id,
       extended_pair_vault_id,
       user_vault_id,
     }) => {
       return {
         from,
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
         extendedPairVaultId: Number(extended_pair_vault_id),
-        userVaultId: user_vault_id,
+        userVaultId: Number(user_vault_id),
       };
     },
   },
@@ -199,28 +200,28 @@ export const customAminoTypes = {
       depositor,
       amount,
       assetId,
-      appMappingId,
+      appId,
     }) => {
       return {
         depositor,
         amount: amount,
         asset_id: String(assetId),
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
       };
     },
     fromAmino: ({
       depositor,
       amount,
       asset_id,
-      app_mapping_id,
-    
+      app_id,
+
     }) => {
       return {
         depositor,
         amount: amount,
         assetId: Number(asset_id),
-        appMappingId: Number(app_mapping_id),
-     
+        appId: Number(app_id),
+
       };
     },
   },
@@ -241,7 +242,7 @@ export const customAminoTypes = {
       from,
       asset_id,
       app_mapping_id,
-    
+
     }) => {
       return {
         from,
@@ -257,14 +258,14 @@ export const customAminoTypes = {
       lockerId,
       amount,
       assetId,
-      appMappingId,
+      appId,
     }) => {
       return {
         depositor,
-        locker_id: lockerId,
+        locker_id: String(lockerId),
         amount: amount,
         asset_id: String(assetId),
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
       };
     },
     fromAmino: ({
@@ -272,15 +273,15 @@ export const customAminoTypes = {
       amount,
       locker_id,
       asset_id,
-      app_mapping_id,
-    
+      app_id,
+
     }) => {
       return {
         depositor,
-        lockerId: locker_id,
+        lockerId: Number(locker_id),
         amount: amount,
         assetId: Number(asset_id),
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
       };
     },
   },
@@ -291,14 +292,14 @@ export const customAminoTypes = {
       lockerId,
       amount,
       assetId,
-      appMappingId,
+      appId,
     }) => {
       return {
         depositor,
-        locker_id: lockerId,
+        locker_id: String(lockerId),
         amount: amount,
         asset_id: String(assetId),
-        app_mapping_id: String(appMappingId),
+        app_id: String(appId),
       };
     },
     fromAmino: ({
@@ -306,15 +307,15 @@ export const customAminoTypes = {
       amount,
       locker_id,
       asset_id,
-      app_mapping_id,
-    
+      app_id,
+
     }) => {
       return {
         depositor,
-        lockerId: locker_id,
+        lockerId: Number(locker_id),
         amount: amount,
         assetId: Number(asset_id),
-        appMappingId: Number(app_mapping_id),
+        appId: Number(app_id),
       };
     },
   },
@@ -425,4 +426,119 @@ export const customAminoTypes = {
       };
     },
   },
+  "/comdex.locker.v1beta1.MsgCloseLockerRequest": {
+    aminoType: "comdex/locker/MsgCloseLockerRequest",
+    toAmino: ({
+      depositor,
+      appId,
+      assetId,
+      lockerId,
+    }) => {
+      return {
+        depositor,
+        app_id: String(appId),
+        asset_id: String(assetId),
+        locker_id: String(lockerId),
+      };
+    },
+    fromAmino: ({
+      depositor,
+      app_id,
+      asset_id,
+      locker_id,
+    }) => {
+      return {
+        depositor,
+        appId: Number(app_id),
+        assetId: Number(asset_id),
+        lockerId: Number(locker_id),
+      };
+    },
+  },
+  "/comdex.locker.v1beta1.MsgLockerRewardCalcRequest": {
+    aminoType: "comdex/locker/MsgLockerRewardCalcRequest",
+    toAmino: ({
+      from,
+      appId,
+      lockerId,
+    }) => {
+      return {
+        from,
+        app_id: String(appId),
+        locker_id: String(lockerId),
+      };
+    },
+    fromAmino: ({
+      from,
+      app_id,
+      locker_id,
+    }) => {
+      return {
+        from,
+        appId: Number(app_id),
+        lockerId: Number(locker_id),
+      };
+    },
+  },
+  "/comdex.vault.v1beta1.MsgDepositAndDrawRequest": {
+    aminoType: "comdex/vault/MsgDepositAndDrawRequest",
+    toAmino: ({
+      from,
+      appId,
+      extendedPairVaultId,
+      userVaultId,
+      amount,
+    }) => {
+      return {
+        from,
+        app_id: String(appId),
+        extended_pair_vault_id: String(extendedPairVaultId),
+        user_vault_id: String(userVaultId),
+        amount: amount
+      };
+    },
+    fromAmino: ({
+      from,
+      app_id,
+      extended_pair_vault_id,
+      user_vault_id,
+      amount
+    }) => {
+      return {
+        from,
+        appId: Number(app_id),
+        extendedPairVaultId: Number(extended_pair_vault_id),
+        userVaultId: Number(user_vault_id),
+        amount: amount
+      };
+    },
+  },
+  "/comdex.vault.v1beta1.MsgVaultInterestCalcRequest": {
+    aminoType: "comdex/vault/MsgVaultInterestCalcRequest",
+    toAmino: ({
+      from,
+      appId,
+      userVaultId,
+    }) => {
+      return {
+        from,
+        app_id: String(appId),
+        user_vault_id: String(userVaultId),
+      };
+    },
+    fromAmino: ({
+      from,
+      app_id,
+      user_vault_id,
+    }) => {
+      return {
+        from,
+        appId: Number(app_id),
+        userVaultId: Number(user_vault_id),
+      };
+    },
+  },
 };
+
+
+
