@@ -31,6 +31,7 @@ import TooltipIcon from "../../../components/TooltipIcon";
 const CollateralAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  // const [pageSize, setPageSize] = useState(20);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
   const [auctions, setAuctions] = useState();
@@ -43,7 +44,13 @@ const CollateralAuctions = ({ setPairs, address }) => {
 
   useEffect(() => {
     fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
-  }, [address, auctions])
+    const interval = setInterval(() => {
+      fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false)
+    }, 5000)
+    return () => {
+      clearInterval(interval);
+    }
+  }, [address])
 
   const fetchData = () => {
     fetchBiddings(address);
@@ -77,14 +84,13 @@ const CollateralAuctions = ({ setPairs, address }) => {
       isTotal,
       isReverse,
       (error, result) => {
-
         if (error) {
           message.error(error);
           return;
         }
-
         if (result?.auctions?.length > 0) {
-          setAuctions(result && result.auctions);
+          // setAuctions(result && result.auctions);
+          setAuctions(result && result);
         }
         else {
           setAuctions("");
@@ -199,10 +205,9 @@ const CollateralAuctions = ({ setPairs, address }) => {
     },
   ];
 
-
   const tableData =
-    auctions && auctions.length > 0
-      ? auctions.map((item, index) => {
+    auctions && auctions?.auctions.length > 0
+      ? auctions?.auctions.map((item, index) => {
         return {
           key: index,
           id: item.id,
@@ -259,14 +264,15 @@ const CollateralAuctions = ({ setPairs, address }) => {
                 dataSource={tableData}
                 columns={columns}
                 loading={inProgress}
-                onChange={(event) => handleChange(event)}
-                pagination={{
-                  total:
-                    auctions &&
-                    auctions.pagination &&
-                    auctions.pagination.total,
-                  pageSize,
-                }}
+                // onChange={(event) => handleChange(event)}
+                // pagination={{
+                //   total:
+                //     auctions &&
+                //     auctions.pagination &&
+                //     auctions.pagination.total,
+                //   pageSize,
+                // }}
+                pagination={{ defaultPageSize: 10 }}
                 scroll={{ x: "100%" }}
               />
             </div>

@@ -10,7 +10,7 @@ import TooltipIcon from "../../../components/TooltipIcon";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
 import { totalVTokens, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
-import { queryAssets, queryPairVault } from '../../../services/asset/query';
+import { queryAssets, queryPair, queryPairVault } from '../../../services/asset/query';
 import { queryMintedTokenSpecificVaultType, queryOwnerVaults, queryOwnerVaultsInfo, queryUserVaults } from '../../../services/vault/query';
 import { transactionForVotePairProposal } from '../../../services/voteContractsWrites';
 import { setBalanceRefresh } from "../../../actions/account";
@@ -27,6 +27,7 @@ const Vote = ({
   const [pairVaultData, setPairValutData] = useState({})
   const [assetList, setAssetList] = useState();
   const [pairIdData, setPairIdData] = useState({});
+  const [pairId, setPairId] = useState({});
   const [totalBorrowed, setTotalBorrowed] = useState({});
   const [vaultId, setVaultId] = useState({});
   const [myBorrowed, setMyBorrowed] = useState({});
@@ -53,7 +54,6 @@ const Vote = ({
       setProposalExtenderPair(res?.extended_pair)
       setLoading(false)
     }).catch((error) => {
-      setProposalExtenderPair("")
       setLoading(false)
       console.log(error);
     })
@@ -101,6 +101,7 @@ const Vote = ({
       console.log(error);
     })
   }
+
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     queryAssets(offset, limit, countTotal, reverse, (error, data) => {
       if (error) {
@@ -110,6 +111,7 @@ const Vote = ({
       setAssetList(data.assets)
     });
   };
+
   const fetchQueryPairValut = (extendedPairId) => {
     setLoading(true)
     queryPairVault(extendedPairId, (error, data) => {
@@ -118,7 +120,6 @@ const Vote = ({
         setLoading(false)
         return;
       }
-
       setPairIdData((prevState) => ({
         ...prevState, [extendedPairId]: data?.pairVault?.pairId?.low
       }))
@@ -131,7 +132,6 @@ const Vote = ({
 
   const getAsssetIcon = (assetId) => {
     const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.id).toNumber() === assetId);
-
     return selectedItem[0]?.denom || ""
   }
 
@@ -203,6 +203,37 @@ const Vote = ({
       fetchVotingTotalBribs(proposalId, item)
     })
   }
+
+  const fetchAssetIdFromPairID = (pairId, extendexPairId) => {
+    setLoading(true)
+
+    queryPair(pairId, (error, data) => {
+      setLoading(false)
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setPairId((prevState) => ({
+        ...prevState, [extendexPairId]: data?.pairInfo?.denomIn,
+
+      }));
+
+    });
+  };
+
+  const getAssetIdFrompairID = () => {
+    let pairIdDataInArray = Object.values(pairIdData)
+    if (pairIdDataInArray.length > 0) {
+      pairIdDataInArray && pairIdDataInArray.map((item, index) => {
+        fetchAssetIdFromPairID(item, proposalExtenderPair[index]);
+      })
+    }
+  }
+
+  useEffect(() => {
+    getAssetIdFrompairID()
+  }, [pairIdData])
+
   const handleVote = (item) => {
     setInProcess(true)
     if (address) {
@@ -373,7 +404,7 @@ const Vote = ({
               <div className="assets-icon">
                 <SvgIcon
                   name={iconNameFromDenom(
-                    getAsssetIcon(pairIdData[item])
+                    pairId[item]
                   )}
                 />
               </div>
