@@ -186,9 +186,9 @@ const Deposit = ({
   const lockerId = ownerLockerInfo?.lockerId;
 
   const handleInputMax = () => {
-    if (Number(AvailableAssetBalance) > DEFAULT_FEE) {
+    if (Number(AvailableAssetBalance)) {
       return dispatch(
-        setAmountIn(amountConversion(AvailableAssetBalance - DEFAULT_FEE))
+        setAmountIn(amountConversion(AvailableAssetBalance))
       );
     } else {
       return null;
