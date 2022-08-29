@@ -26,7 +26,7 @@ export const transactionForVote = async (proposalId, vote, callback) => {
 
     const httpUrl = comdex?.rpc;
     let walletAddress = localStorage.getItem("ac");
-    walletAddress=decode(walletAddress);
+    walletAddress = decode(walletAddress);
     const handleMsg = {
         "vote":
         {
@@ -49,17 +49,29 @@ export const transactionForVote = async (proposalId, vote, callback) => {
                     value: {
                         sender: walletAddress,
                         contract: contractAddress,
-                        msg: new TextEncoder().encode(JSON.stringify(handleMsg))
+                        msg: new TextEncoder().encode(JSON.stringify(handleMsg)),
+                        funds: []
                     }
                 }],
                 customFees.exec
             ).then((response) => {
-                callback(null, response)
+                if (!response?.code) {
+                    console.log(response?.rawLog);
+             
+                    callback(null, response?.rawLog)
+                }
+                else {
+                    console.log(response?.rawLog);
+                    callback(response?.rawLog)
+
+                }
 
             }).catch((err) => {
+                console.log(err);
                 callback(err)
             })
         }).catch((error) => {
+            console.log(error);
             callback(error)
         });
 

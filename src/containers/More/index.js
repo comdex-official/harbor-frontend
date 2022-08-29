@@ -59,7 +59,7 @@ const More = ({
     if (address) {
       transactionClaimRewards(address, PRODUCT_ID, (error, result) => {
         if (error) {
-          message.error(error)
+          message.error("Transaction failed")
           setLoading(false)
           return;
         }
