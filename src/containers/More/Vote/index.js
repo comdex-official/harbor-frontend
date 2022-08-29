@@ -24,6 +24,7 @@ const Vote = ({
   const [inProcess, setInProcess] = useState(false);
   const [proposalId, setProposalId] = useState();
   const [proposalExtenderPair, setProposalExtenderPair] = useState();
+  const [btnLoading, setBtnLoading] = useState(0);
   const [pairVaultData, setPairValutData] = useState({})
   const [assetList, setAssetList] = useState();
   const [pairIdData, setPairIdData] = useState({});
@@ -234,8 +235,9 @@ const Vote = ({
     getAssetIdFrompairID()
   }, [pairIdData])
 
-  const handleVote = (item) => {
+  const handleVote = (item, index) => {
     setInProcess(true)
+    setBtnLoading(index)
     if (address) {
       if (proposalId) {
         transactionForVotePairProposal(address, PRODUCT_ID, proposalId, item, (error, result) => {
@@ -378,19 +380,6 @@ const Vote = ({
       key: "action",
       align: "centre",
       width: 130,
-      render: (item) => (
-        <>
-          <Button
-            type="primary"
-            className="btn-filled"
-            size="sm"
-            loading={inProcess}
-            onClick={() => handleVote(item)}
-          >
-            Vote
-          </Button>
-        </>
-      ),
     },
   ];
 
@@ -429,7 +418,17 @@ const Vote = ({
         total_votes: item,
         bribe: item,
         my_vote: item,
-        action: item,
+        action: <>
+          <Button
+            type="primary"
+            className="btn-filled"
+            size="sm"
+            loading={index === btnLoading ? inProcess : false}
+            onClick={() => handleVote(item, index)}
+          >
+            Vote
+          </Button>
+        </>,
       }
     })
 

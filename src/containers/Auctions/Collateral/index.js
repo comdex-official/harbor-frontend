@@ -207,7 +207,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
 
   const tableData =
     auctions && auctions?.auctions.length > 0
-      ? auctions?.auctions.map((item, index) => {
+      ? auctions?.auctions.reverse().map((item, index) => {
         return {
           key: index,
           id: item.id,
