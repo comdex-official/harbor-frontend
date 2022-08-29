@@ -257,7 +257,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className="composite-card py-3">
+          <div className={auctions?.auctions?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16"}>
             <div className="card-content">
               <Table
                 className="custom-table liquidation-table"

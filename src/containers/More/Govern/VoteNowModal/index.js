@@ -31,7 +31,7 @@ const VoteNowModal = ({
       if (userVote) {
         transactionForVote(currentProposalId, userVote, (error, result) => {
           if (error) {
-            message.error(error?.message)
+            message.error("Transaction failed")
             setLoading(false)
             return;
           }

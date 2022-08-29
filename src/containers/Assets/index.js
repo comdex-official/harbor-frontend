@@ -152,7 +152,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       },
     },
     {
-      key: cmst?.coinMinimalDenom,
+      key: cmst?.coinDenom,
       asset: (
         <>
           <div className="assets-withicon">
@@ -170,7 +170,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       },
     },
     {
-      key: harbor?.coinMinimalDenom,
+      key: harbor?.coinDenom,
       asset: (
         <>
           <div className="assets-withicon">
@@ -194,7 +194,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
     ibcBalances &&
     ibcBalances.map((item) => {
       return {
-        key: item.denom,
+        key: item?.coinMinimalDenom,
         asset: (
           <>
             <div className="assets-withicon">

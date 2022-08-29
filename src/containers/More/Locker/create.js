@@ -58,7 +58,7 @@ const Create = ({
             if (inAmount) {
                 transactionForCreateVesting(address, PRODUCT_ID, radioValue, inAmount, (error, result) => {
                     if (error) {
-                        message.error(error)
+                        message.error("Transaction failed")
                         setLoading(false)
                         return;
                     }

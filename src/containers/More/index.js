@@ -59,7 +59,7 @@ const More = ({
     if (address) {
       transactionClaimRewards(address, PRODUCT_ID, (error, result) => {
         if (error) {
-          message.error(error)
+          message.error("Transaction failed")
           setLoading(false)
           return;
         }
@@ -188,7 +188,7 @@ const More = ({
               <div className="morecard-left">
                 <h2>Vest</h2>
                 <p>
-                  More tokens locked for longer = greater voting power = higher rewards.
+                  Lock your Harbor token for veHarbor to benefit from increased voting power, rebases, external incentives and surplus rewards.
                 </p>
                 <div className="button-container">
                   <Button
@@ -211,7 +211,7 @@ const More = ({
               <div className="morecard-left">
                 <h2>Vote</h2>
                 <p>
-                  Earn a share of vault's surplus and external incentives.
+                  Vote for your desired assets to receive external incentives to direct emissions to specific assets.
 
                 </p>
                 <div className="button-container">

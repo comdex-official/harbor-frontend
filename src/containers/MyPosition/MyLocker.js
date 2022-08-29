@@ -168,7 +168,7 @@ const MyEarn = ({ address }) => {
                 //   defaultPageSize: pageSize,
                 //   pageSizeOptions: ["5", "10", "20", "50"],
                 // }}
-                pagination={false}
+                pagination={{ defaultPageSize: 5 }}
                 scroll={{ x: "100%" }}
               />
             </div>

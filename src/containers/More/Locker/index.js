@@ -50,7 +50,7 @@ const Vesting = ({
         if (address) {
             transactionForClaimLockedHarbor(address, (error, result) => {
                 if (error) {
-                    message.error(error)
+                    message.error("Transaction failed")
                     setLoading(false)
                     return;
                 }
@@ -95,7 +95,7 @@ const Vesting = ({
                                 </div>
                             </div>
                             <div className="value">{withdrawableToken?.amount ? amountConversionWithComma(withdrawableToken?.amount, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)}</div>
-                        </div> {"   "} <span className="ml-2"> <TooltipIcon text="Total unlocked HARBOR to claim" /></span> 
+                        </div> {"   "} <span className="ml-2"> <TooltipIcon text="Total unlocked HARBOR to claim" /></span>
                     </div>
                 </div>
             </div>
