@@ -73,9 +73,9 @@ const DebtAuctions = ({ setPairs, address }) => {
         message.error(error);
         return;
       }
-
       if (result?.auctions?.length > 0) {
-        setAuctions(result && result.auctions);
+        // setAuctions(result && result.auctions);
+        setAuctions(result && result);
       }
     });
   };
@@ -164,8 +164,8 @@ const DebtAuctions = ({ setPairs, address }) => {
   ];
 
   const tableData =
-    auctions && auctions.length > 0
-      ? auctions.map((item, index) => {
+    auctions && auctions?.auctions.length > 0
+      ? auctions.auctions.map((item, index) => {
         return {
           key: index,
           id: item.id,
@@ -217,7 +217,8 @@ const DebtAuctions = ({ setPairs, address }) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className="composite-card py-3">
+          {/* <div className="composite-card py-3"> */}
+          <div className={auctions?.auctions?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16"}>
             <div className="card-content">
               <Table
                 className="custom-table liquidation-table"

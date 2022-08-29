@@ -14,7 +14,7 @@ export const getQueryService = (callback) => {
   } else {
     createQueryClient((error, client) => {
       if (error) {
-        callback(error);
+        return callback(error);
       }
       myClient = client;
       const queryService = new QueryClientImpl(client);
@@ -120,13 +120,13 @@ export const queryDebtAuctionList = (
     queryService
       .QueryDebtAuctions({
         appId: Long.fromNumber(PRODUCT_ID),
-        pagination: {
-          key: "",
-          offset: Long.fromNumber(offset),
-          limit: Long.fromNumber(limit),
-          countTotal: countTotal,
-          reverse: reverse,
-        },
+        // pagination: {
+        //   key: "",
+        //   offset: Long.fromNumber(offset),
+        //   limit: Long.fromNumber(limit),
+        //   countTotal: countTotal,
+        //   reverse: reverse,
+        // },
       })
       .then((result) => {
 
