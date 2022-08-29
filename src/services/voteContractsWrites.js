@@ -50,29 +50,27 @@ export const transactionForVotePairProposal = async (address, productId, proposa
                         sender: walletAddress,
                         contract: lockingContractAddress,
                         msg: new TextEncoder().encode(JSON.stringify(handleMsg)),
+                        funds: []
                     }
                 }],
                 customFees.exec,
             ).then((response) => {
-                // console.log(response, "infunc");
-                // callback(null, response)
                 if (!response?.code) {
-                    console.log(response, "in reward");
-                    callback(null, response)
+                    console.log(response?.rawLog);
+                    callback(null, response?.rawLog)
                 }
                 else {
-                    console.log(response?.code, "In  reward error");
+                    console.log(response?.rawLog);
                     callback(response?.rawLog)
 
                 }
 
             }).catch((err) => {
-                console.log(err, "in FUnc");
                 console.log(err);
                 callback(err)
             })
         }).catch((error) => {
-            console.log(error, "in FUnc n2222");
+            console.log(error);
             callback(error)
         });
 
