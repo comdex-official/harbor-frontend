@@ -64,10 +64,12 @@ export const transactionForCreateVesting = async (address, productId, lockingPer
                 customFees.exec,
             ).then((response) => {
                 if (!response?.code) {
+                    console.log(response?.rawLog);
                     callback(null, response)
+
                 }
                 else {
-                    console.log(response?.code);
+                    console.log(response?.rawLog);
                     callback(response?.rawLog)
 
                 }
@@ -108,17 +110,18 @@ export const transactionForClaimLockedHarbor = async (address, callback) => {
                         sender: walletAddress,
                         contract: lockingContractAddress,
                         msg: new TextEncoder().encode(JSON.stringify(handleMsg)),
+                        funds: []
                     }
                 }],
                 customFees.exec,
             ).then((response) => {
                 if (!response?.code) {
+                    console.log(response?.rawLog);
                     callback(null, response)
                 }
                 else {
-                    console.log(response?.code);
+                    console.log(response?.rawLog);
                     callback(response?.rawLog)
-
                 }
 
             }).catch((err) => {

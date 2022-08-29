@@ -79,14 +79,14 @@ export const getChainConfig = (chain = comdex) => {
 
 export const initializeChain = (callback) => {
   (async () => {
-    if (!window.getOfflineSigner || !window.keplr) {
+    if (!window.getOfflineSignerAuto || !window.keplr) {
       const error = "Please install keplr extension";
       callback(error);
     } else {
       if (window.keplr.experimentalSuggestChain) {
         try {
           await window.keplr.experimentalSuggestChain(getChainConfig());
-          const offlineSigner = window.getOfflineSigner(comdex?.chainId);
+          const offlineSigner = await window.getOfflineSignerAuto(comdex?.chainId);
           const accounts = await offlineSigner.getAccounts();
 
           callback(null, accounts[0]);
@@ -103,7 +103,7 @@ export const initializeChain = (callback) => {
 
 export const initializeIBCChain = (config, callback) => {
   (async () => {
-    if (!window.getOfflineSigner || !window.keplr) {
+    if (!window.getOfflineSignerAuto || !window.keplr) {
       const error = "Please install keplr extension";
 
       callback(error);
@@ -111,7 +111,7 @@ export const initializeIBCChain = (config, callback) => {
       if (window.keplr.experimentalSuggestChain) {
         try {
           await window.keplr.experimentalSuggestChain(config);
-          const offlineSigner = window.getOfflineSigner(config?.chainId);
+          const offlineSigner = await window.getOfflineSignerAuto(config?.chainId);
           const accounts = await offlineSigner.getAccounts();
           callback(null, accounts[0]);
         } catch (error) {
@@ -154,7 +154,7 @@ export const fetchKeplrAccountName = async () => {
 };
 export const KeplrWallet = async (chainID = comdex?.chainId) => {
   await window.keplr.enable(chainID);
-  const offlineSigner = window.getOfflineSigner(chainID);
+  const offlineSigner = await window.getOfflineSignerAuto(chainID);
   const accounts = await offlineSigner.getAccounts();
   return [offlineSigner, accounts];
 };

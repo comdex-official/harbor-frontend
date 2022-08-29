@@ -148,7 +148,7 @@ const MyVault = ({ address }) => {
                 dataSource={tableData}
                 columns={columns}
                 loading={inProgress}
-                pagination={false}
+                pagination={{ defaultPageSize: 5 }}
                 scroll={{ x: "100%" }}
               />
             </div>
