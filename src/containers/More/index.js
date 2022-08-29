@@ -219,6 +219,7 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("/vote")}
+                    disabled={true}
                   >
                     Vote
                   </Button>
