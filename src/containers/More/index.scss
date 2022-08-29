@@ -50,10 +50,10 @@
         }
       }
       p {
+        width: 60%;
+        margin: auto;
         .dark-mode & {
           color: $text-color-label-dark;
-          width: 60%;
-          margin: auto;
         }
       }
 
