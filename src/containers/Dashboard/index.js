@@ -14,7 +14,7 @@ import { commaSeparator, marketPrice } from "../../utils/number";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import "./index.scss";
 import { fetchProposalUpData, totalveHarborSupply } from "../../services/contractsRead";
-import { cmst, harbor } from "../../config/network";
+import { cmst, harbor, ibcDenoms } from "../../config/network";
 
 const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
 
@@ -56,7 +56,6 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
             collateralLockedAmount,
           })
         );
-
         let total = 0;
         const totalValue = new Map(
           uniqueVaults?.map((item) => {
@@ -106,7 +105,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
       amount =
         Number(totalDollarValue) -
         (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
-          Number(totalValueLocked?.get("uatom")?.dollarValue || 0));
+          Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0));
     }
 
     return `$${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}
@@ -130,7 +129,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
     if (harborSupply) {
       calculateHarborSypply()
     }
-  }, [harborSupply ])
+  }, [harborSupply])
 
 
   const getPrice = (denom) => {
@@ -182,7 +181,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
         data: [
           {
             name: "ATOM",
-            y: Number(totalValueLocked?.get("uatom")?.dollarValue || 0),
+            y: Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0),
             color: "#665AA6",
           },
           {
@@ -195,7 +194,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
             y:
               Number(totalDollarValue || 0) -
               (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
-                Number(totalValueLocked?.get("uatom")?.dollarValue || 0)),
+                Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0)),
             color: isDarkMode ? "#373549" : "#E0E0E0",
           },
         ],
@@ -378,7 +377,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                     <h3>
                       $
                       {commaSeparator(
-                        Number(totalValueLocked?.get("uatom")?.dollarValue || 0).toFixed(
+                        Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0).toFixed(
                           DOLLAR_DECIMALS)
                       )}
                     </h3>
