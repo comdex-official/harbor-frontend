@@ -78,30 +78,6 @@ const Mint = ({
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
 
-
-  useEffect(() => {
-    if (ownerVaultId) {
-      setEditType("Deposit And Draw")
-    }
-    else {
-      setEditType("Mint")
-    }
-  }, [ownerVaultId])
-
-  useEffect(() => {
-    if (ownerVaultInfo?.id) {
-      getOwnerVaultInfo(ownerVaultInfo?.id)
-    }
-    else {
-      setOwnerCurrentCollateral(0)
-    }
-  }, [ownerVaultInfo, refreshBalance])
-
-  useEffect(() => {
-    if (!ownerVaultId) {
-      setOwnerCurrentCollateral(0)
-    }
-  }, [ownerVaultId, ownerVaultInfo])
   const getOwnerVaultInfo = (ownerVaultId) => {
     queryUserVaultsInfo(ownerVaultId, (error, data) => {
       if (error) {
@@ -113,7 +89,6 @@ const Mint = ({
       setOwnerCurrentCollateral(ownerCollateral)
     });
   };
-
 
   const getLiquidationPrice = () => {
     // formula = ((Liquidiation Ratio) * (Composite already minted + Composite to be minted) )/ (Quantity of Asset Locked + Quantity of Asset to be Locked)
@@ -144,6 +119,7 @@ const Mint = ({
     value = toDecimals(value).toString().trim();
     handleAssetOutChange(value)
   }
+
   const handleAmountInChangeWhenVaultExist = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
 
@@ -158,10 +134,8 @@ const Mint = ({
       marketPrice(markets, pair && pair?.denomOut)
     );
     setAmountOut(dataAmount);
-    // setDebtValidationError(
-    //   ValidateInputNumber(getAmount(dataAmount), "", "", debtFloor)
-    // );
   }
+
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
 
@@ -221,7 +195,6 @@ const Mint = ({
     )}`;
   };
 
-  // console.log(outAmount, "outAmount");
   const handleSliderChange = (value) => {
     let amountOutCalculated;
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
@@ -257,10 +230,12 @@ const Mint = ({
       return handleAmountInChange(amountConversion(collateralAssetBalance));
     }
   };
+
   const handleOutMaxClick = () => {
     setAmountOut(calculateWithdrawableAmount())
     setCollateralRatio(minCrRatio)
   };
+
   const handleAssetOutChange = (value) => {
     setAmountOut(value)
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
@@ -276,7 +251,6 @@ const Mint = ({
     let calculateAmountIn = ((currentCr * amountOut) / amountInPrice) / 100;
     // eslint-disable-next-line no-unused-vars
     calculateAmountIn = ((isFinite(calculateAmountIn) && calculateAmountIn) || 0).toFixed(6)
-    // setAmountIn(calculateAmountIn)
 
     // Calculating current Collateral Ratio
     let calculateCurrrentCr = ((amountIn * amountInPrice) / (value * stableTokenPrice) * 100);
@@ -399,16 +373,6 @@ const Mint = ({
     }
   };
 
-  useEffect(() => {
-    resetValues()
-
-    fetchQueryPairValut(pathVaultId);
-    if (pairId) {
-      getAssetDataByPairId(pairId);
-    }
-  }, [address, pairId, refreshBalance])
-
-
   const fetchQueryPairValut = (pairVaultId) => {
     setLoading(true)
     queryPairVault(pairVaultId, (error, data) => {
@@ -424,9 +388,7 @@ const Mint = ({
     })
   }
 
-
   const getAssetDataByPairId = (pairId) => {
-    setLoading(true)
     queryPair(pairId, (error, data) => {
       if (error) {
         message.error(error);
@@ -443,7 +405,41 @@ const Mint = ({
     let calculateWithdrawable = Number(((amountIn * amountInPrice) / minCr) * 100).toFixed(DOLLAR_DECIMALS)
     return calculateWithdrawable;
   }
+
   calculateWithdrawableAmount()
+
+  useEffect(() => {
+    if (ownerVaultId) {
+      setEditType("Deposit And Draw")
+    }
+    else {
+      setEditType("Mint")
+    }
+  }, [ownerVaultId])
+
+  useEffect(() => {
+    if (ownerVaultInfo?.id) {
+      getOwnerVaultInfo(ownerVaultInfo?.id)
+    }
+    else {
+      setOwnerCurrentCollateral(0)
+    }
+  }, [ownerVaultInfo, refreshBalance])
+
+  useEffect(() => {
+    if (!ownerVaultId) {
+      setOwnerCurrentCollateral(0)
+    }
+  }, [ownerVaultId, ownerVaultInfo])
+
+  useEffect(() => {
+    resetValues()
+    fetchQueryPairValut(pathVaultId);
+    if (pairId) {
+      getAssetDataByPairId(pairId);
+    }
+  }, [address, pairId, refreshBalance])
+
   useEffect(() => {
     resetValues();
   }, []);

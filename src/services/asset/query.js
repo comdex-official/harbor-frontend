@@ -102,7 +102,13 @@ export const queryPair = (pairId, callback) => {
 };
 
 
-export const queryExtendedPairVaultById = (productId, callback) => {
+export const queryExtendedPairVaultById = (
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  productId,
+  callback) => {
   getQueryService((error, queryService) => {
     if (error) {
       callback(error);
@@ -111,6 +117,13 @@ export const queryExtendedPairVaultById = (productId, callback) => {
     queryService
       .QueryAllExtendedPairVaultsByApp({
         appId: Long.fromNumber(productId),
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
       })
       .then((result) => {
         callback(null, result);
