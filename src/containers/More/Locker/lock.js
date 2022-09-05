@@ -49,7 +49,6 @@ const Lock = ({
             return Number(amountConversion(item?.vtoken?.amount));
         })
         totalveHARBORLocked = tokens?.reduce((partialSum, a) => partialSum + a, 0)
-        // totalveHARBORLocked = Number(totalveHARBORLocked || 0).toFixed(6)
         { totalveHARBORLocked && setIssuedveHARBOR(totalveHARBORLocked) }
     }
 

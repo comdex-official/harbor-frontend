@@ -134,9 +134,6 @@ const Mint = ({
       marketPrice(markets, pair && pair?.denomOut)
     );
     setAmountOut(dataAmount);
-    // setDebtValidationError(
-    //   ValidateInputNumber(getAmount(dataAmount), "", "", debtFloor)
-    // );
   }
 
   const handleAmountInChange = (value) => {
@@ -198,7 +195,6 @@ const Mint = ({
     )}`;
   };
 
-  // console.log(outAmount, "outAmount");
   const handleSliderChange = (value) => {
     let amountOutCalculated;
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
@@ -255,7 +251,6 @@ const Mint = ({
     let calculateAmountIn = ((currentCr * amountOut) / amountInPrice) / 100;
     // eslint-disable-next-line no-unused-vars
     calculateAmountIn = ((isFinite(calculateAmountIn) && calculateAmountIn) || 0).toFixed(6)
-    // setAmountIn(calculateAmountIn)
 
     // Calculating current Collateral Ratio
     let calculateCurrrentCr = ((amountIn * amountInPrice) / (value * stableTokenPrice) * 100);

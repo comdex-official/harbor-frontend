@@ -71,9 +71,7 @@ const Minting = ({ address }) => {
   };
 
   const fetchVaultMintedTokenStatistic = (productId) => {
-    // setLoading(true);
     queryVaultMintedStatistic(productId, (error, data) => {
-      // setLoading(false);
       if (error) {
         message.error(error);
         return;
