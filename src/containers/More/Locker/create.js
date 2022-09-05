@@ -82,7 +82,6 @@ const Create = ({
     }
 
     const onRadioInputChange = (e) => {
-
         setRadioValue(e.target.value);
         dispatch(setVestingRadioInput(e.target.value))
         calculateveHarbor(inAmount, e.target.value)
@@ -133,7 +132,7 @@ const Create = ({
 
     const handleMaxClick = () => {
         let maxValue = amountConversion(getDenomBalance(balances, "uharbor"))
-
+        calculateveHarbor(maxValue, vestingRadioInput)
         dispatch(setAmountIn(maxValue));
     }
 
@@ -177,7 +176,7 @@ const Create = ({
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(getDenomBalance(balances, "uharbor"))} {denomConversion("uharbor")}
+                                    {amountConversionWithComma(getDenomBalance(balances, "uharbor") || 0)} {denomConversion("uharbor")}
                                 </span>
                                 <div className="maxhalf">
                                     <Button className="active" onClick={() => handleMaxClick()} >
@@ -224,10 +223,10 @@ const Create = ({
                             <div className="assets-right">
                                 <div className="input-select">
                                     <Radio.Group onChange={onRadioInputChange} value={radioValue}>
-                                        <Radio value="t1" >1 Week</Radio>
-                                        <Radio value="t2" >1 Month</Radio>
-                                        <Radio value="t3" >1 Years</Radio>
-                                        <Radio value="t4" >4 Years</Radio>
+                                        <Radio value="t1" >1 Week <TooltipIcon text="1 week - 1000/208 = 4.80 veHARBOR" /></Radio>
+                                        <Radio value="t2" >1 Month <TooltipIcon text="1 month - 1000/48 = 20.83 veHARBOR" /></Radio>
+                                        <Radio value="t3" >1 Years <TooltipIcon text="1 year - 1000/4 = 250 veHARBOR" /></Radio>
+                                        <Radio value="t4" >4 Years <TooltipIcon text="4 year = 1000 veHARBOR" /></Radio>
                                     </Radio.Group>
                                 </div>
                             </div>
@@ -244,19 +243,6 @@ const Create = ({
                             </div>
                         </div>
                     </div>
-                    <div className="lock-summery-main-container ml-1  mt-4">
-                        <div className="lock-summery-container">
-                            Upon locking 1000 HARBOR for :
-                        </div>
-
-                        <div className="rewards-calculator-main-box ">
-                            <div className="reward-value-1  reward-value-common-class">1 week - 1000/208 = 4.80 veHARBOR</div>
-                            <div className="reward-value-2 reward-value-common-class">1 year - 1000/4 = 250 veHARBOR</div>
-                            <div className="reward-value-3 reward-value-common-class">1 month - 1000/48 = 20.83 veHARBOR</div>
-                            <div className="reward-value-4 reward-value-common-class">4 year = 1000 veHARBOR</div>
-                        </div>
-                    </div>
-
                     <div className="assets-poolSelect-btn">
                         <div className="assets-form-btn text-center  mb-2">
                             <Button
