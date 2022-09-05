@@ -5,11 +5,11 @@ import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
-import { iconNameFromDenom } from "../../utils/string";
+import { iconNameFromDenom, symbolToDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
 import React, { useEffect, useState } from "react";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
-import { setAssetList, setPairs } from "../../actions/asset";
+import { setPairs } from "../../actions/asset";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
@@ -19,9 +19,10 @@ import {
 } from "../../actions/locker";
 import { amountConversionWithComma } from "../../utils/coin";
 import NoData from "../../components/NoData";
-import { queryAssets, queryExtendedPairVaultById, queryPair } from "../../services/asset/query";
+import { queryExtendedPairVaultById, queryPair } from "../../services/asset/query";
 import { decimalConversion } from "../../utils/number";
 import { queryVaultMintedStatistic } from "../../services/vault/query";
+import { Pagination } from 'antd';
 
 const Minting = ({ address }) => {
   const navigate = useNavigate();
@@ -30,13 +31,14 @@ const Minting = ({ address }) => {
   const extenedPairVaultList = useSelector(
     (state) => state.locker.extenedPairVaultList[0]
   );
-  const assetList = useSelector(
-    (state) => state.asset?.assetList
-  );
 
   const [loading, setLoading] = useState(false);
   const [vaultDebt, setVaultDebt] = useState([])
   const [pairId, setpairId] = useState({})
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(9);
+  const [activePage, setActivePage] = useState(DEFAULT_PAGE_NUMBER)
+  const [totalExtendedPair, setTotalExtendedPair] = useState()
 
   const navigateToMint = (path) => {
     navigate({
@@ -45,14 +47,7 @@ const Minting = ({ address }) => {
   };
 
   useEffect(() => {
-    fetchExtendexPairList(PRODUCT_ID);
-    fetchAssets(
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
-      true,
-      false
-    );
-
+    fetchExtendexPairList((pageNumber - 1) * pageSize, pageSize, true, false, PRODUCT_ID)
   }, [address])
 
   useEffect(() => {
@@ -62,22 +57,23 @@ const Minting = ({ address }) => {
 
   }, [address, extenedPairVaultList])
 
-  const fetchExtendexPairList = (productId) => {
+  const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
     setLoading(true);
-    queryExtendedPairVaultById(productId, (error, data) => {
+    queryExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
       setLoading(false);
       if (error) {
         message.error(error);
         return;
       }
       dispatch(setAllExtendedPair(data?.extendedPair));
+      setTotalExtendedPair(data?.pagination?.total?.low)
     });
   };
 
   const fetchVaultMintedTokenStatistic = (productId) => {
-    setLoading(true);
+    // setLoading(true);
     queryVaultMintedStatistic(productId, (error, data) => {
-      setLoading(false);
+      // setLoading(false);
       if (error) {
         message.error(error);
         return;
@@ -86,37 +82,12 @@ const Minting = ({ address }) => {
     });
   };
 
-  const fetchAssets = (offset, limit, countTotal, reverse) => {
-    setLoading(true)
-    queryAssets(offset, limit, countTotal, reverse, (error, data) => {
-      setLoading(false)
-      if (error) {
-        message.error(error);
-        return;
-      }
-      dispatch(setAssetList(data.assets))
-    });
-  };
-  const fetchAssetIdFromPairID = (pairId, extendexPairId) => {
-    setLoading(true)
-    queryPair(pairId, (error, data) => {
-      setLoading(false)
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setpairId((prevState) => ({
-        [extendexPairId]: data?.pairInfo?.assetIn?.low,
-        ...prevState,
-      }));
-
-    });
-  };
-
-  const getAsssetIcon = (assetId) => {
-    const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.id).toNumber() === assetId);
-
-    return selectedItem[0]?.denom || ""
+  const getIconFromPairName = (extendexPairVaultPairName) => {
+    let pairName = extendexPairVaultPairName;
+    pairName = pairName?.replace(/\s+/g, ' ').trim()
+    pairName = pairName?.slice(0, -2);
+    pairName = pairName?.toLowerCase()
+    return pairName;
   }
 
   const calculateGlobalDebt = (value) => {
@@ -128,21 +99,22 @@ const Minting = ({ address }) => {
   }
 
   useEffect(() => {
-    if (extenedPairVaultList?.length > 0) {
-      extenedPairVaultList.map((item, index) => {
-        return fetchAssetIdFromPairID(item?.pairId?.low, item?.id?.low)
-      })
-    }
-  }, [extenedPairVaultList])
-  useEffect(() => {
     setVaultDebt([])
     setpairId({});
   }, [])
 
+  const handlePageChange = (currentPage, pageSize) => {
+    setPageNumber(currentPage - 1);
+    setPageSize(pageSize);
+    setActivePage(currentPage)
+    fetchExtendexPairList((currentPage - 1) * pageSize, pageSize, true, false, PRODUCT_ID);
+  };
 
   if (loading) {
     return <Spin />;
   }
+
+
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       <div className="card-main-container">
@@ -168,7 +140,7 @@ const Minting = ({ address }) => {
                       >
                         <div className="up-container">
                           <div className="icon-container">
-                            <SvgIcon name={iconNameFromDenom(getAsssetIcon(pairId[item?.id?.low]))} />
+                            <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} />
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{item?.pairName}</div>
@@ -195,7 +167,7 @@ const Minting = ({ address }) => {
                           </div>
                           <div className="contenet-container">
                             <div className="name">
-                              Min. Borrow Amount <TooltipIcon text="Minimum composite that should be borrowed for any active vault" />
+                              Min. Borrow Amount <TooltipIcon text="Minimum Composite that should be borrowed for any active vault" />
                             </div>
                             <div className="value">
                               {" "}
@@ -236,10 +208,22 @@ const Minting = ({ address }) => {
               return ""
             }
           })
-        ) : (
-          <NoData />
-        )}
+        )
+          : (
+            <NoData />
+          )}
+
+
       </div>
+      {extenedPairVaultList?.length > 9 ? <div >
+        <Pagination
+          defaultCurrent={activePage}
+          onChange={handlePageChange}
+          total={totalExtendedPair &&
+            totalExtendedPair}
+          pageSize={pageSize}
+        />
+      </div> : ""}
     </div >
   );
 };

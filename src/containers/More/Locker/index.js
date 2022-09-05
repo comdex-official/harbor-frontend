@@ -13,6 +13,7 @@ import { amountConversionWithComma } from "../../../utils/coin";
 import { DOLLAR_DECIMALS } from "../../../constants/common";
 import { transactionForClaimLockedHarbor } from "../../../services/vestingContractsWrite";
 import TooltipIcon from "../../../components/TooltipIcon";
+import { commaSeparator } from "../../../utils/number";
 
 const { TabPane } = Tabs;
 
@@ -20,6 +21,7 @@ const Vesting = ({
     address,
     refreshBalance,
     setBalanceRefresh,
+    issuedveHARBOR
 }) => {
     const [issuedToken, setIssuedTokens] = useState();
     const [withdrawableToken, setWithdrawableToken] = useState();
@@ -74,31 +76,47 @@ const Vesting = ({
 
     const BackButton = {
         right: (
-            <div className="locker-up-main-container">
-                <div className="locker-up-container">
-                    <div className="claim-container">
-                        <div className="claim-btn">
-                            <Button
-                                type="primary"
-                                className="btn-filled mr-3"
-                                loading={loading}
-                                disabled={!Number(withdrawableToken?.amount)}
-                                onClick={() => handleClaimLockedharbor()}
-                            >Claim</Button>
-                        </div>
-                        <div className="claim-value">
-                            <div className="icon">
-                                <div className="assets-icon">
-                                    <SvgIcon
-                                        name={iconNameFromDenom(withdrawableToken?.denom)}
-                                    />
+            <>
+                <Row >
+                    <Row>
+                        <Col>
+                            <div className="totol-voting-main-container mr-3">
+                                <div className="total-voting-container">
+                                    <div className="total-veHARBOR">
+                                        My veHARBOR : <span className='fill-box'><span>{commaSeparator(Number(issuedveHARBOR).toFixed(6) || 0)}</span> veHARBOR </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="value">{withdrawableToken?.amount ? amountConversionWithComma(withdrawableToken?.amount, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)}</div>
-                        </div> {"   "} <span className="ml-2"> <TooltipIcon text="Total unlocked HARBOR to claim" /></span>
+                        </Col>
+                    </Row>
+                    <div className="locker-up-main-container">
+                        <div className="locker-up-container">
+                            <div className="claim-container ">
+                                <div className="claim-btn">
+                                    <Button
+                                        type="primary"
+                                        className="btn-filled mr-1"
+                                        loading={loading}
+                                        disabled={!Number(withdrawableToken?.amount)}
+                                        onClick={() => handleClaimLockedharbor()}
+                                    >Claim</Button>
+                                </div>
+                                <div className="claim-value">
+                                    <div className="icon">
+                                        <div className="assets-icon">
+                                            <SvgIcon
+                                                name={iconNameFromDenom(withdrawableToken?.denom)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="value">{withdrawableToken?.amount ? amountConversionWithComma(withdrawableToken?.amount, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)}</div>
+                                </div> {"   "} <span className="ml-2"> <TooltipIcon text="Total unlocked HARBOR to claim" /></span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+
+                </Row>
+            </>
         ),
     };
     return (
@@ -129,12 +147,14 @@ Vesting.propTypes = {
     lang: PropTypes.string.isRequired,
     address: PropTypes.string,
     refreshBalance: PropTypes.number.isRequired,
+    issuedveHARBOR: PropTypes.number.isRequired,
 };
 const stateToProps = (state) => {
     return {
         lang: state.language,
         address: state.account.address,
         refreshBalance: state.account.refreshBalance,
+        issuedveHARBOR: state.vesting.issuedveHARBOR,
     };
 };
 

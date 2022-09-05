@@ -7,14 +7,16 @@ import { Table } from 'antd';
 import { denomToSymbol, iconNameFromDenom } from '../../../utils/string';
 import { vestingLockNFTId } from '../../../services/vestingContractsRead';
 import { setBalanceRefresh } from "../../../actions/account";
-import { amountConversionWithComma } from '../../../utils/coin';
+import { setIssuedveHARBOR } from "../../../actions/vesting";
+import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import moment from 'moment';
+import { DOLLAR_DECIMALS } from '../../../constants/common';
 
 
 const Lock = ({
     address,
     refreshBalance,
-    setBalanceRefresh,
+    setIssuedveHARBOR,
 }) => {
 
     const [vestingNFTId, setVestingNFTId] = useState();
@@ -41,10 +43,25 @@ const Lock = ({
         return timestamp;
     }
 
+    const calculateTotalveHARBOR = () => {
+        let totalveHARBORLocked = 0;
+        let tokens = vestingNFTId && vestingNFTId?.vtokens?.reverse().map((item) => {
+            return Number(amountConversion(item?.vtoken?.amount));
+        })
+        totalveHARBORLocked = tokens?.reduce((partialSum, a) => partialSum + a, 0)
+        // totalveHARBORLocked = Number(totalveHARBORLocked || 0).toFixed(6)
+        { totalveHARBORLocked && setIssuedveHARBOR(totalveHARBORLocked) }
+    }
+
     // UseEffect calls 
     useEffect(() => {
         fetchVestingLockNFTId()
+        calculateTotalveHARBOR()
     }, [address, refreshBalance])
+
+    useEffect(() => {
+        calculateTotalveHARBOR()
+    }, [address, vestingNFTId])
 
 
     const columns = [
@@ -95,7 +112,6 @@ const Lock = ({
             // width: 300,
         },
     ];
-
 
     const tableData =
         vestingNFTId && vestingNFTId?.vtokens?.reverse().map((item, index) => {
@@ -178,6 +194,7 @@ const stateToProps = (state) => {
 };
 const actionsToProps = {
     setBalanceRefresh,
+    setIssuedveHARBOR,
 };
 
 

@@ -186,7 +186,7 @@ const More = ({
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
-                <h2>Vest</h2>
+                <h2>Stake</h2>
                 <p>
                   Lock your Harbor token for veHarbor to benefit from increased voting power, rebases, external incentives and surplus rewards.
                 </p>
@@ -219,7 +219,7 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("/vote")}
-                    disabled={true}
+                  disabled={true}
                   >
                     Vote
                   </Button>
