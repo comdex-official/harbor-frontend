@@ -190,7 +190,7 @@ const Govern = ({
                 proposalList && proposalList.map((item) => {
                   return (
                     <React.Fragment key={item?.id}>
-                      <div className="governlist-row" onClick={() => navigate(`/govern-details/${item?.id}`)} >
+                      <div className="governlist-row" onClick={() => navigate(`./govern-details/${item?.id}`)} >
                         <div className="left-section">
                           <h3>#{item?.id}</h3>
                           <h3>{item?.title}</h3>

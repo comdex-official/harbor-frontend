@@ -149,7 +149,7 @@ const More = ({
                   <Button
                     type="primary"
                     className="btn-filled"
-                    onClick={() => handleRouteChange("/govern")}
+                    onClick={() => handleRouteChange("./govern")}
                   >
                     Govern
                   </Button>
@@ -172,7 +172,7 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     disabled={true}
-                  // onClick={() => handleRouteChange("/airdrop")}
+                  // onClick={() => handleRouteChange("./airdrop")}
                   >
                     Coming Soon
                   </Button>
@@ -194,7 +194,7 @@ const More = ({
                   <Button
                     type="primary"
                     className="btn-filled"
-                    onClick={() => handleRouteChange("/vesting")}
+                    onClick={() => handleRouteChange("./vesting")}
                   // disabled={true}
                   >
                     Lock
@@ -218,8 +218,8 @@ const More = ({
                   <Button
                     type="primary"
                     className="btn-filled"
-                    onClick={() => handleRouteChange("/vote")}
-                  disabled={true}
+                    onClick={() => handleRouteChange("./vote")}
+                    disabled={true}
                   >
                     Vote
                   </Button>
