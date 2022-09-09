@@ -153,8 +153,8 @@ const Vote = ({
       userTotalVotes = userTotalVotes + Number(amountConversion(item?.total_vote || 0))
     })
     calculatePercentage = (Number(value) / userTotalVotes) * 100;
-    calculatePercentage = Number(calculatePercentage).toFixed(DOLLAR_DECIMALS)
-    return calculatePercentage || 0;
+    calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
+    return calculatePercentage;
   }
 
   useEffect(() => {
