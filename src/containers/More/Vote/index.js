@@ -31,13 +31,10 @@ const Vote = ({
   const [pairVaultData, setPairValutData] = useState({})
   const [assetList, setAssetList] = useState();
   const [pairIdData, setPairIdData] = useState({});
-  const [pairId, setPairId] = useState({});
   const [totalBorrowed, setTotalBorrowed] = useState({});
   const [vaultId, setVaultId] = useState({});
   const [myBorrowed, setMyBorrowed] = useState({});
-  const [totalVote, settotalVotes] = useState()
-  const [myVote, setMyVote] = useState({})
-  const [myExternalIncentive, setMyExternalIncentive] = useState({})
+
   const [totalVotingPower, setTotalVotingPower] = useState(0);
 
   // Query 
@@ -53,13 +50,10 @@ const Vote = ({
   }
 
   const fetchVotingCurrentProposal = (proposalId) => {
-    // setLoading(true)
     votingCurrentProposal(proposalId).then((res) => {
       setProposalExtenderPair(res?.extended_pair)
       setCurrentProposalAllData(res)
-      // setLoading(false)
     }).catch((error) => {
-      // setLoading(false)
       console.log(error);
     })
   }
@@ -129,6 +123,29 @@ const Vote = ({
       }))
     })
   }
+  const getOwnerVaultId = (productId, address, extentedPairId) => {
+    queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setVaultId((prevState) => ({
+        ...prevState, [extentedPairId]: data?.vaultId?.low
+      }))
+    })
+  }
+
+  const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
+    queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setMyBorrowed((prevData) => ({
+        ...prevData, [data?.vault?.extendedPairVaultId?.low]: data?.vault?.amountOut
+      }))
+    })
+  }
 
   const fetchTotalVTokens = (address, height) => {
     totalVTokens(address, height).then((res) => {
@@ -169,6 +186,7 @@ const Vote = ({
   const getPairFromExtendedPair = () => {
     allProposalData && allProposalData.map((item) => {
       fetchQueryPairValut(item?.extended_pair_id)
+      getOwnerVaultId(PRODUCT_ID, address, item?.extended_pair_id)
       fetchtotalBorrowed(PRODUCT_ID, item?.extended_pair_id)
     })
   }
@@ -184,6 +202,11 @@ const Vote = ({
     })
   };
 
+  useEffect(() => {
+    proposalExtenderPair && proposalExtenderPair.map((item) => {
+      getOwnerVaultInfoByVaultId(vaultId[item])
+    })
+  }, [vaultId, refreshBalance])
   useEffect(() => {
     if (proposalId) {
       fetchProposalAllUpData(address, proposalId);
