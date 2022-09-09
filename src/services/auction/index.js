@@ -41,13 +41,31 @@ export const queryDutchAuctionList = (
     queryService
       .QueryDutchAuctions({
         appId: Long.fromNumber(PRODUCT_ID),
-        // pagination: {
-        //   key: "",
-        //   offset: Long.fromNumber(offset),
-        //   limit: Long.fromNumber(limit),
-        //   countTotal: countTotal,
-        //   reverse: reverse,
-        // },
+      })
+      .then((result) => {
+
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+export const querySingleDutchAuction = (
+  auctionId,
+  auctionMappingId,
+  callback
+) => {
+  getQueryService((error, queryService) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+    queryService
+      .QueryDutchAuction({
+        appId: Long.fromNumber(PRODUCT_ID),
+        auctionMappingId: Long.fromNumber(auctionMappingId),
+        auctionId: Long.fromNumber(auctionId),
       })
       .then((result) => {
 
@@ -61,6 +79,33 @@ export const queryDutchAuctionList = (
 
 
 
+export const queryFilterDutchAuctions = (
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  asset,
+  callback) => {
+  getQueryService((error, queryService) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+
+    queryService
+      .QueryFilterDutchAuctions({
+        appId: Long.fromNumber(PRODUCT_ID),
+        denom: asset,
+        history: false,
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
 export const queryDutchBiddingList = (bidder, callback) => {
   getQueryService((error, queryService) => {
     if (error) {
@@ -120,13 +165,6 @@ export const queryDebtAuctionList = (
     queryService
       .QueryDebtAuctions({
         appId: Long.fromNumber(PRODUCT_ID),
-        // pagination: {
-        //   key: "",
-        //   offset: Long.fromNumber(offset),
-        //   limit: Long.fromNumber(limit),
-        //   countTotal: countTotal,
-        //   reverse: reverse,
-        // },
       })
       .then((result) => {
 

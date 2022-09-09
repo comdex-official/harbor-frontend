@@ -6,12 +6,13 @@ import { Button, List, Select, Progress, Spin } from "antd";
 import "./index.scss";
 import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
 import React, { useEffect } from "react";
-import { DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
 import moment from "moment";
 import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 import { useState } from "react";
 import NoData from "../../../components/NoData";
 import { amountConversionWithComma } from "../../../utils/coin";
+import { Pagination } from 'antd';
 
 const { Option } = Select;
 
@@ -29,14 +30,24 @@ const Govern = ({
 
   const [proposalList, setProposalList] = useState()
   const [totalSupply, setTotalSupply] = useState(0)
+  const [totalProposalCount, setTotalProposalCount] = useState(1)
+  const [filterValue, setFilterValue] = useState();
+  const [currentActivePage, setCurrentActivePage] = useState(1)
   const [loading, setLoading] = useState();
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(3);
+  const [inProgress, setInprogress] = useState(false)
 
-  const fetchAllProposal = (productId) => {
-    totalProposal(productId).then((res) => {
-      setAllProposal(res)
-      let reverseProposal = res.reverse();
-      setProposalList(reverseProposal)
+  const fetchAllProposal = (pageNumber, productId, limit, status) => {
+    setInprogress(true)
+    totalProposal(pageNumber, productId, limit, status).then((res) => {
+      setProposalList(res?.proposals)
+      setInprogress(false)
+      setTotalProposalCount(res?.proposal_count)
     }).catch((err) => {
+      console.log(err);
+      setInprogress(false)
+
     })
   }
 
@@ -49,6 +60,7 @@ const Govern = ({
       setLoading(false)
     })
   }
+
   const fetchTotalveHarborSupply = () => {
     setLoading(true)
     totalveHarborSupply().then((res) => {
@@ -67,7 +79,7 @@ const Govern = ({
   }
 
   useEffect(() => {
-    fetchAllProposal(PRODUCT_ID)
+    fetchAllProposal((pageNumber - 1) * pageSize, PRODUCT_ID, pageSize)
     fetchAllProposalUpData(PRODUCT_ID)
     fetchTotalveHarborSupply()
   }, [address])
@@ -78,6 +90,19 @@ const Govern = ({
     avgParticipation = avgParticipation / (totalSupply?.vtoken)
     avgParticipation = Number(avgParticipation * 100).toFixed(2)
     return avgParticipation;
+  }
+
+  const onPageChange = (currentPage) => {
+    if (filterValue === "all") {
+      setCurrentActivePage(currentPage)
+      fetchAllProposal((currentPage - 1) * pageSize, PRODUCT_ID, pageSize)
+      return
+    }
+    else {
+      setCurrentActivePage(currentPage)
+      fetchAllProposal((currentPage - 1) * pageSize, PRODUCT_ID, pageSize, filterValue)
+    }
+
   }
 
   const data = [
@@ -103,6 +128,7 @@ const Govern = ({
     return duration;
 
   }
+
   const calculateDurationPercentage = (startTime, duration) => {
     // formula = ((currentTime - start time)/duration )*100
     let start = Number(startTime)
@@ -122,17 +148,22 @@ const Govern = ({
   const navigate = useNavigate();
 
   const filterAllProposal = (value) => {
-    let allFilteredProposal = allProposal && allProposal.filter((item) => {
-      if (value === "all") {
-        return allProposal
-      }
-      return item.status === value
-    })
-    setProposalList(allFilteredProposal)
+    setFilterValue(value);
+    if (value === "all") {
+      setCurrentActivePage(1)
+      fetchAllProposal((pageNumber - 1) * pageSize, PRODUCT_ID, pageSize)
+      return;
+    }
+    else {
+      setCurrentActivePage(1)
+      fetchAllProposal((pageNumber - 1) * pageSize, PRODUCT_ID, pageSize, value)
+      return;
+    }
   }
   if (loading) {
     return <Spin />;
   }
+
   return (
     <div className="app-content-wrapper">
       <div className="back-btn-container">
@@ -187,46 +218,59 @@ const Govern = ({
             </div>
             <div className="govern-card-content ">
               {proposalList && proposalList?.length > 0 ? (
-                proposalList && proposalList.map((item) => {
-                  return (
-                    <React.Fragment key={item?.id}>
-                      <div className="governlist-row" onClick={() => navigate(`./govern-details/${item?.id}`)} >
-                        <div className="left-section">
-                          <h3>#{item?.id}</h3>
-                          <h3>{item?.title}</h3>
-                          <p>{item?.description} </p>
-                        </div>
-                        <div className="right-section">
-                          <Row>
-                            <Col sm="6">
-                              <label>Vote Starts :</label>
-                              <p>{unixToGMTTime(item?.start_time) || "--/--/--"}</p>
-                            </Col>
-                            <Col sm="6">
-                              <label>Voting Ends :</label>
-                              <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"}</p>
-                            </Col>
-                            <Col sm="6">
-                              <label>Duration : </label>
-                              <p>{getDuration(item?.duration?.time)}</p>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col>
-                              <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time)} size="small" />
-                            </Col>
-                          </Row>
-                        </div>
-                      </div>
-                    </React.Fragment>
-                  )
-                })
+                <>
+                  {inProgress ? <div className="spinner"><Spin /></div> :
+                    proposalList && proposalList.map((item) => {
+                      return (
+                        <React.Fragment key={item?.id}>
+                          <div className="governlist-row" onClick={() => navigate(`./govern-details/${item?.id}`)} >
+                            <div className="left-section">
+                              <h3>#{item?.id}</h3>
+                              <h3>{item?.title}</h3>
+                              <p>{item?.description} </p>
+                            </div>
+                            <div className="right-section">
+                              <Row>
+                                <Col sm="6">
+                                  <label>Vote Starts :</label>
+                                  <p>{unixToGMTTime(item?.start_time) || "--/--/--"}</p>
+                                </Col>
+                                <Col sm="6">
+                                  <label>Voting Ends :</label>
+                                  <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"}</p>
+                                </Col>
+                                <Col sm="6">
+                                  <label>Duration : </label>
+                                  <p>{getDuration(item?.duration?.time)}</p>
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col>
+                                  <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time)} size="small" />
+                                </Col>
+                              </Row>
+                            </div>
+                          </div>
+                        </React.Fragment>
+                      )
+                    })
+                  }
+                </>
+
               ) : <NoData />
 
               }
 
             </div>
           </div>
+          <Pagination
+            defaultCurrent={1}
+            onChange={(event) => onPageChange(event)}
+            total={totalProposalCount && totalProposalCount}
+            pageSize={pageSize}
+            hideOnSinglePage={true}
+            current={currentActivePage}
+          />
         </Col>
       </Row>
     </div>

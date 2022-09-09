@@ -10,6 +10,11 @@ import {
 import { queryPairs } from "../../../services/asset/query";
 import { denomConversion } from "../../../utils/coin";
 import { message } from "antd";
+import { queryDutchAuctionList, queryFilterDutchAuctions } from "../../../services/auction";
+import { setAuctions, setSelectedFilterAuctionAsset } from "../../../actions/auction";
+import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const marks = {
   0: "00:00hrs",
@@ -17,8 +22,12 @@ const marks = {
 };
 
 const FilterModal = ({ address, pairs, setPairs }) => {
+  const dispatch = useDispatch()
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [sliderValue, setSliderValue] = useState(0);
+  let selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
   useEffect(() => {
     if (!pairs?.list?.length) {
@@ -42,10 +51,57 @@ const FilterModal = ({ address, pairs, setPairs }) => {
     });
   };
 
+  const fetchFilteredDutchAuctions = (offset, limit, countTotal, reverse, asset) => {
+    queryFilterDutchAuctions(offset, limit, countTotal, reverse, asset, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      dispatch(setAuctions(data));
+    });
+  };
+
+  const fetchAuctions = (offset, limit, isTotal, isReverse) => {
+    queryDutchAuctionList(
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+        if (result?.auctions?.length > 0) {
+          dispatch(setAuctions(result && result));
+        }
+        else {
+          dispatch(setAuctions(""));
+        }
+      }
+    );
+  };
+
+  const onCheckBoxInputChange = (e) => {
+    if (e.target.checked) {
+      selectedAuctionedAsset.push(e.target.defaultValue)
+    } else {
+      selectedAuctionedAsset = selectedAuctionedAsset.filter(item => item !== e.target.defaultValue)
+    }
+  }
+
   const showModal = () => {
     setIsModalVisible(true);
   };
   const handleOk = () => {
+    if (selectedAuctionedAsset.length > 0) {
+      dispatch(setSelectedFilterAuctionAsset(selectedAuctionedAsset));
+      fetchFilteredDutchAuctions((pageNumber - 1) * pageSize, pageSize, true, false, selectedAuctionedAsset)
+    } else {
+      dispatch(setSelectedFilterAuctionAsset(selectedAuctionedAsset));
+      fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
+    }
+
     setIsModalVisible(false);
   };
   const handleCancel = () => {
@@ -83,52 +139,14 @@ const FilterModal = ({ address, pairs, setPairs }) => {
             <Col>
               <label>Auctioned Asset</label>
               <div className="filter-rows">
-                <Checkbox key={1}>{denomConversion("uatom")}</Checkbox>
-                <Checkbox key={2}>{denomConversion("uxprt")}</Checkbox>
-                <Checkbox key={3}>{denomConversion("uakt")}</Checkbox>
-                <Checkbox key={4}>{denomConversion("ucmdx")}</Checkbox>
-                <Checkbox key={5}>{denomConversion("udvpn")}</Checkbox>
+                <Checkbox key={1} onChange={onCheckBoxInputChange} defaultValue="ucmdx">{denomConversion("ucmdx")}</Checkbox>
+                <Checkbox key={2} onChange={onCheckBoxInputChange} defaultValue="uatom">{denomConversion("uatom")}</Checkbox>
+                <Checkbox key={3} onChange={onCheckBoxInputChange} defaultValue="uosmo">{denomConversion("uosmo")}</Checkbox>
               </div>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <label>Bidding Asset</label>
-              <div className="filter-rows">
-                <Checkbox key={1}>CMST</Checkbox>
-                <Checkbox key={2}>HARBOR</Checkbox>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <div className="timer-container">
-                <label>Timer</label>
-                <CustomInput
-                  placeholder="0"
-                  value={sliderValue}
-                  onChange={(event) => {
-                    setSliderValue(event.target?.value);
-                  }}
-                  defaultValue="1d:12h:1m"
-                />
-              </div>
-              <div className="mt-2 filter-rows pb-4">
-                <div className="slider-numbers">
-                  <Slider
-                    className="comdex-slider filter-slider"
-                    marks={marks}
-                    defaultValue={39}
-                    max={100}
-                    min={0}
-                    value={sliderValue}
-                    onChange={setSliderValue}
-                    tooltipVisible={false}
-                  />
-                </div>
-              </div>
-            </Col>
-          </Row>
+  
+
           <Row className="text-center mt-3">
             <Col>
               <Button

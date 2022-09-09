@@ -230,7 +230,7 @@ const GovernDetails = ({
     <div className="app-content-wrapper">
       <Row>
         <Col className="text-right mb-3">
-          <Link to="/govern"><Button className="back-btn" type="primary">Back</Button></Link>
+          <Link to="/more/govern"><Button className="back-btn" type="primary">Back</Button></Link>
         </Col>
       </Row>
       <Row>

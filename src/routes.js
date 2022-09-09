@@ -61,10 +61,10 @@ const routes = [
     path: "/more/vesting",
     element: <Vesting />,
   },
-  // {
-  //   path: "/more/vote",
-  //   element: <Vote />,
-  // },
+  {
+    path: "/more/vote",
+    element: <Vote />,
+  },
 ];
 
 export default routes;

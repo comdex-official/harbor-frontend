@@ -43,13 +43,17 @@ export const marketPrice = (array, denom) => {
     return value[0] && value[0].rates / 1000000;
   }
 
-  return 0; 
+  return 0;
 };
 
 export const calculateROI = (principal, interestRate, years, months, days) => {
   const earns = Number(principal) * (1 + (Number(interestRate) / 100)) ** (Number(years) + Number(months) / 12 + Number(days) / 365);
-
-  return earns.toFixed(DOLLAR_DECIMALS)
+  if (earns) {
+    return earns.toFixed(DOLLAR_DECIMALS)
+  }
+  else {
+    return 0
+  }
 }
 
 export const getAccountNumber = (value) => {
