@@ -218,8 +218,7 @@ const Withdraw = ({
       message.error("Address not found, please connect to Keplr");
       return;
     }
-    // setInProgressCal(true);
-    setInProgress(true);
+    setInProgressCal(true);
     message.info("Transaction initiated");
     signAndBroadcastTransaction(
       {
@@ -238,18 +237,15 @@ const Withdraw = ({
       },
       address,
       (error, result) => {
-        // setInProgressCal(false);
-        setInProgress(false);
+        setInProgressCal(false);
         if (error) {
           console.log(error);
           message.error(error);
-          // resetValues();
           return;
         }
 
         if (result?.code) {
           message.info(result?.rawLog);
-          // resetValues();
           return;
         }
         message.success(
@@ -258,7 +254,6 @@ const Withdraw = ({
             hash={result?.transactionHash}
           />
         );
-        // resetValues();
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
@@ -267,7 +262,7 @@ const Withdraw = ({
     );
 
   }
-  
+
   const marks = {
     0: "0%",
     100: "100%",
@@ -303,10 +298,11 @@ const Withdraw = ({
                     <div className="reward-claim-btn-container">
                       <span className="maxhalf claim-tx-btn">
                         <Button
-                          className="active"
+                          className="btn-filled active"
                           onClick={() => submitLockerInterestCalculate()}
-                          loading={inProgress}
-                          disabled={inProgress}
+                          type="primary"
+                          loading={inProgressCal}
+                          disabled={inProgress || inProgressCal}
                         >
                           Fetch Rewards
                         </Button>
@@ -364,6 +360,7 @@ const Withdraw = ({
                   !inAmount ||
                   inAmount <= 0 ||
                   inProgress ||
+                  inProgressCal ||
                   inputValidationError?.message
                 }
                 type="primary"

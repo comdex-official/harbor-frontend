@@ -50,16 +50,6 @@ const Footer = () => {
         </a>
 
         <a
-          aria-label="Linkedin"
-          target="_blank"
-          rel="noreferrer"
-          href="https://www.linkedin.com/showcase/compositemoney/"
-        >
-          <SvgIcon name={localStorage.getItem("isDarkMode") === "false"
-            ? "linkedin-light"
-            : "linkedin"} viewbox="0 0 25.825 20.66" />
-        </a>
-        <a
           aria-label="Github"
           target="_blank"
           rel="noreferrer"

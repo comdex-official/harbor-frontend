@@ -4,21 +4,12 @@ import {
   BIDDING_LIST_SET,
   BID_AMOUNT_SET,
   CURRENT_AUCTION_SET,
+  SET_SELECTED_AUCTIONED_ASSET,
 } from "../constants/auction";
 
-const data = (
-  state = {
-    list: [],
-    pagination: {},
-  },
-  action
-) => {
+const auctions = (state = "", action) => {
   if (action.type === AUCTION_LIST_SET) {
-    return {
-      ...state,
-      list: action.list,
-      pagination: action.pagination,
-    };
+    return action.list
   }
 
   return state;
@@ -34,6 +25,13 @@ const _ = (state = {}, action) => {
 
 const bidAmount = (state = 0, action) => {
   if (action.type === BID_AMOUNT_SET) {
+    return action.value;
+  }
+
+  return state;
+};
+const selectedAuctionedAsset = (state = [], action) => {
+  if (action.type === SET_SELECTED_AUCTIONED_ASSET) {
     return action.value;
   }
 
@@ -61,8 +59,9 @@ const bidding = (
 };
 
 export default combineReducers({
-  data,
+  auctions,
   _,
   bidAmount,
   bidding,
+  selectedAuctionedAsset,
 });

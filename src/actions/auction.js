@@ -3,13 +3,13 @@ import {
   BIDDING_LIST_SET,
   BID_AMOUNT_SET,
   CURRENT_AUCTION_SET,
+  SET_SELECTED_AUCTIONED_ASSET,
 } from "../constants/auction";
 
-export const setAuctions = (list, pagination) => {
+export const setAuctions = (list) => {
   return {
     type: AUCTION_LIST_SET,
     list,
-    pagination,
   };
 };
 
@@ -32,6 +32,12 @@ export const setCurrentAuction = (value) => {
 export const setBidAmount = (value) => {
   return {
     type: BID_AMOUNT_SET,
+    value,
+  };
+};
+export const setSelectedFilterAuctionAsset = (value) => {
+  return {
+    type: SET_SELECTED_AUCTIONED_ASSET,
     value,
   };
 };

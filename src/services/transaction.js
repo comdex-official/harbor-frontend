@@ -24,52 +24,44 @@ export const getTypeURL = (key) => {
   }
 };
 
-export const messageTypeToText = (type) => {
-  switch (type) {
-    case "/cosmos.bank.v1beta1.MsgSend":
-      return "Send";
-    case "/comdex.vault.v1beta1.MsgCreateRequest":
-      return "Create Vault";
-    case "/comdex.vault.v1beta1.MsgDepositRequest":
-      return "Vault Deposit Collateral";
-    case "/comdex.vault.v1beta1.MsgWithdrawRequest":
-      return "Vault Withdraw Collateral";
-    case "/comdex.vault.v1beta1.MsgDrawRequest":
-      return "Vault Draw Debt";
-    case "/comdex.vault.v1beta1.MsgRepayRequest":
-      return "Vault Repay Debt";
-    case "/comdex.vault.v1beta1.MsgCloseRequest":
-      return "Close Vault";
-    case "/comdex.liquidity.v1beta1.MsgDeposit":
-      return "Pool Deposit";
-    case "/comdex.liquidity.v1beta1.MsgWithdraw":
-      return "Pool Withdraw";
-    case "/comdex.liquidity.v1beta1.MsgSwapWithinBatch":
-      return "Pool Swap";
-    case "/ibc.applications.transfer.v1.MsgTransfer":
-      return "IBC-Transfer";
-    case "/comdex.auction.v1beta1.MsgPlaceBidRequest":
-      return "Place Bid";
-    case "/comdex.locker.v1beta1.MsgWithdrawAssetRequest":
-      return "Withdraw Asset";
-    case "/comdex.locker.v1beta1.MsgCreateLockerRequest":
-      return "Create Locker";
-    case "/cosmwasm.wasm.v1.MsgExecuteContract":
-      return "Contract Executed";
-    case "/comdex.locker.v1beta1.MsgDepositAssetRequest":
-      return "Deposit Asset Request";
-    case "/comdex.auction.v1beta1.MsgPlaceDutchBidRequest":
-      return "Place Dutch Bid";
-    case "/comdex.auction.v1beta1.MsgPlaceSurplusBidRequest":
-      return "Place Surplus Bid";
-    case "/comdex.auction.v1beta1.MsgPlaceDebtBidRequest":
-      return "Place Debt Bid";
-    case "/comdex.vault.v1beta1.MsgDepositAndDrawRequest":
-      return "Deposit and Draw";
-    default:
-      return type;
+export const abbreviateMessage = (msg) => {
+  if (Array.isArray(msg)) {
+    const sum = msg
+      .map((x) => abbreviateMessage(x))
+      .reduce((s, c) => {
+        const sh = s;
+        if (sh[c]) {
+          sh[c] += 1;
+        } else {
+          sh[c] = 1;
+        }
+        return sh;
+      }, {});
+    const output = [];
+
+    Object.keys(sum).forEach((k) => {
+      output.push(sum[k] > 1 ? `${k}×${sum[k]}` : k);
+    });
+    return output.join(", ");
   }
+
+  if (msg["@type"]) {
+    return msg["@type"]
+      .substring(msg["@type"]?.lastIndexOf(".") + 1)
+      .replace("Msg", "");
+  }
+
+  if (msg?.typeUrl) {
+    return msg?.typeUrl
+      .substring(msg?.typeUrl?.lastIndexOf(".") + 1)
+      .replace("Msg", "");
+  }
+
+  return msg?.type
+    ?.substring(msg?.type?.lastIndexOf("/") + 1)
+    .replace("Msg", "");
 };
+
 
 export const defaultFee = () => {
   return {

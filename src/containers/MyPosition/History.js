@@ -7,7 +7,7 @@ import { setTransactionHistory } from "../../actions/account";
 import React, { useEffect, useState } from "react";
 import { comdex } from "../../config/network";
 import { decodeTxRaw } from "@cosmjs/proto-signing";
-import { fetchTxHistory, messageTypeToText } from "../../services/transaction";
+import { abbreviateMessage, fetchTxHistory } from "../../services/transaction";
 import { generateHash, truncateString } from "../../utils/string";
 import Date from "./Date";
 
@@ -33,7 +33,7 @@ const History = ({ address, setTransactionHistory, history }) => {
       setTransactionHistory(result.txs, result.totalCount);
     });
   };
-  
+
   const tableData =
     history &&
     history.list &&
@@ -45,7 +45,7 @@ const History = ({ address, setTransactionHistory, history }) => {
       return {
         key: index,
         tnx_hash: hash,
-        type: messageTypeToText(decodedTransaction.body.messages[0].typeUrl),
+        type: abbreviateMessage(decodedTransaction.body.messages),
         block_height: item.height,
         date: item.height,
       };

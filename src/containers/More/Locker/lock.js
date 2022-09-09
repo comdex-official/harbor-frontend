@@ -5,7 +5,7 @@ import TooltipIcon from '../../../components/TooltipIcon';
 import { Col, Row, SvgIcon } from '../../../components/common';
 import { Table } from 'antd';
 import { denomToSymbol, iconNameFromDenom } from '../../../utils/string';
-import { vestingLockNFTId } from '../../../services/vestingContractsRead';
+import { vestingIssuedTokens, vestingLockNFTId } from '../../../services/vestingContractsRead';
 import { setBalanceRefresh } from "../../../actions/account";
 import { setIssuedveHARBOR } from "../../../actions/vesting";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
@@ -20,13 +20,21 @@ const Lock = ({
 }) => {
 
     const [vestingNFTId, setVestingNFTId] = useState();
+    const [nftId, setNftid] = useState(0)
     const [inProcess, setInProcess] = useState(false)
 
     // Query 
     const fetchVestingLockNFTId = () => {
-        setInProcess(true)
         vestingLockNFTId(address).then((res) => {
-            setVestingNFTId(res?.nft)
+            setNftid(res?.nft)
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
+    const fetchVestingLockNFTData = (address) => {
+        setInProcess(true)
+        vestingIssuedTokens(address).then((res) => {
+            setVestingNFTId(res)
             setInProcess(false)
         }).catch((error) => {
             setVestingNFTId('')
@@ -45,7 +53,7 @@ const Lock = ({
 
     const calculateTotalveHARBOR = () => {
         let totalveHARBORLocked = 0;
-        let tokens = vestingNFTId && vestingNFTId?.vtokens?.reverse().map((item) => {
+        let tokens = vestingNFTId && vestingNFTId?.reverse().map((item) => {
             return Number(amountConversion(item?.vtoken?.amount));
         })
         totalveHARBORLocked = tokens?.reduce((partialSum, a) => partialSum + a, 0)
@@ -54,8 +62,9 @@ const Lock = ({
 
     // UseEffect calls 
     useEffect(() => {
-        fetchVestingLockNFTId()
+        fetchVestingLockNFTId(address)
         calculateTotalveHARBOR()
+        fetchVestingLockNFTData(address)
     }, [address, refreshBalance])
 
     useEffect(() => {
@@ -68,7 +77,6 @@ const Lock = ({
             title: "NFT ID",
             dataIndex: "pair",
             key: "pair",
-            // width: 200,
         },
         {
             title: (
@@ -79,7 +87,6 @@ const Lock = ({
             ),
             dataIndex: "amount",
             key: "balance",
-            // width: 300,
         },
         {
             title: <>
@@ -88,7 +95,6 @@ const Lock = ({
             </>,
             dataIndex: "value",
             key: "value",
-            // width: 300,
         },
         {
             title: (
@@ -98,7 +104,6 @@ const Lock = ({
             ),
             dataIndex: "opening",
             key: "opening",
-            // width: 300,
         },
         {
             title: (
@@ -108,12 +113,11 @@ const Lock = ({
             ),
             dataIndex: "expires",
             key: "expires",
-            // width: 300,
         },
     ];
 
     const tableData =
-        vestingNFTId && vestingNFTId?.vtokens?.reverse().map((item, index) => {
+        vestingNFTId && vestingNFTId?.reverse().map((item, index) => {
             return {
                 key: index,
                 pair: <>
@@ -124,7 +128,7 @@ const Lock = ({
                             />
                         </div>
                         <div className="nft-container">
-                            <div className="nft-id">{vestingNFTId?.token_id}</div>
+                            <div className="nft-id">{nftId?.token_id || 0}</div>
                             <div className="name">NFT ID</div>
                         </div>
                     </div>
@@ -144,13 +148,11 @@ const Lock = ({
                 opening: <>
                     <div className="amount-container opening-time-badge">
                         <div className="amount">{unixToGMTTime(item?.start_time)}</div>
-                        {/* <div className="denom">Expires 20 days ago</div> */}
                     </div>
                 </>,
                 expires: <>
                     <div className="amount-container">
                         <div className="amount">{unixToGMTTime(item?.end_time)}</div>
-                        {/* <div className="denom">Expires 20 days ago</div> */}
                     </div>
                 </>,
             }

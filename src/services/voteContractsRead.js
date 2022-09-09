@@ -36,9 +36,17 @@ export const votingUserVote = async (proposalId, address) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
     const config = await client.queryContractSmart(lockingContractAddress, { "vote": { "proposal_id": proposalId, "address": address } });
     return await config;
-} 
-export const totalVTokens = async ( address) => {
+}
+
+export const totalVTokens = async (address, height) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
-    const config = await client.queryContractSmart(lockingContractAddress, { "total_v_tokens": { "address": address, "denom":"uharbor" } });
+    const config = await client.queryContractSmart(lockingContractAddress, { "total_v_tokens": { "address": address, "denom": "uharbor", "height": height } });
+    return await config;
+}
+
+export const userProposalAllUpData = async (address, proposalId) => {
+    const client = await CosmWasmClient.connect(configin.rpcEndpoint);
+    const config = await client.queryContractSmart(lockingContractAddress, { "user_proposal_all_up": { "address": address, "proposal_id": proposalId } });
+    // console.log(config, "config");
     return await config;
 } 

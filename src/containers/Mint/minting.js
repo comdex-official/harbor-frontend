@@ -42,7 +42,7 @@ const Minting = ({ address }) => {
 
   const navigateToMint = (path) => {
     navigate({
-      pathname: `/vault/${path}`,
+      pathname: `./vault/${path}`,
     });
   };
 

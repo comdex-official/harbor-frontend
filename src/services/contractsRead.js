@@ -8,9 +8,10 @@ const configin = {
     prefix: comdex?.prefix,
 };
 
-export const totalProposal = async (productId) => {
+
+export const totalProposal = async (start, productId, limit, status) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
-    const config = await client.queryContractSmart(contractAddress, { "list_app_proposal": { "app_id": productId } });
+    const config = await client.queryContractSmart(contractAddress, { "list_app_proposal": { "app_id": productId, "start_after": start, "limit": limit, "status": status } });
     return await config;
 }
 

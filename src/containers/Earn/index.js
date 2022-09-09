@@ -55,11 +55,21 @@ const Earn = ({
         )
       );
     }
+    else {
+      setTotalROI(
+        calculateROI(
+          0,
+          0,
+          0,
+          0,
+          0
+        )
+      );
+    }
   };
 
   const onChangeYears = (value) => {
     value = toDecimals(value).toString().trim();
-
     if (Number(value) <= 10) {
       setYears(value);
       checkCalculation(principal, value);
