@@ -183,11 +183,7 @@ const ConnectButton = ({
     <>
       {address ? (
         <div className="connected_div">
-          <div className="connected_left">
-            <div className="testnet-top">
-              <SvgIcon name="testnet" /> {variables[lang].testnet}
-            </div>
-          </div>
+
           <DisConnectModal />
         </div>
       ) : (
