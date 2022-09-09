@@ -380,7 +380,7 @@ const Vote = ({
               totalBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS
             ) : Number(0).toFixed(2)} {denomToSymbol("ucmst")}
           </div>,
-        total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, DOLLAR_DECIMALS) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
+        total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
         bribe: item?.bribe,
         my_vote: <div>{item?.my_vote ? amountConversion(item?.my_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR</div>,
         action: <>
