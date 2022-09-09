@@ -1,16 +1,18 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { Table } from "antd";
 import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
+import { setAuctions } from "../../../actions/auction";
 import Bidding from "./Bidding";
 import {
   queryDutchAuctionList,
   queryDutchBiddingList,
   queryAuctionParams,
+  queryFilterDutchAuctions,
 } from "../../../services/auction";
 import {
   DEFAULT_PAGE_NUMBER,
@@ -28,13 +30,14 @@ import { iconNameFromDenom } from "../../../utils/string";
 import { commaSeparator, decimalConversion } from "../../../utils/number";
 import TooltipIcon from "../../../components/TooltipIcon";
 
-const CollateralAuctions = ({ setPairs, address }) => {
+const CollateralAuctions = ({ setPairs, auctions, setAuctions, address }) => {
+  const dispatch = useDispatch()
+  const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
+
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-  // const [pageSize, setPageSize] = useState(20);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
-  const [auctions, setAuctions] = useState();
   const [biddings, setBiddings] = useState("");
 
   useEffect(() => {
@@ -44,12 +47,6 @@ const CollateralAuctions = ({ setPairs, address }) => {
 
   useEffect(() => {
     fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
-    const interval = setInterval(() => {
-      fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false)
-    }, 5000)
-    return () => {
-      clearInterval(interval);
-    }
   }, [address])
 
   const fetchData = () => {
@@ -89,7 +86,6 @@ const CollateralAuctions = ({ setPairs, address }) => {
           return;
         }
         if (result?.auctions?.length > 0) {
-          // setAuctions(result && result.auctions);
           setAuctions(result && result);
         }
         else {
@@ -115,6 +111,16 @@ const CollateralAuctions = ({ setPairs, address }) => {
       } else {
         setBiddings("");
       }
+    });
+  };
+
+  const fetchFilteredDutchAuctions = (offset, limit, countTotal, reverse, asset) => {
+    queryFilterDutchAuctions(offset, limit, countTotal, reverse, asset, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      dispatch(setAuctions(data));
     });
   };
 
@@ -184,8 +190,7 @@ const CollateralAuctions = ({ setPairs, address }) => {
     {
       title: (
         <>
-          {/* <FilterModal setPairs={setPairs} /> */}
-          Bid
+          <FilterModal setPairs={setPairs} />
         </>
       ),
       dataIndex: "action",
@@ -294,17 +299,20 @@ CollateralAuctions.propTypes = {
   lang: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
   address: PropTypes.string,
+  auctions: PropTypes.string.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    auctions: state.auction.auctions,
   };
 };
 
 const actionsToProps = {
   setPairs,
+  setAuctions,
 };
 
 export default connect(stateToProps, actionsToProps)(CollateralAuctions);

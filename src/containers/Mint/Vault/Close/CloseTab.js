@@ -17,7 +17,7 @@ import { denomToSymbol } from "../../../../utils/string";
 import { queryOwnerVaults, queryOwnerVaultsInfo } from "../../../../services/vault/query";
 import Long from "long";
 import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
-import { queryPairVault } from "../../../../services/asset/query";
+import { queryPair, queryPairVault } from "../../../../services/asset/query";
 
 const CloseTab = ({
   lang,
@@ -37,22 +37,10 @@ const CloseTab = ({
 
   const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
+  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
   const [inProgress, setInProgress] = useState(false);
+  const [pair, setPair] = useState();
   const navigate = useNavigate();
-
-  const returnDenom = () => {
-    let assetPair = selectedExtentedPairVault && selectedExtentedPairVault[0]?.pairName;
-
-    switch (assetPair) {
-      case "cmdx-cmst":
-        return "ucmdx";
-      case "osmo-cmst":
-        return "uosmo";
-      default:
-        return "ucmdx";
-    }
-  }
-
 
   useEffect(() => {
     fetchQueryPairValut(pathVaultId)
@@ -115,6 +103,16 @@ const CloseTab = ({
     })
   }
 
+  const getAssetDataByPairId = (pairId) => {
+    queryPair(pairId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setPair(data?.pairInfo)
+    })
+  }
+
   const handleClick = () => {
     setInProgress(true);
 
@@ -162,6 +160,12 @@ const CloseTab = ({
     );
   };
 
+  useEffect(() => {
+    if (pairId) {
+      getAssetDataByPairId(pairId);
+    }
+  }, [address, pairId, refreshBalance])
+
   return (
     <div className="borrw-content-card ">
       <div className="close-tab-content">
@@ -171,7 +175,7 @@ const CloseTab = ({
             <TooltipIcon text="CMST to be repaid" />
           </div>
           <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountOut || 0)} CMST
+            {amountConversion(ownerVaultInfo?.amountOut || 0)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : "Loading..."}
           </div>
         </div>
         <div className="close-tab-row">
@@ -180,7 +184,7 @@ const CloseTab = ({
             <TooltipIcon text="Collateral to be received" />
           </div>
           <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountIn || 0)} {denomToSymbol(returnDenom())}
+            {amountConversion(ownerVaultInfo?.amountIn || 0)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}
           </div>
         </div>
       </div>

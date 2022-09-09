@@ -105,27 +105,27 @@ const Create = ({
         if (vestingRadioInput === "t1") {
             let amount = getAmount(value)
             let calculateveharborAmount = amount * totalVestingData?.t1?.weight;
-            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            calculateveharborAmount = amountConversion(calculateveharborAmount || 0);
             setVeHarbor(calculateveharborAmount);
 
         }
         else if (vestingRadioInput === "t2") {
             let amount = getAmount(value)
             let calculateveharborAmount = amount * totalVestingData?.t2?.weight;
-            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            calculateveharborAmount = amountConversion(calculateveharborAmount || 0);
             setVeHarbor(calculateveharborAmount);
 
         }
         else if (vestingRadioInput === "t3") {
             let amount = getAmount(value)
             let calculateveharborAmount = amount * totalVestingData?.t3?.weight;
-            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            calculateveharborAmount = amountConversion(calculateveharborAmount || 0);
             setVeHarbor(calculateveharborAmount);
         }
         else if (vestingRadioInput === "t4") {
             let amount = getAmount(value)
             let calculateveharborAmount = amount * totalVestingData?.t4?.weight;
-            calculateveharborAmount = amountConversion(calculateveharborAmount);
+            calculateveharborAmount = amountConversion(calculateveharborAmount || 0);
             setVeHarbor(calculateveharborAmount);
         }
     }

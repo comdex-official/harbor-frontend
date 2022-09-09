@@ -14,6 +14,7 @@ import { DOLLAR_DECIMALS } from "../../../constants/common";
 import { transactionForClaimLockedHarbor } from "../../../services/vestingContractsWrite";
 import TooltipIcon from "../../../components/TooltipIcon";
 import { commaSeparator } from "../../../utils/number";
+import { Link } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -77,6 +78,14 @@ const Vesting = ({
     const BackButton = {
         right: (
             <>
+                <Link to="/more"><Button className="back-btn" type="primary">Back</Button></Link>
+            </>
+        ),
+    };
+
+    const claimButton = {
+        right: (
+            <>
                 <Row >
                     <Row>
                         <Col>
@@ -119,6 +128,7 @@ const Vesting = ({
             </>
         ),
     };
+
     return (
         <>
             <div className="app-content-wrapper">
@@ -128,7 +138,7 @@ const Vesting = ({
                             className="comdex-tabs"
                             activeKey={activeKey}
                             onChange={callback}
-                            tabBarExtraContent={activeKey === "2" ? BackButton : false}
+                            tabBarExtraContent={activeKey === "2" ? claimButton : BackButton}
                         >
                             <TabPane tab="Create" key="1">
                                 <Create />

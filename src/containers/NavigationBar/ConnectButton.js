@@ -137,7 +137,6 @@ const ConnectButton = ({
           item.denom === cmst.coinMinimalDenom ||
           item.denom === harbor.coinMinimalDenom
       );
-
       const value = assetBalances.map((item) => {
         return getPrice(item.denom) * item.amount;
       });
@@ -216,12 +215,6 @@ const ConnectButton = ({
     <>
       {address ? (
         <div className="connected_div">
-          <div className="connected_left">
-            <div className="testnet-top">
-              <SvgIcon name="testnet" />
-              {variables[lang].testnet}
-            </div>
-          </div>
           <DisConnectModal />
         </div>
       ) : (

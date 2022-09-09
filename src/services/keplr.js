@@ -50,7 +50,7 @@ export const getChainConfig = (chain = comdex) => {
       coinDecimals: chain?.coinDecimals,
     },
     bip44: {
-      coinType: 118,
+      coinType: chain?.coinType,
     },
     bech32Config: {
       bech32PrefixAccAddr: `${chain?.prefix}`,
@@ -68,7 +68,7 @@ export const getChainConfig = (chain = comdex) => {
         coinDecimals: chain?.coinDecimals,
       },
     ],
-    coinType: 118,
+    coinType: chain?.coinType,
     gasPriceStep: {
       low: 0.01,
       average: 0.025,

@@ -1,9 +1,9 @@
 @import "../../../assets/scss/style.scss";
 .totol-voting-main-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   .total-voting-container {
-    border: 2px solid white;
+    border: 2px solid rgba($color: $secondary-color, $alpha: 0.5);
     width: max-content;
     padding: 5px 20px 5px 20px;
     border-radius: 20px;
@@ -20,15 +20,22 @@
       .fill-box {
         font-weight: 600;
         font-size: 1rem;
-        // padding: 7px 8px;
-        // border-radius: 10px;
         .dark-mode & {
-          // background-color: $secondary-color;
         }
       }
-      span {
-        // font-weight: 300;
-      }
+    }
+  }
+}
+.vote-text-main-container {
+  .vote-text-container {
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 5px 10px;
+    .dark-mode & {
+      background: #211d34;
+      border: 1px solid #303950;
+      box-shadow: none;
     }
   }
 }

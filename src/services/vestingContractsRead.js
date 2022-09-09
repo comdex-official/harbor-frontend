@@ -16,7 +16,7 @@ export const vestingCreateWeightage = async () => {
 
 export const vestingIssuedTokens = async (address) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
-    const config = await client.queryContractSmart(lockingContractAddress, { "issued_vtokens": { "denom": "uharbor", "address": address, "start_after": 0 } });
+    const config = await client.queryContractSmart(lockingContractAddress, { "issued_vtokens": { "denom": "uharbor", "address": address, "start_after": 0, "limit": 300 } });
     return await config;
 }
 export const vestingLockNFTId = async (address) => {
@@ -26,6 +26,6 @@ export const vestingLockNFTId = async (address) => {
 }
 export const withdrawableHarbor = async (address) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
-    const config = await client.queryContractSmart(lockingContractAddress, { "withdrawable": {"denom":"uharbor", "address": address } });
+    const config = await client.queryContractSmart(lockingContractAddress, { "withdrawable": { "denom": "uharbor", "address": address } });
     return await config;
 }

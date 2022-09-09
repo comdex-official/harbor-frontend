@@ -8,10 +8,11 @@ import {
 } from "../../actions/account";
 import React, { useState } from "react";
 import variables from "../../utils/variables";
-import { amountConversionWithComma } from "../../utils/coin";
+import { amountConversionWithComma, denomConversion, getDenomBalance } from "../../utils/coin";
 import { truncateString } from "../../utils/string";
 import Copy from "../../components/Copy";
 import { DOLLAR_DECIMALS } from "../../constants/common";
+import { comdex } from "../../config/network";
 
 const DisConnectModal = ({
   setAccountAddress,
@@ -23,6 +24,7 @@ const DisConnectModal = ({
   collateralBalance,
   debtBalance,
   name,
+  balances,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -56,12 +58,15 @@ const DisConnectModal = ({
     <div className="wallet-connect-dropdown">
       <div className="wallet-connect-upper">
         <span />
-        <div>{localStorage.getItem("loginType") === "ledger"? "native-ledger" : name}</div>
+        <div>{localStorage.getItem("loginType") === "ledger" ? "native-ledger" : name}</div>
       </div>
       <div className="px-3">
         <div> {variables[lang].balance_wallet}</div>
         <div className="balance__value__data">
-         ${amountConversionWithComma(getTotalValue(), DOLLAR_DECIMALS)}{" "}
+          {amountConversionWithComma(
+            getDenomBalance(balances, comdex?.coinMinimalDenom) || 0, DOLLAR_DECIMALS
+          )}{" "}
+          {denomConversion(comdex?.coinMinimalDenom)}
         </div>
       </div>
       <div className="mt-2 px-3">
@@ -92,7 +97,7 @@ const DisConnectModal = ({
       <Dropdown overlay={WalletConnectedDropdown} trigger={["click"]}>
         <div className="connected_button">
           {" "}
-          <SvgIcon name="user-icon" />{" "}
+          <SvgIcon name="wallet" />  {truncateString(address, 6, 6)}
         </div>
       </Dropdown>
 
@@ -149,6 +154,12 @@ DisConnectModal.propTypes = {
   name: PropTypes.string,
   poolBalance: PropTypes.number,
   show: PropTypes.bool,
+  balances: PropTypes.arrayOf(
+    PropTypes.shape({
+      denom: PropTypes.string.isRequired,
+      amount: PropTypes.string,
+    })
+  ),
 };
 
 const stateToProps = (state) => {
@@ -162,6 +173,7 @@ const stateToProps = (state) => {
     collateralBalance: state.account.balances.collateral,
     debtBalance: state.account.balances.debt,
     name: state.account.name,
+    balances: state.account.balances.list,
   };
 };
 

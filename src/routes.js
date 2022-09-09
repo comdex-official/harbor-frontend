@@ -30,7 +30,7 @@ const routes = [
     element: <BorrowTab />,
   },
   {
-    path: "/vault/:pathVaultId",
+    path: "mint/vault/:pathVaultId",
     element: <Vault />,
   },
   {
@@ -46,25 +46,25 @@ const routes = [
     element: <More />,
   },
   {
-    path: "/govern",
+    path: "/more/govern",
     element: <Govern />,
   },
   {
-    path: "/govern-details/:proposalId",
+    path: "/more/govern/govern-details/:proposalId",
     element: <GovernDetails />,
   },
   // {
-  //   path: "/airdrop",
+  //   path: "/more/airdrop",
   //   element: <Airdrop />,
   // },
   {
-    path: "/vesting",
+    path: "/more/vesting",
     element: <Vesting />,
   },
-  // {
-  //   path: "/vote",
-  //   element: <Vote />,
-  // },
+  {
+    path: "/more/vote",
+    element: <Vote />,
+  },
 ];
 
 export default routes;
