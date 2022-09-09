@@ -120,7 +120,6 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address }) => {
         message.error(error);
         return;
       }
-      console.log(data);
       dispatch(setAuctions(data));
     });
   };

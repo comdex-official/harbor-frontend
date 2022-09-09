@@ -5,7 +5,6 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { Col, Row } from "../../components/common";
 import SurplusAuction from "./Surplus";
 import DebtAuction from "./Debt";
-// import DutchAuction from "./Dutch";
 import { setPairs } from "../../actions/asset";
 import Collateral from "./Collateral";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
