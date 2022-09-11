@@ -169,7 +169,7 @@ const Create = ({
         <>
             <div className=" locker-create-main-wrapper">
                 <div className="farm-content-card earn-deposite-card earn-main-deposite locker-main-container">
-                    <div className="locker-title">Create New Lock</div>
+                    <div className="locker-title">Create Stake Position</div>
                     <div className="amount-available-main-container">
                         <div className="amount-container">Amount</div>
                         <div className="available-container">
@@ -255,7 +255,7 @@ const Create = ({
                                     inputValidationError?.message
                                 }
                             >
-                                Lock
+                                Stake
                             </Button>
                         </div>
                     </div>
