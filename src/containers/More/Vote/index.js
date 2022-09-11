@@ -14,6 +14,7 @@ import { transactionForVotePairProposal } from '../../../services/voteContractsW
 import { setBalanceRefresh } from "../../../actions/account";
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import TooltipIcon from '../../../components/TooltipIcon';
 
 const Vote = ({
   address,
@@ -80,6 +81,15 @@ const Vote = ({
 
   const calculteVotingTime = () => {
     let endDate = currentProposalAllData?.voting_end_time;
+    endDate = unixToUTCTime(endDate);
+    if (endDate === "Invalid date") {
+      return "Loading... "
+    }
+    return endDate;
+  }
+
+  const calculteVotingStartTime = () => {
+    let endDate = currentProposalAllData?.voting_start_time;
     endDate = unixToUTCTime(endDate);
     if (endDate === "Invalid date") {
       return "Loading... "
@@ -219,16 +229,23 @@ const Vote = ({
     setBtnLoading(index)
     if (address) {
       if (proposalId) {
-        transactionForVotePairProposal(address, PRODUCT_ID, proposalId, item, (error, result) => {
-          if (error) {
-            message.error(error)
-            setInProcess(false)
-            return;
-          }
-          message.success("Success")
-          setBalanceRefresh(refreshBalance + 1);
+        if (amountConversion(totalVotingPower, DOLLAR_DECIMALS) === Number(0).toFixed(DOLLAR_DECIMALS)) {
+          message.error("Insufficient Voting Power")
           setInProcess(false)
-        })
+        }
+        else {
+          transactionForVotePairProposal(address, PRODUCT_ID, proposalId, item, (error, result) => {
+            if (error) {
+              message.error(error)
+              setInProcess(false)
+              return;
+            }
+            message.success("Success")
+            setBalanceRefresh(refreshBalance + 1);
+            setInProcess(false)
+          })
+
+        }
       } else {
         setInProcess(false)
         message.error("Please enter amount")
@@ -404,10 +421,13 @@ const Vote = ({
         <Row>
           <Col>
             <div className="totol-voting-main-container">
-              <div className="total-voting-container">
-                <div className="total-veHARBOR">
-                  My Voting Power : <span className='fill-box'><span>{amountConversionWithComma(totalVotingPower, DOLLAR_DECIMALS)}</span> veHARBOR</span>
+              <div className='d-flex total-voting-power-tooltip-box'>
+                <div className="total-voting-container">
+                  <div className="total-veHARBOR">
+                    My Voting Power : <span className='fill-box'><span>{amountConversionWithComma(totalVotingPower, DOLLAR_DECIMALS)}</span> veHARBOR</span>
+                  </div>
                 </div>
+                <TooltipIcon text={` Voting power will be calculated as per the last voting epoch date: ${calculteVotingStartTime()}`} />
               </div>
               <div>
                 <Link to="/more"><Button className="back-btn" type="primary">Back</Button></Link>
@@ -419,7 +439,7 @@ const Vote = ({
           <Col>
             <div className="vote-text-main-container mt-3">
               <div className="vote-text-container">
-                Votes are due by {calculteVotingTime()}, when the next epoch begins. Your vote will allocate 100% of that veHARBOR vote-power. Voters will earn External Incentives no matter when in the epoch they are added.
+                Votes are due by {calculteVotingTime()}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
               </div>
             </div>
           </Col>

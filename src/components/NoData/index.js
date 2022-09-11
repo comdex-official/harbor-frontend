@@ -1,8 +1,8 @@
 import './index.scss';
 
-const NoData = () => {
-    return(
-        <div className="no_data">Sorry, no data found</div>
+const NoData = ({ text }) => {
+    return (
+        <div className="no_data">{text ? text : "Sorry, no data found"}</div>
     )
 }
 

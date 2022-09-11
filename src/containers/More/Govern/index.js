@@ -35,7 +35,7 @@ const Govern = ({
   const [currentActivePage, setCurrentActivePage] = useState(1)
   const [loading, setLoading] = useState();
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-  const [pageSize, setPageSize] = useState(3);
+  const [pageSize, setPageSize] = useState(5);
   const [inProgress, setInprogress] = useState(false)
 
   const fetchAllProposal = (pageNumber, productId, limit, status) => {
@@ -257,7 +257,7 @@ const Govern = ({
                   }
                 </>
 
-              ) : <NoData />
+              ) : <NoData text="Sorry, no proposal found" />
 
               }
 

@@ -2,11 +2,15 @@
 .totol-voting-main-container {
   display: flex;
   justify-content: space-between;
+  .total-voting-power-tooltip-box {
+    align-items: center;
+  }
   .total-voting-container {
     border: 2px solid rgba($color: $secondary-color, $alpha: 0.5);
     width: max-content;
     padding: 5px 20px 5px 20px;
     border-radius: 20px;
+    margin-right: 0.5rem;
     .dark-mode & {
       border: 2px solid rgba($color: $secondary-color, $alpha: 0.3);
     }
