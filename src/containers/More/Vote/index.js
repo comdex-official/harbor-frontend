@@ -89,12 +89,12 @@ const Vote = ({
   }
 
   const calculteVotingStartTime = () => {
-    let endDate = currentProposalAllData?.voting_start_time;
-    endDate = unixToUTCTime(endDate);
-    if (endDate === "Invalid date") {
+    let startDate = currentProposalAllData?.voting_start_time;
+    startDate = unixToUTCTime(startDate);
+    if (startDate === "Invalid date") {
       return "Loading... "
     }
-    return endDate;
+    return startDate;
   }
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
