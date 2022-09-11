@@ -81,7 +81,7 @@ const Lock = ({
         {
             title: (
                 <>
-                    Locked HARBOR{" "}
+                    Staked HARBOR{" "}
                     <TooltipIcon text="Locked HARBOR" />
                 </>
             ),

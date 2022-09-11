@@ -188,7 +188,7 @@ const More = ({
               <div className="morecard-left">
                 <h2>Stake</h2>
                 <p>
-                  Lock your Harbor token for veHarbor to benefit from increased voting power, rebases, external incentives and surplus rewards.
+                  Stake your Harbor token for veHarbor to benefit from increased voting power, rebases, external incentives and surplus rewards.
                 </p>
                 <div className="button-container">
                   <Button
@@ -196,7 +196,7 @@ const More = ({
                     className="btn-filled"
                     onClick={() => handleRouteChange("./vesting")}
                   >
-                    Lock
+                    Stake
                   </Button>
                 </div>
               </div>
@@ -210,7 +210,7 @@ const More = ({
               <div className="morecard-left">
                 <h2>Vote</h2>
                 <p>
-                  Vote for your desired assets to receive external incentives to direct emissions to specific assets.
+                  Vote for your desired vault-pair to receive external incentives to direct emissions to that specific vault.
 
                 </p>
                 <div className="button-container">

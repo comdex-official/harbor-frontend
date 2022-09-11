@@ -143,7 +143,7 @@ const Vesting = ({
                             <TabPane tab="Create" key="1">
                                 <Create />
                             </TabPane>
-                            <TabPane tab="Lock" key="2" disabled={!issuedToken?.length > 0}>
+                            <TabPane tab="Staked HARBOR" key="2" disabled={!issuedToken?.length > 0}>
                                 <Lock />
                             </TabPane>
                         </Tabs>
