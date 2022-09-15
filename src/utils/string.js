@@ -14,16 +14,15 @@ export const generateHash = (txBytes) =>
 
 export const ibcDenomToDenom = (key) => {
   switch (key) {
+
     case ibcDenoms["uatom"]:
       return "uatom";
-    case ibcDenoms["uusd"]:
-      return "uust";
-    case ibcDenoms["uluna"]:
-      return "uluna";
-    case ibcDenoms["uxprt"]:
-      return "uxprt";
     case ibcDenoms["uosmo"]:
       return "uosmo";
+    case ibcDenoms["uusdc"]:
+      return "USDC";
+    case ibcDenoms["weth-wei"]:
+      return "WETH";
     default:
       return "";
   }
@@ -34,9 +33,6 @@ export const symbolToDenom = (key) => {
     case "atom":
     case ibcDenoms["atom"]:
       return "uatom";
-    case "xprt":
-    case ibcDenoms["xprt"]:
-      return "uxprt";
     case "osmo":
     case ibcDenoms["osmo"]:
       return "uosmo";
@@ -65,8 +61,12 @@ export const denomToSymbol = (key) => {
       return "CMST";
     case "uharbor":
       return "HARBOR";
+    case "uusdc":
+      return "USDC";
+    case "weth-wei":
+      return "WETH";
     default:
-      return "CMDX";
+      return "";
   }
 };
 
@@ -86,6 +86,10 @@ export const iconNameFromDenom = (key) => {
       return "cmst-icon";
     case "uharbor":
       return "harbor-icon";
+    case "uusdc":
+      return "usdc-icon";
+    case "weth-wei":
+      return "weth-icon";
     default:
       return "";
   }

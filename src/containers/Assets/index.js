@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
 import React from "react";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import variables from "../../utils/variables";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
@@ -76,7 +76,19 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       align: "center",
       render: (value) => {
         if (value) {
-          return <Deposit chain={value} />;
+          return value?.depositUrlOverride ? (
+            <Button type="primary btn-filled" size="small" >
+              <a
+                href={value?.depositUrlOverride}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Deposit <span className="hyperlink-icon">  <SvgIcon name="hyperlink" /></span>
+              </a>
+            </Button>
+          ) : (
+            <Deposit chain={value} />
+          );
         }
       },
     },
@@ -87,7 +99,19 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       width: 110,
       render: (value) => {
         if (value) {
-          return <Withdraw chain={value} />;
+          return value?.withdrawUrlOverride ? (
+            <Button type="primary btn-filled" size="small" >
+              <a
+                href={value?.withdrawUrlOverride}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Withdraw <span className="hyperlink-icon">  <SvgIcon name="hyperlink" /></span>
+              </a>
+            </Button>
+          ) : (
+            <Withdraw chain={value} />
+          );
         }
       },
     },
@@ -115,6 +139,8 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       destChannelId: token.channel,
       ibcDenomHash: token?.ibcDenomHash,
       explorerUrlToTx: token?.explorerUrlToTx,
+      depositUrlOverride: token?.depositUrlOverride,
+      withdrawUrlOverride: token?.withdrawUrlOverride,
     };
   });
 
