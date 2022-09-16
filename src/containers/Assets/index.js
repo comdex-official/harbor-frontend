@@ -7,6 +7,7 @@ import { Button, Table } from "antd";
 import variables from "../../utils/variables";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
+import { IoReload } from 'react-icons/io5'
 import {
   amountConversion,
   amountConversionWithComma,
@@ -22,8 +23,10 @@ import { DOLLAR_DECIMALS } from "../../constants/common";
 import { commaSeparator } from "../../utils/number";
 import AssetList from "../../config/ibc_assets.json";
 import { getChainConfig } from "../../services/keplr";
+import { useDispatch } from "react-redux";
 
 const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPriceMap }) => {
+  const dispatch = useDispatch()
 
   const columns = [
     {
@@ -77,7 +80,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.depositUrlOverride ? (
-            <Button type="primary btn-filled" size="small" >
+            <Button type="primary btn-filled" size="small" className="ibc-hyperlink">
               <a
                 href={value?.depositUrlOverride}
                 target="_blank"
@@ -100,7 +103,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.withdrawUrlOverride ? (
-            <Button type="primary btn-filled" size="small" >
+            <Button type="primary btn-filled" size="small" className="ibc-hyperlink">
               <a
                 href={value?.withdrawUrlOverride}
                 target="_blank"
@@ -116,6 +119,12 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       },
     },
   ];
+  const handleBalanceRefresh = () => {
+    dispatch({
+      type: "BALANCE_REFRESH_SET",
+      value: refreshBalance + 1,
+    });
+  };
 
   const getPrice = (denom) => {
     return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
@@ -250,10 +259,10 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
               <div>
                 <h2>{variables[lang].comdex_assets}</h2>
               </div>
-              <div>
+              <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
                 {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
-                {variables[lang].USD}
+                {variables[lang].USD} <span className="asset-reload-btn" onClick={() => handleBalanceRefresh()}> <IoReload /> </span>
               </div>
             </div>
           </Col>

@@ -18,6 +18,7 @@ import { comdex } from "../../../config/network";
 import { ValidateInputNumber } from "../../../config/_validation";
 import { DEFAULT_FEE } from "../../../constants/common";
 import Snack from "../../../components/common/Snack";
+import { BiRightArrowAlt } from 'react-icons/bi';
 
 const Deposit = ({
   lang,
@@ -151,8 +152,8 @@ const Deposit = ({
 
   return (
     <>
-      <Button type="primary btn-filled" size="small" onClick={showModal}>
-        {variables[lang].deposit}
+      <Button type="primary btn-filled" size="small" onClick={showModal} className="asset-ibc-btn-container">
+        {variables[lang].deposit} <span className="asset-ibc-btn"> 	&#62;</span>
       </Button>
       <Modal
         className="asstedepositw-modal"
@@ -237,7 +238,7 @@ const Deposit = ({
                 loading={inProgress}
                 type="primary"
                 disabled={
-                  inProgress || balanceInProgress|| !Number(amount) || validationError?.message
+                  inProgress || balanceInProgress || !Number(amount) || validationError?.message
                 }
                 className="btn-filled modal-btn"
                 onClick={signIBCTx}
