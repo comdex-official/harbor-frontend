@@ -11,8 +11,8 @@ export const amountConversionWithComma = (amount, decimals) => {
   return commaSeparator(result.toFixed(decimals || comdex.coinDecimals));
 };
 
-export const amountConversion = (amount, decimals) => {
-  const result = Number(amount) / 10 ** (decimals || comdex.coinDecimals);
+export const amountConversion = (amount, decimals, chainDecimals) => {
+  const result = Number(amount) / (10 ** chainDecimals || 10 ** comdex.coinDecimals);
 
   return result.toFixed(decimals || comdex.coinDecimals);
 };
