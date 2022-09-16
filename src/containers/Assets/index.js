@@ -73,7 +73,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
           <p>
             $
             {commaSeparator(
-              amountConversion(balance?.value || 0, DOLLAR_DECIMALS)
+              amountConversion(balance?.value || 0, DOLLAR_DECIMALS, balance?.decimals)
             )}
           </p>
         </>
@@ -144,6 +144,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       balance: {
         amount: ibcBalance?.amount ? amountConversion(ibcBalance.amount, token?.coinDecimals) : 0,
         value: value || 0,
+        decimals: token?.coinDecimals
       },
       sourceChannelId: token.comdexChannel,
       destChannelId: token.channel,
