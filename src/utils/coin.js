@@ -28,6 +28,9 @@ export const orderPriceReverseConversion = (amount) => {
 };
 
 export const denomConversion = (denom) => {
+  if (denom === "weth-wei") {
+    return "WETH";
+  }
   if (denom && denom.substr(0, 1) === "u") {
     if (
       denom &&
