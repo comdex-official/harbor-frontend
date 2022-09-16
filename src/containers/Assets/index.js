@@ -80,7 +80,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.depositUrlOverride ? (
-            <Button type="primary btn-filled" size="small" className="ibc-hyperlink">
+            <Button type="primary btn-filled" size="small" className="external-btn">
               <a
                 href={value?.depositUrlOverride}
                 target="_blank"
@@ -103,7 +103,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.withdrawUrlOverride ? (
-            <Button type="primary btn-filled" size="small" className="ibc-hyperlink">
+            <Button type="primary btn-filled" size="small" className="external-btn">
               <a
                 href={value?.withdrawUrlOverride}
                 target="_blank"
