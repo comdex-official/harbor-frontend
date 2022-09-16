@@ -1,33 +1,40 @@
-import { Button, Table } from "antd";
-import Lodash from "lodash";
+import "./index.scss";
 import * as PropTypes from "prop-types";
-import React from "react";
-import { connect } from "react-redux";
 import { Col, Row, SvgIcon } from "../../components/common";
-import AssetList from "../../config/ibc_assets.json";
-import { cmst, comdex, harbor } from "../../config/network";
-import { DOLLAR_DECIMALS } from "../../constants/common";
-import { getChainConfig } from "../../services/keplr";
+import { connect } from "react-redux";
+import React from "react";
+import { Button, Table } from "antd";
+import variables from "../../utils/variables";
+import Deposit from "./Deposit";
+import Withdraw from "./Withdraw";
+import { IoReload } from 'react-icons/io5'
 import {
   amountConversion,
   amountConversionWithComma,
-  denomConversion
+  denomConversion,
 } from "../../utils/coin";
-import { commaSeparator, marketPrice } from "../../utils/number";
-import { iconNameFromDenom } from "../../utils/string";
-import variables from "../../utils/variables";
-import Deposit from "./Deposit";
-import "./index.scss";
-import Withdraw from "./Withdraw";
 
-const Assets = ({
-  lang,
-  assetBalance,
-  balances,
-  markets,
-  refreshBalance,
-  poolPriceMap,
-}) => {
+import { message } from "antd";
+import { iconNameFromDenom } from "../../utils/string";
+import { cmst, comdex, harbor } from "../../config/network";
+import Lodash from "lodash";
+import { marketPrice } from "../../utils/number";
+import { DOLLAR_DECIMALS } from "../../constants/common";
+import { commaSeparator } from "../../utils/number";
+import AssetList from "../../config/ibc_assets.json";
+import { getChainConfig } from "../../services/keplr";
+import { useDispatch } from "react-redux";
+
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPriceMap }) => {
+  const dispatch = useDispatch()
+
+  const handleBalanceRefresh = () => {
+    dispatch({
+      type: "BALANCE_REFRESH_SET",
+      value: refreshBalance + 1,
+    });
+  };
+
   const columns = [
     {
       title: "Asset",
@@ -80,17 +87,13 @@ const Assets = ({
       render: (value) => {
         if (value) {
           return value?.depositUrlOverride ? (
-            <Button type="primary btn-filled" size="small">
+            <Button type="primary btn-filled" size="small" className="external-btn"  >
               <a
                 href={value?.depositUrlOverride}
                 target="_blank"
                 rel="noreferrer"
               >
-                Deposit{" "}
-                <span className="hyperlink-icon">
-                  {" "}
-                  <SvgIcon name="hyperlink" />
-                </span>
+                Deposit <span className="hyperlink-icon">  <SvgIcon name="hyperlink" /></span>
               </a>
             </Button>
           ) : (
@@ -107,17 +110,13 @@ const Assets = ({
       render: (value) => {
         if (value) {
           return value?.withdrawUrlOverride ? (
-            <Button type="primary btn-filled" size="small">
+            <Button type="primary btn-filled" size="small" className="external-btn" >
               <a
                 href={value?.withdrawUrlOverride}
                 target="_blank"
                 rel="noreferrer"
               >
-                Withdraw{" "}
-                <span className="hyperlink-icon">
-                  {" "}
-                  <SvgIcon name="hyperlink" />
-                </span>
+                Withdraw <span className="hyperlink-icon">  <SvgIcon name="hyperlink" /></span>
               </a>
             </Button>
           ) : (
@@ -143,9 +142,7 @@ const Assets = ({
       chainInfo: getChainConfig(token),
       coinMinimalDenom: token?.coinMinimalDenom,
       balance: {
-        amount: ibcBalance?.amount
-          ? amountConversion(ibcBalance.amount, token?.coinDecimals)
-          : 0,
+        amount: ibcBalance?.amount ? amountConversion(ibcBalance.amount, token?.coinDecimals) : 0,
         value: value || 0,
       },
       sourceChannelId: token.comdexChannel,
@@ -263,10 +260,10 @@ const Assets = ({
               <div>
                 <h2>{variables[lang].comdex_assets}</h2>
               </div>
-              <div>
+              <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
                 {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
-                {variables[lang].USD}
+                {variables[lang].USD}       <span className="asset-reload-btn" onClick={() => handleBalanceRefresh()}> <IoReload /> </span>
               </div>
             </div>
           </Col>

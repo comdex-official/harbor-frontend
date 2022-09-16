@@ -161,3 +161,34 @@
     height: 10px;
   }
 }
+.asset-ibc-btn-container {
+  display: flex !important;
+  align-items: center !important;
+  height: 28px !important;
+  padding: 0 22px !important;
+  line-height: 100% !important;
+  font-size: 11px !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.2px;
+  .asset-ibc-btn {
+    font-size: 18px;
+    margin-left: 6px;
+    margin-right: 1px;
+  }
+}
+.total-asset-balance-main-container {
+  display: flex;
+  align-items: baseline;
+}
+.external-btn {
+  a {
+    color: white !important;
+  }
+}
+.asset-reload-btn {
+  cursor: pointer;
+  svg {
+    font-size: 14px;
+    margin-left: 7px;
+  }
+}
