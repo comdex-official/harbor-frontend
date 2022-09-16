@@ -137,8 +137,8 @@ const Withdraw = ({
 
   return (
     <>
-      <Button type="primary btn-filled" size="small" onClick={showModal}>
-        {variables[lang].withdraw}
+      <Button type="primary btn-filled" size="small" onClick={showModal} className="asset-ibc-btn-container">
+        {variables[lang].withdraw}  <span className="asset-ibc-btn"> 	&#62;</span>
       </Button>
       <Modal
         className="asstedepositw-modal"
