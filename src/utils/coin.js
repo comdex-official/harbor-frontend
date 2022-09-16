@@ -12,7 +12,7 @@ export const amountConversionWithComma = (amount, decimals) => {
 };
 
 export const amountConversion = (amount, decimals) => {
-  const result = Number(amount) / 10 ** comdex.coinDecimals;
+  const result = Number(amount) / 10 ** (decimals || comdex.coinDecimals);
 
   return result.toFixed(decimals || comdex.coinDecimals);
 };
@@ -23,7 +23,7 @@ export const orderPriceConversion = (amount) => {
 };
 
 export const orderPriceReverseConversion = (amount) => {
-  const result = Number(amount) / (10 ** 18);
+  const result = Number(amount) / 10 ** 18;
   return result.toFixed(comdex.coinDecimals).toString();
 };
 
