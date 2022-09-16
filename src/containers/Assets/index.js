@@ -28,6 +28,13 @@ import { useDispatch } from "react-redux";
 const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPriceMap }) => {
   const dispatch = useDispatch()
 
+  const handleBalanceRefresh = () => {
+    dispatch({
+      type: "BALANCE_REFRESH_SET",
+      value: refreshBalance + 1,
+    });
+  };
+
   const columns = [
     {
       title: "Asset",
@@ -80,7 +87,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.depositUrlOverride ? (
-            <Button type="primary btn-filled" size="small" className="external-btn">
+            <Button type="primary btn-filled" size="small" className="external-btn"  >
               <a
                 href={value?.depositUrlOverride}
                 target="_blank"
@@ -103,7 +110,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.withdrawUrlOverride ? (
-            <Button type="primary btn-filled" size="small" className="external-btn">
+            <Button type="primary btn-filled" size="small" className="external-btn" >
               <a
                 href={value?.withdrawUrlOverride}
                 target="_blank"
@@ -119,12 +126,6 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       },
     },
   ];
-  const handleBalanceRefresh = () => {
-    dispatch({
-      type: "BALANCE_REFRESH_SET",
-      value: refreshBalance + 1,
-    });
-  };
 
   const getPrice = (denom) => {
     return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
@@ -141,7 +142,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       chainInfo: getChainConfig(token),
       coinMinimalDenom: token?.coinMinimalDenom,
       balance: {
-        amount: ibcBalance?.amount ? amountConversion(ibcBalance.amount) : 0,
+        amount: ibcBalance?.amount ? amountConversion(ibcBalance.amount, token?.coinDecimals) : 0,
         value: value || 0,
       },
       sourceChannelId: token.comdexChannel,
@@ -262,7 +263,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
               <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
                 {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
-                {variables[lang].USD} <span className="asset-reload-btn" onClick={() => handleBalanceRefresh()}> <IoReload /> </span>
+                {variables[lang].USD}       <span className="asset-reload-btn" onClick={() => handleBalanceRefresh()}> <IoReload /> </span>
               </div>
             </div>
           </Col>
