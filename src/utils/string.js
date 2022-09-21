@@ -28,6 +28,7 @@ export const ibcDenomToDenom = (key) => {
   }
 };
 
+// For getIcon From extendedPair name 
 export const symbolToDenom = (key) => {
   switch (key) {
     case "atom":
@@ -36,6 +37,9 @@ export const symbolToDenom = (key) => {
     case "osmo":
     case ibcDenoms["osmo"]:
       return "uosmo";
+    case "usdc":
+    case ibcDenoms["uusdc"]:
+      return "uusdc";
     case "cmdx":
       return "ucmdx";
     case "cmst":

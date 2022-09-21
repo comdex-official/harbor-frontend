@@ -36,7 +36,7 @@ const Minting = ({ address }) => {
   const [vaultDebt, setVaultDebt] = useState([])
   const [pairId, setpairId] = useState({})
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-  const [pageSize, setPageSize] = useState(9);
+  const [pageSize, setPageSize] = useState(6);
   const [activePage, setActivePage] = useState(DEFAULT_PAGE_NUMBER)
   const [totalExtendedPair, setTotalExtendedPair] = useState()
 
@@ -83,9 +83,13 @@ const Minting = ({ address }) => {
   const getIconFromPairName = (extendexPairVaultPairName) => {
     let pairName = extendexPairVaultPairName;
     pairName = pairName?.replace(/\s+/g, ' ').trim()
-    pairName = pairName?.slice(0, -2);
-    pairName = pairName?.toLowerCase()
-    return pairName;
+    if (!pairName.includes("-")) {
+      return pairName?.toLowerCase();
+    } else {
+      pairName = pairName?.slice(0, -2);
+      pairName = pairName?.toLowerCase()
+      return pairName;
+    }
   }
 
   const calculateGlobalDebt = (value) => {
@@ -213,7 +217,7 @@ const Minting = ({ address }) => {
 
 
       </div>
-      {extenedPairVaultList?.length > 9 ? <div >
+      {extenedPairVaultList?.length > 0 ? <div >
         <Pagination
           defaultCurrent={activePage}
           onChange={handlePageChange}
