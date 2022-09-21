@@ -168,9 +168,13 @@ const Vote = ({
   const getIconFromPairName = (extendexPairVaultPairName) => {
     let pairName = extendexPairVaultPairName;
     pairName = pairName?.replace(/\s+/g, ' ').trim()
-    pairName = pairName?.slice(0, -2);
-    pairName = pairName?.toLowerCase()
-    return pairName;
+    if (!pairName.includes("-")) {
+      return pairName?.toLowerCase();
+    } else {
+      pairName = pairName?.slice(0, -2);
+      pairName = pairName?.toLowerCase()
+      return pairName;
+    }
   }
 
   const calculateTotalVotes = (value) => {
