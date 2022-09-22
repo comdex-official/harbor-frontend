@@ -1,32 +1,35 @@
-import "./index.scss";
-import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
-import { connect } from "react-redux";
-import React from "react";
 import { Button, Table } from "antd";
-import variables from "../../utils/variables";
-import Deposit from "./Deposit";
-import Withdraw from "./Withdraw";
-import { IoReload } from 'react-icons/io5'
+import Lodash from "lodash";
+import * as PropTypes from "prop-types";
+import React from "react";
+import { IoReload } from "react-icons/io5";
+import { connect, useDispatch } from "react-redux";
+import { Col, Row, SvgIcon } from "../../components/common";
+import AssetList from "../../config/ibc_assets.json";
+import { cmst, comdex, harbor } from "../../config/network";
+import { DOLLAR_DECIMALS } from "../../constants/common";
+import { getChainConfig } from "../../services/keplr";
 import {
   amountConversion,
   amountConversionWithComma,
-  denomConversion,
+  denomConversion
 } from "../../utils/coin";
-
-import { message } from "antd";
+import { commaSeparator, marketPrice } from "../../utils/number";
 import { iconNameFromDenom } from "../../utils/string";
-import { cmst, comdex, harbor } from "../../config/network";
-import Lodash from "lodash";
-import { marketPrice } from "../../utils/number";
-import { DOLLAR_DECIMALS } from "../../constants/common";
-import { commaSeparator } from "../../utils/number";
-import AssetList from "../../config/ibc_assets.json";
-import { getChainConfig } from "../../services/keplr";
-import { useDispatch } from "react-redux";
+import variables from "../../utils/variables";
+import Deposit from "./Deposit";
+import "./index.scss";
+import Withdraw from "./Withdraw";
 
-const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPriceMap }) => {
-  const dispatch = useDispatch()
+const Assets = ({
+  lang,
+  assetBalance,
+  balances,
+  markets,
+  refreshBalance,
+  poolPriceMap,
+}) => {
+  const dispatch = useDispatch();
 
   const handleBalanceRefresh = () => {
     dispatch({
@@ -68,14 +71,9 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       dataIndex: "amount",
       key: "amount",
       align: "center",
-      render: (balance) => (
+      render: (amount) => (
         <>
-          <p>
-            $
-            {commaSeparator(
-              amountConversion(balance?.value || 0, DOLLAR_DECIMALS, balance?.decimals)
-            )}
-          </p>
+          <p>${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}</p>
         </>
       ),
     },
@@ -87,13 +85,21 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.depositUrlOverride ? (
-            <Button type="primary btn-filled" size="small" className="external-btn"  >
+            <Button
+              type="primary btn-filled"
+              size="small"
+              className="external-btn"
+            >
               <a
                 href={value?.depositUrlOverride}
                 target="_blank"
                 rel="noreferrer"
               >
-                Deposit <span className="hyperlink-icon">  <SvgIcon name="hyperlink" /></span>
+                Deposit{" "}
+                <span className="hyperlink-icon">
+                  {" "}
+                  <SvgIcon name="hyperlink" />
+                </span>
               </a>
             </Button>
           ) : (
@@ -110,13 +116,21 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       render: (value) => {
         if (value) {
           return value?.withdrawUrlOverride ? (
-            <Button type="primary btn-filled" size="small" className="external-btn" >
+            <Button
+              type="primary btn-filled"
+              size="small"
+              className="external-btn"
+            >
               <a
                 href={value?.withdrawUrlOverride}
                 target="_blank"
                 rel="noreferrer"
               >
-                Withdraw <span className="hyperlink-icon">  <SvgIcon name="hyperlink" /></span>
+                Withdraw{" "}
+                <span className="hyperlink-icon">
+                  {" "}
+                  <SvgIcon name="hyperlink" />
+                </span>
               </a>
             </Button>
           ) : (
@@ -136,15 +150,18 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       (item) => item.denom === token?.ibcDenomHash
     );
 
-    const value = getPrice(ibcBalance?.denom) * ibcBalance?.amount;
-
     return {
       chainInfo: getChainConfig(token),
       coinMinimalDenom: token?.coinMinimalDenom,
       balance: {
-        amount: ibcBalance?.amount ? amountConversion(ibcBalance.amount, token?.coinDecimals) : 0,
-        value: value || 0,
-        decimals: token?.coinDecimals
+        amount: ibcBalance?.amount
+          ? amountConversion(
+              ibcBalance.amount,
+              comdex?.coinDecimals,
+              token?.coinDecimals
+            )
+          : 0,
+        price: getPrice(ibcBalance?.denom) || 0,
       },
       sourceChannelId: token.comdexChannel,
       destChannelId: token.channel,
@@ -165,9 +182,17 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
     (item) => item.denom === harbor?.coinMinimalDenom
   )[0];
 
-  const nativeCoinValue = getPrice(nativeCoin?.denom) * nativeCoin?.amount;
-  const cmstCoinValue = getPrice(cmstCoin?.denom) * cmstCoin?.amount;
-  const harborCoinValue = getPrice(harborCoin?.denom) * harborCoin?.amount;
+  const nativeCoinValue =
+    getPrice(nativeCoin?.denom) *
+    (nativeCoin?.amount ? Number(amountConversion(nativeCoin?.amount)) : 0);
+
+  const cmstCoinValue =
+    getPrice(cmstCoin?.denom) *
+    (cmstCoin?.amount ? Number(amountConversion(cmstCoin?.amount)) : 0);
+
+  const harborCoinValue =
+    getPrice(harborCoin?.denom) *
+    (harborCoin?.amount ? Number(amountConversion(harborCoin?.amount)) : 0);
 
   const currentChainData = [
     {
@@ -184,9 +209,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       ),
       noOfTokens: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
       oraclePrice: getPrice(comdex?.coinMinimalDenom),
-      amount: {
-        value: nativeCoinValue || 0,
-      },
+      amount: nativeCoinValue || 0,
     },
     {
       key: cmst?.coinDenom,
@@ -202,9 +225,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       ),
       noOfTokens: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
       oraclePrice: getPrice(cmst?.coinMinimalDenom),
-      amount: {
-        value: cmstCoinValue || 0,
-      },
+      amount: cmstCoinValue || 0,
     },
     {
       key: harbor?.coinDenom,
@@ -221,9 +242,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
       noOfTokens: harborCoin?.amount ? amountConversion(harborCoin.amount) : 0,
       oraclePrice: getPrice(harbor?.coinMinimalDenom),
 
-      amount: {
-        value: harborCoinValue || 0,
-      },
+      amount: harborCoinValue || 0,
     },
   ];
 
@@ -244,7 +263,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
         ),
         noOfTokens: item?.balance?.amount,
         oraclePrice: getPrice(item?.coinMinimalDenom),
-        amount: item.balance,
+        amount: Number(item.balance?.amount) * item.balance?.price,
         ibcdeposit: item,
         ibcwithdraw: item,
       };
@@ -264,7 +283,14 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, poolPri
               <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
                 {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
-                {variables[lang].USD}       <span className="asset-reload-btn" onClick={() => handleBalanceRefresh()}> <IoReload /> </span>
+                {variables[lang].USD}{" "}
+                <span
+                  className="asset-reload-btn"
+                  onClick={() => handleBalanceRefresh()}
+                >
+                  {" "}
+                  <IoReload />{" "}
+                </span>
               </div>
             </div>
           </Col>

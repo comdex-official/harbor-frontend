@@ -1,4 +1,4 @@
-import { Button, Dropdown, message } from "antd";
+import { Button, Dropdown } from "antd";
 import { decode } from "js-base64";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
@@ -14,16 +14,11 @@ import {
 } from "../../actions/account";
 import { setPoolPrice } from "../../actions/liquidity";
 import { setMarkets } from "../../actions/oracle";
-import { SvgIcon } from "../../components/common";
-import { cmst, comdex, harbor } from "../../config/network";
+import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
 import { HARBOR_POOL_ID_LIST } from "../../constants/common";
 import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import {
-  queryLiquidityParams,
-  queryPool,
-  queryPoolIncentives
-} from "../../services/liquidity/query";
+import { queryPool } from "../../services/liquidity/query";
 import { queryMarketList } from "../../services/oracle/query";
 import { getPoolPrice, marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
@@ -78,6 +73,10 @@ const ConnectButton = ({
       );
 
       const value = assetBalances.map((item) => {
+        if (item?.denom === ibcDenoms["weth-wei"]) {
+          return getPrice(item.denom) * (item.amount / 10 ** 12); // dividing with 10**12 as it is a ethereum network
+        }
+
         return getPrice(item.denom) * item.amount;
       });
 
@@ -117,8 +116,6 @@ const ConnectButton = ({
     calculateAssetBalance(balances);
   }, [balances, poolPriceMap, markets]);
 
-
-
   const fetchMarkets = (offset, limit, isTotal, isReverse) => {
     queryMarketList(offset, limit, isTotal, isReverse, (error, result) => {
       if (error) {
@@ -128,7 +125,6 @@ const ConnectButton = ({
       setMarkets(result.markets, result.pagination);
     });
   };
-
 
   const calculatePoolPrice = useCallback(
     (pool) => {
@@ -183,7 +179,6 @@ const ConnectButton = ({
     <>
       {address ? (
         <div className="connected_div">
-
           <DisConnectModal />
         </div>
       ) : (
