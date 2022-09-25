@@ -178,7 +178,7 @@
 }
 .total-asset-balance-main-container {
   display: flex;
-  align-items: baseline;
+  align-items: center;
 }
 .external-btn {
   a {
@@ -188,8 +188,29 @@
 .asset-reload-btn {
   cursor: pointer;
   svg {
-    font-size: 12px;
+    font-size: 15px;
     margin-left: 7px;
-    transform: scale(1.1);
+    display: flex;
+  }
+
+  .reload-2 {
+    animation: rotate 1s;
+    transition-duration: 2s;
+    transform-origin: center;
+  }
+  & .reload {
+    transition-duration: 1s;
+    transform: rotate(360deg);
+    transform-origin: center;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

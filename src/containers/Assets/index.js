@@ -32,6 +32,14 @@ const Assets = ({
   const dispatch = useDispatch();
 
   const handleBalanceRefresh = () => {
+    let assetReloadBth = document.getElementById('reload-btn');
+    assetReloadBth.classList.toggle("reload")
+    if (!assetReloadBth.classList.contains("reload")) {
+      assetReloadBth.classList.add("reload-2")
+    } else {
+      assetReloadBth.classList.remove("reload-2")
+    }
+
     dispatch({
       type: "BALANCE_REFRESH_SET",
       value: refreshBalance + 1,
@@ -156,10 +164,10 @@ const Assets = ({
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-              ibcBalance.amount,
-              comdex?.coinDecimals,
-              token?.coinDecimals
-            )
+            ibcBalance.amount,
+            comdex?.coinDecimals,
+            token?.coinDecimals
+          )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },
@@ -284,13 +292,16 @@ const Assets = ({
                 <span>{variables[lang].total_asset_balance}</span>{" "}
                 {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
                 {variables[lang].USD}{" "}
-                <span
-                  className="asset-reload-btn"
-                  onClick={() => handleBalanceRefresh()}
-                >
-                  {" "}
-                  <IoReload />{" "}
-                </span>
+                <div className="d-flex">
+                  <span
+                    className="asset-reload-btn"
+                    id="reload-btn-container"
+                    onClick={() => handleBalanceRefresh()}
+                  >
+                    {" "}
+                    <IoReload id="reload-btn" />{" "}
+                  </span>
+                </div>
               </div>
             </div>
           </Col>
