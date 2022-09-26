@@ -355,7 +355,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
       <Row>
         <Col className="dashboard-upper ">
           <div className="dashboard-upper-left ">
-            <div className="composite-card  earn-deposite-card">
+            <div className="composite-card  earn-deposite-card" style={{ height: "97%" }}>
               <div className="dashboard-statics">
                 <p className="total-value">
                   Total Value Locked{" "}

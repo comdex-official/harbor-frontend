@@ -40,6 +40,9 @@ export const symbolToDenom = (key) => {
     case "usdc":
     case ibcDenoms["uusdc"]:
       return "uusdc";
+    case "weth":
+    case ibcDenoms["weth-wei"]:
+      return "weth-wei";
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -69,6 +72,7 @@ export const denomToSymbol = (key) => {
     case ibcDenoms["uusdc"]:
       return "USDC";
     case "weth-wei":
+    case "uweth":
     case ibcDenoms["weth-wei"]:
       return "WETH";
     default:
@@ -96,6 +100,7 @@ export const iconNameFromDenom = (key) => {
     case ibcDenoms["uusdc"]:
       return "usdc-icon";
     case "weth-wei":
+    case "uweth":
     case ibcDenoms["weth-wei"]:
       return "weth-icon";
     default:
