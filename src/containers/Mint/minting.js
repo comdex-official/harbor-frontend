@@ -83,7 +83,7 @@ const Minting = ({ address }) => {
   const getIconFromPairName = (extendexPairVaultPairName) => {
     let pairName = extendexPairVaultPairName;
     pairName = pairName?.replace(/\s+/g, ' ').trim()
-    if (!pairName.includes("-")) {
+    if (!pairName?.includes("-")) {
       return pairName?.toLowerCase();
     } else {
       pairName = pairName?.slice(0, -2);
