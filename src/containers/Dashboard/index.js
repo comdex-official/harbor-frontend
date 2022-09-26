@@ -129,7 +129,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
     if (harborSupply) {
       calculateHarborSypply()
     }
-  }, [harborSupply])
+  }, [harborSupply, harborCurrentSypply])
 
 
   const getPrice = (denom) => {
