@@ -41,7 +41,7 @@ const EditTab = () => {
         <div className="details-left farm-content-card earn-deposite-card vault-mint-card">
           <Edit />
         </div>
-        <div className="details-right">
+        <div className="details-right mint-detail-stats-container">
           <PricePool />
           <VaultDetails />
         </div>
