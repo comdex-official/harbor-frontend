@@ -649,7 +649,7 @@ const Mint = ({
           </div>
         </div>
 
-        <div className="details-right ">
+        <div className="details-right mint-detail-stats-container">
           <PricePool />
           <VaultDetails item={currentExtentedVaultdata} />
         </div>
