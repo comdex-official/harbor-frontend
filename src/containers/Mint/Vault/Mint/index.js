@@ -24,6 +24,7 @@ import {
   setCollateralRatio,
 } from "../../../../actions/asset";
 import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
+import AssetList from "../../../../config/ibc_assets.json";
 import "./index.scss";
 import VaultDetails from "./VaultDetails";
 import { connect, useDispatch } from "react-redux";
@@ -77,6 +78,7 @@ const Mint = ({
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
+  const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomIn));
 
   const getOwnerVaultInfo = (ownerVaultId) => {
     queryUserVaultsInfo(ownerVaultId, (error, data) => {
@@ -109,9 +111,10 @@ const Mint = ({
     } else {
       handleAmountInChange(value);
     }
-    if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+   
+    if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
       setValidationError(
-        ValidateInputNumber(getAmount(value), (collateralAssetBalance / 10 ** 12).toFixed(2))
+        ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
       );
     }
     else {
@@ -128,10 +131,10 @@ const Mint = ({
 
   const handleAmountInChangeWhenVaultExist = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
-
-    if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+    console.log((collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6));
+    if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
       setValidationError(
-        ValidateInputNumber(getAmount(value), (collateralAssetBalance / 10 ** 12).toFixed(2))
+        ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
       );
     }
     else {
@@ -153,9 +156,9 @@ const Mint = ({
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
 
-    if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+    if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
       setValidationError(
-        ValidateInputNumber(getAmount(value), (collateralAssetBalance / 10 ** 12).toFixed(2))
+        ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
       );
     }
     else {
@@ -248,8 +251,8 @@ const Mint = ({
         )
         : handleAmountInChange();
     } else {
-      if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
-        return handleAmountInChange(amountConversion(collateralAssetBalance, 6, 18));
+      if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
+        return handleAmountInChange(amountConversion(collateralAssetBalance, comdex.coinDecimals, selectedIBCAsset[0]?.coinDecimals));
       } else {
         return handleAmountInChange(amountConversion(collateralAssetBalance));
       }
@@ -514,8 +517,7 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {/* {denomToSymbol(pair && pair?.denomIn) == "WETH" ? amountConversionWithComma(collateralAssetBalance, 6,18) : amountConversionWithComma(collateralAssetBalance)} */}
-                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, denomToSymbol(pair && pair?.denomIn))}
+                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, selectedIBCAsset[0]?.coinDecimals)}
                   {denomToSymbol(pair && pair?.denomIn)}
                 </span>
                 <div className="maxhalf">

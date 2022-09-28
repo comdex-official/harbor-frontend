@@ -5,20 +5,15 @@ import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
 export const getAmount = (selectedAmount) =>
   (selectedAmount * 10 ** comdex.coinDecimals).toFixed(0).toString();
 
-export const amountConversionWithComma = (amount, decimals, denom) => {
-  let result;
-  if (denom === "WETH") {
-    result = Number(amount) / (10 ** 18);
-  } else {
-    result = Number(amount) / 10 ** comdex.coinDecimals;
-  }
+export const amountConversionWithComma = (amount, decimals, chainDecimals) => {
+
+  const result = Number(amount) / (10 ** chainDecimals || 10 ** comdex.coinDecimals);
 
   return commaSeparator(result.toFixed(decimals || comdex.coinDecimals));
 };
 
 export const amountConversion = (amount, decimals, chainDecimals) => {
   const result = Number(amount) / (10 ** chainDecimals || 10 ** comdex.coinDecimals);
-
   return result.toFixed(decimals || comdex.coinDecimals);
 };
 

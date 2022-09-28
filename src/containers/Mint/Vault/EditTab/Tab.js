@@ -38,6 +38,7 @@ import Long from "long";
 import { queryPairVault } from "../../../../services/asset/query";
 import { setOwnerCurrentCollateral } from "../../../../actions/mint";
 import { comdex } from "../../../../config/network";
+import AssetList from "../../../../config/ibc_assets.json";
 
 const Edit = ({
   address,
@@ -83,6 +84,9 @@ const Edit = ({
   const estimatedLiquidationPrice = useSelector(
     (state) => state.locker.estimatedLiquidationPrice,
   );
+
+  const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomIn));
+
   useEffect(() => {
     fetchQueryPairValut(pathVaultId);
   }, [address]);
@@ -357,15 +361,12 @@ const Edit = ({
   }
 
   const handleSliderChange = (value, type = editType) => {
-    console.log(value);
     const newRatio = value / 100; // converting value to ratio
-    console.log(newRatio, "newRatio");
     if (type === "deposit") {
       let newInput =
         (Number(currentDebt) * debtPrice * newRatio) / collateralPrice -
         Number(currentCollateral);
       newInput = Math.max(newInput, 0).toFixed(6)
-      console.log(newInput, "new Input");
       setNewCollateralRatio(value);
       setDeposit(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
@@ -439,14 +440,14 @@ const Edit = ({
         (Number(currentDebt) * debtPrice);
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
-      if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+      if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
         setInputValidationError(
           ValidateInputNumber(
-            Number(getAmount(value)),
-            Number((getDenomBalance(balances, pair?.denomIn) / 10 ** 12).toFixed(DOLLAR_DECIMALS))
-          )
-        );
-      } else {
+            Number(value),
+            Number((getDenomBalance(balances, pair?.denomIn) / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6)))
+        )
+      }
+      else {
         setInputValidationError(
           ValidateInputNumber(
             Number(getAmount(value)),
@@ -508,7 +509,6 @@ const Edit = ({
   }, [])
 
 
-
   return (
     <>
       <div className="edit-tab-card">
@@ -545,7 +545,9 @@ const Edit = ({
                     Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                   </label>
                   {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
-                    <span className="available">Avl.</span> {denomToSymbol(pair && pair?.denomIn) === "WETH" ? formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, 18)) : formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS))}  {denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span>
+                    {selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn) ? formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, selectedIBCAsset[0]?.coinDecimals)) : formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS))}
+                    {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
 
