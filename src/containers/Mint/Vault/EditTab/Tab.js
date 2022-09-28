@@ -37,6 +37,7 @@ import { useParams } from "react-router";
 import Long from "long";
 import { queryPairVault } from "../../../../services/asset/query";
 import { setOwnerCurrentCollateral } from "../../../../actions/mint";
+import { comdex } from "../../../../config/network";
 
 const Edit = ({
   address,
@@ -315,7 +316,7 @@ const Edit = ({
   }
 
   const getDepositMax = () => {
-    let availableBalance = amountConversion(collateralAssetBalance);
+    let availableBalance = amountConversion(collateralAssetBalance, comdex.coinDecimals, 18);
     checkValidation(availableBalance, "deposit")
     setInputAmount(availableBalance);
     setEditType("deposit")
@@ -430,7 +431,6 @@ const Edit = ({
       ));
     }
   };
-
   const checkValidation = (value, type) => {
     if (type === "deposit") {
       const ratio =
@@ -439,12 +439,21 @@ const Edit = ({
         (Number(currentDebt) * debtPrice);
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
-      setInputValidationError(
-        ValidateInputNumber(
-          Number(getAmount(value)),
-          Number(getDenomBalance(balances, pair?.denomIn))
-        )
-      );
+      if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+        setInputValidationError(
+          ValidateInputNumber(
+            Number(getAmount(value)),
+            Number((getDenomBalance(balances, pair?.denomIn) / 10 ** 12).toFixed(DOLLAR_DECIMALS))
+          )
+        );
+      } else {
+        setInputValidationError(
+          ValidateInputNumber(
+            Number(getAmount(value)),
+            Number(getDenomBalance(balances, pair?.denomIn))
+          )
+        );
+      }
     } else if (type === "withdraw") {
       const ratio =
         ((Number(currentCollateral) - Number(getAmount(value))) *
@@ -536,7 +545,7 @@ const Edit = ({
                     Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                   </label>
                   {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
-                    <span className="available">Avl.</span>  {formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span> {denomToSymbol(pair && pair?.denomIn) === "WETH" ? formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, 18)) : formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS))}  {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
 

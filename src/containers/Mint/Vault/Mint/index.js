@@ -104,15 +104,21 @@ const Mint = ({
 
   const onChange = (value) => {
     value = toDecimals(value).toString().trim();
-
     if (ownerVaultId) {
       handleAmountInChangeWhenVaultExist(value)
     } else {
       handleAmountInChange(value);
     }
-    setValidationError(
-      ValidateInputNumber(getAmount(value), collateralAssetBalance)
-    );
+    if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+      setValidationError(
+        ValidateInputNumber(getAmount(value), (collateralAssetBalance / 10 ** 12).toFixed(2))
+      );
+    }
+    else {
+      setValidationError(
+        ValidateInputNumber(getAmount(value), collateralAssetBalance)
+      );
+    }
   };
 
   const onSecondInputChange = (value) => {
@@ -123,9 +129,17 @@ const Mint = ({
   const handleAmountInChangeWhenVaultExist = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
 
-    setValidationError(
-      ValidateInputNumber(getAmount(value), collateralAssetBalance)
-    );
+    if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+      setValidationError(
+        ValidateInputNumber(getAmount(value), (collateralAssetBalance / 10 ** 12).toFixed(2))
+      );
+    }
+    else {
+      setValidationError(
+        ValidateInputNumber(getAmount(value), collateralAssetBalance)
+      );
+    }
+
     setAmountIn(value);
     let dataAmount = calculateAmountOut(
       value,
@@ -139,9 +153,16 @@ const Mint = ({
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
 
-    setValidationError(
-      ValidateInputNumber(getAmount(value), collateralAssetBalance)
-    );
+    if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+      setValidationError(
+        ValidateInputNumber(getAmount(value), (collateralAssetBalance / 10 ** 12).toFixed(2))
+      );
+    }
+    else {
+      setValidationError(
+        ValidateInputNumber(getAmount(value), collateralAssetBalance)
+      );
+    }
     setAmountIn(value);
     let dataAmount = calculateAmountOut(
       value,
@@ -227,7 +248,11 @@ const Mint = ({
         )
         : handleAmountInChange();
     } else {
-      return handleAmountInChange(amountConversion(collateralAssetBalance));
+      if (denomToSymbol(pair && pair?.denomIn) === "WETH") {
+        return handleAmountInChange(amountConversion(collateralAssetBalance, 6, 18));
+      } else {
+        return handleAmountInChange(amountConversion(collateralAssetBalance));
+      }
     }
   };
 
@@ -489,7 +514,9 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(collateralAssetBalance)} {denomToSymbol(pair && pair?.denomIn)}
+                  {/* {denomToSymbol(pair && pair?.denomIn) == "WETH" ? amountConversionWithComma(collateralAssetBalance, 6,18) : amountConversionWithComma(collateralAssetBalance)} */}
+                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, denomToSymbol(pair && pair?.denomIn))}
+                  {denomToSymbol(pair && pair?.denomIn)}
                 </span>
                 <div className="maxhalf">
                   <Button
