@@ -200,43 +200,83 @@ const Edit = ({
     setInProgress(true);
     message.info("Transaction initiated");
 
-    signAndBroadcastTransaction(
-      {
-        message: {
-          typeUrl: getTypeURL(editType),
-          value: {
-            from: address,
-            appId: Long.fromNumber(PRODUCT_ID),
-            extendedPairVaultId: Long.fromNumber(
-              selectedExtentedPairVaultListData[0]?.id?.low
-            ),
-            userVaultId: ownerVaultId,
-            amount: getAmount(inputAmount),
+    if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
+      signAndBroadcastTransaction(
+        {
+          message: {
+            typeUrl: getTypeURL(editType),
+            value: {
+              from: address,
+              appId: Long.fromNumber(PRODUCT_ID),
+              extendedPairVaultId: Long.fromNumber(
+                selectedExtentedPairVaultListData[0]?.id?.low
+              ),
+              userVaultId: ownerVaultId,
+              amount: getAmount(inputAmount, selectedIBCAsset && selectedIBCAsset[0]?.coinDecimals),
+            },
           },
+          fee: defaultFee(),
+          memo: "",
         },
-        fee: defaultFee(),
-        memo: "",
-      },
-      address,
-      (error, result) => {
-        setInProgress(false);
+        address,
+        (error, result) => {
+          setInProgress(false);
 
-        if (error) {
-          message.error(error);
-          return;
+          if (error) {
+            message.error(error);
+            return;
+          }
+
+          if (result?.code) {
+            message.info(result?.rawLog);
+            return;
+          }
+
+          resetValues();
+          setBalanceRefresh(refreshBalance + 1);
+          message.success("success");
+          getOwnerVaultInfoByVaultId(ownerVaultId);
         }
+      );
+    } else {
+      signAndBroadcastTransaction(
+        {
+          message: {
+            typeUrl: getTypeURL(editType),
+            value: {
+              from: address,
+              appId: Long.fromNumber(PRODUCT_ID),
+              extendedPairVaultId: Long.fromNumber(
+                selectedExtentedPairVaultListData[0]?.id?.low
+              ),
+              userVaultId: ownerVaultId,
+              amount: getAmount(inputAmount),
+            },
+          },
+          fee: defaultFee(),
+          memo: "",
+        },
+        address,
+        (error, result) => {
+          setInProgress(false);
 
-        if (result?.code) {
-          message.info(result?.rawLog);
-          return;
+          if (error) {
+            message.error(error);
+            return;
+          }
+
+          if (result?.code) {
+            message.info(result?.rawLog);
+            return;
+          }
+
+          resetValues();
+          setBalanceRefresh(refreshBalance + 1);
+          message.success("success");
+          getOwnerVaultInfoByVaultId(ownerVaultId);
         }
-
-        resetValues();
-        setBalanceRefresh(refreshBalance + 1);
-        message.success("success");
-        getOwnerVaultInfoByVaultId(ownerVaultId);
-      }
-    );
+      );
+    }
   };
 
   const getMaxRepay = () => {

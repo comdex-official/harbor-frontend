@@ -111,7 +111,7 @@ const Mint = ({
     } else {
       handleAmountInChange(value);
     }
-   
+
     if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
       setValidationError(
         ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
@@ -131,7 +131,6 @@ const Mint = ({
 
   const handleAmountInChangeWhenVaultExist = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
-    console.log((collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6));
     if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
       setValidationError(
         ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
@@ -298,106 +297,206 @@ const Mint = ({
     }
 
     if (ownerVaultId) {
-
       setInProgress(true);
       message.info("Transaction initiated");
-      signAndBroadcastTransaction(
-        {
-          message: {
-            typeUrl: getTypeURL("drawAndRepay"),
-            value: {
-              from: address,
-              appId: Long.fromNumber(PRODUCT_ID),
-              extendedPairVaultId: Long.fromNumber(pathVaultId),
-              userVaultId: Long.fromNumber(ownerVaultId),
-              amount: getAmount(inAmount),
+
+      if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
+        signAndBroadcastTransaction(
+          {
+            message: {
+              typeUrl: getTypeURL("drawAndRepay"),
+              value: {
+                from: address,
+                appId: Long.fromNumber(PRODUCT_ID),
+                extendedPairVaultId: Long.fromNumber(pathVaultId),
+                userVaultId: Long.fromNumber(ownerVaultId),
+                amount: getAmount(inAmount, selectedIBCAsset && selectedIBCAsset[0]?.coinDecimals),
+              },
+            },
+            fee: {
+              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+              gas: "2500000",
             },
           },
-          fee: {
-            amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-            gas: "2500000",
+          address,
+          (error, result) => {
+            setInProgress(false);
+            if (error) {
+              message.error(error);
+              resetValues();
+              return;
+            }
+
+            if (result?.code) {
+              message.info(result?.rawLog);
+              resetValues();
+              return;
+            }
+
+            setComplete(true);
+            message.success(
+              <Snack
+                message={variables[lang].tx_success}
+                hash={result?.transactionHash}
+              />
+            );
+            resetValues();
+            dispatch({
+              type: "BALANCE_REFRESH_SET",
+              value: refreshBalance + 1,
+            });
+          }
+        );
+      }
+      else {
+        signAndBroadcastTransaction(
+          {
+            message: {
+              typeUrl: getTypeURL("drawAndRepay"),
+              value: {
+                from: address,
+                appId: Long.fromNumber(PRODUCT_ID),
+                extendedPairVaultId: Long.fromNumber(pathVaultId),
+                userVaultId: Long.fromNumber(ownerVaultId),
+                amount: getAmount(inAmount),
+              },
+            },
+            fee: {
+              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+              gas: "2500000",
+            },
           },
-        },
-        address,
-        (error, result) => {
-          setInProgress(false);
-          if (error) {
-            message.error(error);
-            resetValues();
-            return;
-          }
+          address,
+          (error, result) => {
+            setInProgress(false);
+            if (error) {
+              message.error(error);
+              resetValues();
+              return;
+            }
 
-          if (result?.code) {
-            message.info(result?.rawLog);
-            resetValues();
-            return;
-          }
+            if (result?.code) {
+              message.info(result?.rawLog);
+              resetValues();
+              return;
+            }
 
-          setComplete(true);
-          message.success(
-            <Snack
-              message={variables[lang].tx_success}
-              hash={result?.transactionHash}
-            />
-          );
-          resetValues();
-          dispatch({
-            type: "BALANCE_REFRESH_SET",
-            value: refreshBalance + 1,
-          });
-        }
-      );
+            setComplete(true);
+            message.success(
+              <Snack
+                message={variables[lang].tx_success}
+                hash={result?.transactionHash}
+              />
+            );
+            resetValues();
+            dispatch({
+              type: "BALANCE_REFRESH_SET",
+              value: refreshBalance + 1,
+            });
+          }
+        );
+      }
       return;
     } else {
-
       setInProgress(true);
       message.info("Transaction initiated");
-      signAndBroadcastTransaction(
-        {
-          message: {
-            typeUrl: getTypeURL("create"),
-            value: {
-              from: address,
-              appId: Long.fromNumber(PRODUCT_ID),
-              extendedPairVaultId: Long.fromNumber(pathVaultId),
-              amountIn: getAmount(inAmount),
-              amountOut: getAmount(outAmount),
+
+      if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
+        signAndBroadcastTransaction(
+          {
+            message: {
+              typeUrl: getTypeURL("create"),
+              value: {
+                from: address,
+                appId: Long.fromNumber(PRODUCT_ID),
+                extendedPairVaultId: Long.fromNumber(pathVaultId),
+                amountIn: getAmount(inAmount, selectedIBCAsset && selectedIBCAsset[0]?.coinDecimals),
+                amountOut: getAmount(outAmount, selectedIBCAsset && selectedIBCAsset[0]?.coinDecimals),
+              },
+            },
+            fee: {
+              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+              gas: "2500000",
             },
           },
-          fee: {
-            amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-            gas: "2500000",
+          address,
+          (error, result) => {
+            setInProgress(false);
+            if (error) {
+              message.error(error);
+              resetValues();
+              return;
+            }
+
+            if (result?.code) {
+              message.info(result?.rawLog);
+              resetValues();
+              return;
+            }
+
+            setComplete(true);
+            message.success(
+              <Snack
+                message={variables[lang].tx_success}
+                hash={result?.transactionHash}
+              />
+            );
+            resetValues();
+            dispatch({
+              type: "BALANCE_REFRESH_SET",
+              value: refreshBalance + 1,
+            });
+          }
+        );
+      } else {
+        signAndBroadcastTransaction(
+          {
+            message: {
+              typeUrl: getTypeURL("create"),
+              value: {
+                from: address,
+                appId: Long.fromNumber(PRODUCT_ID),
+                extendedPairVaultId: Long.fromNumber(pathVaultId),
+                amountIn: getAmount(inAmount),
+                amountOut: getAmount(outAmount),
+              },
+            },
+            fee: {
+              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+              gas: "2500000",
+            },
           },
-        },
-        address,
-        (error, result) => {
-          setInProgress(false);
-          if (error) {
-            message.error(error);
-            resetValues();
-            return;
-          }
+          address,
+          (error, result) => {
+            setInProgress(false);
+            if (error) {
+              message.error(error);
+              resetValues();
+              return;
+            }
 
-          if (result?.code) {
-            message.info(result?.rawLog);
-            resetValues();
-            return;
-          }
+            if (result?.code) {
+              message.info(result?.rawLog);
+              resetValues();
+              return;
+            }
 
-          setComplete(true);
-          message.success(
-            <Snack
-              message={variables[lang].tx_success}
-              hash={result?.transactionHash}
-            />
-          );
-          resetValues();
-          dispatch({
-            type: "BALANCE_REFRESH_SET",
-            value: refreshBalance + 1,
-          });
-        }
-      );
+            setComplete(true);
+            message.success(
+              <Snack
+                message={variables[lang].tx_success}
+                hash={result?.transactionHash}
+              />
+            );
+            resetValues();
+            dispatch({
+              type: "BALANCE_REFRESH_SET",
+              value: refreshBalance + 1,
+            });
+          }
+        );
+      }
+
     }
   };
 

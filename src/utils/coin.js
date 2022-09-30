@@ -2,8 +2,8 @@ import { comdex } from "../config/network";
 import { commaSeparator } from "./number";
 import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
 
-export const getAmount = (selectedAmount) =>
-  (selectedAmount * 10 ** comdex.coinDecimals).toFixed(0).toString();
+export const getAmount = (selectedAmount, coinDecimals) =>
+  (selectedAmount * (10 ** coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
 
 export const amountConversionWithComma = (amount, decimals, chainDecimals) => {
 
