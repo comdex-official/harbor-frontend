@@ -78,7 +78,9 @@ const Vesting = ({
     const BackButton = {
         right: (
             <>
+            <div className="more-locker-tab-back-btn">
                 <Link to="/more"><Button className="back-btn" type="primary">Back</Button></Link>
+            </div>
             </>
         ),
     };
@@ -135,7 +137,7 @@ const Vesting = ({
                 <Row>
                     <Col>
                         <Tabs
-                            className="comdex-tabs"
+                            className="comdex-tabs more-locker-tab"
                             activeKey={activeKey}
                             onChange={callback}
                             tabBarExtraContent={activeKey === "2" ? claimButton : BackButton}

@@ -110,7 +110,7 @@ const Auctions = ({
         <Row>
           <Col>
             <Tabs
-              className="comdex-tabs"
+              className="comdex-tabs auction-extra-tabs"
               onChange={callback}
               activeKey={activeKey}
               tabBarExtraContent={refreshAuctionButton}
