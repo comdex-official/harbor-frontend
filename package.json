@@ -6,7 +6,7 @@
     "@cosmjs/crypto": "^0.28.7",
     "@cosmjs/encoding": "^0.28.7",
     "@cosmjs/ledger-amino": "^0.28.10",
-    "@cosmjs/math": "^0.28.7",
+    "@cosmjs/math": "^0.29.0",
     "@cosmjs/proto-signing": "^0.28.7",
     "@cosmjs/stargate": "^0.29.0",
     "@cosmjs/tendermint-rpc": "^0.28.7",
@@ -46,7 +46,7 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
     "ts-proto": "1.108.0",
-    "web-vitals": "^3.0.2"
+    "web-vitals": "^3.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
