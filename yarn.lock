@@ -1334,7 +1334,7 @@
     axios "^0.21.1"
     fast-deep-equal "^3.1.3"
 
-"@cosmjs/ledger-amino@^0.28.10", "@cosmjs/ledger-amino@^0.28.3":
+"@cosmjs/ledger-amino@^0.28.3":
   version "0.28.13"
   resolved "https://registry.yarnpkg.com/@cosmjs/ledger-amino/-/ledger-amino-0.28.13.tgz#b14cbcc72f600c7dd806def4c9e71fc35fce5eb0"
   integrity sha512-KSwYjIFu/KXarvxxEyq3lpcJl5VvV0gAbY+tebeOvuCGHy9Px7CDOLOEHsR3ykJjYWh0hGrYwYmVk9zVHd474A==
@@ -1344,6 +1344,19 @@
     "@cosmjs/encoding" "0.28.13"
     "@cosmjs/math" "0.28.13"
     "@cosmjs/utils" "0.28.13"
+    ledger-cosmos-js "^2.1.8"
+    semver "^7.3.2"
+
+"@cosmjs/ledger-amino@^0.29.0":
+  version "0.29.0"
+  resolved "https://registry.yarnpkg.com/@cosmjs/ledger-amino/-/ledger-amino-0.29.0.tgz#9a5886f05064cc7ca6bcd6dd93a13d052fe64071"
+  integrity sha512-bk/Z2hg9A8VqRhDBenVZKix2mnEy+YA3paVXC9iP/+4xvTTC02WZoUix4BIkPkVsHPSAeSdHinKmu8eqU7wsmQ==
+  dependencies:
+    "@cosmjs/amino" "^0.29.0"
+    "@cosmjs/crypto" "^0.29.0"
+    "@cosmjs/encoding" "^0.29.0"
+    "@cosmjs/math" "^0.29.0"
+    "@cosmjs/utils" "^0.29.0"
     ledger-cosmos-js "^2.1.8"
     semver "^7.3.2"
 
