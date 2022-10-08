@@ -23,7 +23,7 @@ const marks = {
 
 const FilterModal = ({ address, pairs, setPairs }) => {
   const dispatch = useDispatch()
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalopen, setIsModalopen] = useState(false);
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [sliderValue, setSliderValue] = useState(0);
@@ -91,7 +91,7 @@ const FilterModal = ({ address, pairs, setPairs }) => {
   }
 
   const showModal = () => {
-    setIsModalVisible(true);
+    setIsModalopen(true);
   };
   const handleOk = () => {
     if (selectedAuctionedAsset.length > 0) {
@@ -102,10 +102,10 @@ const FilterModal = ({ address, pairs, setPairs }) => {
       fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
     }
 
-    setIsModalVisible(false);
+    setIsModalopen(false);
   };
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalopen(false);
   };
 
   return (
@@ -124,7 +124,7 @@ const FilterModal = ({ address, pairs, setPairs }) => {
         centered={true}
         closable={false}
         footer={null}
-        visible={isModalVisible}
+        open={isModalopen}
         width={500}
         onCancel={handleCancel}
         onOk={handleOk}

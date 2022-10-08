@@ -31,21 +31,21 @@ const PlaceBidModal = ({
   params,
   balances,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalopen, setIsModalopen] = useState(false);
   const [bidAmount, setBidAmount] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [validationError, setValidationError] = useState();
 
   const showModal = () => {
-    setIsModalVisible(true);
+    setIsModalopen(true);
   };
 
   const handleOk = () => {
-    setIsModalVisible(false);
+    setIsModalopen(false);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalopen(false);
   };
 
   const handleClick = () => {
@@ -76,7 +76,7 @@ const PlaceBidModal = ({
       address,
       (error, result) => {
         setInProgress(false);
-        setIsModalVisible(false);
+        setIsModalopen(false);
         if (error) {
           message.error(error);
           return;
@@ -122,7 +122,7 @@ const PlaceBidModal = ({
         className="palcebid-modal auction-placebid-modal"
         footer={null}
         header={null}
-        visible={isModalVisible}
+        open={isModalopen}
         width={550}
         closable={false}
         onOk={handleOk}

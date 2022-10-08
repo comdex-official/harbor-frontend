@@ -17,12 +17,12 @@ const VoteNowModal = ({
 }) => {
   const { proposalId } = useParams();
   let currentProposalId = Number(proposalId);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalopen, setIsModalopen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userVote, setUserVote] = useState();
 
   const showModal = () => {
-    setIsModalVisible(true);
+    setIsModalopen(true);
   };
 
   const handleOk = () => {
@@ -38,7 +38,7 @@ const VoteNowModal = ({
           setVoteCount(voteCount + 1)
           message.success("Success")
           setLoading(false)
-          setIsModalVisible(false);
+          setIsModalopen(false);
         })
       } else {
         setLoading(false)
@@ -53,7 +53,7 @@ const VoteNowModal = ({
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalopen(false);
   };
   return (
     <>
@@ -65,7 +65,7 @@ const VoteNowModal = ({
         className="votenow-modal"
         footer={null}
         header={null}
-        visible={isModalVisible}
+        open={isModalopen}
         width={550}
         closable={false}
         onOk={handleOk}

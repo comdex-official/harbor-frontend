@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "./index.scss";
 
 const CautionNotice = () => {
-  const [isVisible, setIsVisible] = useState(
+  const [isopen, setIsopen] = useState(
     localStorage.getItem("agreement_accepted") === null
   );
   const [isChecked, setIsChecked] = useState(false);
@@ -15,7 +15,7 @@ const CautionNotice = () => {
         className="caution-notice-modal"
         footer={null}
         header={null}
-        visible={isVisible}
+        open={isopen}
         width={550}
         isHidecloseButton={true}
       >
@@ -47,7 +47,7 @@ const CautionNotice = () => {
               type="primary"
               // eslint-disable-next-line react/jsx-no-duplicate-props
               onClick={() => {
-                setIsVisible(false);
+                setIsopen(false);
                 localStorage.setItem("agreement_accepted", "true");
               }}
               className="btn-filled"
