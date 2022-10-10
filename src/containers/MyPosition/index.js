@@ -19,7 +19,6 @@ import { decimalConversion } from "../../utils/number";
 import { cmst } from "../../config/network";
 import "./index.scss";
 
-const { TabPane } = Tabs;
 
 const MyPositions = ({ address, balances }) => {
   const [earnTab, setEarnTab] = useState(true);
@@ -337,17 +336,24 @@ const MyPositions = ({ address, balances }) => {
             className="comdex-tabs"
             defaultActiveKey="1"
             onChange={callback}
-          >
-            <TabPane tab="Locker" key="1">
-              <MyEarn />
-            </TabPane>
-            <TabPane tab="Vaults" key="2">
-              <Borrow />
-            </TabPane>
-            <TabPane tab="History" key="3">
-              <History />
-            </TabPane>
-          </Tabs>
+            items={[
+              {
+                label: "Locker",
+                key: "1",
+                children: <MyEarn />
+              },
+              {
+                label: "Vaults",
+                key: "2",
+                children: <Borrow />
+              },
+              {
+                label: "History",
+                key: "3",
+                children: <History />
+              }
+            ]}
+          />
         </Col>
       </Row>
     </div>
