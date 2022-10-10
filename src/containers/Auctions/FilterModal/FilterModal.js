@@ -23,7 +23,7 @@ const marks = {
 
 const FilterModal = ({ address, pairs, setPairs }) => {
   const dispatch = useDispatch()
-  const [isModalopen, setIsModalopen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [sliderValue, setSliderValue] = useState(0);
@@ -91,7 +91,7 @@ const FilterModal = ({ address, pairs, setPairs }) => {
   }
 
   const showModal = () => {
-    setIsModalopen(true);
+    setIsModalOpen(true);
   };
   const handleOk = () => {
     if (selectedAuctionedAsset.length > 0) {
@@ -102,10 +102,10 @@ const FilterModal = ({ address, pairs, setPairs }) => {
       fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
     }
 
-    setIsModalopen(false);
+    setIsModalOpen(false);
   };
   const handleCancel = () => {
-    setIsModalopen(false);
+    setIsModalOpen(false);
   };
 
   return (
@@ -124,7 +124,7 @@ const FilterModal = ({ address, pairs, setPairs }) => {
         centered={true}
         closable={false}
         footer={null}
-        open={isModalopen}
+        open={isModalOpen}
         width={500}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -145,7 +145,7 @@ const FilterModal = ({ address, pairs, setPairs }) => {
               </div>
             </Col>
           </Row>
-  
+
 
           <Row className="text-center mt-3">
             <Col>

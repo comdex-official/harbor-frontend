@@ -26,18 +26,18 @@ const DisConnectModal = ({
   name,
   balances,
 }) => {
-  const [isModalopen, setIsModalopen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
-    setIsModalopen(true);
+    setIsModalOpen(true);
   };
 
   const handleOk = () => {
-    setIsModalopen(false);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    setIsModalopen(false);
+    setIsModalOpen(false);
   };
 
   const handleDisconnect = () => {
@@ -106,7 +106,7 @@ const DisConnectModal = ({
         className="connect-modal"
         footer={null}
         header={null}
-        open={isModalopen}
+        open={isModalOpen}
         width={550}
         onCancel={handleCancel}
         onOk={handleOk}

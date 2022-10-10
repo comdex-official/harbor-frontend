@@ -28,7 +28,7 @@ const Withdraw = ({
   refreshBalance,
   setBalanceRefresh,
 }) => {
-  const [isModalopen, setIsModalopen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [destinationAddress, setDestinationAddress] = useState("");
   const [inProgress, setInProgress] = useState(false);
   const [amount, setAmount] = useState();
@@ -61,7 +61,7 @@ const Withdraw = ({
         }
       );
     });
-    setIsModalopen(true);
+    setIsModalOpen(true);
   };
 
   const signIBCTx = () => {
@@ -123,16 +123,16 @@ const Withdraw = ({
       );
 
       setBalanceRefresh(refreshBalance + 1);
-      setIsModalopen(false);
+      setIsModalOpen(false);
     });
   };
 
   const handleOk = () => {
-    setIsModalopen(false);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    setIsModalopen(false);
+    setIsModalOpen(false);
   };
 
   return (
@@ -145,7 +145,7 @@ const Withdraw = ({
         centered={true}
         closable={true}
         footer={null}
-        open={isModalopen}
+        open={isModalOpen}
         width={480}
         onCancel={handleCancel}
         onOk={handleOk}
