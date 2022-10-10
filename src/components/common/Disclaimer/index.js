@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "./index.scss";
 
 const Disclaimer = () => {
-  const [isopen, setIsopen] = useState(
+  const [isOpen, setIsOpen] = useState(
     localStorage.getItem("agreement_accepted") === null
   );
   const [isChecked, setIsChecked] = useState(false);
@@ -14,7 +14,7 @@ const Disclaimer = () => {
         className="disclaimer-modal"
         footer={null}
         header={null}
-        open={isopen}
+        open={isOpen}
         closable={false}
         width={800}
         isHidecloseButton={true}
@@ -44,7 +44,7 @@ const Disclaimer = () => {
               type="primary"
               size="large"
               onClick={() => {
-                setIsopen(false);
+                setIsOpen(false);
                 localStorage.setItem("agreement_accepted", "true");
 
               }}
