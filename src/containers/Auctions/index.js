@@ -114,14 +114,19 @@ const Auctions = ({
               onChange={callback}
               activeKey={activeKey}
               tabBarExtraContent={refreshAuctionButton}
-            >
-              <TabPane tab="Collateral " key="1">
-                <Collateral />
-              </TabPane>
-              <TabPane tab="Debt" key="2">
-                <DebtAuction />
-              </TabPane>
-            </Tabs>
+              items={[
+                {
+                  label: "Collateral",
+                  key: "1",
+                  children: <Collateral />
+                },
+                {
+                  label: "Debt",
+                  key: "2",
+                  children: <DebtAuction />
+                }
+              ]}
+            />
           </Col>
         </Row>
       </div>
