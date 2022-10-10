@@ -141,14 +141,20 @@ const Vesting = ({
                             activeKey={activeKey}
                             onChange={callback}
                             tabBarExtraContent={activeKey === "2" ? claimButton : BackButton}
-                        >
-                            <TabPane tab="Create" key="1">
-                                <Create />
-                            </TabPane>
-                            <TabPane tab="Staked HARBOR" key="2" disabled={!issuedToken?.length > 0}>
-                                <Lock />
-                            </TabPane>
-                        </Tabs>
+                            items={[
+                                {
+                                    label: "Create",
+                                    key: "1",
+                                    children: <Create />
+                                },
+                                {
+                                    label: "Staked HARBOR",
+                                    key: "2",
+                                    disabled: !issuedToken?.length > 0,
+                                    children: <Lock />
+                                },
+                            ]}
+                        />
                     </Col>
                 </Row>
             </div>
