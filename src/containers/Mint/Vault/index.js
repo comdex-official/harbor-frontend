@@ -39,17 +39,26 @@ const Vault = ({
               onChange={setActiveKey}
               activeKey={activeKey}
               tabBarExtraContent={BackButton}
-            >
-              <TabPane tab="Mint" key="1" >
-                <Mint />
-              </TabPane>
-              <TabPane tab="Edit" key="2" disabled={!ownerVaultId}>
-                <EditTab />
-              </TabPane>
-              <TabPane tab="Close" key="3" disabled={!ownerVaultId}>
-                <Close />
-              </TabPane>
-            </Tabs>
+              items={[
+                {
+                  label: "Mint",
+                  key: "1",
+                  children: <Mint />
+                },
+                {
+                  label: "Edit",
+                  key: "2",
+                  disabled: !ownerVaultId,
+                  children: <EditTab />
+                },
+                {
+                  label: "Close",
+                  key: "3",
+                  disabled: !ownerVaultId,
+                  children: <Close />
+                },
+              ]}
+            />
           </Col>
         </Row>
       </div>
