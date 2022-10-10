@@ -356,7 +356,6 @@ const Edit = ({
   }
 
   const handleSliderChange = (value, type = editType) => {
-    console.log(value);
     const newRatio = value / 100; // converting value to ratio
     if (type === "deposit") {
       let newInput =
@@ -676,7 +675,7 @@ const Edit = ({
                   max={500}
                   onChange={handleSliderChange}
                   min={0}
-                  tooltipVisible={false}
+                  tooltip={{ open: false }}
                 />
 
 

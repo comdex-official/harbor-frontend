@@ -588,7 +588,7 @@ const Mint = ({
                 max={500}
                 onChange={handleSliderChange}
                 min={0}
-                tooltipVisible={false}
+                tooltip={{ open: false }}
               />
               {/* collateral container  */}
               <div className="slider-input-box-container mt-2">
