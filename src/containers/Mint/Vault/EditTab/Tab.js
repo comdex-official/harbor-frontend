@@ -358,13 +358,11 @@ const Edit = ({
   const handleSliderChange = (value, type = editType) => {
     console.log(value);
     const newRatio = value / 100; // converting value to ratio
-    console.log(newRatio, "newRatio");
     if (type === "deposit") {
       let newInput =
         (Number(currentDebt) * debtPrice * newRatio) / collateralPrice -
         Number(currentCollateral);
       newInput = Math.max(newInput, 0).toFixed(6)
-      console.log(newInput, "new Input");
       setNewCollateralRatio(value);
       setDeposit(amountConversion(newInput));
       setInputAmount(amountConversion(newInput));
