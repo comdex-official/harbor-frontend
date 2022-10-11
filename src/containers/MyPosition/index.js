@@ -28,6 +28,12 @@ const MyPositions = ({ address, balances }) => {
   const [vaultsInfo, setVaultsInfo] = useState();
   const [collectorInfo, setCollectorInfo] = useState();
 
+  const tabsItem = [
+    { label: "Locker", key: "1", children: <MyEarn /> },
+    { label: "Vaults", key: "2", children: <Borrow /> },
+    { label: "History", key: "3", children: <History /> },
+  ]
+
   useEffect(() => {
     if (address) {
       fetchCollectorStats();
@@ -336,23 +342,7 @@ const MyPositions = ({ address, balances }) => {
             className="comdex-tabs"
             defaultActiveKey="1"
             onChange={callback}
-            items={[
-              {
-                label: "Locker",
-                key: "1",
-                children: <MyEarn />
-              },
-              {
-                label: "Vaults",
-                key: "2",
-                children: <Borrow />
-              },
-              {
-                label: "History",
-                key: "3",
-                children: <History />
-              }
-            ]}
+            items={tabsItem}
           />
         </Col>
       </Row>

@@ -18,6 +18,12 @@ const Vault = ({
   const { TabPane } = Tabs;
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
 
+  const tabsItems =
+    [
+      { label: "Mint", key: "1", children: <Mint /> },
+      { label: "Edit", key: "2", disabled: !ownerVaultId, children: <EditTab /> },
+      { label: "Close", key: "3", disabled: !ownerVaultId, children: <Close /> },
+    ]
 
   const BackButton = {
     right: (
@@ -39,25 +45,7 @@ const Vault = ({
               onChange={setActiveKey}
               activeKey={activeKey}
               tabBarExtraContent={BackButton}
-              items={[
-                {
-                  label: "Mint",
-                  key: "1",
-                  children: <Mint />
-                },
-                {
-                  label: "Edit",
-                  key: "2",
-                  disabled: !ownerVaultId,
-                  children: <EditTab />
-                },
-                {
-                  label: "Close",
-                  key: "3",
-                  disabled: !ownerVaultId,
-                  children: <Close />
-                },
-              ]}
+              items={tabsItems}
             />
           </Col>
         </Row>
