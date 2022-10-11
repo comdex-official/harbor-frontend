@@ -344,7 +344,7 @@ const Withdraw = ({
                     value={sliderValue}
                     onChange={handleSliderChange}
                     min={0}
-                    tipFormatter={formatter}
+                    tooltip={{ tooltip: formatter }}
                   />
                 </div>
               </div>

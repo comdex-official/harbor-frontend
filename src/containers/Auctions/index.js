@@ -26,6 +26,12 @@ const Auctions = ({
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
+  const tabItems =
+    [
+      { label: "Collateral", key: "1", children: <Collateral /> },
+      { label: "Debt", key: "2", children: <DebtAuction /> }
+    ]
+
   const callback = (key) => {
     setActiveKey(key);
   };
@@ -110,18 +116,12 @@ const Auctions = ({
         <Row>
           <Col>
             <Tabs
-              className="comdex-tabs"
+              className="comdex-tabs auction-extra-tabs"
               onChange={callback}
               activeKey={activeKey}
               tabBarExtraContent={refreshAuctionButton}
-            >
-              <TabPane tab="Collateral " key="1">
-                <Collateral />
-              </TabPane>
-              <TabPane tab="Debt" key="2">
-                <DebtAuction />
-              </TabPane>
-            </Tabs>
+              items={tabItems}
+            />
           </Col>
         </Row>
       </div>

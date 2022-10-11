@@ -40,6 +40,12 @@
   width: 100%;
   margin: auto;
   margin-top: 2rem;
+  @media only screen and (max-width: 570px) {
+    max-width: 90%;
+  }
+  @media only screen and (max-width: 480px) {
+    max-width: 100%;
+  }
   .locker-main-container {
     .locker-title {
       font-weight: 700;
@@ -49,6 +55,12 @@
       display: flex;
       justify-content: space-between;
       padding: 0rem 0.7rem 0.7rem 0.7rem;
+      @media only screen and (min-width: 570px) and (max-width: 750px) {
+        display: block;
+      }
+      @media only screen and (max-width: 450px) {
+        display: block;
+      }
       .amount-container {
         font-size: 1.1rem;
         font-weight: 500;
@@ -61,6 +73,12 @@
           display: flex;
           font-size: 1.01rem;
           font-weight: 400;
+          @media only screen and (min-width: 570px) and (max-width: 600px) {
+            display: block;
+          }
+          @media only screen and (max-width: 450px) {
+            display: block;
+          }
           .dark-mode & {
             color: $white;
           }
@@ -117,6 +135,9 @@
       display: block;
       min-height: auto;
       .assets-right {
+        @media only screen and (max-width: 480px) {
+          margin: 0;
+        }
         .input-select {
           text-align: left;
           width: 100%;
@@ -236,6 +257,7 @@
     .claim-container {
       display: flex;
       align-items: center;
+      margin-right: 5px;
       .claim-btn {
         margin-top: 3px;
       }
@@ -257,6 +279,31 @@
           .dark-mode & {
             color: white;
           }
+        }
+      }
+    }
+  }
+}
+.more-locker-tab {
+  .more-locker-tab-back-btn {
+    @media only screen and (max-width: 840px) {
+      display: none !important;
+    }
+  }
+  .ant-tabs-nav {
+    @media only screen and (max-width: 840px) {
+      display: block !important;
+    }
+    .ant-tabs-extra-content {
+      @media only screen and (max-width: 840px) {
+        margin: 0.5rem 0 0 1rem !important;
+      }
+      .row {
+        @media only screen and (max-width: 840px) {
+          row-gap: 0.6rem;
+        }
+        @media only screen and (max-width: 400px) {
+          width: 100%;
         }
       }
     }
