@@ -31,6 +31,13 @@ const Earn = ({
 
   const isLockerExist = useSelector((state) => state.locker.isLockerExist);
 
+  const tabItems =
+    [
+      { label: "Deposit", key: "1", children: <Deposit /> },
+      { label: "Withdraw", key: "2", disabled: !isLockerExist, children: <Withdraw /> },
+      { label: "Close", key: "3", disabled: !isLockerExist, children: < CloseLocker /> },
+    ]
+
   const onChangePrincipal = (value) => {
     value = toDecimals(value).toString().trim();
     setPrincipal(value);
@@ -117,22 +124,12 @@ const Earn = ({
         <Row className="earn-main-container">
           <Col>
             <Tabs
-              className="comdex-tabs"
               type="card"
               activeKey={lockerDefaultSelectTab}
               onChange={callback}
               className="comdex-tabs farm-modal-tab"
-            >
-              <TabPane tab="Deposit" key="1" >
-                <Deposit />
-              </TabPane>
-              <TabPane tab="Withdraw" key="2" disabled={!isLockerExist}>
-                <Withdraw />
-              </TabPane>
-              <TabPane tab="Close" key="3" disabled={!isLockerExist}>
-                <CloseLocker />
-              </TabPane>
-            </Tabs>
+              items={tabItems}
+            />
           </Col>
 
           <Col>

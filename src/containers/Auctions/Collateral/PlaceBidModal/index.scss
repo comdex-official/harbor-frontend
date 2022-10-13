@@ -1,6 +1,17 @@
 @import "../../../../assets/scss/style.scss";
 
 .palcebid-modal {
+  .ant-modal-content {
+    .ant-modal-close-x {
+      span {
+        svg {
+          .dark-mode & {
+            fill: white;
+          }
+        }
+      }
+    }
+  }
   .palcebid-modal-inner {
     .row {
       align-items: center;

@@ -49,7 +49,7 @@
 
 .bidding-bottom-table {
   table {
-     td:nth-child(2) {
+    td:nth-child(2) {
       display: flex;
       justify-content: center;
     }
@@ -94,4 +94,16 @@
 .bid-btn-rejected {
   background: $secondary-color !important;
   border: 2px solid $secondary-color !important;
+}
+.auction-extra-tabs {
+  .ant-tabs-nav {
+    @media only screen and (max-width: 430px) {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+    }
+    .ant-tabs-extra-content {
+      margin: 0.5rem 0 0 1rem;
+    }
+  }
 }
