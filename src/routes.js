@@ -3,6 +3,7 @@ import Dashboard from "./containers/Dashboard";
 import Earn from "./containers/Earn";
 import BorrowTab from "./containers/Mint";
 import Vault from "./containers/Mint/Vault";
+import StableMint from "./containers/StableMint/stablemint";
 import MyPositions from "./containers/MyPosition";
 import Assets from "./containers/Assets";
 import More from './containers/More'
@@ -28,6 +29,10 @@ const routes = [
   {
     path: "/mint",
     element: <BorrowTab />,
+  },
+  {
+    path: "/stableMint",
+    element: <StableMint />,
   },
   {
     path: "mint/vault/:pathVaultId",
