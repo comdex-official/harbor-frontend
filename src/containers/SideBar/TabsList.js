@@ -32,12 +32,20 @@ export const tabsList = [
     index: 3,
   },
   {
+    name: "Stable Mint",
+    value: "borrow",
+    langKey: "stableMint",
+    path: "stableMint",
+    active: "stableMint",
+    index: 4,
+  },
+  {
     name: "earn",
     value: "earn-icon",
     langKey: "earn",
     path: "earn",
     active: "earn",
-    index: 4,
+    index: 5,
   },
   {
     name: "auction",
@@ -45,7 +53,7 @@ export const tabsList = [
     langKey: "auction",
     path: "auctions",
     active: "auctions",
-    index: 5,
+    index: 6,
   },
   {
     name: "more",
@@ -53,6 +61,6 @@ export const tabsList = [
     langKey: "more",
     path: "more",
     active: "more",
-    index: 6,
+    index: 7,
   },
 ];
