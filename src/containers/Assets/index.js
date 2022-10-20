@@ -1,27 +1,51 @@
-import "./index.scss";
+import { Button, Table } from "antd";
+import Lodash from "lodash";
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
-import { connect } from "react-redux";
 import React from "react";
-import { Table } from "antd";
-import variables from "../../utils/variables";
-import Deposit from "./Deposit";
-import Withdraw from "./Withdraw";
+import { IoReload } from "react-icons/io5";
+import { connect, useDispatch } from "react-redux";
+import { Col, Row, SvgIcon } from "../../components/common";
+import AssetList from "../../config/ibc_assets.json";
+import { cmst, comdex, harbor } from "../../config/network";
+import { DOLLAR_DECIMALS } from "../../constants/common";
+import { getChainConfig } from "../../services/keplr";
 import {
   amountConversion,
   amountConversionWithComma,
-  denomConversion,
+  denomConversion
 } from "../../utils/coin";
-import { ibcAssetsInfo } from "../../config/ibc";
-import { embedChainInfo } from "../../config/chain";
-import { message } from "antd";
+import { commaSeparator, marketPrice } from "../../utils/number";
 import { iconNameFromDenom } from "../../utils/string";
-import { cmst, comdex } from "../../config/network";
-import Lodash from "lodash";
-import { marketPrice } from "../../utils/number";
-import { DOLLAR_DECIMALS } from "../../constants/common";
+import variables from "../../utils/variables";
+import Deposit from "./Deposit";
+import "./index.scss";
+import Withdraw from "./Withdraw";
 
-const Assets = ({ lang, assetBalance, balances, markets }) => {
+const Assets = ({
+  lang,
+  assetBalance,
+  balances,
+  markets,
+  refreshBalance,
+  poolPriceMap,
+}) => {
+  const dispatch = useDispatch();
+
+  const handleBalanceRefresh = () => {
+    let assetReloadBth = document.getElementById('reload-btn');
+    assetReloadBth.classList.toggle("reload")
+    if (!assetReloadBth.classList.contains("reload")) {
+      assetReloadBth.classList.add("reload-2")
+    } else {
+      assetReloadBth.classList.remove("reload-2")
+    }
+
+    dispatch({
+      type: "BALANCE_REFRESH_SET",
+      value: refreshBalance + 1,
+    });
+  };
+
   const columns = [
     {
       title: "Asset",
@@ -29,17 +53,35 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       key: "asset",
     },
     {
-      title: "Balances",
-      dataIndex: "balances",
-      key: "balances",
-      align: "right",
-      render: (balance) => (
+      title: "No. of Tokens",
+      dataIndex: "noOfTokens",
+      key: "noOfTokens",
+      align: "center",
+      render: (tokens) => (
         <>
-          <p>{balance?.amount || 0}</p>
-          <small>
-            {amountConversion(balance?.value, DOLLAR_DECIMALS)}{" "}
-            {variables[lang].USD}
-          </small>
+          <p>{commaSeparator(Number(tokens || 0))}</p>
+        </>
+      ),
+    },
+    {
+      title: "Oracle Price",
+      dataIndex: "oraclePrice",
+      key: "oraclePrice",
+      align: "center",
+      render: (price) => (
+        <>
+          <p>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</p>
+        </>
+      ),
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      align: "center",
+      render: (amount) => (
+        <>
+          <p>${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}</p>
         </>
       ),
     },
@@ -47,10 +89,30 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       title: "IBC Deposit",
       dataIndex: "ibcdeposit",
       key: "ibcdeposit",
-      width: 110,
+      align: "center",
       render: (value) => {
         if (value) {
-          return <Deposit chain={value} />;
+          return value?.depositUrlOverride ? (
+            <Button
+              type="primary btn-filled"
+              size="small"
+              className="external-btn"
+            >
+              <a
+                href={value?.depositUrlOverride}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Deposit{" "}
+                <span className="hyperlink-icon">
+                  {" "}
+                  <SvgIcon name="hyperlink" />
+                </span>
+              </a>
+            </Button>
+          ) : (
+            <Deposit chain={value} />
+          );
         }
       },
     },
@@ -61,50 +123,60 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
       width: 110,
       render: (value) => {
         if (value) {
-          return <Withdraw chain={value} />;
+          return value?.withdrawUrlOverride ? (
+            <Button
+              type="primary btn-filled"
+              size="small"
+              className="external-btn"
+            >
+              <a
+                href={value?.withdrawUrlOverride}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Withdraw{" "}
+                <span className="hyperlink-icon">
+                  {" "}
+                  <SvgIcon name="hyperlink" />
+                </span>
+              </a>
+            </Button>
+          ) : (
+            <Withdraw chain={value} />
+          );
         }
       },
     },
   ];
 
   const getPrice = (denom) => {
-    return marketPrice(markets, denom) || 0;
+    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
   };
 
-  const ibcBalances = ibcAssetsInfo.map((channelInfo) => {
-    const chainInfo = embedChainInfo.filter(
-      (item) => item.chainId === channelInfo.counterpartyChainId
-    )[0];
-
-    const originCurrency =
-      chainInfo &&
-      chainInfo.currencies.find(
-        (cur) => cur.coinMinimalDenom === channelInfo.coinMinimalDenom
-      );
-
-    if (!originCurrency) {
-      message.info(
-        `Unknown currency ${channelInfo.coinMinimalDenom} for ${channelInfo.counterpartyChainId}`
-      );
-    }
-
+  let ibcBalances = AssetList?.tokens.map((token) => {
     const ibcBalance = balances.find(
-      (item) => item.denom === channelInfo?.ibcDenomHash
+      (item) => item.denom === token?.ibcDenomHash
     );
-    const value = getPrice(ibcBalance?.denom) * ibcBalance?.amount;
 
     return {
-      chainInfo: chainInfo,
-      denom: originCurrency?.coinMinimalDenom,
+      chainInfo: getChainConfig(token),
+      coinMinimalDenom: token?.coinMinimalDenom,
       balance: {
-        amount: ibcBalance?.amount ? amountConversion(ibcBalance.amount) : 0,
-        value: value || 0,
+        amount: ibcBalance?.amount
+          ? amountConversion(
+            ibcBalance.amount,
+            comdex?.coinDecimals,
+            token?.coinDecimals
+          )
+          : 0,
+        price: getPrice(ibcBalance?.denom) || 0,
       },
-      ibc: ibcBalance,
-      sourceChannelId: channelInfo.sourceChannelId,
-      destChannelId: channelInfo.destChannelId,
-      isUnstable: channelInfo.isUnstable,
-      currency: originCurrency,
+      sourceChannelId: token.comdexChannel,
+      destChannelId: token.channel,
+      ibcDenomHash: token?.ibcDenomHash,
+      explorerUrlToTx: token?.explorerUrlToTx,
+      depositUrlOverride: token?.depositUrlOverride,
+      withdrawUrlOverride: token?.withdrawUrlOverride,
     };
   });
 
@@ -114,9 +186,21 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
   const cmstCoin = balances.filter(
     (item) => item.denom === cmst?.coinMinimalDenom
   )[0];
+  const harborCoin = balances.filter(
+    (item) => item.denom === harbor?.coinMinimalDenom
+  )[0];
 
-  const nativeCoinValue = getPrice(nativeCoin?.denom) * nativeCoin?.amount;
-  const cmstCoinValue = getPrice(cmstCoin?.denom) * cmstCoin?.amount;
+  const nativeCoinValue =
+    getPrice(nativeCoin?.denom) *
+    (nativeCoin?.amount ? Number(amountConversion(nativeCoin?.amount)) : 0);
+
+  const cmstCoinValue =
+    getPrice(cmstCoin?.denom) *
+    (cmstCoin?.amount ? Number(amountConversion(cmstCoin?.amount)) : 0);
+
+  const harborCoinValue =
+    getPrice(harborCoin?.denom) *
+    (harborCoin?.amount ? Number(amountConversion(harborCoin?.amount)) : 0);
 
   const currentChainData = [
     {
@@ -131,13 +215,12 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
           </div>
         </>
       ),
-      balances: {
-        amount: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
-        value: nativeCoinValue || 0,
-      },
+      noOfTokens: nativeCoin?.amount ? amountConversion(nativeCoin.amount) : 0,
+      oraclePrice: getPrice(comdex?.coinMinimalDenom),
+      amount: nativeCoinValue || 0,
     },
     {
-      key: comdex.chainId,
+      key: cmst?.coinDenom,
       asset: (
         <>
           <div className="assets-withicon">
@@ -148,33 +231,47 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
           </div>
         </>
       ),
-      balances: {
-        amount: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
-        value: cmstCoinValue || 0,
-      },
+      noOfTokens: cmstCoin?.amount ? amountConversion(cmstCoin.amount) : 0,
+      oraclePrice: getPrice(cmst?.coinMinimalDenom),
+      amount: cmstCoinValue || 0,
     },
+    {
+      key: harbor?.coinDenom,
+      asset: (
+        <>
+          <div className="assets-withicon">
+            <div className="assets-icon">
+              <SvgIcon name={iconNameFromDenom(harbor?.coinMinimalDenom)} />
+            </div>{" "}
+            {denomConversion(harbor?.coinMinimalDenom)}
+          </div>
+        </>
+      ),
+      noOfTokens: harborCoin?.amount ? amountConversion(harborCoin.amount) : 0,
+      oraclePrice: getPrice(harbor?.coinMinimalDenom),
 
-
+      amount: harborCoinValue || 0,
+    },
   ];
 
   const tableIBCData =
     ibcBalances &&
     ibcBalances.map((item) => {
       return {
-        key: item.denom,
+        key: item?.coinMinimalDenom,
         asset: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom(item.currency?.coinMinimalDenom)}
-                />
-              </div>{" "}
-              {item.currency?.coinDenom}{" "}
+                <SvgIcon name={iconNameFromDenom(item?.coinMinimalDenom)} />
+              </div>
+              {denomConversion(item?.coinMinimalDenom)}{" "}
             </div>
           </>
         ),
-        balances: item.balance,
+        noOfTokens: item?.balance?.amount,
+        oraclePrice: getPrice(item?.coinMinimalDenom),
+        amount: Number(item.balance?.amount) * item.balance?.price,
         ibcdeposit: item,
         ibcwithdraw: item,
       };
@@ -184,17 +281,27 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
 
   return (
     <div className="app-content-wrapper">
-      <div className="app-content-small assets-section">
+      <div className=" assets-section">
         <Row>
           <Col>
             <div className="assets-head">
               <div>
                 <h2>{variables[lang].comdex_assets}</h2>
               </div>
-              <div>
+              <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
                 {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
-                {variables[lang].USD}
+                {variables[lang].USD}{" "}
+                <div className="d-flex">
+                  <span
+                    className="asset-reload-btn"
+                    id="reload-btn-container"
+                    onClick={() => handleBalanceRefresh()}
+                  >
+                    {" "}
+                    <IoReload id="reload-btn" />{" "}
+                  </span>
+                </div>
               </div>
             </div>
           </Col>
@@ -218,12 +325,14 @@ const Assets = ({ lang, assetBalance, balances, markets }) => {
 Assets.propTypes = {
   lang: PropTypes.string.isRequired,
   assetBalance: PropTypes.number,
+  refreshBalance: PropTypes.number.isRequired,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
       amount: PropTypes.string,
     })
   ),
+  poolPriceMap: PropTypes.object,
   markets: PropTypes.arrayOf(
     PropTypes.shape({
       rates: PropTypes.shape({
@@ -243,6 +352,8 @@ const stateToProps = (state) => {
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
     markets: state.oracle.market.list,
+    refreshBalance: state.account.refreshBalance,
+    poolPriceMap: state.liquidity.poolPriceMap,
   };
 };
 

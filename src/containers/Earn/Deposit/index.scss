@@ -5,6 +5,8 @@
   border-radius: $base-border-radius;
   background: $background-light;
   box-shadow: $box-shadow-inner-light;
+  border: 0.5px solid $border-color-base;
+
   .dark-mode & {
     background-color: $secondary-color-light;
     box-shadow: none;
@@ -16,8 +18,8 @@
       }
     }
   }
-  .Interest-rate-container {
-    padding: 0 25px;
+  .interest-rate-container {
+    padding: 0 0 0 5px;
     .row {
       justify-content: space-between;
       .dark-mode & {
@@ -45,7 +47,6 @@
 }
 .earn-main-deposite {
   padding: 10px 25px 15px 25px !important;
-  border: 0.5px solid $border-color-base;
 }
 
 .locker-title {
@@ -53,6 +54,15 @@
   font-size: 20px;
   font-weight: 600;
   padding: 0 0 15px 10px;
+  .dark-mode & {
+    color: #fff;
+  }
+}
+.withdraw-title {
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 0 0 15px 0;
   .dark-mode & {
     color: #fff;
   }

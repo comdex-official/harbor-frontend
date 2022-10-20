@@ -2,7 +2,6 @@ import "./index.scss";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Form, Checkbox, Slider } from "antd";
-import variables from "../../../utils/variables";
 import CustomInput from "../../../components/CustomInput";
 import {
   DEFAULT_PAGE_NUMBER,
@@ -11,16 +10,24 @@ import {
 import { queryPairs } from "../../../services/asset/query";
 import { denomConversion } from "../../../utils/coin";
 import { message } from "antd";
-import { uniqueDenoms } from "../../../utils/string";
+import { queryDutchAuctionList, queryFilterDutchAuctions } from "../../../services/auction";
+import { setAuctions, setSelectedFilterAuctionAsset } from "../../../actions/auction";
+import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const marks = {
   0: "00:00hrs",
   100: "3d:00h:00m",
 };
 
-const FilterModal = ({ lang, address, pairs, setPairs }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const FilterModal = ({ address, pairs, setPairs }) => {
+  const dispatch = useDispatch()
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [sliderValue, setSliderValue] = useState(0);
+  let selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
   useEffect(() => {
     if (!pairs?.list?.length) {
@@ -44,18 +51,62 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
     });
   };
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const fetchFilteredDutchAuctions = (offset, limit, countTotal, reverse, asset) => {
+    queryFilterDutchAuctions(offset, limit, countTotal, reverse, asset, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      dispatch(setAuctions(data));
+    });
   };
 
-  const uniqCollateralDenoms = uniqueDenoms(pairs && pairs.list, "in");
-  const uniqDebtDenoms = uniqueDenoms(pairs && pairs.list);
+  const fetchAuctions = (offset, limit, isTotal, isReverse) => {
+    queryDutchAuctionList(
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+        if (result?.auctions?.length > 0) {
+          dispatch(setAuctions(result && result));
+        }
+        else {
+          dispatch(setAuctions(""));
+        }
+      }
+    );
+  };
+
+  const onCheckBoxInputChange = (e) => {
+    if (e.target.checked) {
+      selectedAuctionedAsset.push(e.target.defaultValue)
+    } else {
+      selectedAuctionedAsset = selectedAuctionedAsset.filter(item => item !== e.target.defaultValue)
+    }
+  }
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    if (selectedAuctionedAsset.length > 0) {
+      dispatch(setSelectedFilterAuctionAsset(selectedAuctionedAsset));
+      fetchFilteredDutchAuctions((pageNumber - 1) * pageSize, pageSize, true, false, selectedAuctionedAsset)
+    } else {
+      dispatch(setSelectedFilterAuctionAsset(selectedAuctionedAsset));
+      fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
+    }
+
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -64,6 +115,7 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
         shape="round"
         className="filter-btn"
         onClick={showModal}
+        style={{ border: "1px solid" }}
       >
         <SvgIcon name="filter" viewbox="0 0 13.579 13.385" /> Filter
       </Button>
@@ -72,7 +124,7 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
         centered={true}
         closable={false}
         footer={null}
-        visible={isModalVisible}
+        open={isModalOpen}
         width={500}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -87,60 +139,14 @@ const FilterModal = ({ lang, address, pairs, setPairs }) => {
             <Col>
               <label>Auctioned Asset</label>
               <div className="filter-rows">
-                {/* {uniqCollateralDenoms.length > 0
-                  ? uniqCollateralDenoms.map((item) => (
-                      <Checkbox key={item}>{denomConversion(item)}</Checkbox>
-                    ))
-                  : null} */}
-                <Checkbox key={1}>{denomConversion("uatom")}</Checkbox>
-                <Checkbox key={2}>{denomConversion("uxprt")}</Checkbox>
-                <Checkbox key={3}>{denomConversion("uakt")}</Checkbox>
-                <Checkbox key={4}>{denomConversion("ucmdx")}</Checkbox>
-                <Checkbox key={5}>{denomConversion("udvpn")}</Checkbox>
+                <Checkbox key={1} onChange={onCheckBoxInputChange} defaultValue="ucmdx">{denomConversion("ucmdx")}</Checkbox>
+                <Checkbox key={2} onChange={onCheckBoxInputChange} defaultValue="uatom">{denomConversion("uatom")}</Checkbox>
+                <Checkbox key={3} onChange={onCheckBoxInputChange} defaultValue="uosmo">{denomConversion("uosmo")}</Checkbox>
               </div>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <label>Bidding Asset</label>
-              <div className="filter-rows">
-                {/* {uniqDebtDenoms.length > 0
-                  ? uniqDebtDenoms.map((item) => (
-                      <Checkbox key={item}>{denomConversion(item)}</Checkbox>
-                    ))
-                  : null} */}
-                <Checkbox key={1}>CMST</Checkbox>
-                <Checkbox key={2}>HARBOR</Checkbox>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <label>Timer</label>
-              <div className="mt-2 filter-rows pb-4">
-                <div className="slider-numbers">
-                  <Slider
-                    className="comdex-slider filter-slider"
-                    marks={marks}
-                    defaultValue={39}
-                    max={100}
-                    min={0}
-                    value={sliderValue}
-                    onChange={setSliderValue}
-                    tooltipVisible={false}
-                  />
-                  <CustomInput
-                    placeholder="0"
-                    value={sliderValue}
-                    onChange={(event) => {
-                      setSliderValue(event.target?.value);
-                    }}
-                    defaultValue="1d:12h:1m"
-                  />
-                </div>
-              </div>
-            </Col>
-          </Row>
+
+
           <Row className="text-center mt-3">
             <Col>
               <Button

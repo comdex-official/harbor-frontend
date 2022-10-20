@@ -10,7 +10,7 @@ import {
   SECOND_RESERVE_COIN_DENOM_SET,
   POOL_TOKEN_SUPPLY_SET,
   POOL_BALANCES_SET,
-  POOLS_LIQUIDITY_LIST_SET, BASE_COIN_POOL_PRICE_SET,
+  POOLS_LIQUIDITY_LIST_SET, BASE_COIN_POOL_PRICE_SET, POOL_PRICE_SET,
 } from "../constants/liquidity";
 
 const pool = (
@@ -124,12 +124,23 @@ const list = (state = [], action) => {
   return state;
 };
 
-const baseCoinPoolPrice = (state= 0, action) => {
-  if(action.type === BASE_COIN_POOL_PRICE_SET){
+const baseCoinPoolPrice = (state = 0, action) => {
+  if (action.type === BASE_COIN_POOL_PRICE_SET) {
     return action.value
   }
   return state;
 }
+
+const poolPriceMap = (state = {}, action) => {
+  if (action.type === POOL_PRICE_SET) {
+    return {
+      ...state,
+      [action.denom]: action.value,
+    };
+  }
+
+  return state;
+};
 
 export default combineReducers({
   pool,
@@ -143,4 +154,5 @@ export default combineReducers({
   poolBalances,
   list,
   baseCoinPoolPrice,
+  poolPriceMap
 });

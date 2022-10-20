@@ -44,18 +44,6 @@
         }
       }
       .slider-numbers {
-        .ant-input {
-          height: 28px !important;
-          line-height: 28px !important;
-          border-radius: 4px !important;
-          background: $form-input-bg-light;
-          text-align: right;
-          font-size: $font-size-sm;
-          width: 80px;
-          .dark-mode & {
-            background: $background-dark2;
-          }
-        }
       }
       .ant-checkbox-wrapper {
         margin-right: 6px;
@@ -102,21 +90,9 @@
           color: $white;
         }
       }
-      .ant-input {
-        height: 38px !important;
-        line-height: 38px !important;
-        border-radius: 4px !important;
-        background: $form-input-bg-light;
-        text-align: right;
-        border: 0;
-        .dark-mode & {
-          border: 1px solid #18305a;
-        }
-      }
       .filter-rows {
         border-bottom: 1px solid $border-color-base;
         padding-bottom: 18px;
-        padding-top: 15px;
         .dark-mode & {
           border-bottom: 1px solid rgba(#18305a, 0.5);
         }
@@ -143,6 +119,33 @@
       color: $secondary-color;
       background: none;
       opacity: 0.8;
+    }
+  }
+}
+.timer-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: -15px;
+  label {
+  }
+
+  .ant-input {
+    height: 28px !important;
+    line-height: 28px !important;
+    border-radius: 4px !important;
+    background: $form-input-bg-light;
+    text-align: right;
+    font-size: $font-size-sm;
+    width: 80px;
+    .dark-mode & {
+      background: $background-dark2;
+    }
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+    &:hover {
+      border-color: $secondary-color;
     }
   }
 }

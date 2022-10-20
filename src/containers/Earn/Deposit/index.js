@@ -1,7 +1,7 @@
-import { Button, Input, message, Select } from "antd";
+import { Button, message } from "antd";
 import Long from "long";
-import './index.scss'
-import *  as PropTypes from 'prop-types';
+import "./index.scss";
+import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Col, Row, SvgIcon } from "../../../components/common";
@@ -18,70 +18,68 @@ import {
 import { iconNameFromDenom, toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import { setAmountIn, setAssets, setPair } from "../../../actions/asset";
-import { setWhiteListedAssets, setAllWhiteListedAssets, setIsLockerExist } from '../../../actions/locker'
+import {
+  setWhiteListedAssets,
+  setAllWhiteListedAssets,
+  setIsLockerExist,
+  setOwnerVaultInfo,
+  setCollectorData
+} from "../../../actions/locker";
 import "./index.scss";
 import { queryAssets } from "../../../services/asset/query";
-import { DEFAULT_FEE, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../constants/common";
-import { queryLockerWhiteListedAssetByProduct, queryLockerWhiteListedAssetByProductId, queryUserLockerByProductAssetId } from "../../../services/locker/query";
-import { queryAllBalances } from "../../../services/bank/query";
-import { comdex } from "../../../config/network";
+import {
+  DEFAULT_FEE,
+  DEFAULT_PAGE_NUMBER,
+  DEFAULT_PAGE_SIZE,
+  DOLLAR_DECIMALS,
+  PRODUCT_ID,
+} from "../../../constants/common";
+import {
+  queryLockerWhiteListedAssetByProductId,
+  queryUserLockerByProductAssetId,
+} from "../../../services/locker/query";
 import Snack from "../../../components/common/Snack";
 import { signAndBroadcastTransaction } from "../../../services/helper";
-import { defaultFee, getTypeURL } from "../../../services/transaction";
+import { defaultFee } from "../../../services/transaction";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { queryCollectorInformation } from "../../../services/collector";
+import { decimalConversion } from "../../../utils/number";
 
 const Deposit = ({
   lang,
-  reverse,
-  spotPrice,
   balances,
-  pair,
   address,
   setAssets,
   assets,
   refreshBalance,
   setWhiteListedAssets,
-  setAllWhiteListedAssets,
-  allWhiteListedAssets,
   whiteListedAsset,
+  ownerLockerInfo,
+  setOwnerVaultInfo,
+  setCollectorData
 }) => {
   const dispatch = useDispatch();
   const inAmount = useSelector((state) => state.asset.inAmount);
   const isLockerExist = useSelector((state) => state.locker.isLockerExist);
 
-  const [secondInput, setSecondInput] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inputValidationError, setInputValidationError] = useState();
-  const [outputValidationError, setOutputValidationError] = useState();
-  const [poolBalance, setLocalPoolBalance] = useState([]);
-  const [selectedAsset, setSelectedAsset] = useState();
+  const [collectorInfo, setCollectorInfo] = useState();
 
   const whiteListedAssetData = [];
-  const { Option } = Select;
-
   const resetValues = () => {
     dispatch(setAmountIn(0));
   };
-  const getAssetDenom = () => {
-    // When we get multiple whiteListed Asset
-    // ************************************************
-    // let filterAssets = assets?.filter((item, index) => {
-    //   return (
-    //     item.id.low === whiteListedAsset[index]?.low
-    //   )
-    // })
-    // whiteListedAssetData.push(filterAssets);
-    // ************************************************
 
-    // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
+  const getAssetDenom = () => {
     assets?.map((item) => {
-      if (item.name === "CMDX") {
+      if (item.id.low === whiteListedAsset[0]?.low) {
         whiteListedAssetData.push(item);
       }
-    })
-  }
+    });
+  };
 
   const handleFirstInputChange = (value) => {
     value = toDecimals(value).toString().trim();
@@ -111,69 +109,92 @@ const Deposit = ({
       false
     );
     fetchWhiteListedAssetByid(PRODUCT_ID);
-    fetchOwnerLockerExistByAssetId(PRODUCT_ID, 3, address);
   }, [address]);
+
+  useEffect(() => {
+    fetchCollectorStats();
+  }, [whiteListedAsset]);
+
+  useEffect(() => {
+    fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
+  }, [whiteListedAsset, refreshBalance])
+
 
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     setInProgress(true);
-    setLoading(true)
+    setLoading(true);
     queryAssets(offset, limit, countTotal, reverse, (error, data) => {
       setInProgress(false);
+      setLoading(false);
       if (error) {
         message.error(error);
         return;
       }
-      // console.log("All Assets", data.assets);
-
       setAssets(data.assets, data.pagination);
-      setLoading(false)
     });
   };
 
   const fetchWhiteListedAssetByid = (productId) => {
     setInProgress(true);
-    setLoading(true)
+    setLoading(true);
     queryLockerWhiteListedAssetByProductId(productId, (error, data) => {
       if (error) {
         message.error(error);
         return;
       }
-      // console.log("Product Asset", data?.assetIds);
-      let whiteListedAsset =
-        setWhiteListedAssets(data?.assetIds)
-      setLoading(false)
-    })
-  }
+      setWhiteListedAssets(data?.assetIds);
+      setLoading(false);
+    });
+  };
 
   const fetchOwnerLockerExistByAssetId = (productId, assetId, address) => {
-    queryUserLockerByProductAssetId(productId, assetId, address, (error, data) => {
+    queryUserLockerByProductAssetId(
+      productId,
+      assetId,
+      address,
+      (error, data) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+        let lockerExist = data?.lockerInfo?.lockerId?.low;
+        setOwnerVaultInfo(data?.lockerInfo);
+        if (lockerExist) {
+          dispatch(setIsLockerExist(true));
+        } else {
+          dispatch(setIsLockerExist(false));
+        }
+      }
+    );
+  };
+  const fetchCollectorStats = () => {
+    queryCollectorInformation((error, result) => {
       if (error) {
         message.error(error);
         return;
       }
-      let lockerExist = data?.lockerInfo?.length;
-      if (lockerExist > 0) {
-        dispatch(setIsLockerExist(true));
-      } else {
-        dispatch(setIsLockerExist(false));
-      }
-    })
-  }
+      setCollectorData(result?.collectorLookup[0])
+      setCollectorInfo(result?.collectorLookup[0]);
+    });
+  };
 
   getAssetDenom();
 
-  const AvailableAssetBalance = getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
+  const AvailableAssetBalance =
+    getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
+  const whiteListedAssetId = whiteListedAsset[0]?.low;
+  const lockerId = ownerLockerInfo?.lockerId;
 
   const handleInputMax = () => {
-    if (Number(AvailableAssetBalance) > DEFAULT_FEE) {
-      return (
-        dispatch(setAmountIn(amountConversion(AvailableAssetBalance - DEFAULT_FEE)))
-
-      )
+    if (Number(AvailableAssetBalance)) {
+      return dispatch(
+        setAmountIn(amountConversion(AvailableAssetBalance))
+      );
     } else {
-      return null
+      return null;
     }
-  }
+  };
+
   const handleSubmitCreateLocker = () => {
     if (!address) {
       message.error("Address not found, please connect to Keplr");
@@ -188,9 +209,9 @@ const Deposit = ({
           value: {
             depositor: address,
             amount: getAmount(inAmount),
-            assetId: Long.fromNumber(3),
-            appMappingId: Long.fromNumber(1),
-          }
+            assetId: Long.fromNumber(whiteListedAssetId),
+            appId: Long.fromNumber(PRODUCT_ID),
+          },
         },
         fee: defaultFee(),
       },
@@ -210,16 +231,17 @@ const Deposit = ({
           <Snack
             message={variables[lang].tx_success}
             hash={result?.transactionHash}
-          />,
+          />
         );
+        resetValues();
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
         });
       }
     );
+  };
 
-  }
   const handleSubmitAssetDepositLocker = () => {
     if (!address) {
       message.error("Address not found, please connect to Keplr");
@@ -233,11 +255,11 @@ const Deposit = ({
           typeUrl: "/comdex.locker.v1beta1.MsgDepositAssetRequest",
           value: {
             depositor: address,
-            lockerId: "cmst1",
+            lockerId: lockerId,
             amount: getAmount(inAmount),
-            assetId: Long.fromNumber(3),
-            appMappingId: Long.fromNumber(1),
-          }
+            assetId: Long.fromNumber(whiteListedAssetId),
+            appId: Long.fromNumber(PRODUCT_ID),
+          },
         },
         fee: defaultFee(),
       },
@@ -257,19 +279,16 @@ const Deposit = ({
           <Snack
             message={variables[lang].tx_success}
             hash={result?.transactionHash}
-          />,
+          />
         );
-        resetValues()
+        resetValues();
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,
         });
       }
     );
-
-  }
-
-
+  };
   return (
     <>
       <Col>
@@ -278,109 +297,52 @@ const Deposit = ({
           <div className="assets-select-card  ">
             <div className="assets-left">
               <label className="leftlabel">
-                Deposit <TooltipIcon />
+                Deposit <TooltipIcon text="Deposit Composite in locker to earn interest compounded per block" />
               </label>
               <Row>
                 <Col>
                   <div className="assets-select-wrapper">
-                    {/* When we receive multiple whitelisted asset then will show dropdown */}
-
-                    {/* Start */}
-                    {/* {whiteListedAssetData && whiteListedAssetData[0]?.length > 1 ?
-                      <div >
-                        <Select
-                          className="assets-select"
-                          dropdownClassName="asset-select-dropdown"
-                          placeholder={
-                            <div className="select-placeholder">
-                              <div className="circle-icon">
-                                <div className="circle-icon-inner" />
-                              </div>
-                              Select
-                            </div>
-                          }
-                          onChange={(e) => {
-                            console.log(e);
-                            setSelectedAsset(e)
-                          }}
-                          suffixIcon={<SvgIcon name="caret-down" />}
-                        >
-                          {whiteListedAssetData[0]?.map((item) => (
-                            <Option key={item.denom} value={item.denom}>
-                              <div className="select-inner">
-                                <div className="select-right">
-                                  <div className="select-right-inner">
-                                    <div className="svg-icon">
-                                      <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                    </div>
-                                    <div>
-                                      {denomConversion(item.denom)}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </Option>
-                          ))}
-                          ,
-                        </Select>
-                      </div>
-                      :
-                      <div>
-                        {whiteListedAssetData[0][0]?.map((item) => {
-                          <div className="farm-asset-icon-container">
-                            <div className="select-inner">
-                              <div className="svg-icon">
-                                <div className="svg-icon-inner">
-                                  <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                  {denomConversion(item.denom)}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        })}
-                      </div>
-                    } */}
-                    {/* End */}
-
-
                     {/* For Single Asset */}
-                    {whiteListedAssetData && whiteListedAssetData.map((item, index) => {
-                      return (
-                        <React.Fragment key={index} >
-                          {loading ? <h1>Loading...</h1> :
-                            <div className="farm-asset-icon-container" >
-                              <div className="select-inner">
-                                <div className="svg-icon">
-                                  <div className="svg-icon-inner">
-                                    <SvgIcon name={iconNameFromDenom(item.denom)} />
-                                    <span> {item.name}</span>
+                    {loading ? <h1>Loading...</h1> : null}
+                    {whiteListedAssetData &&
+                      whiteListedAssetData.map((item, index) => {
+                        return (
+                          <React.Fragment key={index}>
+                            {loading ? null : (
+                              <div className="farm-asset-icon-container">
+                                <div className="select-inner">
+                                  <div className="svg-icon">
+                                    <div className="svg-icon-inner">
+                                      <SvgIcon
+                                        name={iconNameFromDenom(item?.denom)}
+                                      />
+                                      <span
+                                        style={{ textTransform: "uppercase" }}
+                                      >
+                                        {" "}
+                                        {item?.name}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          }
-                        </React.Fragment>
-                      )
-                    })}
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
                   </div>
                 </Col>
               </Row>
-
-
             </div>
             <div className="assets-right">
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(AvailableAssetBalance)}
-                  {denomConversion(whiteListedAssetData[0]?.denom)}
+                  {amountConversionWithComma(AvailableAssetBalance)} {denomConversion(whiteListedAssetData && whiteListedAssetData[0]?.denom)}
                 </span>
                 <div className="maxhalf">
-                  <Button
-                    className="active"
-                    onClick={() => handleInputMax()}
-                  >
-                    max
+                  <Button className="active" onClick={() => handleInputMax()}>
+                    Max
                   </Button>
                 </div>
               </div>
@@ -388,44 +350,42 @@ const Deposit = ({
                 <CustomInput
                   value={inAmount}
                   onChange={(event) => {
-                    handleFirstInputChange(event.target.value)
+                    handleFirstInputChange(event.target.value);
                   }}
                   validationError={inputValidationError}
+                // disabled={true}
                 />
                 <small>{showInDollarValue()}</small>
               </div>
             </div>
           </div>
 
-          <div className="Interest-rate-container mt-4">
+          <div className="interest-rate-container mt-4">
             <Row>
-              <div className="title">Current Interest rate</div>
-              <div className="value">6%</div>
+              <div className="title">Current Reward Rate</div>
+              <div className="value"> {collectorInfo?.lockerSavingRate
+                ? Number(
+                  decimalConversion(collectorInfo?.lockerSavingRate) * 100
+                ).toFixed(DOLLAR_DECIMALS)
+                : Number().toFixed(DOLLAR_DECIMALS)}%</div>
             </Row>
           </div>
 
-          {/* <Info /> */}
           <div className="assets PoolSelect-btn">
             <div className="assets-form-btn text-center  mb-2">
               <Button
                 loading={inProgress}
-                disabled={
-                  !inAmount ||
-                  inProgress ||
-                  inputValidationError?.message
-                }
                 type="primary"
                 className="btn-filled"
                 onClick={() => {
                   if (isLockerExist) {
-                    handleSubmitAssetDepositLocker()
-                  }
-                  else {
-                    handleSubmitCreateLocker()
+                    handleSubmitAssetDepositLocker();
+                  } else {
+                    handleSubmitCreateLocker();
                   }
                 }}
               >
-                Deposit
+                {isLockerExist ? "Deposit " : "Create"}
               </Button>
             </div>
           </div>
@@ -450,7 +410,7 @@ Deposit.propTypes = {
         low: PropTypes.number,
         high: PropTypes.number,
         inSigned: PropTypes.number,
-      })
+      }),
     })
   ),
   allWhiteListedAssets: PropTypes.arrayOf(
@@ -466,7 +426,7 @@ Deposit.propTypes = {
         low: PropTypes.number,
         high: PropTypes.number,
         inSigned: PropTypes.number,
-      })
+      }),
     })
   ),
   whiteListedAsset: PropTypes.arrayOf(
@@ -476,8 +436,8 @@ Deposit.propTypes = {
           low: PropTypes.number,
           high: PropTypes.number,
           inSigned: PropTypes.number,
-        })
-      })
+        }),
+      }),
     })
   ),
   balances: PropTypes.arrayOf(
@@ -491,8 +451,8 @@ Deposit.propTypes = {
     denom: PropTypes.string,
   }),
   refreshBalance: PropTypes.number.isRequired,
-
-}
+  ownerLockerInfo: PropTypes.string,
+};
 const stateToProps = (state) => {
   return {
     address: state.account.address,
@@ -503,7 +463,7 @@ const stateToProps = (state) => {
     allWhiteListedAssets: state.locker._.list,
     whiteListedAsset: state.locker.whiteListedAssetById.list,
     refreshBalance: state.account.refreshBalance,
-
+    ownerLockerInfo: state.locker.ownerVaultInfo,
   };
 };
 
@@ -512,6 +472,7 @@ const actionsToProps = {
   setAssets,
   setAllWhiteListedAssets,
   setWhiteListedAssets,
+  setOwnerVaultInfo,
+  setCollectorData,
 };
 export default connect(stateToProps, actionsToProps)(Deposit);
-

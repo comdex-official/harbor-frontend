@@ -1,10 +1,9 @@
 @import "../../assets/scss/variables.scss";
 
 .borrw-content-card {
-  background: $background-light;
+  background: rgba($secondary-color, 0.3);
   padding: 35px;
   border-radius: $base-border-radius + 5;
-  //   box-shadow: $box-shadow-inner-light;
   position: relative;
   @media screen and (max-width: 767px) {
     padding: 25px 20px;
@@ -12,7 +11,6 @@
   .dark-mode & {
     background: $background-dark1;
     border: 1px solid $border-dark;
-    // box-shadow: $box-shadow-inner-dark;
   }
   .borrow-tab-head {
     display: flex;
@@ -162,42 +160,59 @@
 }
 
 .slider-numbers {
-  display: flex;
+  // display: flex;
   .comdex-slider {
+    margin-top: 40px !important;
   }
-  .ant-input {
-    margin-bottom: 0;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 5px;
-    font-weight: 300;
-    margin-top: -14px;
-    max-width: 70px;
-    padding: 0 25px 0 10px;
-    text-align: center;
-    font-size: $font-size-lg + 3;
-    border: none;
-    background-color: $assets-bg-light;
 
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button {
-      display: none;
-      margin: 0;
+  .slider-input-box-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .title {
+      font-size: 13px;
+      padding: 0;
     }
-    .dark-mode & {
-      background: #081938;
-      border-color: #18305a;
-      color: $white;
-    }
-  }
-  .collateral-percentage {
-    margin-left: -22px;
-    margin-top: -9px;
-    padding-right: 0;
-    position: relative;
-    font-size: 20px;
-    .dark-mode & {
-      color: $white;
+    .input-box-container {
+      .ant-input {
+        margin-bottom: 0;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 5px;
+        font-weight: 300;
+        max-width: 77px;
+        padding: 0 25px 0 10px;
+        text-align: center;
+        font-size: $font-size-lg + 3;
+        border: none;
+        background: rgba($secondary-color, 0.3);
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+          display: none;
+          margin: 0;
+        }
+        .dark-mode & {
+          background: rgba($secondary-color, 0.2);
+          border-color: #18305a;
+          color: $white;
+        }
+      }
+      .collateral-percentage {
+        margin-left: -22px;
+        margin-top: -9px;
+        padding-right: 0;
+        position: relative;
+        font-size: 20px;
+        .dark-mode & {
+          color: $white;
+        }
+      }
+      .liquidation-price {
+        .dark-mode & {
+          color: white;
+        }
+      }
     }
   }
 }
@@ -227,6 +242,9 @@
       margin-bottom: 10px;
       display: block;
       font-size: $font-size-base + 1;
+      @media only screen and (min-width: 990px) and (max-width: 1200px) {
+        font-size: $font-size-base - 2;
+      }
       .dark-mode & {
         color: $text-color-label-dark;
       }
@@ -238,7 +256,6 @@
         width: 30px;
         height: 30px;
         border-radius: 30px;
-        // background: $primary-gradient;
         padding: 0.65px;
         .assets-icons-inner {
           width: 100%;
@@ -247,7 +264,7 @@
           border-radius: 100%;
           padding: 2px;
           .dark-mode & {
-            background: $background-select-hover-dark;
+            background: $white;
           }
           .icon {
             width: 100%;
@@ -260,6 +277,9 @@
         margin-bottom: 0;
         font-weight: 400;
         padding-left: 6px;
+        @media only screen and (min-width: 990px) and (max-width: 1200px) {
+          font-size: 1.1rem;
+        }
         .dark-mode & {
           color: $white;
         }
@@ -273,6 +293,9 @@
   max-width: 450px;
   margin-left: auto;
   margin-right: auto;
+  .row {
+    align-items: flex-end;
+  }
   .slider-numbers {
     h2 {
       margin-top: -8px;
@@ -292,6 +315,7 @@
     text-align: right;
     height: 48px;
     padding: 0 10px;
+    background: rgba($secondary-color, 0.2);
     font-size: $font-size-lg + 4;
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
@@ -308,6 +332,10 @@
     justify-content: space-between;
     align-items: center;
     margin-top: -1px;
+    color: $secondary-color;
+    .dark-mode & {
+      color: #fff;
+    }
     .maxhalf {
       margin-top: -27px;
       button {
@@ -321,6 +349,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+    }
+    .ml-1 {
+      cursor: pointer;
+    }
+    .available {
+      color: black;
+      font-weight: 500;
+      .dark-mode & {
+        color: $secondary-color;
       }
     }
   }
@@ -358,43 +396,80 @@
 
 .vault-mint-main-container {
   .card-main-container {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(20rem, 1fr));
-    grid-template-rows: repeat(auto, 1fr);
-    gap: 12px;
+    display: flex;
+    gap: 13px;
+    flex-wrap: wrap;
     .card-container {
-      background: $assets-bg-light;
+      background: white;
       padding: 25px 25px;
       border-radius: $base-border-radius;
       box-shadow: $box-shadow-inner-light;
       border: 1px solid $border-color-base;
-
+      flex-basis: 30%;
+      @media only screen and (min-width: 990px) and (max-width: 1300px) {
+        flex-basis: 45%;
+      }
+      @media only screen and (max-width: 972px) {
+        flex-basis: 45%;
+      }
+      @media only screen and (max-width: 720px) {
+        flex-basis: 100%;
+      }
       .dark-mode & {
         background: $background-dark2;
         box-shadow: none;
       }
       &:hover {
-        background: $secondary-color;
-        border-color: $secondary-color;
+        background: rgba($secondary-color, 0.3);
+        border-color: rgb(199 194 226 / 30%);
+        cursor: pointer;
+        .dark-mode & {
+          background: $secondary-color;
+          border-color: $secondary-color;
+        }
       }
       &:hover .tooltip-icon {
-        fill: white;
+        fill: black;
+        .dark-mode & {
+          fill: white;
+        }
       }
+
       .up-container {
         display: flex;
         column-gap: 10px;
-        margin-bottom: 20px;
         .icon-container {
           flex-basis: 20%;
           height: 5rem;
+          @media only screen and (min-width: 620px) and (max-width: 720px) {
+            height: auto;
+          }
+          @media only screen and (max-width: 619px) {
+            height: 8rem;
+          }
+          @media only screen and (max-width: 490px) {
+            height: 6rem;
+          }
+          @media only screen and (max-width: 380px) {
+            height: 4rem;
+          }
           .icon {
             width: 100%;
-            height: 100%;
+            height: 70%;
+            border-radius: 50%;
           }
         }
         .vault-name-container {
           flex-basis: 80%;
           .vault-name {
+            text-transform: uppercase;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #000;
+            margin-top: 12px;
+            .dark-mode & {
+              color: #fff;
+            }
           }
           .vault-desc {
           }
@@ -403,18 +478,32 @@
       .bottom-container {
         display: flex;
         flex-direction: column;
-        row-gap: 10px;
+        row-gap: 12px;
         .contenet-container {
           display: flex;
-          // flex-direction: column;
           justify-content: space-between;
           width: 100%;
+          color: #000;
+          .dark-mode & {
+            color: #fff;
+          }
           .name {
+            font-size: 13px;
           }
           .value {
+            font-size: 11px;
+            font-weight: 500;
           }
         }
       }
     }
+  }
+}
+.choose-vault {
+  display: block;
+  width: 100%;
+  font-size: 20px;
+  .dark-mode & {
+    color: white;
   }
 }

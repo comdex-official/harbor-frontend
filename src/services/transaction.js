@@ -16,39 +16,52 @@ export const getTypeURL = (key) => {
       return "/comdex.vault.v1beta1.MsgDrawRequest";
     case "repay":
       return "/comdex.vault.v1beta1.MsgRepayRequest";
+    case "drawAndRepay":
+      return "/comdex.vault.v1beta1.MsgDepositAndDrawRequest";
+
+    default:
+      return ""
   }
 };
 
-export const messageTypeToText = (type) => {
-  switch (type) {
-    case "/cosmos.bank.v1beta1.MsgSend":
-      return "Send";
-    case "/comdex.vault.v1beta1.MsgCreateRequest":
-      return "CreateVault";
-    case "/comdex.vault.v1beta1.MsgDepositRequest":
-      return "VaultDepositCollateral";
-    case "/comdex.vault.v1beta1.MsgWithdrawRequest":
-      return "VaultWithdrawCollateral";
-    case "/comdex.vault.v1beta1.MsgDrawRequest":
-      return "VaultDrawDebt";
-    case "/comdex.vault.v1beta1.MsgRepayRequest":
-      return "VaultRepayDebt";
-    case "/comdex.vault.v1beta1.MsgCloseRequest":
-      return "CloseVault";
-    case "/comdex.liquidity.v1beta1.MsgDeposit":
-      return "PoolDeposit";
-    case "/comdex.liquidity.v1beta1.MsgWithdraw":
-      return "PoolWithdraw";
-    case "/comdex.liquidity.v1beta1.MsgSwapWithinBatch":
-      return "PoolSwap";
-    case "/ibc.applications.transfer.v1.MsgTransfer":
-      return "IBC-Transfer";
-    case "/comdex.auction.v1beta1.MsgPlaceBidRequest":
-      return "PlaceBid";
-    default:
-      return type;
+export const abbreviateMessage = (msg) => {
+  if (Array.isArray(msg)) {
+    const sum = msg
+      .map((x) => abbreviateMessage(x))
+      .reduce((s, c) => {
+        const sh = s;
+        if (sh[c]) {
+          sh[c] += 1;
+        } else {
+          sh[c] = 1;
+        }
+        return sh;
+      }, {});
+    const output = [];
+
+    Object.keys(sum).forEach((k) => {
+      output.push(sum[k] > 1 ? `${k}×${sum[k]}` : k);
+    });
+    return output.join(", ");
   }
+
+  if (msg["@type"]) {
+    return msg["@type"]
+      .substring(msg["@type"]?.lastIndexOf(".") + 1)
+      .replace("Msg", "");
+  }
+
+  if (msg?.typeUrl) {
+    return msg?.typeUrl
+      .substring(msg?.typeUrl?.lastIndexOf(".") + 1)
+      .replace("Msg", "");
+  }
+
+  return msg?.type
+    ?.substring(msg?.type?.lastIndexOf("/") + 1)
+    .replace("Msg", "");
 };
+
 
 export const defaultFee = () => {
   return {
@@ -65,7 +78,7 @@ const txSearchParams = (recipientAddress, pageNumber, pageSize, type) => {
     page: pageNumber,
     per_page: pageSize,
     prove: false,
-    order_by: 'desc',
+    order_by: "desc",
   };
 };
 
@@ -86,4 +99,11 @@ export const fetchTxHistory = (address, pageNumber, pageSize, callback) => {
     .catch((error) => {
       callback(error && error.message);
     });
+};
+
+export const getTransactionTimeFromHeight = async (height) => {
+  const tmClient = await Tendermint34Client.connect(comdex?.rpc);
+  const block = await tmClient.block(height);
+
+  return block?.block?.header?.time;
 };

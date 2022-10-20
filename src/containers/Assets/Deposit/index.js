@@ -18,6 +18,7 @@ import { comdex } from "../../../config/network";
 import { ValidateInputNumber } from "../../../config/_validation";
 import { DEFAULT_FEE } from "../../../constants/common";
 import Snack from "../../../components/common/Snack";
+import { BiRightArrowAlt } from 'react-icons/bi';
 
 const Deposit = ({
   lang,
@@ -26,7 +27,7 @@ const Deposit = ({
   refreshBalance,
   setBalanceRefresh,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [sourceAddress, setSourceAddress] = useState("");
   const [inProgress, setInProgress] = useState(false);
   const [amount, setAmount] = useState();
@@ -46,7 +47,6 @@ const Deposit = ({
 
   const showModal = () => {
     initializeIBCChain(chain.chainInfo, (error, account) => {
-      console.log(chain);
       if (error) {
         message.error(error);
         setInProgress(false);
@@ -59,7 +59,7 @@ const Deposit = ({
       queryBalance(
         chain?.chainInfo?.rpc,
         account?.address,
-        chain?.denom,
+        chain?.coinMinimalDenom,
         (error, result) => {
           setBalanceInProgress(false);
 
@@ -75,7 +75,7 @@ const Deposit = ({
         setProofHeight(data);
       });
     });
-    setIsModalVisible(true);
+    setIsModalOpen(true);
   };
 
   const signIBCTx = () => {
@@ -93,7 +93,7 @@ const Deposit = ({
           source_port: "transfer",
           source_channel: chain.destChannelId,
           token: {
-            denom: chain.denom,
+            denom: chain.coinMinimalDenom,
             amount: getAmount(amount),
           },
           sender: sourceAddress,
@@ -113,13 +113,19 @@ const Deposit = ({
     aminoSignIBCTx(chain.chainInfo, data, (error, result) => {
       setInProgress(false);
       if (error) {
-        message.error(
-          <Snack
-            message={variables[lang].tx_failed}
-            explorerUrlToTx={chain.chainInfo.explorerUrlToTx}
-            hash={result?.transactionHash}
-          />
-        );
+        if (result?.transactionHash) {
+          message.error(
+            <Snack
+              message={variables[lang].tx_failed}
+              explorerUrlToTx={chain.chainInfo.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          );
+        } else {
+          message.error(error);
+        }
+
+
         return;
       }
 
@@ -132,29 +138,29 @@ const Deposit = ({
       );
 
       setBalanceRefresh(refreshBalance + 1);
-      setIsModalVisible(false);
+      setIsModalOpen(false);
     });
   };
 
   const handleOk = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   return (
     <>
-      <Button type="primary" size="small" onClick={showModal}>
-        {variables[lang].deposit}
+      <Button type="primary btn-filled" size="small" onClick={showModal} className="asset-ibc-btn-container">
+        {variables[lang].deposit} <span className="asset-ibc-btn"> 	&#62;</span>
       </Button>
       <Modal
         className="asstedepositw-modal"
         centered={true}
         closable={true}
         footer={null}
-        visible={isModalVisible}
+        open={isModalOpen}
         width={480}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -196,10 +202,7 @@ const Deposit = ({
                         availableBalance.amount &&
                         amountConversion(availableBalance.amount)) ||
                         0}{" "}
-                      {(chain.currency &&
-                        chain.currency.coinDenom &&
-                        denomConversion(chain.currency.coinDenom)) ||
-                        ""}
+                      {denomConversion(chain?.coinMinimalDenom || "")}
                     </span>
                     <span className="assets-maxhalf">
                       <Button
@@ -208,8 +211,8 @@ const Deposit = ({
                           setAmount(
                             availableBalance?.amount > DEFAULT_FEE
                               ? amountConversion(
-                                  availableBalance?.amount - DEFAULT_FEE
-                                )
+                                availableBalance?.amount - DEFAULT_FEE
+                              )
                               : amountConversion(availableBalance?.amount)
                           );
                         }}
@@ -235,7 +238,7 @@ const Deposit = ({
                 loading={inProgress}
                 type="primary"
                 disabled={
-                  inProgress || !Number(amount) || validationError?.message
+                  inProgress || balanceInProgress || !Number(amount) || validationError?.message
                 }
                 className="btn-filled modal-btn"
                 onClick={signIBCTx}
@@ -270,3 +273,4 @@ const actionsToProps = {
 };
 
 export default connect(stateToProps, actionsToProps)(Deposit);
+

@@ -1,46 +1,74 @@
-import { comdex } from "../config/network";import {
+import { cmst, comdex, harbor } from "../config/network";
+import {
   ChainStore,
   getKeplrFromWindow,
   AccountSetBase,
 } from "@keplr-wallet/stores";
 
-export const getChainConfig = () => {
+export const contractAddress = process.env.REACT_APP_GOVERNANCE_CONTRACT;
+export const lockingContractAddress = process.env.REACT_APP_LOCKING_CONTRACT;
+
+const getCurrencies = (chain) => {
+  if (chain?.rpc === comdex?.rpc) {
+    return [
+      {
+        coinDenom: chain?.coinDenom,
+        coinMinimalDenom: chain?.coinMinimalDenom,
+        coinDecimals: chain?.coinDecimals,
+      },
+      {
+        coinDenom: cmst?.coinDenom,
+        coinMinimalDenom: cmst?.coinMinimalDenom,
+        coinDecimals: cmst?.coinDecimals,
+      },
+      {
+        coinDenom: harbor?.coinDenom,
+        coinMinimalDenom: harbor?.coinMinimalDenom,
+        coinDecimals: harbor?.coinDecimals,
+      },
+    ];
+  } else {
+    return [
+      {
+        coinDenom: chain?.coinDenom,
+        coinMinimalDenom: chain?.coinMinimalDenom,
+        coinDecimals: chain?.coinDecimals,
+      },
+    ];
+  }
+};
+
+export const getChainConfig = (chain = comdex) => {
   return {
-    chainId: comdex?.chainId,
-    chainName: comdex?.chainName,
-    rpc: comdex?.rpc,
-    rest: comdex?.rest,
+    chainId: chain?.chainId,
+    chainName: chain?.chainName,
+    rpc: chain?.rpc,
+    rest: chain?.rest,
     stakeCurrency: {
-      coinDenom: comdex?.coinDenom,
-      coinMinimalDenom: comdex?.coinMinimalDenom,
-      coinDecimals: comdex?.coinDecimals,
+      coinDenom: chain?.coinDenom,
+      coinMinimalDenom: chain?.coinMinimalDenom,
+      coinDecimals: chain?.coinDecimals,
     },
     bip44: {
-      coinType: 118,
+      coinType: chain?.coinType,
     },
     bech32Config: {
-      bech32PrefixAccAddr: `${comdex?.prefix}`,
-      bech32PrefixAccPub: `${comdex?.prefix}pub`,
-      bech32PrefixValAddr: `${comdex?.prefix}valoper`,
-      bech32PrefixValPub: `${comdex?.prefix}valoperpub`,
-      bech32PrefixConsAddr: `${comdex?.prefix}valcons`,
-      bech32PrefixConsPub: `${comdex?.prefix}valconspub`,
+      bech32PrefixAccAddr: `${chain?.prefix}`,
+      bech32PrefixAccPub: `${chain?.prefix}pub`,
+      bech32PrefixValAddr: `${chain?.prefix}valoper`,
+      bech32PrefixValPub: `${chain?.prefix}valoperpub`,
+      bech32PrefixConsAddr: `${chain?.prefix}valcons`,
+      bech32PrefixConsPub: `${chain?.prefix}valconspub`,
     },
-    currencies: [
-      {
-        coinDenom: comdex?.coinDenom,
-        coinMinimalDenom: comdex?.coinMinimalDenom,
-        coinDecimals: comdex?.coinDecimals,
-      },
-    ],
+    currencies: getCurrencies(chain),
     feeCurrencies: [
       {
-        coinDenom: comdex?.coinDenom,
-        coinMinimalDenom: comdex?.coinMinimalDenom,
-        coinDecimals: comdex?.coinDecimals,
+        coinDenom: chain?.coinDenom,
+        coinMinimalDenom: chain?.coinMinimalDenom,
+        coinDecimals: chain?.coinDecimals,
       },
     ],
-    coinType: 118,
+    coinType: chain?.coinType,
     gasPriceStep: {
       low: 0.01,
       average: 0.025,
@@ -51,14 +79,14 @@ export const getChainConfig = () => {
 
 export const initializeChain = (callback) => {
   (async () => {
-    if (!window.getOfflineSigner || !window.keplr) {
+    if (!window.getOfflineSignerAuto || !window.keplr) {
       const error = "Please install keplr extension";
       callback(error);
     } else {
       if (window.keplr.experimentalSuggestChain) {
         try {
           await window.keplr.experimentalSuggestChain(getChainConfig());
-          const offlineSigner = window.getOfflineSigner(comdex?.chainId);
+          const offlineSigner = await window.getOfflineSignerAuto(comdex?.chainId);
           const accounts = await offlineSigner.getAccounts();
 
           callback(null, accounts[0]);
@@ -75,7 +103,7 @@ export const initializeChain = (callback) => {
 
 export const initializeIBCChain = (config, callback) => {
   (async () => {
-    if (!window.getOfflineSigner || !window.keplr) {
+    if (!window.getOfflineSignerAuto || !window.keplr) {
       const error = "Please install keplr extension";
 
       callback(error);
@@ -83,7 +111,7 @@ export const initializeIBCChain = (config, callback) => {
       if (window.keplr.experimentalSuggestChain) {
         try {
           await window.keplr.experimentalSuggestChain(config);
-          const offlineSigner = window.getOfflineSigner(config?.chainId);
+          const offlineSigner = await window.getOfflineSignerAuto(config?.chainId);
           const accounts = await offlineSigner.getAccounts();
           callback(null, accounts[0]);
         } catch (error) {
@@ -103,8 +131,8 @@ export const fetchKeplrAccountName = async () => {
   const accountSetBase = new AccountSetBase(
     {
       // No need
-      addEventListener: () => {},
-      removeEventListener: () => {},
+      addEventListener: () => { },
+      removeEventListener: () => { },
     },
     chainStore,
     comdex?.chainId,
@@ -115,12 +143,18 @@ export const fetchKeplrAccountName = async () => {
     }
   );
 
-   // Need wait some time to get the Keplr.
-   await (() => {
+  // Need wait some time to get the Keplr.
+  await (() => {
     return new Promise((resolve) => {
       setTimeout(resolve, 1000);
     });
   })();
 
   return accountSetBase?.name;
+};
+export const KeplrWallet = async (chainID = comdex?.chainId) => {
+  await window.keplr.enable(chainID);
+  const offlineSigner = await window.getOfflineSignerAuto(chainID);
+  const accounts = await offlineSigner.getAccounts();
+  return [offlineSigner, accounts];
 };

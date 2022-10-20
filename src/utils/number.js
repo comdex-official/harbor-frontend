@@ -24,15 +24,60 @@ export const commaSeparator = (value) => {
 };
 
 export const decimalConversion = (data) => {
-  return Decimal.fromAtomics(data, 18).toString();
+  return Decimal.fromAtomics(data || "0", 18).toString();
 };
+
+export const truncateToDecimals = (num, dec = 2) => {
+  const calcDec = Math.pow(10, dec);
+  return Math.trunc(num * calcDec) / calcDec;
+}
 
 export const marketPrice = (array, denom) => {
   const value = array.filter((item) => item.symbol === minimalDenomToDenom(denom));
+
+  if (denom === "ucmst") {
+    return 1;
+  }
 
   if (value && value[0]) {
     return value[0] && value[0].current_price;
   }
 
-  return 1; // returning 1 as we are using ust.
+  return 0;
+};
+
+export const calculateROI = (principal, interestRate, years, months, days) => {
+  const earns = Number(principal) * (1 + (Number(interestRate) / 100)) ** (Number(years) + Number(months) / 12 + Number(days) / 365);
+  if (earns) {
+    return earns.toFixed(DOLLAR_DECIMALS)
+  }
+  else {
+    return 0
+  }
+}
+
+export const getAccountNumber = (value) => {
+  return value === "" ? "0" : value;
+};
+
+export const getPoolPrice = (
+  oraclePrice,
+  oracleAssetDenom,
+  firstAsset,
+  secondAsset
+) => {
+  let x = firstAsset?.amount,
+    y = secondAsset?.amount,
+    xPoolPrice,
+    yPoolPrice;
+
+  if (oracleAssetDenom === firstAsset?.denom) {
+    yPoolPrice = (x / y) * oraclePrice;
+    xPoolPrice = (y / x) * yPoolPrice;
+  } else {
+    xPoolPrice = (y / x) * oraclePrice;
+    yPoolPrice = (x / y) * xPoolPrice;
+  }
+
+  return { xPoolPrice, yPoolPrice };
 };

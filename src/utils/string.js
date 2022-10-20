@@ -1,8 +1,8 @@
-import { sha256 } from "@cosmjs/crypto";
 import { comdex } from "../config/network";
 import { denomConversion } from "./coin";
 import { calculatePoolShare } from "./calculations";
 import { ibcDenoms } from "../config/network";
+import { sha256, stringToPath } from "@cosmjs/crypto";
 
 const encoding = require("@cosmjs/encoding");
 
@@ -14,16 +14,41 @@ export const generateHash = (txBytes) =>
 
 export const ibcDenomToDenom = (key) => {
   switch (key) {
+
     case ibcDenoms["uatom"]:
       return "uatom";
-    case ibcDenoms["uusd"]:
-      return "uust";
-    case ibcDenoms["uluna"]:
-      return "uluna";
-    case ibcDenoms["uxprt"]:
-      return "uxprt";
     case ibcDenoms["uosmo"]:
       return "uosmo";
+    case ibcDenoms["uusdc"]:
+      return "USDC";
+    case ibcDenoms["weth-wei"]:
+      return "WETH";
+    default:
+      return "";
+  }
+};
+
+// For getIcon From extendedPair name 
+export const symbolToDenom = (key) => {
+  switch (key) {
+    case "atom":
+    case ibcDenoms["atom"]:
+      return "uatom";
+    case "osmo":
+    case ibcDenoms["osmo"]:
+      return "uosmo";
+    case "usdc":
+    case ibcDenoms["uusdc"]:
+      return "uusdc";
+    case "weth":
+    case ibcDenoms["weth-wei"]:
+      return "weth-wei";
+    case "cmdx":
+      return "ucmdx";
+    case "cmst":
+      return "ucmst";
+    case "harbor":
+      return "uharbor";
     default:
       return "";
   }
@@ -34,31 +59,24 @@ export const denomToSymbol = (key) => {
     case "uatom":
     case ibcDenoms["uatom"]:
       return "ATOM";
-    case "udvpn":
-      return "DVPN";
-    case "uusd":
-    case "uust":
-    case ibcDenoms["uusd"]:
-      return "USD";
-    case "uxprt":
-    case ibcDenoms["uxprt"]:
-      return "XPRT";
-    case "uluna":
-    case ibcDenoms["uluna"]:
-      return "LUNA";
     case "uosmo":
     case ibcDenoms["uosmo"]:
       return "OSMO";
     case "ucmdx":
       return "CMDX";
-    case "ucgold":
-      return "XAU";
-    case "ucsilver":
-      return "XAG";
-    case "ucoil":
-      return "OIL";
+    case "ucmst":
+      return "CMST";
+    case "uharbor":
+      return "HARBOR";
+    case "uusdc":
+    case ibcDenoms["uusdc"]:
+      return "USDC";
+    case "weth-wei":
+    case "uweth":
+    case ibcDenoms["weth-wei"]:
+      return "WETH";
     default:
-      return "cosmos";
+      return "";
   }
 };
 
@@ -84,34 +102,27 @@ export const minimalDenomToDenom = (key) => {
 
 export const iconNameFromDenom = (key) => {
   switch (key) {
-    case "ucgold":
-      return "gold-icon";
-    case "ucsilver":
-      return "silver-icon";
-    case "ucoil":
-      return "crude-oil";
     case "uatom":
     case ibcDenoms["uatom"]:
       return "atom-icon";
     case "ucmdx":
       return "comdex-icon";
-    case "uust":
-    case ibcDenoms["uusd"]:
-      return "ust-icon";
-    case "uusd":
-      return "ust-icon";
     case "uxprt":
-    case ibcDenoms["uxprt"]:
       return "xprt-icon";
-    case "uluna":
-    case ibcDenoms["uluna"]:
-      return "luna-icon";
     case "uosmo":
     case ibcDenoms["uosmo"]:
       return "osmosis-icon";
     case "ucmst":
-      // case ibcDenoms["ucmst"]:
       return "cmst-icon";
+    case "uharbor":
+      return "harbor-icon";
+    case "uusdc":
+    case ibcDenoms["uusdc"]:
+      return "usdc-icon";
+    case "weth-wei":
+    case "uweth":
+    case ibcDenoms["weth-wei"]:
+      return "weth-icon";
     default:
       return "";
   }
@@ -154,7 +165,7 @@ export const lowercaseFirstLetter = (string) => {
 export const toDecimals = (value, decimal = comdex.coinDecimals) =>
   value.indexOf(".") >= 0
     ? value.substr(0, value.indexOf(".")) +
-      value.substr(value.indexOf("."), decimal + 1)
+    value.substr(value.indexOf("."), decimal + 1)
     : value;
 
 export const showTotalAssetCount = (asset) => {
@@ -182,8 +193,8 @@ export const uniqueLiquidityPairDenoms = (list, type) => {
     ...new Set(
       list && list.length > 0
         ? list.map((item) =>
-            type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
-          )
+          type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
+        )
         : []
     ),
   ];
@@ -193,10 +204,10 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   const quoteList =
     list && list.length > 0
       ? list.filter((item) =>
-          type === "in"
-            ? item.baseCoinDenom === denom
-            : item.quoteCoinDenom === denom
-        )
+        type === "in"
+          ? item.baseCoinDenom === denom
+          : item.quoteCoinDenom === denom
+      )
       : [];
 
   const quoteMap = quoteList.map((item) =>
@@ -204,4 +215,14 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   );
 
   return [...new Set(quoteMap)];
+};
+
+export const makeHdPath = (
+  accountNumber = "0",
+  addressIndex = "0",
+  coinType = comdex.coinType
+) => {
+  return stringToPath(
+    "m/44'/" + coinType + "'/" + accountNumber + "'/0/" + addressIndex
+  );
 };

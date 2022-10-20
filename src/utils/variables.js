@@ -2,7 +2,7 @@ const variables = {
   en: {
     // Sidebar menu
     dashboard: "Dashboard",
-    positions: "MyPositions",
+    positions: "My Positions",
     earn: "earn",
     balances: "Balances",
     c_swap: "cSwap",
@@ -18,7 +18,7 @@ const variables = {
     // Connect account
     connect: "Connect",
     connected: "Connected",
-    testnet: "Devnet-2",
+    testnet: "Testnet",
     mainnet: "Mainnet",
     connect_wallet: "Connect Wallet",
     keplr_wallet: "Keplr Wallet",
@@ -34,7 +34,7 @@ const variables = {
     overview: "Overview",
     tvl: "Total Value Locked (TVL)",
     tv: "Total Value",
-    collateral: "Collateral",
+    collateral: "Dutch",
     liquidity: "Liquidity",
     pair_id: "Pair Id",
     cmdx_circulating_supply: "Circulating Supply",
@@ -68,7 +68,7 @@ const variables = {
     total_volume: "TOTAL VOLUME",
     total_value_locked: "TOTAL VALUE LOCKED",
     total_liquidity: "Liquidity",
-    total_collateral: "Collateral",
+    total_collateral: "Dutch",
 
     // Balances
     total_claimable_rewards: "total claimable rewards",
@@ -82,7 +82,7 @@ const variables = {
     farm_balance: "Farm Balance",
     asset_balance: "Asset Balance",
     borrowing_power_used: "Borrowing Power Used",
-    your_collateral: "Your Collateral",
+    your_collateral: "Your Dutch",
     health_factor: "Health Factor",
     you_borrowed: "You Borrowed",
     borrow_information: "Borrow Information",
@@ -96,12 +96,12 @@ const variables = {
     withdraw: "Withdraw",
     draw: "Draw",
     repay: "Repay",
-    deposit_collateral: "Deposit Collateral",
-    withdraw_collateral: "Withdraw Collateral",
+    deposit_collateral: "Deposit Dutch",
+    withdraw_collateral: "Withdraw Dutch",
     draw_debt: "Draw Debt",
     repay_debt: "Repay Debt",
     closeVault: "Close Vault",
-    collateral_type: "Collateral Type",
+    collateral_type: "Dutch Type",
     add_remove: "Add/Remove",
 
     // Send
@@ -122,10 +122,10 @@ const variables = {
     close: "Close",
     borrow_cAssets: "Borrow cAssets",
     borrow_cAsset: "Borrow cAsset",
-    choose_collateral: "Collateral Asset",
+    choose_collateral: "Dutch Asset",
     collateral_asset:
-      "Collateral asset may affect the minimum collateral ratio.",
-    set_collateral_ratio: "Set a Collateral Ratio",
+      "Dutch asset may affect the minimum collateral ratio.",
+    set_collateral_ratio: "Set a Dutch Ratio",
     liquidate_below_minimum:
       "Position will be liquidated if the collateral ratio moves below the minimum threshold",
 
@@ -136,7 +136,7 @@ const variables = {
     burn_amount: "Burn Amount",
 
     // Farm Page
-    collateral_ratio: "Collateral Ratio",
+    collateral_ratio: "Dutch Ratio",
     borrowed_assets: "Borrowed Assets",
     remove: "Remove",
     remove_liquidity: " Remove Liquidity",
@@ -214,32 +214,81 @@ const variables = {
     apr: "APR",
 
     //Tooltip text
-    tooltip_circulating_supply:
-      "Circulating supply is the amount of CMDX available and circulating in the market.",
-    tooltip_total_value:
-      "Total value of all cAssets holdings, minted, farmed and asset balances across the platform",
-    tooltip_total_value_locked:
-      "Total value locked of collateral, liquidity and staked CMDX",
+
+    //Dashboard
+    tooltip_circulating_supply_CMST:
+      "Circulating supply is the amount of CMST available and circulating in the market",
+    tooltip_circulating_supply_HARBOR:
+      "Circulating supply is the amount of HARBOR available and circulating in the market",
     tooltip_market_cap: "Market Cap = Current Price * Circulating Supply",
-    tooltip_staked: "Total Value of Staked CMDX",
-    tooltip_liquidity: "Total liquidity in cAsset pools",
-    tooltip_collateral: "Total collateral locked for minted cAssets",
+    tooltip_total_value_locked:
+      "Total value locked of assets being used as collateral (including Stablemint assets)",
+
+    //My Positions
+    tooltip_earn_current_balance: "Current balance of Composite deposited in Locker",
+    tooltip_earn_interest_earned: "Total interest accumulated till date from Locker",
+    tooltip_earn_interest_rate: "Current annual interest rate of Locker",
+    tooltip_earn_transaction_type: "Type of transaction ( Withdraw or Deposit)",
+    tooltip_earn_balance: "Balance after transaction",
+    tooltip_vaults_collaterallocked: "Total amount of collateral locked across all vaults",
+    tooltip_vaults_totaldebt: "Total amount of Composite Debt Owed across all Vaults which is a sum of Composite borrowed and interest accrued",
+    tooltip_vaults_availabletoborrow: "Total amount of Composite available to borrow adhering to vault safety limits",
+    tooltip_vaults_vaulttype: "Type of vault",
+    tooltip_vaults_debt: "Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued",
+    tooltip_vaults_stabilityfee: "Stability fee is the interest charged annually ( compounded per block) for current vault",
+    tooltip_vaults_collateralratio: "The collateral ratio of the vault which is equal to collateral deposited by composite borrowed",
+    tooltip_history_current_balance: "Current balance of Composite deposited in Locker",
+    tooltip_history_collaterallocked: "Total amount of collateral locked across all vaults",
+    tooltip_history_totaldebt: "Total amount of Composite Debt Owed across all Vaults which is a sum of Composite borrowed and interest accrued",
+
+
+
     // Mint
-    tooltip_total_casset: "Total value of all cAssets held",
-    tooltip_total_mint: "Total collateral value minus borrowed value",
-    tooltip_total_farm: "Total value of all assets in liquidity pools",
-    tooltip_total_asset: "Total value of native and IBC tokens in wallet",
-    tooltip_cswap_price:
-      "cSwap price calculated based on the pool price and spread",
-    tooltip_tx_fee: "Fee paid to the protocol to execute this transaction",
-    lq_ratio: "Liquidation Ratio",
-    debt: "Debt",
-    casset: "cAsset",
-    cswap_price: "cSwap Price",
-    tooltip_burn_amount:
-      "The minted cAsset will be burned to keep the protocol solvent once you withdraw your collateral",
-    tooltip_withdraw_amount:
-      "Amount of collateral redeemed for the borrowed cAsset",
+    tooltip_mint_asset_lr: "If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt",
+    tooltip_mint_asset_stabilityfee: "Current Interest Rate on Borrowed Amount",
+    tooltip_mint_asset_mincollateralratio: "Minimum collateral ratio at which composite should be minted",
+    tooltip_mint_asset_minborrow: "Minimum composite that should be borrowed for any active vault",
+    tooltip_mint_asset_debtceiling: "Maximum Composite that can be withdrawn per vault type",
+    tooltip_mint_open_withdrawable: "Amount of Composite that can be borrowed as long as collateral ratio is above min. collateral ratio",
+    tooltip_mint_open_liquidationprice: "The price of deposited asset at which the vault will be liquidated",
+    tooltip_mint_open_collateraldeposted: "Total amount of collateral locked",
+    tooltip_mint_open_oracleprice: "The current price of the deposited asset fetched from on-chain oracles",
+    tooltip_mint_open_withdrawn: "Total amount of Composite Debt Owed",
+    tooltip_mint_open_vaultId: "Unique Vault ID created per vault address and vault type",
+    tooltip_mint_open_stabilityfee: "Current Interest Rate on Borrowed Amount",
+    tooltip_mint_open_openingfee: "Opening Fee charged is a one time value deducted per withdrawal. The value fee collected is added to the collector module",
+    tooltip_mint_open_liquidationratio: "If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt",
+    tooltip_mint_open_opendate: "The date the Vault was opened",
+    tooltip_mint_edit_deposit: "To deposit more collateral",
+    tooltip_mint_edit_withdraw: "To withdraw collateral as long as collateral ratio is above min. collateral ratio",
+    tooltip_mint_edit_draw: "Borrow more Composite as long as collateral ratio is above min. collateral ratio",
+    tooltip_mint_edit_repay: "Repay debt in Composite as long as debt is above minimum borrow amount",
+    tooltip_mint_edit_liquidationprice: "The price of deposited asset at which the vault will be liquidated",
+    tooltip_mint_edit_collateraldeposted: "Total amount of collateral locked",
+    tooltip_mint_edit_oracleprice: "The current price of the deposited asset fetched from on-chain oracles",
+    tooltip_mint_edit_withdrawn: "Total amount of Composite Debt Owed",
+    tooltip_mint_edit_vaultId: "Unique Vault ID created per vault address and vault type",
+    tooltip_mint_edit_stabilityfee: "Current Interest Rate on Borrowed Amount",
+    tooltip_mint_edit_openingfee: "Opening Fee charged is a one time value deducted per withdrawal. The value fee collected is added to the collector module",
+    tooltip_mint_edit_liquidationratio: "If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt",
+    tooltip_mint_edit_opendate: "The date the Vault was opened",
+    tooltip_mint_close_liquidationprice: "The price of deposited asset at which the vault will be liquidated",
+    tooltip_mint_close_collateraldeposted: "Total amount of collateral locked",
+    tooltip_mint_close_oracleprice: "The current price of the deposited asset fetched from on-chain oracles",
+    tooltip_mint_close_withdrawn: "Total amount of Composite Debt Owed",
+    tooltip_mint_close_vaultId: "Unique Vault ID created per vault address and vault type",
+    tooltip_mint_close_stabilityfee: "Current Interest Rate on Borrowed Amount",
+    tooltip_mint_close_openingfee: "Opening Fee charged is a one time value deducted per withdrawal. The value fee collected is added to the collector module",
+    tooltip_mint_close_liquidationratio: "If the collateral ratio of the vault goes below this value, the vault will get automatically liquidated which means that the deposited collateral will be sold to recover bad Composite Debt",
+    tooltip_mint_close_opendate: "The date the Vault was opened",
+
+    //Earn
+    tooltip_deposit: "Deposit Composite in locker to earn interest compounded per block",
+    tooltip_newbalance: "New balance of Composite deposited after transaction is completed",
+    tooltip_interestrate: "Current earning interest rate for locker, which can change based on governance polling",
+    tooltip_calculator: "Calculator to compute earnings expected after a period of time for a certain principal",
+    tooltip_interestearned: "Interest earned till date",
+    tooltip_balance: "Current balance of Composite deposited in locker",
 
     //Assets
     total_asset_balance: "Total Asset Balance",

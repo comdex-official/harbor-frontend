@@ -1,25 +1,19 @@
 import { Button } from "antd";
 import * as PropTypes from "prop-types";
-import variables from "../../utils/variables";
+import { Link } from "react-router-dom";
 
 const Banner = ({ lang }) => {
   return (
     <div className="dashboard-banner earn-deposite-card">
       <div className="banner-left">
         <h2>
-          Earn <span>stable income</span> on CMST <br /> at the Interest rate of{" "}
-          <span>4%</span> {variables[lang].platform}{" "}
+          Borrow <span>Composite</span> by depositing<br /> your IBC assets
         </h2>
-        <Button type="primary">
-          <a
-            href="https://comdex.one"
-            aria-label="Website"
-            rel="noreferrer"
-            target="_blank"
-          >
+        <Link to='/mint'>
+          <Button type="primary " className=" btn-filled ">
             Take me there!
-          </a>
-        </Button>
+          </Button>
+        </Link>
       </div>
     </div>
   );

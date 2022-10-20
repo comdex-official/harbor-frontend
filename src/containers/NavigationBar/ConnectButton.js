@@ -1,36 +1,29 @@
-import * as PropTypes from "prop-types";
-import { Button, message, Dropdown } from "antd";
-import { SvgIcon } from "../../components/common";
-import { connect } from "react-redux";
+import { Button, Dropdown } from "antd";
 import { decode } from "js-base64";
+import Lodash from "lodash";
+import * as PropTypes from "prop-types";
+import React, { useCallback, useEffect } from "react";
+import { connect } from "react-redux";
 import {
   setAccountAddress,
-  setAccountName,
-  showAccountConnectModal,
-} from "../../actions/account";
-import DisConnectModal from "../DisConnectModal";
-import React, { useEffect } from "react";
-import variables from "../../utils/variables";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
-import {
   setAccountBalances,
-  setPoolBalance,
-  setcAssetBalance,
+  setAccountName,
   setAssetBalance,
-  setDebtBalance,
-  setCollateralBalance,
+  setPoolBalance,
+  showAccountConnectModal
 } from "../../actions/account";
-import { queryAllBalances } from "../../services/bank/query";
-import Lodash from "lodash";
-import { queryVaultList } from "../../services/vault/query";
-import { setAccountVaults } from "../../actions/account";
-import ConnectModal from "../Modal";
-import { marketPrice } from "../../utils/number";
-import { queryMarketList } from "../../services/oracle/query";
+import { setPoolPrice } from "../../actions/liquidity";
 import { setMarkets } from "../../actions/oracle";
+import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
+import { HARBOR_POOL_ID_LIST } from "../../constants/common";
+import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import {comdex, tokenCoinGeckoIds} from "../../config/network";
-import {fetchCoinPrices} from "../../actions/dashboard";
+import { queryPool } from "../../services/liquidity/query";
+import { queryMarketList } from "../../services/oracle/query";
+import { getPoolPrice, marketPrice } from "../../utils/number";
+import variables from "../../utils/variables";
+import DisConnectModal from "../DisConnectModal";
+import ConnectModal from "../Modal";
 
 const ConnectButton = ({
   setAccountAddress,
@@ -38,24 +31,19 @@ const ConnectButton = ({
   setAccountBalances,
   lang,
   setAssetBalance,
-  setcAssetBalance,
   setPoolBalance,
   markets,
-  setAccountVaults,
-  setCollateralBalance,
-  setDebtBalance,
   refreshBalance,
   setMarkets,
   poolBalances,
   setAccountName,
-  pools,
+  setPoolPrice,
+  poolPriceMap,
+  balances,
 }) => {
   useEffect(() => {
     const savedAddress = localStorage.getItem("ac");
     const userAddress = savedAddress ? decode(savedAddress) : address;
-
-    fetchMarkets();
-    getVaults();
 
     if (userAddress) {
       setAccountAddress(userAddress);
@@ -63,128 +51,127 @@ const ConnectButton = ({
       fetchKeplrAccountName().then((name) => {
         setAccountName(name);
       });
-
-      fetchBalances(address);
     }
   }, [address, refreshBalance]);
 
   useEffect(() => {
-    fetchBalances(
-      address,
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
-      true,
-      false
-    );
-  }, [markets]);
+    fetchMarkets();
+  }, []);
+
+  const getPrice = (denom) => {
+    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
+  };
+
+  const calculateAssetBalance = useCallback(
+    (balances) => {
+      const assetBalances = balances.filter(
+        (item) =>
+          item.denom.substr(0, 4) === "ibc/" ||
+          item.denom === comdex.coinMinimalDenom ||
+          item.denom === cmst.coinMinimalDenom ||
+          item.denom === harbor.coinMinimalDenom
+      );
+
+      const value = assetBalances.map((item) => {
+        if (item?.denom === ibcDenoms["weth-wei"]) {
+          return getPrice(item.denom) * (item.amount / 10 ** 12); // dividing with 10**12 as it is a ethereum network
+        }
+
+        return getPrice(item.denom) * item.amount;
+      });
+
+      setAssetBalance(Lodash.sum(value));
+    },
+    [getPrice, setAssetBalance]
+  );
+
+  const calculatePoolBalance = useCallback(() => {
+    const sum = Lodash.sumBy(poolBalances);
+
+    setPoolBalance(Number(sum * 10 ** 6));
+  }, [poolBalances, setPoolBalance]);
+
+  const fetchBalances = useCallback(
+    (address) => {
+      queryAllBalances(address, (error, result) => {
+        if (error) {
+          return;
+        }
+
+        setAccountBalances(result.balances, result.pagination);
+        calculateAssetBalance(result.balances);
+        calculatePoolBalance(result.balances);
+      });
+    },
+    [calculateAssetBalance, setAccountBalances, calculatePoolBalance]
+  );
 
   useEffect(() => {
-    getVaults();
-  }, [pools]);
+    if (address) {
+      fetchBalances(address);
+    }
+  }, [address, refreshBalance, markets]);
 
-  const fetchBalances = (address) => {
-    queryAllBalances(address, (error, result) => {
+  useEffect(() => {
+    calculateAssetBalance(balances);
+  }, [balances, poolPriceMap, markets]);
+
+  const fetchMarkets = (offset, limit, isTotal, isReverse) => {
+    queryMarketList(offset, limit, isTotal, isReverse, (error, result) => {
       if (error) {
         return;
       }
 
-      setAccountBalances(result.balances, result.pagination);
-      calculateAssetBalance(result.balances);
-      calculatecAssetBalance(result.balances);
-      calculatePoolBalance(result.balances);
+      setMarkets(result.markets, result.pagination);
     });
   };
-  
-  const fetchMarkets = () => {
-    fetchCoinPrices(tokenCoinGeckoIds, (error, result) => {
-      if(error){
-        return
-      }
 
-      setMarkets(result);
-    })
-  };
+  const calculatePoolPrice = useCallback(
+    (pool) => {
+      if (pool?.id) {
+        let firstAsset = pool?.balances[0];
+        let secondAsset = pool?.balances[1];
 
-  const calculatecAssetBalance = (balances) => {
-    const cAssets = balances.filter(
-      (item) =>
-        item.denom.substr(0, 2) === "uc" && !(item.denom.substr(0, 3) === "ucm")
-    );
-    const value = cAssets.map((item) => {
-      return marketPrice(markets, item.denom) * item.amount;
-    });
-
-    setcAssetBalance(Lodash.sum(value));
-  };
-
-  const calculatePoolBalance = () => {
-    const sum = Lodash.sumBy(poolBalances);
-
-    setPoolBalance(Number(sum * 10 ** 6));
-  };
-
-  const getPrice = (denom) => {
-    return marketPrice(markets, denom) || 0;
-  };
-
-  const calculateAssetBalance = (balances) => {
-    const assetBalances = balances.filter(
-      (item) =>
-        item.denom.substr(0, 4) === "ibc/" ||
-        item.denom === comdex.coinMinimalDenom
-    );
-
-    const value = assetBalances.map((item) => {
-      return getPrice(item.denom) * item.amount;
-    });
-
-    setAssetBalance(Lodash.sum(value));
-  };
-
-  const getVaults = () => {
-    fetchVaults(
-      address,
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
-      true,
-      false
-    );
-  };
-
-  const fetchVaults = (address, offset, limit, isTotal, isReverse) => {
-    queryVaultList(
-      address,
-      offset,
-      limit,
-      isTotal,
-      isReverse,
-      (error, result) => {
-        if (error) {
-          message.error(error);
-          return;
+        let oracleAsset = {};
+        if (marketPrice(markets, firstAsset?.denom)) {
+          oracleAsset = firstAsset;
+        } else if (marketPrice(markets, secondAsset?.denom)) {
+          oracleAsset = secondAsset;
         }
 
-        setAccountVaults(result?.vaultsInfo, result?.pagination);
+        if (oracleAsset?.denom) {
+          let { xPoolPrice, yPoolPrice } = getPoolPrice(
+            marketPrice(markets, oracleAsset?.denom),
+            oracleAsset?.denom,
+            firstAsset,
+            secondAsset
+          );
 
-        calculateMintBalance(result?.vaultsInfo);
+          setPoolPrice(firstAsset?.denom, xPoolPrice);
+          setPoolPrice(secondAsset?.denom, yPoolPrice);
+        }
       }
-    );
-  };
+    },
+    [markets, setPoolPrice]
+  );
 
-  const calculateMintBalance = (vaults) => {
-    const userVaults = vaults.filter((item) => item.owner === address);
-    const debtBalance = userVaults.map((item) => {
-      return marketPrice(markets, item.debt?.denom) * item.debt?.amount;
-    });
+  useEffect(() => {
+    const fetchListedPools = (list) => {
+      if (list?.length > 0) {
+        for (let i = 0; i < list?.length; i++) {
+          queryPool(list[i], (error, result) => {
+            if (error) {
+              return;
+            }
 
-    setDebtBalance(Lodash.sum(debtBalance));
+            calculatePoolPrice(result?.pool);
+          });
+        }
+      }
+    };
 
-    const collateralBalance = userVaults.map((item) => {
-      return getPrice(item.collateral?.denom) * item.collateral?.amount;
-    });
-
-    setCollateralBalance(Lodash.sum(collateralBalance));
-  };
+    fetchListedPools(HARBOR_POOL_ID_LIST);
+  }, [calculatePoolPrice]);
 
   const WalletConnectedDropdown = <ConnectModal />;
 
@@ -192,12 +179,6 @@ const ConnectButton = ({
     <>
       {address ? (
         <div className="connected_div">
-          <div className="connected_left">
-            <div className="testnet-top">
-              <SvgIcon name="testnet" />
-              {/* {variables[lang].testnet} */} User Address
-            </div>
-          </div>
           <DisConnectModal />
         </div>
       ) : (
@@ -225,13 +206,16 @@ ConnectButton.propTypes = {
   setAccountBalances: PropTypes.func.isRequired,
   setAccountName: PropTypes.func.isRequired,
   setAssetBalance: PropTypes.func.isRequired,
-  setAccountVaults: PropTypes.func.isRequired,
-  setcAssetBalance: PropTypes.func.isRequired,
-  setCollateralBalance: PropTypes.func.isRequired,
-  setDebtBalance: PropTypes.func.isRequired,
   setMarkets: PropTypes.func.isRequired,
   setPoolBalance: PropTypes.func.isRequired,
+  setPoolPrice: PropTypes.func.isRequired,
   address: PropTypes.string,
+  balances: PropTypes.arrayOf(
+    PropTypes.shape({
+      denom: PropTypes.string.isRequired,
+      amount: PropTypes.string,
+    })
+  ),
   markets: PropTypes.arrayOf(
     PropTypes.shape({
       rates: PropTypes.shape({
@@ -244,6 +228,7 @@ ConnectButton.propTypes = {
     })
   ),
   poolBalances: PropTypes.array,
+  poolPriceMap: PropTypes.object,
   pools: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.shape({
@@ -268,6 +253,8 @@ const stateToProps = (state) => {
     refreshBalance: state.account.refreshBalance,
     poolBalances: state.liquidity.poolBalances,
     pools: state.liquidity.pool.list,
+    poolPriceMap: state.liquidity.poolPriceMap,
+    balances: state.account.balances.list,
   };
 };
 
@@ -276,13 +263,10 @@ const actionsToProps = {
   setAccountAddress,
   setAccountBalances,
   setPoolBalance,
-  setcAssetBalance,
   setAssetBalance,
-  setAccountVaults,
-  setDebtBalance,
-  setCollateralBalance,
   setMarkets,
   setAccountName,
+  setPoolPrice,
 };
 
 export default connect(stateToProps, actionsToProps)(ConnectButton);

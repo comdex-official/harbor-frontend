@@ -1,202 +1,150 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
-import { connect } from "react-redux";
-import variables from "../../utils/variables";
-import { Button, Table } from "antd";
-import PlaceBidModal from "./PlaceBidModal";
-import "./index.scss";
-import FilterModal from "./FilterModal/FilterModal";
+import React, { useEffect, useState } from "react";
+import { Button, message, Tabs } from "antd";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { Col, Row } from "../../components/common";
+import SurplusAuction from "./Surplus";
+import DebtAuction from "./Debt";
+import { setPairs } from "../../actions/asset";
+import Collateral from "./Collateral";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
+import { setAuctions } from "../../actions/auction";
+import { queryDutchAuctionList, queryFilterDutchAuctions } from "../../services/auction";
+import TooltipIcon from "../../components/TooltipIcon";
 
-const Auctions = (lang) => {
-  const columns = [
-    {
-      title: "Auctioned Asset",
-      dataIndex: "auctioned_asset",
-      key: "auctioned_asset",
-      width: 180,
-    },
-    {
-      title: "Bridge Asset",
-      dataIndex: "bridge_asset",
-      key: "bridge_asset",
-      width: 180,
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-      width: 180,
-    },
-    {
-      title: "End Time",
-      dataIndex: "end_time",
-      key: "end_time",
-      width: 200,
-      render: (end_time) => <div className="endtime-badge">{end_time}</div>,
-    },
-    {
-      title: "Top Bid",
-      dataIndex: "top_bid",
-      key: "top_bid",
-      width: 150,
-      render: (asset_apy) => <>{asset_apy} USCX</>,
-    },
-    {
-      title: (
-        <>
-          <FilterModal />
-        </>
-      ),
-      dataIndex: "action",
-      key: "action",
-      align: "right",
-      width: 140,
-      render: () => (
-        <>
-          <PlaceBidModal />
-        </>
-      ),
-    },
-  ];
+const Auctions = ({
+  auctions,
+  setAuctions,
+}) => {
+  const dispatch = useDispatch()
+  const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
-  const tableData = [
-    {
-      key: 1,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="atom-icon" viewBox="0 0 30 30" />
+  const [activeKey, setActiveKey] = useState("1");
+  const [disableFetchBtn, setdisableFetchBtn] = useState(false);
+  const { TabPane } = Tabs;
+
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+
+  const tabItems =
+    [
+      { label: "Collateral", key: "1", children: <Collateral /> },
+      { label: "Debt", key: "2", children: <DebtAuction /> }
+    ]
+
+  const callback = (key) => {
+    setActiveKey(key);
+  };
+
+
+  const fetchAuctions = (offset, limit, isTotal, isReverse) => {
+    queryDutchAuctionList(
+      offset,
+      limit,
+      isTotal,
+      isReverse,
+      (error, result) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+        if (result?.auctions?.length > 0) {
+          setAuctions(result && result);
+        }
+        else {
+          setAuctions("");
+        }
+      }
+    );
+  };
+
+  const fetchFilteredDutchAuctions = (offset, limit, countTotal, reverse, asset) => {
+    queryFilterDutchAuctions(offset, limit, countTotal, reverse, asset, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      dispatch(setAuctions(data));
+    });
+  };
+
+  const fetchLatestPrice = () => {
+    setdisableFetchBtn(true)
+    if (selectedAuctionedAsset?.length > 0) {
+      fetchFilteredDutchAuctions((pageNumber - 1) * pageSize, pageSize, true, false, selectedAuctionedAsset)
+    } else {
+      fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false)
+    }
+  }
+  useEffect(() => {
+    const interval = setTimeout(() => {
+      setdisableFetchBtn(false)
+    }, 6000);
+    return () => {
+      clearInterval(interval);
+    }
+  }, [disableFetchBtn])
+
+
+  const refreshAuctionButton = {
+    right: (
+      <>
+        <Row >
+          <div className="locker-up-main-container">
+            <div className="locker-up-container mr-4">
+              <div className="claim-container ">
+                <div className="claim-btn">
+                  <Button
+                    type="primary"
+                    className="btn-filled mr-1"
+                    disabled={disableFetchBtn}
+                    onClick={() => fetchLatestPrice()}
+                  >Update Auction Price </Button> <TooltipIcon text="The price of the auction changes every block, click on the button to update the price for placing accurate bids." />
+                </div>
+              </div>
             </div>
-            ATOM
           </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  ATOM",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 2,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="xprt-icon" viewBox="0 0 30 30" />
-            </div>
-            XPRT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  XPRT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 3,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="akt-icon" viewBox="0 0 30 30" />
-            </div>
-            AKT
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      quantity: "1  AKT",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-    {
-      key: 4,
-      auctioned_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="cmst-icon" viewBox="0 0 30 30" />
-            </div>
-            CMST
-          </div>
-        </>
-      ),
-      bridge_asset: (
-        <>
-          <div className="assets-withicon">
-            <div className="assets-icon">
-              <SvgIcon name="harbor-icon" viewBox="0 0 30 30" />
-            </div>
-            HARBOR
-          </div>
-        </>
-      ),
-      quantity: "1  CMST",
-      end_time: "01D : 08H : 32M",
-      top_bid: "11",
-    },
-  ];
+
+        </Row>
+      </>
+    ),
+  };
+
   return (
-    <div className="app-content-wrapper">
-      <Row>
-        <Col>
-          <div className="commodo-card py-3">
-            <div className="card-content">
-              <Table
-                className="custom-table liquidation-table"
-                dataSource={tableData}
-                columns={columns}
-                // pagination={{ defaultPageSize: 10 }}
-                pagination={false}
-                scroll={{ x: "100%" }}
-              />
-            </div>
-          </div>
-        </Col>
-      </Row>
-    </div>
+    <>
+      <div className="app-content-wrapper">
+        <Row>
+          <Col>
+            <Tabs
+              className="comdex-tabs auction-extra-tabs"
+              onChange={callback}
+              activeKey={activeKey}
+              tabBarExtraContent={refreshAuctionButton}
+              items={tabItems}
+            />
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 };
 
 Auctions.propTypes = {
   lang: PropTypes.string.isRequired,
+  setPairs: PropTypes.func.isRequired,
+  auctions: PropTypes.string.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    auctions: state.auction.auctions,
   };
 };
 
-const actionsToProps = {};
+const actionsToProps = {
+  setPairs,
+  setAuctions,
+};
 
 export default connect(stateToProps, actionsToProps)(Auctions);

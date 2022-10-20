@@ -4,9 +4,13 @@ import Earn from "./containers/Earn";
 import BorrowTab from "./containers/Mint";
 import Vault from "./containers/Mint/Vault";
 import MyPositions from "./containers/MyPosition";
-// import MyPositions from "./containers/MyHome";
 import Assets from "./containers/Assets";
-// import Balances from "./containers/MyPositions";
+import More from './containers/More'
+import Govern from './containers/More/Govern'
+import GovernDetails from './containers/More/Govern/Details'
+import Airdrop from "./containers/More/Airdrop";
+import Vesting from "./containers/More/Locker";
+import Vote from "./containers/More/Vote";
 
 const routes = [
   {
@@ -14,7 +18,7 @@ const routes = [
     element: <Dashboard />,
   },
   {
-    path: "/myPositions",
+    path: "/my-positions",
     element: <MyPositions />,
   },
   {
@@ -26,7 +30,7 @@ const routes = [
     element: <BorrowTab />,
   },
   {
-    path: "/vault",
+    path: "mint/vault/:pathVaultId",
     element: <Vault />,
   },
   {
@@ -36,6 +40,30 @@ const routes = [
   {
     path: "/auctions",
     element: <Auctions />,
+  },
+  {
+    path: "/more",
+    element: <More />,
+  },
+  {
+    path: "/more/govern",
+    element: <Govern />,
+  },
+  {
+    path: "/more/govern/govern-details/:proposalId",
+    element: <GovernDetails />,
+  },
+  // {
+  //   path: "/more/airdrop",
+  //   element: <Airdrop />,
+  // },
+  {
+    path: "/more/vesting",
+    element: <Vesting />,
+  },
+  {
+    path: "/more/vote",
+    element: <Vote />,
   },
 ];
 

@@ -1,356 +1,251 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
-import { Button, Table } from "antd";
+import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
-import PlaceBidModal from "../Auctions/PlaceBidModal";
-import FilterModal from "../Auctions/FilterModal/FilterModal";
-import data from "./data";
 import "./index.scss";
-import { Link } from "react-router-dom";
-import { iconNameFromDenom } from "../../utils/string";
+import { iconNameFromDenom, symbolToDenom } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
+import React, { useEffect, useState } from "react";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
+import { setPairs } from "../../actions/asset";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import {
+  setAllExtendedPair,
+  setCurrentPairID,
+  setSelectedExtentedPairvault,
+} from "../../actions/locker";
+import { amountConversionWithComma } from "../../utils/coin";
+import NoData from "../../components/NoData";
+import { queryExtendedPairVaultById, queryPair } from "../../services/asset/query";
+import { decimalConversion } from "../../utils/number";
+import { queryVaultMintedStatistic } from "../../services/vault/query";
+import { Pagination } from 'antd';
 
-const Minting = (lang) => {
+const Minting = ({ address }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const columns = [
-    {
-      title: "Vault",
-      dataIndex: "Vault",
-      key: "Vault",
-      width: 180,
-    },
-    {
-      title: "Min. Collateral Ratio",
-      dataIndex: "collateral_ratio",
-      key: "collateral_ratio",
-      width: 180,
-    },
-    {
-      title: "Intrest Rate",
-      dataIndex: "intrest_rate",
-      key: "intrest_rate",
-      width: 180,
-    },
-    {
-      title: "Min. Borrow Amount",
-      dataIndex: "borrow_amount",
-      key: "borrow_amount",
-      width: 200,
-      render: (borrow_amount) => (
-        <div className="endtime-badge">{borrow_amount}</div>
-      ),
-    },
-    {
-      title: "Closing Fee",
-      dataIndex: "closing_fee",
-      key: "closing_fee",
-      width: 150,
-      render: (asset_apy) => <>{asset_apy} </>,
-    },
-    {
-      title: "",
-      dataIndex: "action",
-      key: "action",
-      align: "right",
-      width: 140,
-      render: (vault) => (
-        <>
-          <div>
-            <Link to="/vault">
-              <Button type="primary" size="small" className="px-3 valult-mint-btn" onClick={() => {
-                console.log(vault);
-              }}>
-                Mint
-              </Button>
-            </Link>
-          </div>
-        </>
-      ),
-    },
-  ];
-  const tableData = data.map((item, index) => {
-    return {
-      key: <>{item.key}</>,
-      Vault: (
-        <>
-          <div className="assets-withicon">{item.valut}</div>
-        </>
-      ),
-      collateral_ratio: (
-        <>
-          <div className="assets-withicon">{item.collateral}%</div>
-        </>
-      ),
-      intrest_rate: (
-        <>
-          <div className="assets-withicon">{item.Interest}%</div>
-        </>
-      ),
-      borrow_amount: (
-        <>
-          <div className="assets-withicon">${item.borrow}</div>
-        </>
-      ),
-      closing_fee: (
-        <>
-          <div className="assets-withicon">{item.closing}%</div>
-        </>
-      ),
-      action: item,
-    };
-  });
+  const extenedPairVaultList = useSelector(
+    (state) => state.locker.extenedPairVaultList[0]
+  );
 
-  const navigateToMint = () => {
-    console.log("Clicked");
+  const [loading, setLoading] = useState(false);
+  const [vaultDebt, setVaultDebt] = useState([])
+  const [pairId, setpairId] = useState({})
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(6);
+  const [activePage, setActivePage] = useState(DEFAULT_PAGE_NUMBER)
+  const [totalExtendedPair, setTotalExtendedPair] = useState()
+
+  const navigateToMint = (path) => {
     navigate({
-      pathname: `/vault`,
+      pathname: `./vault/${path}`,
     });
+  };
+
+  useEffect(() => {
+    fetchExtendexPairList((pageNumber - 1) * pageSize, pageSize, true, false, PRODUCT_ID)
+  }, [address])
+
+  useEffect(() => {
+    if (extenedPairVaultList?.length > 0) {
+      fetchVaultMintedTokenStatistic(PRODUCT_ID)
+    }
+
+  }, [address, extenedPairVaultList])
+
+  const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
+    setLoading(true);
+    queryExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
+      setLoading(false);
+      if (error) {
+        message.error(error);
+        return;
+      }
+      dispatch(setAllExtendedPair(data?.extendedPair));
+      setTotalExtendedPair(data?.pagination?.total?.low)
+    });
+  };
+
+  const fetchVaultMintedTokenStatistic = (productId) => {
+    queryVaultMintedStatistic(productId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setVaultDebt((vaultDebt) => [...vaultDebt, data?.pairStatisticData])
+    });
+  };
+
+  const getIconFromPairName = (extendexPairVaultPairName) => {
+    let pairName = extendexPairVaultPairName;
+    pairName = pairName?.replace(/\s+/g, ' ').trim()
+    if (!pairName?.includes("-")) {
+      return pairName?.toLowerCase();
+    } else {
+      pairName = pairName?.slice(0, -2);
+      pairName = pairName?.toLowerCase()
+      return pairName;
+    }
+  }
+
+  const calculateGlobalDebt = (value) => {
+    let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.low === value?.id?.low)
+    if (matchData[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
+      return amountConversionWithComma(matchData[0]?.mintedAmount, DOLLAR_DECIMALS);
+    }
+    return (0).toFixed(6)
+  }
+
+  useEffect(() => {
+    setVaultDebt([])
+    setpairId({});
+  }, [])
+
+  const handlePageChange = (currentPage, pageSize) => {
+    setPageNumber(currentPage - 1);
+    setPageSize(pageSize);
+    setActivePage(currentPage)
+    fetchExtendexPairList((currentPage - 1) * pageSize, pageSize, true, false, PRODUCT_ID);
+  };
+
+  if (loading) {
+    return <Spin />;
   }
 
 
   return (
     <div className="app-content-wrapper vault-mint-main-container">
-      {/* <Row> */}
-      {/* <Col>
-          <div className="commodo-card py-3">
-            <div className="card-content">
-              <Table
-                className="custom-table liquidation-table mint-table"
-                dataSource={tableData}
-                columns={columns}
-                pagination={false}
-                scroll={{ x: "100%" }}
-              />
-            </div>
-          </div>
-        </Col> */}
       <div className="card-main-container">
-        <div className="card-container " onClick={() => {
-          navigateToMint()
-        }}>
-          <div className="up-container">
-            <div className="icon-container">
-              <SvgIcon name={iconNameFromDenom("uatom")} />
-            </div>
-            <div className="vault-name-container">
-              <div className="vault-name">ATOM-A</div>
-              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
-            </div>
-          </div>
-          <div className="bottom-container">
-            <div className="contenet-container">
-              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
-              <div className="value">170%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
-              <div className="value">0.25%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Stability Fee <TooltipIcon text="" /></div>
-              <div className="value">3%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-          </div>
-        </div>
+        {extenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose Your Vault Type</h1> : ""}
+        {extenedPairVaultList?.length > 0 ? (
+          extenedPairVaultList?.map((item, index) => {
+            if (
+              item &&
+              !item.isStableMintVault &&
+              item.appId.low === PRODUCT_ID
+            ) {
+              return (
+                <React.Fragment key={index}>
+                  {item &&
+                    (
+                      <div
+                        className="card-container "
+                        onClick={() => {
+                          dispatch(setCurrentPairID(item?.pairId?.low));
+                          dispatch(setSelectedExtentedPairvault(item));
+                          navigateToMint(item?.id?.low);
+                        }}
+                      >
+                        <div className="up-container">
+                          <div className="icon-container">
+                            <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} />
+                          </div>
+                          <div className="vault-name-container">
+                            <div className="vault-name">{item?.pairName}</div>
+                            <div className="vault-desc" />
+                          </div>
+                        </div>
+                        <div className="bottom-container">
+                          <div className="contenet-container">
+                            <div className="name">
+                              Min. Collateralization Ratio{" "}
+                              <TooltipIcon text="Minimum collateral ratio at which Composite should be minted" />
+                            </div>
+                            <div className="value">
+                              {(decimalConversion(item?.minCr) * 100).toFixed(2)} %
+                            </div>
+                          </div>
+                          <div className="contenet-container">
+                            <div className="name">
+                              Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
+                            </div>
+                            <div className="value">
+                              {(decimalConversion(item?.stabilityFee) * 100).toFixed(2)} %
+                            </div>
+                          </div>
+                          <div className="contenet-container">
+                            <div className="name">
+                              Min. Borrow Amount <TooltipIcon text="Minimum Composite that should be borrowed for any active vault" />
+                            </div>
+                            <div className="value">
+                              {" "}
+                              {amountConversionWithComma(item?.debtFloor, DOLLAR_DECIMALS)} CMST
+                            </div>
+                          </div>
+                          <div className="contenet-container">
+                            <div className="name">
+                              Debt Ceiling <TooltipIcon text="Maximum Composite that can be withdrawn per vault type" />
+                            </div>
+                            <div className="value">
+                              {" "}
+                              {amountConversionWithComma(item?.debtCeiling, DOLLAR_DECIMALS)} CMST
+                            </div>
+                          </div>
 
-        <div className="card-container  ">
-          <div className="up-container">
-            <div className="icon-container">
-              <SvgIcon name={iconNameFromDenom("uatom")} />
-            </div>
-            <div className="vault-name-container">
-              <div className="vault-name">ATOM-A</div>
-              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
-            </div>
-          </div>
-          <div className="bottom-container">
-            <div className="contenet-container">
-              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
-              <div className="value">170%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
-              <div className="value">0.25%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Stability Fee <TooltipIcon text="" /></div>
-              <div className="value">3%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-          </div>
-        </div>
+                          <div className="contenet-container">
+                            <div className="name">
+                              Vault’s Global Debt <TooltipIcon text="The total $CMST Debt of the protocol against this vault type" />
+                            </div>
+                            <div className="value">
+                              {vaultDebt.length > 0
+                                ?
+                                calculateGlobalDebt(item)
+                                :
+                                "0.000000"
+                              } CMST
+                            </div>
+                          </div>
 
-        <div className="card-container  ">
-          <div className="up-container">
-            <div className="icon-container">
-              <SvgIcon name={iconNameFromDenom("uatom")} />
-            </div>
-            <div className="vault-name-container">
-              <div className="vault-name">ATOM-A</div>
-              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
-            </div>
-          </div>
-          <div className="bottom-container">
-            <div className="contenet-container">
-              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
-              <div className="value">170%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
-              <div className="value">0.25%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Stability Fee <TooltipIcon text="" /></div>
-              <div className="value">3%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-          </div>
-        </div>
+                        </div>
+                      </div>
+                    )}
+                </React.Fragment>
+              );
+            }
+            else {
+              return ""
+            }
+          })
+        )
+          : (
+            <NoData />
+          )}
 
-        <div className="card-container  ">
-          <div className="up-container">
-            <div className="icon-container">
-              <SvgIcon name={iconNameFromDenom("uatom")} />
-            </div>
-            <div className="vault-name-container">
-              <div className="vault-name">ATOM-A</div>
-              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
-            </div>
-          </div>
-          <div className="bottom-container">
-            <div className="contenet-container">
-              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
-              <div className="value">170%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
-              <div className="value">0.25%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Stability Fee <TooltipIcon text="" /></div>
-              <div className="value">3%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="card-container  ">
-          <div className="up-container">
-            <div className="icon-container">
-              <SvgIcon name={iconNameFromDenom("uatom")} />
-            </div>
-            <div className="vault-name-container">
-              <div className="vault-name">ATOM-A</div>
-              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
-            </div>
-          </div>
-          <div className="bottom-container">
-            <div className="contenet-container">
-              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
-              <div className="value">170%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
-              <div className="value">0.25%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Stability Fee <TooltipIcon text="" /></div>
-              <div className="value">3%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="card-container  ">
-          <div className="up-container">
-            <div className="icon-container">
-              <SvgIcon name={iconNameFromDenom("uatom")} />
-            </div>
-            <div className="vault-name-container">
-              <div className="vault-name">ATOM-A</div>
-              <div className="vault-desc">Lorem ipsum dolor, sit amet Pariatur, eos.</div>
-            </div>
-          </div>
-          <div className="bottom-container">
-            <div className="contenet-container">
-              <div className="name">Liquidation Ratio <TooltipIcon text="" /></div>
-              <div className="value">170%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min Collateralization Ratio <TooltipIcon text="" /></div>
-              <div className="value">0.25%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Stability Fee <TooltipIcon text="" /></div>
-              <div className="value">3%</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Min. Borrow Amount <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-            <div className="contenet-container">
-              <div className="name">Debt Ceiling <TooltipIcon text="" /></div>
-              <div className="value">0CMST</div>
-            </div>
-          </div>
-        </div>
 
       </div>
-
-      {/* </Row> */}
-    </div>
+      {extenedPairVaultList?.length > 0 ? <div >
+        <Pagination
+          defaultCurrent={activePage}
+          onChange={handlePageChange}
+          total={totalExtendedPair &&
+            totalExtendedPair}
+          pageSize={pageSize}
+        />
+      </div> : ""}
+    </div >
   );
 };
 
 Minting.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  setPairs: PropTypes.func.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
+    pairs: state.asset.pairs,
   };
 };
 
-const actionsToProps = {};
+const actionsToProps = {
+  setPairs,
+};
 
 export default connect(stateToProps, actionsToProps)(Minting);

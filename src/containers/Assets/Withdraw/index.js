@@ -28,7 +28,7 @@ const Withdraw = ({
   refreshBalance,
   setBalanceRefresh,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [destinationAddress, setDestinationAddress] = useState("");
   const [inProgress, setInProgress] = useState(false);
   const [amount, setAmount] = useState();
@@ -40,7 +40,7 @@ const Withdraw = ({
 
     setAmount(value);
     setValidationError(
-      ValidateInputNumber(getAmount(value), chain?.ibc?.amount)
+      ValidateInputNumber(value, chain?.balance?.amount)
     );
   };
 
@@ -61,7 +61,7 @@ const Withdraw = ({
         }
       );
     });
-    setIsModalVisible(true);
+    setIsModalOpen(true);
   };
 
   const signIBCTx = () => {
@@ -78,16 +78,16 @@ const Withdraw = ({
         typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
         value: {
           source_port: "transfer",
-          source_channel: chain.sourceChannelId,
+          source_channel: chain?.sourceChannelId,
           token: {
-            denom: chain.ibc?.denom,
+            denom: chain?.ibcDenomHash,
             amount: getAmount(amount),
           },
           sender: address,
           receiver: destinationAddress,
           timeout_height: {
-            revisionNumber: Number(proofHeight.revision_number),
-            revisionHeight: Number(proofHeight.revision_height) + 100,
+            revisionNumber: Number(proofHeight?.revision_number),
+            revisionHeight: Number(proofHeight?.revision_height) + 100,
           },
           timeout_timestamp: undefined,
         },
@@ -100,48 +100,52 @@ const Withdraw = ({
       setInProgress(false);
 
       if (error) {
-        message.error(
-          <Snack
-            message={variables[lang].tx_failed}
-            explorerUrlToTx={comdex.explorerUrlToTx}
-            hash={result?.transactionHash}
-          />
-        );
+        if (result?.transactionHash) {
+          message.error(
+            <Snack
+              message={variables[lang].tx_failed}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          );
+        } else {
+          message.error(error);
+        }
         return;
       }
 
       message.success(
         <Snack
           message={variables[lang].tx_success}
-          explorerUrlToTx={comdex.explorerUrlToTx}
+          explorerUrlToTx={comdex?.explorerUrlToTx}
           hash={result?.transactionHash}
         />
       );
 
       setBalanceRefresh(refreshBalance + 1);
-      setIsModalVisible(false);
+      setIsModalOpen(false);
     });
   };
 
   const handleOk = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   return (
     <>
-      <Button type="primary" size="small" onClick={showModal}>
-        {variables[lang].withdraw}
+      <Button type="primary btn-filled" size="small" onClick={showModal} className="asset-ibc-btn-container">
+        {variables[lang].withdraw}  <span className="asset-ibc-btn"> 	&#62;</span>
       </Button>
       <Modal
         className="asstedepositw-modal"
         centered={true}
         closable={true}
         footer={null}
-        visible={isModalVisible}
+        open={isModalOpen}
         width={480}
         onCancel={handleCancel}
         onOk={handleOk}
@@ -175,25 +179,21 @@ const Withdraw = ({
               <div className="availabe-balance">
                 {variables[lang].available}
                 <span className="ml-1">
-                  {(chain && chain.ibc && amountConversion(chain.ibc.amount)) ||
-                    0}{" "}
-                  {(chain.currency &&
-                    chain.currency.coinDenom &&
-                    denomConversion(chain.currency.coinDenom)) ||
-                    ""}
+                  {chain?.balance?.amount || 0}{" "}
+                  {denomConversion(chain?.coinMinimalDenom) || ""}
                 </span>
                 <span className="assets-maxhalf">
                   <Button
                     className=" active"
                     onClick={() => {
-                      setAmount(amountConversion(chain?.ibc?.amount || 0));
+                      setAmount(chain?.balance?.amount || 0);
                     }}
                   >
                     {variables[lang].max}
                   </Button>
                 </span>
               </div>
-              <Form.Item label="Amount to Withdraw">
+              <Form.Item label="Amount to Withdraw" className="assets-input-box">
                 <CustomInput
                   value={amount}
                   onChange={(event) => onChange(event.target.value)}

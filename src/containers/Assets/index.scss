@@ -14,7 +14,7 @@
     .dark-mode & {
       background: $background-dark1;
       border: 1px solid $border-dark;
-      box-shadow: $box-shadow-inner-dark;
+      box-shadow: none;
       color: $white;
     }
     @media screen and (max-width: 540px) {
@@ -34,7 +34,7 @@
       margin-right: 10px;
       font-size: 0.9rem;
       .dark-mode & {
-        color: $text-color-light;
+        color: white;
       }
     }
   }
@@ -153,5 +153,64 @@
         }
       }
     }
+  }
+}
+
+.hyperlink-icon {
+  .icon {
+    height: 10px;
+  }
+}
+.asset-ibc-btn-container {
+  display: flex !important;
+  align-items: center !important;
+  height: 28px !important;
+  padding: 0 22px !important;
+  line-height: 100% !important;
+  font-size: 11px !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.2px;
+  .asset-ibc-btn {
+    font-size: 18px;
+    margin-left: 6px;
+    margin-right: 1px;
+  }
+}
+.total-asset-balance-main-container {
+  display: flex;
+  align-items: center;
+}
+.external-btn {
+  a {
+    color: white !important;
+  }
+}
+.asset-reload-btn {
+  cursor: pointer;
+  svg {
+    font-size: 15px;
+    margin-left: 7px;
+    display: flex;
+  }
+
+  .reload-2 {
+    animation: rotate 1s;
+    transition-duration: 2s;
+    transform-origin: center;
+  }
+  & .reload {
+    transition-duration: 1s;
+    transform: rotate(360deg);
+    transform-origin: center;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

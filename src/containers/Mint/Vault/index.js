@@ -1,15 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, message, Button } from "antd";
+import { Tabs, Button } from "antd";
+import * as PropTypes from "prop-types";
 import "./index.scss";
 import { Col, Row } from "../../../components/common";
 import { Link } from "react-router-dom";
 import Mint from "./Mint";
 import Close from "./Close";
 import EditTab from "./EditTab";
+import { connect, useSelector } from "react-redux";
+import { setOwnerVaultId } from "../../../actions/locker";
 
-const Vault = () => {
-  const [activeKey, setActiveKey] = useState("1");
+const Vault = ({
+  address,
+  setOwnerVaultId,
+}) => {
+  const [activeKey, setActiveKey] = useState();
   const { TabPane } = Tabs;
+  const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
+
+  const tabsItems =
+    [
+      { label: "Mint", key: "1", children: <Mint /> },
+      { label: "Edit", key: "2", disabled: !ownerVaultId, children: <EditTab /> },
+      { label: "Close", key: "3", disabled: !ownerVaultId, children: <Close /> },
+    ]
 
   const BackButton = {
     right: (
@@ -20,6 +34,7 @@ const Vault = () => {
       </Link>
     ),
   };
+
   return (
     <>
       <div className="app-content-wrapper">
@@ -27,24 +42,27 @@ const Vault = () => {
           <Col>
             <Tabs
               className="comdex-tabs"
-              defaultActiveKey="1"
+              onChange={setActiveKey}
+              activeKey={activeKey}
               tabBarExtraContent={BackButton}
-            >
-              <TabPane tab="Mint" key="1">
-                <Mint />
-              </TabPane>
-              <TabPane tab="Edit" key="2">
-                <EditTab />
-              </TabPane>
-              <TabPane tab="Close" key="3">
-                <Close />
-              </TabPane>
-            </Tabs>
+              items={tabsItems}
+            />
           </Col>
         </Row>
       </div>
     </>
   );
 };
+Vault.prototype = {
+  address: PropTypes.string,
+}
+const stateToProps = (state) => {
+  return {
+    address: state.account.address,
+  };
+};
+const actionsToProps = {
+  setOwnerVaultId,
+};
 
-export default Vault;
+export default connect(stateToProps, actionsToProps)(Vault);

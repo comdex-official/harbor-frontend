@@ -1,12 +1,44 @@
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../components/common";
+import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
-import variables from "../../utils/variables";
-import { Button, Table, Progress } from "antd";
+import { Button, Table, Progress, message } from "antd";
 import "./index.scss";
-import { Link } from "react-router-dom";
+import TooltipIcon from "../../components/TooltipIcon";
+import { useEffect, useState } from "react";
+import { queryUserVaults } from "../../services/vault/query";
+import { amountConversion, denomConversion } from "../../utils/coin";
+import { useNavigate } from "react-router";
+import { DOLLAR_DECIMALS } from "../../constants/common";
+import { decimalConversion } from "../../utils/number";
 
-const MyVault = (lang) => {
+const MyVault = ({ address }) => {
+  const [vaults, setVaults] = useState();
+  const navigate = useNavigate();
+  const [inProgress, setInProgress] = useState(false);
+
+  useEffect(() => {
+    if (address) {
+      fetchVaults();
+    }
+  }, [address]);
+
+  const fetchVaults = () => {
+    setInProgress(true);
+    queryUserVaults(address, (error, result) => {
+      setInProgress(false);
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setVaults(result?.vaultsInfo);
+    });
+  };
+  const calculateProgressPercentage = (number) => {
+    let ratio = 500 / number;
+    let percentage = 100 / ratio;
+    return percentage.toFixed(DOLLAR_DECIMALS);
+  }
+
   const columns = [
     {
       title: "Vault Type",
@@ -15,31 +47,52 @@ const MyVault = (lang) => {
       width: 180,
     },
     {
-      title: "Debt",
+      title: (
+        <>
+          Debt{" "}
+          <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
+        </>
+      ),
       dataIndex: "debt",
       key: "debt",
       width: 150,
     },
     {
-      title: "Interest Rate",
+      title: (
+        <>
+          Stability Fee{" "}
+          <TooltipIcon text="Current annual interest rate of Vault" />
+        </>
+      ),
       dataIndex: "apy",
       key: "apy",
       width: 150,
-      render: (apy) => <>{apy}%</>,
+      render: (apy) => <>{Number((apy * 100) || 0).toFixed(DOLLAR_DECIMALS)}%</>,
     },
     {
-      title: "Health Factor",
+      title: (
+        <>
+          Collateralization Ratio{" "}
+          <TooltipIcon text="The collateral ratio of the vault which is equal to collateral deposited by composite borrowed" />
+        </>
+      ),
       dataIndex: "health",
       key: "health",
       width: 200,
-      align: "center",
-      render: () => (
-        <Progress
-          className="health-progress"
-          style={{ width: 130 }}
-          percent={30}
-          size="small"
-        />
+      align: "right",
+      render: (ratio) => (
+        <>
+          <span>{Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
+          <Progress
+            className="health-progress ml-2"
+            style={{ width: 130 }}
+            percent={calculateProgressPercentage(Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS))}
+            showInfo={false}
+            size="small"
+            strokeColor={((Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS)) < (Number(((decimalConversion(ratio?.minCr) * 100) || 0).toFixed(DOLLAR_DECIMALS)) + 50)) ? "orange" : ""}
+
+          />
+        </>
       ),
     },
     {
@@ -48,62 +101,54 @@ const MyVault = (lang) => {
       key: "action",
       align: "right",
       width: 200,
-      render: () => (
+      render: (item) => (
         <>
-          <Link to="/vault">
-            <Button type="primary" className="btn-filled" size="small">
-              Manage
-            </Button>
-          </Link>
+          <Button
+            type="primary"
+            className="btn-filled"
+            size="small"
+            onClick={() => handleRouteChange(item)}
+          >
+            Manage
+          </Button>
         </>
       ),
     },
   ];
 
-  const tableData = [
-    {
-      key: 1,
-      vault: (
-        <>
-          <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
-            ATOM-A
-          </div>
-        </>
-      ),
-      debt: "142 CMST",
-      apy: "20",
-    },
-    {
-      key: 1,
-      vault: (
-        <>
-          <div className="assets-withicon">
-            {/* <div className="assets-icon">
-              <SvgIcon name="ust-icon" viewBox="0 0 30 30" />
-            </div> */}
-            ATOM-B
-          </div>
-        </>
-      ),
-      debt: "90 CMST",
-      apy: "20",
-    },
-  ];
+  const handleRouteChange = (item) => {
+    navigate(`/mint/vault/${item?.extendedPairId?.low}`);
+  };
+  const tableData =
+    vaults &&
+    vaults?.length > 0 &&
+    vaults?.map((item) => {
+      return {
+        key: item?.id,
+        vault: (
+          <>
+            <div className="assets-withicon">{item?.extendedPairName || ""}</div>
+          </>
+        ),
+        debt: <> {amountConversion(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
+        apy: decimalConversion(item?.interestRate || 0),
+        health: (item ? item : 0),
+        action: item,
+      };
+    });
 
   return (
-    <div className="app-content-wrapper">
+    <div className="app-content-wrapper vaults-table-container">
       <Row>
         <Col>
-          <div className="commodo-card">
+          <div className="composite-card">
             <div className="card-content">
               <Table
                 className="custom-table"
                 dataSource={tableData}
                 columns={columns}
-                pagination={false}
+                loading={inProgress}
+                pagination={{ defaultPageSize: 5 }}
                 scroll={{ x: "100%" }}
               />
             </div>
@@ -116,11 +161,13 @@ const MyVault = (lang) => {
 
 MyVault.propTypes = {
   lang: PropTypes.string.isRequired,
+  address: PropTypes.string,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
+    address: state.account.address,
   };
 };
 

@@ -34,6 +34,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
 
       setAccountAddress(account.address);
       localStorage.setItem("ac", encode(account.address));
+      localStorage.setItem("loginType", "keplr")
     });
   };
 
@@ -55,8 +56,8 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
                 (item.path === "dashboard" && !route
                   ? "active_tab"
                   : item.active === route
-                  ? "active_tab"
-                  : "")
+                    ? "active_tab"
+                    : "")
               }
               value={item.value}
               onClick={() => {

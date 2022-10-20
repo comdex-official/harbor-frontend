@@ -11,8 +11,8 @@ export const amountConversionWithComma = (amount, decimals) => {
   return commaSeparator(result.toFixed(decimals || comdex.coinDecimals));
 };
 
-export const amountConversion = (amount, decimals) => {
-  const result = Number(amount) / 10 ** comdex.coinDecimals;
+export const amountConversion = (amount, decimals, chainDecimals) => {
+  const result = Number(amount) / (10 ** chainDecimals || 10 ** comdex.coinDecimals);
 
   return result.toFixed(decimals || comdex.coinDecimals);
 };
@@ -23,11 +23,14 @@ export const orderPriceConversion = (amount) => {
 };
 
 export const orderPriceReverseConversion = (amount) => {
-  const result = Number(amount) / (10 ** 18);
+  const result = Number(amount) / 10 ** 18;
   return result.toFixed(comdex.coinDecimals).toString();
 };
 
 export const denomConversion = (denom) => {
+  if (denom === "weth-wei") {
+    return "WETH";
+  }
   if (denom && denom.substr(0, 1) === "u") {
     if (
       denom &&
