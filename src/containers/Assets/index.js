@@ -21,23 +21,16 @@ import Deposit from "./Deposit";
 import "./index.scss";
 import Withdraw from "./Withdraw";
 
-const Assets = ({
-  lang,
-  assetBalance,
-  balances,
-  markets,
-  refreshBalance,
-  poolPriceMap,
-}) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
   const dispatch = useDispatch();
 
   const handleBalanceRefresh = () => {
-    let assetReloadBth = document.getElementById('reload-btn');
-    assetReloadBth.classList.toggle("reload")
+    let assetReloadBth = document.getElementById("reload-btn");
+    assetReloadBth.classList.toggle("reload");
     if (!assetReloadBth.classList.contains("reload")) {
-      assetReloadBth.classList.add("reload-2")
+      assetReloadBth.classList.add("reload-2");
     } else {
-      assetReloadBth.classList.remove("reload-2")
+      assetReloadBth.classList.remove("reload-2");
     }
 
     dispatch({
@@ -150,7 +143,7 @@ const Assets = ({
   ];
 
   const getPrice = (denom) => {
-    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
+    return marketPrice(markets, denom) || 0;
   };
 
   let ibcBalances = AssetList?.tokens.map((token) => {
@@ -164,10 +157,10 @@ const Assets = ({
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-            ibcBalance.amount,
-            comdex?.coinDecimals,
-            token?.coinDecimals
-          )
+              ibcBalance.amount,
+              comdex?.coinDecimals,
+              token?.coinDecimals
+            )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },
@@ -332,7 +325,6 @@ Assets.propTypes = {
       amount: PropTypes.string,
     })
   ),
-  poolPriceMap: PropTypes.object,
   markets: PropTypes.arrayOf(
     PropTypes.shape({
       rates: PropTypes.shape({
@@ -353,7 +345,6 @@ const stateToProps = (state) => {
     balances: state.account.balances.list,
     markets: state.oracle.market.list,
     refreshBalance: state.account.refreshBalance,
-    poolPriceMap: state.liquidity.poolPriceMap,
   };
 };
 

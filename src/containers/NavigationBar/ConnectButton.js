@@ -12,15 +12,12 @@ import {
   setPoolBalance,
   showAccountConnectModal
 } from "../../actions/account";
-import { setPoolPrice } from "../../actions/liquidity";
 import { setMarkets } from "../../actions/oracle";
 import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
-import { HARBOR_POOL_ID_LIST } from "../../constants/common";
 import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { queryPool } from "../../services/liquidity/query";
 import { queryMarketList } from "../../services/oracle/query";
-import { getPoolPrice, marketPrice } from "../../utils/number";
+import { marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
 import DisConnectModal from "../DisConnectModal";
 import ConnectModal from "../Modal";
@@ -37,8 +34,6 @@ const ConnectButton = ({
   setMarkets,
   poolBalances,
   setAccountName,
-  setPoolPrice,
-  poolPriceMap,
   balances,
 }) => {
   useEffect(() => {
@@ -59,7 +54,7 @@ const ConnectButton = ({
   }, []);
 
   const getPrice = (denom) => {
-    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
+    return marketPrice(markets, denom) || 0;
   };
 
   const calculateAssetBalance = useCallback(
@@ -114,7 +109,7 @@ const ConnectButton = ({
 
   useEffect(() => {
     calculateAssetBalance(balances);
-  }, [balances, poolPriceMap, markets]);
+  }, [balances, markets]);
 
   const fetchMarkets = (offset, limit, isTotal, isReverse) => {
     queryMarketList(offset, limit, isTotal, isReverse, (error, result) => {
@@ -125,53 +120,6 @@ const ConnectButton = ({
       setMarkets(result.markets, result.pagination);
     });
   };
-
-  const calculatePoolPrice = useCallback(
-    (pool) => {
-      if (pool?.id) {
-        let firstAsset = pool?.balances[0];
-        let secondAsset = pool?.balances[1];
-
-        let oracleAsset = {};
-        if (marketPrice(markets, firstAsset?.denom)) {
-          oracleAsset = firstAsset;
-        } else if (marketPrice(markets, secondAsset?.denom)) {
-          oracleAsset = secondAsset;
-        }
-
-        if (oracleAsset?.denom) {
-          let { xPoolPrice, yPoolPrice } = getPoolPrice(
-            marketPrice(markets, oracleAsset?.denom),
-            oracleAsset?.denom,
-            firstAsset,
-            secondAsset
-          );
-
-          setPoolPrice(firstAsset?.denom, xPoolPrice);
-          setPoolPrice(secondAsset?.denom, yPoolPrice);
-        }
-      }
-    },
-    [markets, setPoolPrice]
-  );
-
-  useEffect(() => {
-    const fetchListedPools = (list) => {
-      if (list?.length > 0) {
-        for (let i = 0; i < list?.length; i++) {
-          queryPool(list[i], (error, result) => {
-            if (error) {
-              return;
-            }
-
-            calculatePoolPrice(result?.pool);
-          });
-        }
-      }
-    };
-
-    fetchListedPools(HARBOR_POOL_ID_LIST);
-  }, [calculatePoolPrice]);
 
   const WalletConnectedDropdown = <ConnectModal />;
 
@@ -208,7 +156,6 @@ ConnectButton.propTypes = {
   setAssetBalance: PropTypes.func.isRequired,
   setMarkets: PropTypes.func.isRequired,
   setPoolBalance: PropTypes.func.isRequired,
-  setPoolPrice: PropTypes.func.isRequired,
   address: PropTypes.string,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
@@ -228,7 +175,6 @@ ConnectButton.propTypes = {
     })
   ),
   poolBalances: PropTypes.array,
-  poolPriceMap: PropTypes.object,
   pools: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.shape({
@@ -253,7 +199,6 @@ const stateToProps = (state) => {
     refreshBalance: state.account.refreshBalance,
     poolBalances: state.liquidity.poolBalances,
     pools: state.liquidity.pool.list,
-    poolPriceMap: state.liquidity.poolPriceMap,
     balances: state.account.balances.list,
   };
 };
@@ -266,7 +211,6 @@ const actionsToProps = {
   setAssetBalance,
   setMarkets,
   setAccountName,
-  setPoolPrice,
 };
 
 export default connect(stateToProps, actionsToProps)(ConnectButton);

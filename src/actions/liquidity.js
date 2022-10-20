@@ -1,14 +1,15 @@
 import {
-  POOLS_SET,
-  POOL_SET,
-  POOL_BALANCE_SET,
-  SPOT_PRICE_SET,
-  POOL_BALANCE_FETCH_IN_PROGRESS,
+  BASE_COIN_POOL_PRICE_SET,
   FIRST_RESERVE_COIN_DENOM_SET,
-  SECOND_RESERVE_COIN_DENOM_SET,
-  POOL_TOKEN_SUPPLY_SET,
+  POOLS_LIQUIDITY_LIST_SET,
+  POOLS_SET,
   POOL_BALANCES_SET,
-  POOLS_LIQUIDITY_LIST_SET, BASE_COIN_POOL_PRICE_SET, POOL_PRICE_SET,
+  POOL_BALANCE_FETCH_IN_PROGRESS,
+  POOL_BALANCE_SET,
+  POOL_SET,
+  POOL_TOKEN_SUPPLY_SET,
+  SECOND_RESERVE_COIN_DENOM_SET,
+  SPOT_PRICE_SET
 } from "../constants/liquidity";
 
 export const setPools = (list, pagination) => {
@@ -88,13 +89,5 @@ export const setBaseCoinPoolPrice = (value) => {
   return {
     type: BASE_COIN_POOL_PRICE_SET,
     value,
-  };
-};
-
-export const setPoolPrice = (denom, value) => {
-  return {
-    type: POOL_PRICE_SET,
-    value,
-    denom,
   };
 };
