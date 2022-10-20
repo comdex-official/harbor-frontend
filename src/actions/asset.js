@@ -1,17 +1,10 @@
-import {
-  PAIRS_SET,
-  PAIR_ID_SET,
-  PAIR_SET,
-  ASSETS_SET,
-  OUT_ASSET_SET,
-  IN_ASSET_SET,
-  IN_AMOUNT_SET,
-  OUT_AMOUNT_SET,
-  COLLATERAL_RATIO_SET,
-  SET_ASSET_LIST,
-} from "../constants/asset";
 import { message } from "antd";
 import axios from "axios";
+import {
+  ASSETS_SET, COLLATERAL_RATIO_SET, IN_AMOUNT_SET, IN_ASSET_SET, OUT_AMOUNT_SET, OUT_ASSET_SET, PAIRS_SET,
+  PAIR_ID_SET,
+  PAIR_SET, SET_ASSET_LIST
+} from "../constants/asset";
 
 export const setPairs = (list, pagination) => {
   return {
@@ -71,22 +64,24 @@ export const setCollateralRatio = (value) => {
 };
 
 export const setAssets = (list, pagination) => {
-  const cAssets = list.filter(
-    (item) =>
-      item.denom.substr(0, 2) === "uc" && !(item.denom.substr(0, 3) === "ucm")
-  );
   return {
     type: ASSETS_SET,
     list,
     pagination,
-    cAssets,
   };
 };
 
-export const setAssetList = (value) => {
+export const setAssetList = (list) => {
+  const assetHashMap = list.reduce((map, obj) => {
+    map[obj?.id] = obj;
+    return map;
+  }, {});
+
+
   return {
     type: SET_ASSET_LIST,
-    value,
+    list,
+    map: assetHashMap,
   };
 };
 

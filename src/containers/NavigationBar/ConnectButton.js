@@ -1,9 +1,9 @@
-import { Button, Dropdown } from "antd";
+import { Button, Dropdown, message } from "antd";
 import { decode } from "js-base64";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
 import React, { useCallback, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import {
   setAccountAddress,
   setAccountBalances,
@@ -12,8 +12,11 @@ import {
   setPoolBalance,
   showAccountConnectModal
 } from "../../actions/account";
+import { setAssetList } from "../../actions/asset";
 import { setMarkets } from "../../actions/oracle";
 import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
+import { queryAssets } from "../../services/asset/query";
 import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
 import { queryMarketList } from "../../services/oracle/query";
@@ -36,6 +39,8 @@ const ConnectButton = ({
   setAccountName,
   balances,
 }) => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const savedAddress = localStorage.getItem("ac");
     const userAddress = savedAddress ? decode(savedAddress) : address;
@@ -51,6 +56,12 @@ const ConnectButton = ({
 
   useEffect(() => {
     fetchMarkets();
+    fetchAssets(
+      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
+      DEFAULT_PAGE_SIZE,
+      true,
+      false
+    );
   }, []);
 
   const getPrice = (denom) => {
@@ -117,7 +128,18 @@ const ConnectButton = ({
         return;
       }
 
-      setMarkets(result.markets, result.pagination);
+      setMarkets(result.timeWeightedAverage, result.pagination);
+    });
+  };
+
+  const fetchAssets = (offset, limit, countTotal, reverse) => {
+    queryAssets(offset, limit, countTotal, reverse, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      
+      dispatch(setAssetList(data.assets));
     });
   };
 

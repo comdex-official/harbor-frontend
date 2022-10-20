@@ -1,21 +1,20 @@
+import { message, Table } from "antd";
+import moment from "moment";
 import * as PropTypes from "prop-types";
-import { Col, Row } from "../../components/common";
-import { connect } from "react-redux";
-import { Table, message } from "antd";
-import "./index.scss";
-import TooltipIcon from "../../components/TooltipIcon";
-import { queryUserLockerHistory } from "../../services/locker/query";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { setAssetList } from '../../actions/asset';
+import { Col, Row } from "../../components/common";
+import TooltipIcon from "../../components/TooltipIcon";
 import {
   DEFAULT_PAGE_NUMBER,
   DEFAULT_PAGE_SIZE,
-  PRODUCT_ID,
+  PRODUCT_ID
 } from "../../constants/common";
-import { amountConversion } from "../../utils/coin";
-import { setAssetList } from '../../actions/asset';
-import moment from "moment";
 import { queryAssets } from '../../services/asset/query';
+import { queryUserLockerHistory } from "../../services/locker/query";
+import { amountConversion } from "../../utils/coin";
+import "./index.scss";
 
 const MyEarn = ({ address }) => {
   const dispatch = useDispatch();
@@ -52,6 +51,7 @@ const MyEarn = ({ address }) => {
         message.error(error);
         return;
       }
+      
       dispatch(setAssetList(data.assets))
     });
   };
