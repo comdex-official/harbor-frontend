@@ -12,6 +12,7 @@ import GovernDetails from './containers/More/Govern/Details'
 import Airdrop from "./containers/More/Airdrop";
 import Vesting from "./containers/More/Locker";
 import Vote from "./containers/More/Vote";
+import StableMintVault from "./containers/StableMint/vault";
 
 const routes = [
   {
@@ -33,6 +34,10 @@ const routes = [
   {
     path: "/stableMint",
     element: <StableMint />,
+  },
+  {
+    path: "/stableMint/stableMintVault/:pathVaultId",
+    element: <StableMintVault />,
   },
   {
     path: "mint/vault/:pathVaultId",
