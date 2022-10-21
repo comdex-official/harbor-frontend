@@ -1,18 +1,16 @@
+import { Button, List, Pagination, Progress, Select, Spin } from "antd";
+import moment from "moment";
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../../components/common";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, List, Select, Progress, Spin } from "antd";
-import "./index.scss";
-import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
-import React, { useEffect } from "react";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
-import moment from "moment";
 import { setAllProposal, setProposalUpData } from "../../../actions/govern";
-import { useState } from "react";
+import { Col, Row, SvgIcon } from "../../../components/common";
 import NoData from "../../../components/NoData";
+import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
+import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
 import { amountConversionWithComma } from "../../../utils/coin";
-import { Pagination } from 'antd';
+import "./index.scss";
 
 const { Option } = Select;
 
@@ -47,7 +45,6 @@ const Govern = ({
     }).catch((err) => {
       console.log(err);
       setInprogress(false)
-
     })
   }
 

@@ -1,25 +1,19 @@
-import { Button, message } from 'antd';
+import { Button, DatePicker, message, Radio, Space } from 'antd';
+import moment from 'moment';
 import * as PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from 'react'
-import { connect } from "react-redux";
-import { Col, Row, SvgIcon } from '../../../components/common';
+import React, { useEffect, useState } from 'react';
+import { connect, useDispatch, useSelector } from "react-redux";
+import { setBalanceRefresh } from "../../../actions/account";
+import { setAmountIn } from '../../../actions/asset';
+import { setVestingRadioInput } from "../../../actions/vesting";
 import CustomInput from '../../../components/CustomInput';
 import TooltipIcon from '../../../components/TooltipIcon';
-import { amountConversion, amountConversionWithComma, denomConversion, getAmount, getDenomBalance } from '../../../utils/coin';
-import { iconNameFromDenom, toDecimals } from '../../../utils/string';
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { ValidateInputNumber } from '../../../config/_validation';
-import { setAmountIn } from '../../../actions/asset';
-import { DatePicker, Space } from 'antd';
-import { Radio } from 'antd';
+import { PRODUCT_ID } from '../../../constants/common';
 import { vestingCreateWeightage } from '../../../services/vestingContractsRead';
 import { transactionForCreateVesting } from '../../../services/vestingContractsWrite';
-import { PRODUCT_ID } from '../../../constants/common';
-import { setBalanceRefresh } from "../../../actions/account";
-import { setVestingRadioInput } from "../../../actions/vesting";
-import { marketPrice } from '../../../utils/number';
-import moment from 'moment';
+import { amountConversion, amountConversionWithComma, denomConversion, getAmount, getDenomBalance } from '../../../utils/coin';
+import { toDecimals } from '../../../utils/string';
 
 
 const Create = ({
@@ -294,7 +288,7 @@ const stateToProps = (state) => {
         address: state.account.address,
         refreshBalance: state.account.refreshBalance,
         balances: state.account.balances.list,
-        markets: state.oracle.market.list,
+        markets: state.oracle.market.map,
         vestingRadioInput: state.vesting.vestingRadioInput,
     };
 };

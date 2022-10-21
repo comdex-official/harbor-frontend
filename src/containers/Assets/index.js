@@ -21,23 +21,16 @@ import Deposit from "./Deposit";
 import "./index.scss";
 import Withdraw from "./Withdraw";
 
-const Assets = ({
-  lang,
-  assetBalance,
-  balances,
-  markets,
-  refreshBalance,
-  poolPriceMap,
-}) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap }) => {
   const dispatch = useDispatch();
 
   const handleBalanceRefresh = () => {
-    let assetReloadBth = document.getElementById('reload-btn');
-    assetReloadBth.classList.toggle("reload")
+    let assetReloadBth = document.getElementById("reload-btn");
+    assetReloadBth.classList.toggle("reload");
     if (!assetReloadBth.classList.contains("reload")) {
-      assetReloadBth.classList.add("reload-2")
+      assetReloadBth.classList.add("reload-2");
     } else {
-      assetReloadBth.classList.remove("reload-2")
+      assetReloadBth.classList.remove("reload-2");
     }
 
     dispatch({
@@ -150,7 +143,7 @@ const Assets = ({
   ];
 
   const getPrice = (denom) => {
-    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
+    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
 
   let ibcBalances = AssetList?.tokens.map((token) => {
@@ -164,10 +157,10 @@ const Assets = ({
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-            ibcBalance.amount,
-            comdex?.coinDecimals,
-            token?.coinDecimals
-          )
+              ibcBalance.amount,
+              comdex?.coinDecimals,
+              token?.coinDecimals
+            )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },
@@ -326,24 +319,14 @@ Assets.propTypes = {
   lang: PropTypes.string.isRequired,
   assetBalance: PropTypes.number,
   refreshBalance: PropTypes.number.isRequired,
+  assetMap: PropTypes.object,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
       amount: PropTypes.string,
     })
   ),
-  poolPriceMap: PropTypes.object,
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -351,9 +334,9 @@ const stateToProps = (state) => {
     lang: state.language,
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     refreshBalance: state.account.refreshBalance,
-    poolPriceMap: state.liquidity.poolPriceMap,
+    assetMap: state.asset.map,
   };
 };
 

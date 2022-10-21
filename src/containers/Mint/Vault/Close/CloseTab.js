@@ -1,23 +1,21 @@
-import * as PropTypes from "prop-types";
-import { connect, useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useState } from "react";
-import variables from "../../../../utils/variables";
 import { Button, message } from "antd";
+import Long from "long";
+import * as PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router";
+import { setBalanceRefresh, setVault } from "../../../../actions/account";
+import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { getDenomBalance } from "../../../../utils/coin";
-import { amountConversion } from "../../../../utils/coin";
+import { PRODUCT_ID } from "../../../../constants/common";
+import { queryPair, queryPairVault } from "../../../../services/asset/query";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
-import { useNavigate, useParams } from "react-router";
-import { setVault } from "../../../../actions/account";
-import { setBalanceRefresh } from "../../../../actions/account";
-import { PRODUCT_ID } from "../../../../constants/common";
-import "./index.scss";
-import { denomToSymbol } from "../../../../utils/string";
 import { queryOwnerVaults, queryOwnerVaultsInfo } from "../../../../services/vault/query";
-import Long from "long";
-import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
-import { queryPair, queryPairVault } from "../../../../services/asset/query";
+import { amountConversion, getDenomBalance } from "../../../../utils/coin";
+import { denomToSymbol } from "../../../../utils/string";
+import variables from "../../../../utils/variables";
+import "./index.scss";
 
 const CloseTab = ({
   lang,
@@ -214,17 +212,7 @@ CloseTab.propTypes = {
       amount: PropTypes.string,
     })
   ),
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
   refreshBalance: PropTypes.number.isRequired,
   vault: PropTypes.shape({
     collateral: PropTypes.shape({
@@ -246,7 +234,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     vault: state.account.vault,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     refreshBalance: state.account.refreshBalance,
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,

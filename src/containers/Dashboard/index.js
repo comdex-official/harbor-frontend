@@ -1,27 +1,29 @@
-import * as PropTypes from "prop-types";
-import { Col, Row } from "../../components/common";
-import { connect } from "react-redux";
-import variables from "../../utils/variables";
-import TooltipIcon from "../../components/TooltipIcon";
+import { message } from "antd";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import Banner from "./Banner";
+import * as PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { queryAppTVL, queryTotalTokenMinted } from "../../services/vault/query";
-import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
-import { message } from "antd";
-import { commaSeparator, marketPrice } from "../../utils/number";
-import { amountConversion, amountConversionWithComma } from "../../utils/coin";
-import "./index.scss";
-import { fetchProposalUpData, totalveHarborSupply } from "../../services/contractsRead";
+import { connect } from "react-redux";
+import { Col, Row } from "../../components/common";
+import TooltipIcon from "../../components/TooltipIcon";
 import { cmst, harbor, ibcDenoms } from "../../config/network";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
+import {
+  fetchProposalUpData,
+  totalveHarborSupply
+} from "../../services/contractsRead";
+import { queryAppTVL, queryTotalTokenMinted } from "../../services/vault/query";
+import { amountConversion, amountConversionWithComma } from "../../utils/coin";
+import { commaSeparator, marketPrice } from "../../utils/number";
+import variables from "../../utils/variables";
+import Banner from "./Banner";
+import "./index.scss";
 
-const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
-
+const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
-  const [harborSupply, setHarborSupply] = useState(0)
-  const [harborCirculatingSupply, setHarborCirculatingSypply] = useState(0)
+  const [harborSupply, setHarborSupply] = useState(0);
+  const [harborCirculatingSupply, setHarborCirculatingSypply] = useState(0);
   const [harborCurrentSypply, setHarborCurrentSupply] = useState(0);
   const [cmstCurrentSupply, setCmstCurrentSupply] = useState();
   const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
@@ -61,7 +63,7 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
           uniqueVaults?.map((item) => {
             let value =
               Number(amountConversion(item.collateralLockedAmount)) *
-              marketPrice(markets, item?.assetDenom);
+              marketPrice(markets, item?.assetDenom, assetMap[item?.assetDenom]?.id);
             total += value;
             item.dollarValue = value;
             return [item.assetDenom, item];
@@ -79,25 +81,29 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
         message.error(error);
         return;
       }
-      setCmstCurrentSupply(result?.mintedData)
-    })
-  }
+      setCmstCurrentSupply(result?.mintedData);
+    });
+  };
 
   const fetchAllProposalUpData = (productId) => {
-    fetchProposalUpData(productId).then((res) => {
-      setHarborCurrentSupply(res?.current_supply)
-    }).catch((err) => {
-      message.error(err);
-    })
-  }
+    fetchProposalUpData(productId)
+      .then((res) => {
+        setHarborCurrentSupply(res?.current_supply);
+      })
+      .catch((err) => {
+        message.error(err);
+      });
+  };
 
   const fetchTotalveHarborSupply = () => {
-    totalveHarborSupply().then((res) => {
-      setHarborSupply(res?.token)
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
+    totalveHarborSupply()
+      .then((res) => {
+        setHarborSupply(res?.token);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const calculateTotalValueLockedInDollarForOthers = () => {
     let amount = 0;
@@ -113,35 +119,37 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
   };
 
   const calculateHarborSypply = () => {
-    let amount = amountConversion(harborCurrentSypply) - amountConversion(harborSupply);
+    let amount =
+      amountConversion(harborCurrentSypply) - amountConversion(harborSupply);
     amount = Number(amount).toFixed(DOLLAR_DECIMALS);
-    setHarborCirculatingSypply(amount)
-  }
+    setHarborCirculatingSypply(amount);
+  };
   useEffect(() => {
-    calculatedCmstCurrentSupply()
-  }, [cmstCurrentSupply])
+    calculatedCmstCurrentSupply();
+  }, [cmstCurrentSupply]);
 
   useEffect(() => {
-    fetchTotalveHarborSupply()
-  }, [])
+    fetchTotalveHarborSupply();
+  }, []);
 
   useEffect(() => {
     if (harborSupply) {
-      calculateHarborSypply()
+      calculateHarborSypply();
     }
-  }, [harborSupply, harborCurrentSypply])
-
+  }, [harborSupply, harborCurrentSypply]);
 
   const getPrice = (denom) => {
-    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
+    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
   const calculatedCmstCurrentSupply = () => {
     let totalMintedAmount = 0;
-    cmstCurrentSupply && cmstCurrentSupply.map((item) => {
-      return totalMintedAmount = totalMintedAmount + Number(item?.mintedAmount);
-    })
+    cmstCurrentSupply &&
+      cmstCurrentSupply.map((item) => {
+        return (totalMintedAmount =
+          totalMintedAmount + Number(item?.mintedAmount));
+      });
     setCalculatedCMSTSupply(totalMintedAmount);
-  }
+  };
   const Options = {
     chart: {
       type: "pie",
@@ -181,7 +189,9 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
         data: [
           {
             name: "ATOM",
-            y: Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0),
+            y: Number(
+              totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0
+            ),
             color: "#665AA6",
           },
           {
@@ -194,7 +204,9 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
             y:
               Number(totalDollarValue || 0) -
               (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
-                Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0)),
+                Number(
+                  totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0
+                )),
             color: isDarkMode ? "#373549" : "#E0E0E0",
           },
         ],
@@ -320,7 +332,6 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
         "APR",
         "MAY",
         "JUN",
-
       ],
     },
     series: [
@@ -330,32 +341,40 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
         lineColor: "#665aa6",
         marker: false,
         data: [
-          0.01, 0.03, 0.02, 0.04, 0.03, 0.05, 0.08, 0.06, 0.09, 0.07, 0.04, 0.08, 0.1, 0.07, 0.05,
+          0.01, 0.03, 0.02, 0.04, 0.03, 0.05, 0.08, 0.06, 0.09, 0.07, 0.04,
+          0.08, 0.1, 0.07, 0.05,
         ],
       },
     ],
   };
   const harborMarketCap = () => {
     let supply = Number(amountConversion(harborCurrentSypply, DOLLAR_DECIMALS));
-    let price = Number(getPrice(harbor?.coinMinimalDenom)).toFixed(DOLLAR_DECIMALS)
+    let price = Number(getPrice(harbor?.coinMinimalDenom)).toFixed(
+      DOLLAR_DECIMALS
+    );
     let marketCap = supply * price;
-    marketCap = Number(marketCap).toFixed(DOLLAR_DECIMALS)
-    marketCap = commaSeparator(marketCap)
+    marketCap = Number(marketCap).toFixed(DOLLAR_DECIMALS);
+    marketCap = commaSeparator(marketCap);
     return marketCap || 0;
-  }
+  };
   const cmstMarketCap = () => {
-    let supply = Number(amountConversion(calculatedCMSTSupply, DOLLAR_DECIMALS));
-    let price = Number(marketPrice(markets, cmst?.coinMinimalDenom))
+    let supply = Number(
+      amountConversion(calculatedCMSTSupply, DOLLAR_DECIMALS)
+    );
+    let price = Number(marketPrice(markets, cmst?.coinMinimalDenom, assetMap[cmst?.coinMinimalDenom]?.id));
     let marketCap = supply * price;
-    marketCap = commaSeparator(marketCap)
+    marketCap = commaSeparator(marketCap);
     return marketCap || 0;
-  }
+  };
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>
         <Col className="dashboard-upper ">
           <div className="dashboard-upper-left ">
-            <div className="composite-card  earn-deposite-card" style={{ height: "97%" }}>
+            <div
+              className="composite-card  earn-deposite-card"
+              style={{ height: "97%" }}
+            >
               <div className="dashboard-statics">
                 <p className="total-value">
                   Total Value Locked{" "}
@@ -364,7 +383,10 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                   />
                 </p>
                 <h2>
-                  ${commaSeparator(Number(totalDollarValue || 0).toFixed(DOLLAR_DECIMALS))}
+                  $
+                  {commaSeparator(
+                    Number(totalDollarValue || 0).toFixed(DOLLAR_DECIMALS)
+                  )}
                 </h2>
               </div>
               <div className="totalvalues">
@@ -377,8 +399,10 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                     <h3>
                       $
                       {commaSeparator(
-                        Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0).toFixed(
-                          DOLLAR_DECIMALS)
+                        Number(
+                          totalValueLocked?.get(ibcDenoms?.uatom)
+                            ?.dollarValue || 0
+                        ).toFixed(DOLLAR_DECIMALS)
                       )}
                     </h3>
                   </div>
@@ -387,8 +411,9 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                     <h3>
                       $
                       {commaSeparator(
-                        Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0).toFixed(
-                          DOLLAR_DECIMALS)
+                        Number(
+                          totalValueLocked?.get("ucmdx")?.dollarValue || 0
+                        ).toFixed(DOLLAR_DECIMALS)
                       )}
                     </h3>
                   </div>
@@ -406,7 +431,8 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                 <div className="col1">
                   <small>CMST Price</small>
                   <h4>
-                    ${marketPrice(markets, cmst?.coinMinimalDenom)} <span>0.00%</span>
+                    ${marketPrice(markets, cmst?.coinMinimalDenom, assetMap[cmst?.coinMinimalDenom]?.id)}{" "}
+                    <span>0.00%</span>
                   </h4>
                 </div>
                 <div className="col2">
@@ -417,7 +443,13 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                     />
                   </small>
                   <p>
-                    {calculatedCMSTSupply ? amountConversionWithComma(calculatedCMSTSupply, DOLLAR_DECIMALS) : "00.00"}<span> CMST</span>
+                    {calculatedCMSTSupply
+                      ? amountConversionWithComma(
+                          calculatedCMSTSupply,
+                          DOLLAR_DECIMALS
+                        )
+                      : "00.00"}
+                    <span> CMST</span>
                   </p>
                 </div>
                 <div className="col3">
@@ -438,7 +470,11 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                   <div className="col1">
                     <small>HARBOR Price</small>
                     <h4>
-                      ${Number(getPrice(harbor?.coinMinimalDenom)).toFixed(DOLLAR_DECIMALS)}<span> 2.41%</span>
+                      $
+                      {Number(getPrice(harbor?.coinMinimalDenom)).toFixed(
+                        DOLLAR_DECIMALS
+                      )}
+                      <span> 2.41%</span>
                     </h4>
                   </div>
                   <div className="col2">
@@ -449,7 +485,10 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
                       />
                     </small>
                     <p>
-                      {harborCirculatingSupply ? commaSeparator(harborCirculatingSupply) : "00.00"}<span> HARBOR</span>
+                      {harborCirculatingSupply
+                        ? commaSeparator(harborCirculatingSupply)
+                        : "00.00"}
+                      <span> HARBOR</span>
                     </p>
                   </div>
                   <div className="col3">
@@ -479,26 +518,16 @@ const Dashboard = ({ lang, isDarkMode, markets, poolPriceMap }) => {
 Dashboard.propTypes = {
   isDarkMode: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
-  poolPriceMap: PropTypes.object,
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  assetMap: PropTypes.object,
+  markets: PropTypes.object,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     isDarkMode: state.theme.theme.darkThemeEnabled,
-    markets: state.oracle.market.list,
-    poolPriceMap: state.liquidity.poolPriceMap,
+    markets: state.oracle.market.map,
+    assetMap: state.asset.map,
   };
 };
 

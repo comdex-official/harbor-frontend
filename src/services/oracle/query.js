@@ -12,8 +12,9 @@ const getQueryService = (callback) => {
   } else {
     createQueryClient((error, client) => {
       if (error) {
-        callback(error);
+        return callback(error);
       }
+
       myClient = client;
       const queryService = new QueryClientImpl(client);
 
@@ -21,7 +22,6 @@ const getQueryService = (callback) => {
     });
   }
 };
-
 
 export const queryMarketList = (
   offset,
@@ -35,6 +35,7 @@ export const queryMarketList = (
       callback(error);
       return;
     }
+
     queryService
       .QueryMarkets({
         pagination: {
