@@ -1,46 +1,41 @@
-import { Button, Slider, message, Spin } from "antd";
+import { Button, message, Slider, Spin } from "antd";
+import Long from "long";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { setVault } from "../../../../actions/account";
+import {
+    setAmountIn,
+    setAmountOut, setAssetIn,
+    setAssetOut, setCollateralRatio, setPair
+} from "../../../../actions/asset";
+import { setExtendedPairVaultListData, setSelectedExtentedPairvault } from "../../../../actions/locker";
+import { setOwnerCurrentCollateral } from "../../../../actions/mint";
+import { setComplete } from "../../../../actions/swap";
 import { SvgIcon } from "../../../../components/common";
+import Snack from "../../../../components/common/Snack";
 import CustomInput from "../../../../components/CustomInput";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { useParams } from "react-router";
+import { comdex } from "../../../../config/network";
+import { ValidateInputNumber } from "../../../../config/_validation";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { queryPair, queryPairVault } from "../../../../services/asset/query";
+import { signAndBroadcastTransaction } from "../../../../services/helper";
+import { getTypeURL } from "../../../../services/transaction";
+import { queryUserVaultsInfo } from "../../../../services/vault/query";
 import {
-  amountConversion,
-  amountConversionWithComma,
-  getAmount,
-  getDenomBalance,
+    amountConversion,
+    amountConversionWithComma,
+    getAmount,
+    getDenomBalance
 } from "../../../../utils/coin";
+import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
 import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/string";
 import variables from "../../../../utils/variables";
 import "./index.scss";
 import PricePool from "./PricePool";
-import {
-  setPair,
-  setAssetIn,
-  setAssetOut,
-  setAmountIn,
-  setAmountOut,
-  setCollateralRatio,
-} from "../../../../actions/asset";
-import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
-import "./index.scss";
 import VaultDetails from "./VaultDetails";
-import { connect, useDispatch } from "react-redux";
-import { ValidateInputNumber } from "../../../../config/_validation";
-import { setComplete } from "../../../../actions/swap";
-import { setVault } from "../../../../actions/account";
-import { comdex } from "../../../../config/network";
-import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
-import { signAndBroadcastTransaction } from "../../../../services/helper";
-import { getTypeURL } from "../../../../services/transaction";
-import Snack from "../../../../components/common/Snack";
-import { useSelector } from "react-redux";
-import Long from "long";
-import { queryPair, queryPairVault } from "../../../../services/asset/query";
-import { setExtendedPairVaultListData, setSelectedExtentedPairvault } from "../../../../actions/locker";
-import { queryUserVaultsInfo } from "../../../../services/vault/query";
-import { setOwnerCurrentCollateral } from "../../../../actions/mint";
 
 const Mint = ({
   lang,
@@ -677,17 +672,7 @@ Mint.prototype = {
   ),
   collateralRatio: PropTypes.number,
   inAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
   outAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   pair: PropTypes.shape({
     denomIn: PropTypes.string,
@@ -748,7 +733,7 @@ const stateToProps = (state) => {
     pairs: state.asset.pairs,
     inAmount: state.asset.inAmount,
     outAmount: state.asset.outAmount,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     collateralRatio: state.asset.collateralRatio,
     balances: state.account.balances.list,
     vaults: state.account.vaults.list,

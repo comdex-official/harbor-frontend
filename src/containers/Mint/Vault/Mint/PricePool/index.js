@@ -1,25 +1,25 @@
 import { Button, List, message } from "antd";
+import Long from "long";
 import * as PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import {
-  commaSeparator,
-  decimalConversion,
-  marketPrice,
-} from "../../../../../utils/number";
-import { amountConversion, denomConversion } from "../../../../../utils/coin";
-import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../../constants/common";
-import { cmst, comdex } from "../../../../../config/network";
-import { SvgIcon } from "../../../../../components/common";
-import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
-import variables from "../../../../../utils/variables";
-import { queryUserVaultsInfo } from "../../../../../services/vault/query";
+import { setBalanceRefresh } from "../../../../../actions/account";
 import { setOwnerVaultInfo } from '../../../../../actions/locker';
 import { setOwnerCurrentCollateral } from "../../../../../actions/mint";
-import { useEffect, useState } from "react";
-import { signAndBroadcastTransaction } from "../../../../../services/helper";
-import Long from "long";
+import { SvgIcon } from "../../../../../components/common";
 import Snack from "../../../../../components/common/Snack";
-import { setBalanceRefresh } from "../../../../../actions/account";
+import { cmst, comdex } from "../../../../../config/network";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../../constants/common";
+import { signAndBroadcastTransaction } from "../../../../../services/helper";
+import { queryUserVaultsInfo } from "../../../../../services/vault/query";
+import { amountConversion, denomConversion } from "../../../../../utils/coin";
+import {
+    commaSeparator,
+    decimalConversion,
+    marketPrice
+} from "../../../../../utils/number";
+import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
+import variables from "../../../../../utils/variables";
 const PricePool = ({ setOwnerCurrentCollateral,
   ownerVaultInfo,
   markets,
@@ -261,17 +261,7 @@ PricePool.prototype = {
   address: PropTypes.string,
   refreshBalance: PropTypes.number.isRequired,
   setBalanceRefresh: PropTypes.func.isRequired,
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
   ownerVaultId: PropTypes.string,
   ownerVaultInfo: PropTypes.array,
   pair: PropTypes.shape({
@@ -286,7 +276,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     ownerVaultInfo: state.locker.ownerVaultInfo,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     pair: state.asset.pair,
     ownerVaultId: state.locker.ownerVaultId,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,

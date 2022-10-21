@@ -1,42 +1,36 @@
-import "../index.scss";
-import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../../../components/common";
-import React, { useEffect, useState } from "react";
 import { Button, message, Slider } from "antd";
-import TooltipIcon from "../../../../components/TooltipIcon";
-import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
-import { amountConversion, getDenomBalance } from "../../../../utils/coin";
-import { signAndBroadcastTransaction } from "../../../../services/helper";
-import { defaultFee } from "../../../../services/transaction";
-import { getAmount } from "../../../../utils/coin";
-import { getTypeURL } from "../../../../services/transaction";
+import Long from "long";
+import * as PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { setAccountVaults, setBalanceRefresh } from "../../../../actions/account";
+import { setPairs } from "../../../../actions/asset";
+import { setEstimatedLiquidationPrice, setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
+import { setOwnerCurrentCollateral } from "../../../../actions/mint";
+import { Col, Row, SvgIcon } from "../../../../components/common";
 import CustomInput from "../../../../components/CustomInput";
-import {
-  commaSeparator,
-  decimalConversion,
-  formatNumber,
-  marketPrice,
-  truncateToDecimals,
-} from "../../../../utils/number";
+import TooltipIcon from "../../../../components/TooltipIcon";
 import { ValidateInputNumber } from "../../../../config/_validation";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
-import { setExtendedPairVaultListData, setEstimatedLiquidationPrice } from "../../../../actions/locker";
-import {
-  queryOwnerVaults,
-  queryOwnerVaultsInfo,
-  queryUserVaultsInfo,
-} from "../../../../services/vault/query";
-import { connect } from "react-redux";
-import { setPairs } from "../../../../actions/asset";
-import { setAccountVaults } from "../../../../actions/account";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setBalanceRefresh } from "../../../../actions/account";
-import { setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
-import { useParams } from "react-router";
-import Long from "long";
 import { queryPairVault } from "../../../../services/asset/query";
-import { setOwnerCurrentCollateral } from "../../../../actions/mint";
+import { signAndBroadcastTransaction } from "../../../../services/helper";
+import { defaultFee, getTypeURL } from "../../../../services/transaction";
+import {
+    queryOwnerVaults,
+    queryOwnerVaultsInfo,
+    queryUserVaultsInfo
+} from "../../../../services/vault/query";
+import { amountConversion, getAmount, getDenomBalance } from "../../../../utils/coin";
+import {
+    commaSeparator,
+    decimalConversion,
+    formatNumber,
+    marketPrice,
+    truncateToDecimals
+} from "../../../../utils/number";
+import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
+import "../index.scss";
 
 const Edit = ({
   address,
@@ -783,7 +777,7 @@ const stateToProps = (state) => {
     pair: state.asset.pair,
     pairs: state.asset.pairs,
     refreshBalance: state.account.refreshBalance,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,
     ownerVaultInfo: state.locker.ownerVaultInfo,

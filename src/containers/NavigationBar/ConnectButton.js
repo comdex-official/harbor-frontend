@@ -185,17 +185,7 @@ ConnectButton.propTypes = {
       amount: PropTypes.string,
     })
   ),
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
   poolBalances: PropTypes.array,
   pools: PropTypes.arrayOf(
     PropTypes.shape({
@@ -217,7 +207,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     show: state.account.showModal,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     refreshBalance: state.account.refreshBalance,
     poolBalances: state.liquidity.poolBalances,
     pools: state.liquidity.pool.list,

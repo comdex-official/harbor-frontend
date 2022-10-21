@@ -31,17 +31,15 @@ export const truncateToDecimals = (num, dec = 2) => {
   return Math.trunc(num * calcDec) / calcDec;
 };
 
-export const marketPrice = (array, denom, assetId) => {
-  const value = array.filter(
-    (item) => item.assetId?.toNumber() === assetId?.toNumber()
-  );
+export const marketPrice = (marketsMap, denom, assetId) => {
+  const value = marketsMap[assetId];
 
   if (denom === "ucmst") {
     return 1;
   }
 
-  if (value && value[0]) {
-    return value[0] && value[0]?.twa?.toNumber() /1000000;;
+  if (value && value?.twa) {
+    return value?.twa?.toNumber() / 1000000;
   }
 
   return 0;

@@ -1,13 +1,13 @@
 import * as PropTypes from "prop-types";
-import { useNavigate } from "react-router";
 import React, { useEffect, useState } from "react";
-import variables from "../utils/variables";
-import { amountConversionWithComma, denomConversion } from "../utils/coin";
-import { SvgIcon } from "./common";
 import { connect, useDispatch } from "react-redux";
-import { iconNameFromDenom } from "../utils/string";
+import { useNavigate } from "react-router";
+import { queryLiquidityPair } from "../services/liquidity/query";
+import { amountConversionWithComma, denomConversion } from "../utils/coin";
 import { marketPrice } from "../utils/number";
-import {queryLiquidityPair} from "../services/liquidity/query";
+import { iconNameFromDenom } from "../utils/string";
+import variables from "../utils/variables";
+import { SvgIcon } from "./common";
 
 const PoolCard = ({ lang, pool, markets }) => {
   const navigate = useNavigate();
@@ -80,17 +80,7 @@ const PoolCard = ({ lang, pool, markets }) => {
 
 PoolCard.propTypes = {
   lang: PropTypes.string,
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
   pool: PropTypes.shape({
     id: PropTypes.shape({
       high: PropTypes.number,
@@ -106,7 +96,7 @@ PoolCard.propTypes = {
 
 const stateToProps = (state) => {
   return {
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
   };
 };
 

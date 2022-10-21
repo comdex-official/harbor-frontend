@@ -9,8 +9,8 @@ import TooltipIcon from "../../components/TooltipIcon";
 import { cmst, harbor, ibcDenoms } from "../../config/network";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import {
-  fetchProposalUpData,
-  totalveHarborSupply
+    fetchProposalUpData,
+    totalveHarborSupply
 } from "../../services/contractsRead";
 import { queryAppTVL, queryTotalTokenMinted } from "../../services/vault/query";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
@@ -518,24 +518,14 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
 Dashboard.propTypes = {
   isDarkMode: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     isDarkMode: state.theme.theme.darkThemeEnabled,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
   };
 };
 

@@ -143,7 +143,6 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
   ];
 
   const getPrice = (denom) => {
-    console.log('the denom', denom, assetMap, markets, assetMap[denom])
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
 
@@ -327,17 +326,7 @@ Assets.propTypes = {
       amount: PropTypes.string,
     })
   ),
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -345,7 +334,7 @@ const stateToProps = (state) => {
     lang: state.language,
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     refreshBalance: state.account.refreshBalance,
     assetMap: state.asset.map,
   };
