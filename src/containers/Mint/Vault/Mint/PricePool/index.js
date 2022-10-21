@@ -14,9 +14,9 @@ import { signAndBroadcastTransaction } from "../../../../../services/helper";
 import { queryUserVaultsInfo } from "../../../../../services/vault/query";
 import { amountConversion, denomConversion } from "../../../../../utils/coin";
 import {
-    commaSeparator,
-    decimalConversion,
-    marketPrice
+  commaSeparator,
+  decimalConversion,
+  marketPrice
 } from "../../../../../utils/number";
 import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
 import variables from "../../../../../utils/variables";
@@ -31,6 +31,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
   address,
   setBalanceRefresh,
   refreshBalance,
+  assetMap,
 }) => {
 
   const dispatch = useDispatch();
@@ -39,10 +40,10 @@ const PricePool = ({ setOwnerCurrentCollateral,
   );
   const collateralDeposited =
     Number(amountConversion(ownerVaultInfo?.amountIn)) *
-    marketPrice(markets, pair?.denomIn);
+    marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
   const withdrawn =
     Number(amountConversion(ownerVaultInfo?.amountOut)) *
-    marketPrice(markets, pair?.denomOut);
+    marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
 
   const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
   const borrowed = Number(amountConversion(ownerVaultInfo?.amountOut || 0));
@@ -224,7 +225,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
               {" "}
               $
               {commaSeparator(
-                Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
+                Number(marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id) || 0).toFixed(
                   DOLLAR_DECIMALS
                 )
               )}
@@ -262,6 +263,7 @@ PricePool.prototype = {
   refreshBalance: PropTypes.number.isRequired,
   setBalanceRefresh: PropTypes.func.isRequired,
   markets: PropTypes.object,
+  assetMap: PropTypes.object,
   ownerVaultId: PropTypes.string,
   ownerVaultInfo: PropTypes.array,
   pair: PropTypes.shape({
@@ -281,6 +283,7 @@ const stateToProps = (state) => {
     ownerVaultId: state.locker.ownerVaultId,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
     refreshBalance: state.account.refreshBalance,
+    assetMap: state.asset.map,
   };
 };
 const actionsToProps = {

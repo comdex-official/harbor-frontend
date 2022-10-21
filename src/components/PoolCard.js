@@ -9,39 +9,44 @@ import { iconNameFromDenom } from "../utils/string";
 import variables from "../utils/variables";
 import { SvgIcon } from "./common";
 
-const PoolCard = ({ lang, pool, markets }) => {
+const PoolCard = ({ lang, pool, markets, assetMap }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [pair, setPair] = useState();
 
   useEffect(() => {
-    if(pool?.pairId) {
+    if (pool?.pairId) {
       queryLiquidityPair(pool?.pairId, (error, result) => {
         if (!error) {
-          setPair(result?.pair)
+          setPair(result?.pair);
         }
-      })
+      });
     }
-
   }, [pool]);
-
 
   const calculatePoolLiquidity = (poolBalance) => {
     if (poolBalance && poolBalance.length > 0) {
-      const values = poolBalance.map((item) => Number(item?.amount) * marketPrice(markets, item?.denom));
+      const values = poolBalance.map(
+        (item) =>
+          Number(item?.amount) *
+          marketPrice(markets, item?.denom, assetMap[item?.denom]?.id)
+      );
       return values.reduce((prev, next) => prev + next, 0); // returning sum value
-
     } else return 0;
   };
 
+  const TotalPoolLiquidity = amountConversionWithComma(
+    calculatePoolLiquidity(pool?.balances),
+    2
+  );
 
-  const TotalPoolLiquidity = amountConversionWithComma(calculatePoolLiquidity(pool?.balances), 2);
-
-  const showPairDenoms =()=>{
-    if(pair?.baseCoinDenom){
-      return `${denomConversion(pair?.baseCoinDenom)}/${denomConversion(pair?.quoteCoinDenom)}`
+  const showPairDenoms = () => {
+    if (pair?.baseCoinDenom) {
+      return `${denomConversion(pair?.baseCoinDenom)}/${denomConversion(
+        pair?.quoteCoinDenom
+      )}`;
     }
-  }
+  };
 
   return (
     <div className="dashboard-bottom-card-border">
@@ -52,7 +57,10 @@ const PoolCard = ({ lang, pool, markets }) => {
             <div className="card-svg-icon-container">
               <div className="card-svgicon card-svgicon-1">
                 <div className="card-svgicon-inner">
-                  <SvgIcon name={iconNameFromDenom(pair?.baseCoinDenom)} viewBox="0 0 23.515 31" />{" "}
+                  <SvgIcon
+                    name={iconNameFromDenom(pair?.baseCoinDenom)}
+                    viewBox="0 0 23.515 31"
+                  />{" "}
                 </div>
               </div>
               <div className="card-svgicon  card-svgicon-2">
@@ -79,6 +87,7 @@ const PoolCard = ({ lang, pool, markets }) => {
 };
 
 PoolCard.propTypes = {
+  assetMap: PropTypes.object,
   lang: PropTypes.string,
   markets: PropTypes.object,
   pool: PropTypes.shape({
@@ -97,6 +106,7 @@ PoolCard.propTypes = {
 const stateToProps = (state) => {
   return {
     markets: state.oracle.market.map,
+    assetMap: state.asset.map,
   };
 };
 

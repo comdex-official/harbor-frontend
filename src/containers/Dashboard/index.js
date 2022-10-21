@@ -9,8 +9,8 @@ import TooltipIcon from "../../components/TooltipIcon";
 import { cmst, harbor, ibcDenoms } from "../../config/network";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import {
-    fetchProposalUpData,
-    totalveHarborSupply
+  fetchProposalUpData,
+  totalveHarborSupply
 } from "../../services/contractsRead";
 import { queryAppTVL, queryTotalTokenMinted } from "../../services/vault/query";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
@@ -19,7 +19,7 @@ import variables from "../../utils/variables";
 import Banner from "./Banner";
 import "./index.scss";
 
-const Dashboard = ({ lang, isDarkMode, markets }) => {
+const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
   const [harborSupply, setHarborSupply] = useState(0);
@@ -63,7 +63,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
           uniqueVaults?.map((item) => {
             let value =
               Number(amountConversion(item.collateralLockedAmount)) *
-              marketPrice(markets, item?.assetDenom);
+              marketPrice(markets, item?.assetDenom, assetMap[item?.assetDenom]?.id);
             total += value;
             item.dollarValue = value;
             return [item.assetDenom, item];
@@ -139,7 +139,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
   }, [harborSupply, harborCurrentSypply]);
 
   const getPrice = (denom) => {
-    return marketPrice(markets, denom) || 0;
+    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
   const calculatedCmstCurrentSupply = () => {
     let totalMintedAmount = 0;
@@ -361,7 +361,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
     let supply = Number(
       amountConversion(calculatedCMSTSupply, DOLLAR_DECIMALS)
     );
-    let price = Number(marketPrice(markets, cmst?.coinMinimalDenom));
+    let price = Number(marketPrice(markets, cmst?.coinMinimalDenom, assetMap[cmst?.coinMinimalDenom]?.id));
     let marketCap = supply * price;
     marketCap = commaSeparator(marketCap);
     return marketCap || 0;
@@ -431,7 +431,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
                 <div className="col1">
                   <small>CMST Price</small>
                   <h4>
-                    ${marketPrice(markets, cmst?.coinMinimalDenom)}{" "}
+                    ${marketPrice(markets, cmst?.coinMinimalDenom, assetMap[cmst?.coinMinimalDenom]?.id)}{" "}
                     <span>0.00%</span>
                   </h4>
                 </div>
@@ -518,6 +518,7 @@ const Dashboard = ({ lang, isDarkMode, markets }) => {
 Dashboard.propTypes = {
   isDarkMode: PropTypes.bool.isRequired,
   lang: PropTypes.string.isRequired,
+  assetMap: PropTypes.object,
   markets: PropTypes.object,
 };
 
@@ -526,6 +527,7 @@ const stateToProps = (state) => {
     lang: state.language,
     isDarkMode: state.theme.theme.darkThemeEnabled,
     markets: state.oracle.market.map,
+    assetMap: state.asset.map,
   };
 };
 

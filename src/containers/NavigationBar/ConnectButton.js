@@ -38,6 +38,7 @@ const ConnectButton = ({
   poolBalances,
   setAccountName,
   balances,
+  assetMap,
 }) => {
   const dispatch = useDispatch();
 
@@ -65,7 +66,7 @@ const ConnectButton = ({
   }, []);
 
   const getPrice = (denom) => {
-    return marketPrice(markets, denom) || 0;
+    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
 
   const calculateAssetBalance = useCallback(
@@ -179,6 +180,7 @@ ConnectButton.propTypes = {
   setMarkets: PropTypes.func.isRequired,
   setPoolBalance: PropTypes.func.isRequired,
   address: PropTypes.string,
+  assetMap: PropTypes.object,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -212,6 +214,7 @@ const stateToProps = (state) => {
     poolBalances: state.liquidity.poolBalances,
     pools: state.liquidity.pool.list,
     balances: state.account.balances.list,
+    assetMap: state.asset.map,
   };
 };
 

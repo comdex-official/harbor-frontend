@@ -17,17 +17,17 @@ import { queryPairVault } from "../../../../services/asset/query";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee, getTypeURL } from "../../../../services/transaction";
 import {
-    queryOwnerVaults,
-    queryOwnerVaultsInfo,
-    queryUserVaultsInfo
+  queryOwnerVaults,
+  queryOwnerVaultsInfo,
+  queryUserVaultsInfo
 } from "../../../../services/vault/query";
 import { amountConversion, getAmount, getDenomBalance } from "../../../../utils/coin";
 import {
-    commaSeparator,
-    decimalConversion,
-    formatNumber,
-    marketPrice,
-    truncateToDecimals
+  commaSeparator,
+  decimalConversion,
+  formatNumber,
+  marketPrice,
+  truncateToDecimals
 } from "../../../../utils/number";
 import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
 import "../index.scss";
@@ -45,6 +45,7 @@ const Edit = ({
   refreshBalance,
   balances,
   setEstimatedLiquidationPrice,
+  assetMap,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -131,9 +132,9 @@ const Edit = ({
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
 
-  const collateralPrice = marketPrice(markets, pair?.denomIn);
+  const collateralPrice = marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
 
-  const debtPrice = marketPrice(markets, pair?.denomOut);
+  const debtPrice = marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
 
   const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
 
@@ -743,6 +744,7 @@ Edit.propTypes = {
   setBalanceRefresh: PropTypes.func.isRequired,
   refreshBalance: PropTypes.number.isRequired,
   address: PropTypes.string,
+  assetMap: PropTypes.object,
   pair: PropTypes.shape({
     denomIn: PropTypes.string,
     denomOut: PropTypes.string,
@@ -781,6 +783,7 @@ const stateToProps = (state) => {
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,
     ownerVaultInfo: state.locker.ownerVaultInfo,
+    assetMap: state.asset.map,
   };
 };
 
