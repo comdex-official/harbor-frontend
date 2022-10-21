@@ -96,7 +96,7 @@ const assetList = (state = "", action) => {
   return state;
 };
 
-const assetMap = (state = {}, action) => {
+const map = (state = {}, action) => {
   if (action.type === SET_ASSET_LIST) {
     return action.map;
   }
@@ -123,5 +123,5 @@ export default combineReducers({
   outAmount,
   assetList,
   collateralRatio,
-  assetMap,
+  map,
 });

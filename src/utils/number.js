@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
 import { DOLLAR_DECIMALS } from "../constants/common";
-import { minimalDenomToDenom } from "./string";
 
 export const formatNumber = (number) => {
   if (number >= 1000 && number < 1000000) {
@@ -32,9 +31,9 @@ export const truncateToDecimals = (num, dec = 2) => {
   return Math.trunc(num * calcDec) / calcDec;
 };
 
-export const marketPrice = (array, denom) => {
+export const marketPrice = (array, denom, assetId) => {
   const value = array.filter(
-    (item) => item.symbol === minimalDenomToDenom(denom)
+    (item) => item.assetId?.toNumber() === assetId?.toNumber()
   );
 
   if (denom === "ucmst") {
@@ -42,7 +41,7 @@ export const marketPrice = (array, denom) => {
   }
 
   if (value && value[0]) {
-    return value[0] && value[0].current_price;
+    return value[0] && value[0]?.twa?.toNumber() /1000000;;
   }
 
   return 0;

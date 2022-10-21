@@ -21,7 +21,7 @@ import Deposit from "./Deposit";
 import "./index.scss";
 import Withdraw from "./Withdraw";
 
-const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap }) => {
   const dispatch = useDispatch();
 
   const handleBalanceRefresh = () => {
@@ -143,7 +143,8 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance }) => {
   ];
 
   const getPrice = (denom) => {
-    return marketPrice(markets, denom) || 0;
+    console.log('the denom', denom, assetMap, markets, assetMap[denom])
+    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
 
   let ibcBalances = AssetList?.tokens.map((token) => {
@@ -319,6 +320,7 @@ Assets.propTypes = {
   lang: PropTypes.string.isRequired,
   assetBalance: PropTypes.number,
   refreshBalance: PropTypes.number.isRequired,
+  assetMap: PropTypes.object,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -345,6 +347,7 @@ const stateToProps = (state) => {
     balances: state.account.balances.list,
     markets: state.oracle.market.list,
     refreshBalance: state.account.refreshBalance,
+    assetMap: state.asset.map,
   };
 };
 

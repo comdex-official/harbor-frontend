@@ -73,7 +73,7 @@ export const setAssets = (list, pagination) => {
 
 export const setAssetList = (list) => {
   const assetHashMap = list.reduce((map, obj) => {
-    map[obj?.id] = obj;
+    map[obj?.denom] = obj;
     return map;
   }, {});
 
