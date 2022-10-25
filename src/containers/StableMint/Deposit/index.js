@@ -352,7 +352,7 @@ const Deposit = ({
             address, "address",
             PRODUCT_ID, "appId",
             selectedExtentedPairVaultListData[0]?.id?.low, "extendedPairVaultId",
-            getAmount(inAmount, selectedIBCAsset[0]?.coinDecimals), "amount",
+            getAmount(inAmount, assetMap[pair && pair?.denomIn]?.decimals.toNumber()), "amount",
             psmLockedAndMintedData?.id?.low, "stbale vault id"
         );
         signAndBroadcastTransaction(
@@ -363,7 +363,7 @@ const Deposit = ({
                         from: address,
                         appId: Long.fromNumber(PRODUCT_ID),
                         extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
-                        amount: getAmount(inAmount, selectedIBCAsset[0]?.coinDecimals),
+                        amount: getAmount(inAmount, assetMap[pair && pair?.denomIn]?.decimals.toNumber()),
                         stableVaultId: Long.fromNumber(psmLockedAndMintedData?.id?.low),
                     },
                 },

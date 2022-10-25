@@ -37,6 +37,15 @@ export const marketPrice = (marketsMap, denom, assetId) => {
   if (denom === "ucmst") {
     return 1;
   }
+  if (denom === "weth-wei") {
+    return 1297119384 / 1000000;
+  }
+  if (denom === "uosmo") {
+    return 1000000 / 1000000;
+  }
+  if (denom === "ucmdx") {
+    return 1000000 / 1000000;
+  }
 
   if (value && value?.twa) {
     return value?.twa?.toNumber() / 1000000;
@@ -49,7 +58,7 @@ export const calculateROI = (principal, interestRate, years, months, days) => {
   const earns =
     Number(principal) *
     (1 + Number(interestRate) / 100) **
-      (Number(years) + Number(months) / 12 + Number(days) / 365);
+    (Number(years) + Number(months) / 12 + Number(days) / 365);
   if (earns) {
     return earns.toFixed(DOLLAR_DECIMALS);
   } else {

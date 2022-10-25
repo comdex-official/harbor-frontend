@@ -355,7 +355,7 @@ const Deposit = ({
             address, "address",
             PRODUCT_ID, "appId",
             selectedExtentedPairVaultListData[0]?.id?.low, "extendedPairVaultId",
-            getAmount(inAmount, selectedIBCAsset[0]?.coinDecimals), "amount",
+            getAmount(inAmount, assetMap[pair && pair?.denomOut]?.decimals.toNumber()), "amount",
             psmLockedAndMintedData?.id?.low, "stbale vault id"
         );
         signAndBroadcastTransaction(
@@ -366,7 +366,7 @@ const Deposit = ({
                         from: address,
                         appId: Long.fromNumber(PRODUCT_ID),
                         extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
-                        amount: getAmount(inAmount, selectedIBCAsset[0]?.coinDecimals),
+                        amount: getAmount(inAmount, assetMap[pair && pair?.denomOut]?.decimals.toNumber()),
                         stableVaultId: Long.fromNumber(psmLockedAndMintedData?.id?.low),
                     },
                 },
@@ -441,7 +441,7 @@ const Deposit = ({
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals.toNumber())} {denomConversion(pair?.denomOut)}
+                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals.toNumber())} {denomConversion(pair?.denomOut)}
                                 </span>
                                 <div className="maxhalf">
                                     <Button className="active" onClick={() => handleInputMax()}>

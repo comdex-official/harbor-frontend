@@ -3,10 +3,10 @@ import { commaSeparator } from "./number";
 import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
 
 export const getAmount = (selectedAmount, chainDecimals) =>
-  (selectedAmount * (10 ** chainDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
+  (selectedAmount * (chainDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
 
 export const amountConversionWithComma = (amount, decimals, chainDecimals) => {
-  const result = Number(amount) / ( chainDecimals || 10 ** comdex.coinDecimals);
+  const result = Number(amount) / (chainDecimals || 10 ** comdex.coinDecimals);
 
   return commaSeparator(result.toFixed(decimals || comdex.coinDecimals));
 };
