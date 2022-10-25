@@ -37,6 +37,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
     address,
     setBalanceRefresh,
     refreshBalance,
+    assetMap,
 }) => {
     const { pathVaultId } = useParams();
 
@@ -50,12 +51,6 @@ const PricePool = ({ setOwnerCurrentCollateral,
         (state) => state.stableMint.lockAndMintedData
     );
 
-    const collateralDeposited =
-        Number(amountConversion(ownerVaultInfo?.amountIn)) *
-        marketPrice(markets, pair?.denomIn);
-    const withdrawn =
-        Number(amountConversion(ownerVaultInfo?.amountOut)) *
-        marketPrice(markets, pair?.denomOut);
 
     const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
     const borrowed = Number(amountConversion(ownerVaultInfo?.amountOut || 0));
@@ -81,9 +76,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             dispatch(setLockAndMintedData(data?.stableMintVault))
         })
     }
-    console.log(selectedExtendedPairVaultListData, "selectedExtendedPairVaultListData");
-    console.log(pathVaultId, "Path id");
-    console.log(psmLockedAndMintedData, "psmLockedAndMintedData");
+
     useEffect(() => {
         fetchStableVaultStatistic(pathVaultId)
     }, [address, refreshBalance])
@@ -174,7 +167,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             title: `Total ${denomToSymbol(pair?.denomIn) || "Loading..."} locked in Stablemint`,
             counts: (
                 <div>
-                    {amountConversionWithComma(psmLockedAndMintedData?.amountIn || 0, comdex?.coinDecimals, selectedIBCAsset[0]?.coinDecimals)}
+                    {amountConversionWithComma(psmLockedAndMintedData?.amountIn || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals.toNumber())}
                     <span className="small-text">
                         {denomToSymbol(pair && pair?.denomIn)}
                     </span>
@@ -186,7 +179,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             counts: (
                 <div className="collateral-deposit-main-box">
                     <div className="collateral-deposit-up-box">
-                        {amountConversionWithComma(selectedExtendedPairVaultListData?.debtCeiling || 0, DOLLAR_DECIMALS)}
+                        {amountConversionWithComma(selectedExtendedPairVaultListData?.debtCeiling || 0, DOLLAR_DECIMALS, assetMap[pair && pair?.denomOut]?.decimals.toNumber())}
                         <span className="small-text">
                             {denomToSymbol(pair && pair?.denomOut)}
                         </span>
@@ -198,7 +191,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             title: `Total ${denomToSymbol(pair && pair?.denomOut) || "Loading..."}  minted`,
             counts: (
                 <>
-                    {amountConversionWithComma(psmLockedAndMintedData?.amountOut || 0, comdex?.coinDecimals, selectedIBCAssetForDenomOut[0]?.coinDecimals)}
+                    {amountConversionWithComma(psmLockedAndMintedData?.amountOut || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals.toNumber())}
                     <span className="small-text">
                         {denomToSymbol(pair && pair?.denomOut)}
                     </span>
@@ -235,7 +228,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
                             {" "}
                             $
                             {commaSeparator(
-                                Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
+                                Number(marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id?.low) || 0).toFixed(
                                     DOLLAR_DECIMALS
                                 )
                             )}
@@ -272,17 +265,7 @@ PricePool.prototype = {
     address: PropTypes.string,
     refreshBalance: PropTypes.number.isRequired,
     setBalanceRefresh: PropTypes.func.isRequired,
-    markets: PropTypes.arrayOf(
-        PropTypes.shape({
-            rates: PropTypes.shape({
-                high: PropTypes.number,
-                low: PropTypes.number,
-                unsigned: PropTypes.bool,
-            }),
-            symbol: PropTypes.string,
-            script_id: PropTypes.string,
-        })
-    ),
+    markets: PropTypes.object,
     ownerVaultId: PropTypes.string,
     ownerVaultInfo: PropTypes.array,
     pair: PropTypes.shape({
@@ -290,6 +273,7 @@ PricePool.prototype = {
         denomOut: PropTypes.string,
     }),
     ownerCurrrentCollateral: PropTypes.number.isRequired,
+    assetMap: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -297,7 +281,8 @@ const stateToProps = (state) => {
         lang: state.language,
         address: state.account.address,
         ownerVaultInfo: state.locker.ownerVaultInfo,
-        markets: state.oracle.market.list,
+        markets: state.oracle.market.map,
+        assetMap: state.asset.map,
         pair: state.asset.pair,
         ownerVaultId: state.locker.ownerVaultId,
         ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,

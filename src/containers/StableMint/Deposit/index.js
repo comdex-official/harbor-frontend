@@ -74,19 +74,15 @@ const Deposit = ({
     setCollectorData,
     pair,
     setPair,
+    assetMap,
 }) => {
     const { pathVaultId } = useParams();
-
     // New 
     const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
     const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
     const psmLockedAndMintedData = useSelector((state) => state.stableMint.lockAndMintedData);
     const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomIn));
-
-    console.log(selectedExtentedPairVaultListData, "selectedExtentedPairVaultListData");
-    console.log(pairId, "pairId");
-    console.log(pair, "pair");
-    console.log(selectedIBCAsset, "selectedIBCAsset");
+    const drawDownFee = decimalConversion(selectedExtentedPairVaultListData[0]?.drawDownFee) * 100 || "0"
 
 
     const dispatch = useDispatch();
@@ -282,6 +278,22 @@ const Deposit = ({
         }
     };
 
+    const calculateDrawdown = (userAmount, fee) => {
+        console.log(userAmount, "userAmount");
+        console.log(fee, "fee");
+        let drawDownFee = fee;
+        let amount = userAmount;
+        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(6);
+        return calculatePercentage;
+    }
+    const calcutlateCMSTToBeMinted = (userAmount, fee) => {
+        let drawDownFee = fee;
+        let amount = userAmount;
+        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(6);
+        let calculateCMSTToBeMinted = amount - calculatePercentage;
+        return calculateCMSTToBeMinted
+    }
+
     const handleSubmitCreateLocker = () => {
         if (!address) {
             message.error("Address not found, please connect to Keplr");
@@ -426,7 +438,7 @@ const Deposit = ({
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, selectedIBCAsset[0]?.coinDecimals)} {denomConversion(pair?.denomIn)}
+                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals.toNumber())} {denomConversion(pair?.denomIn)}
                                 </span>
                                 <div className="maxhalf">
                                     <Button className="active" onClick={() => handleInputMax()}>
@@ -439,6 +451,7 @@ const Deposit = ({
                                     value={inAmount}
                                     onChange={(event) => {
                                         handleFirstInputChange(event.target.value);
+                                        calculateDrawdown(inAmount, drawDownFee)
                                     }}
                                     validationError={inputValidationError}
                                 // disabled={true}
@@ -450,12 +463,22 @@ const Deposit = ({
 
                     <div className="interest-rate-container mt-4">
                         <Row>
-                            <div className="title">Current Reward Rate</div>
-                            <div className="value"> {collectorInfo?.lockerSavingRate
-                                ? Number(
-                                    decimalConversion(collectorInfo?.lockerSavingRate) * 100
-                                ).toFixed(DOLLAR_DECIMALS)
-                                : Number().toFixed(DOLLAR_DECIMALS)}%</div>
+                            <div className="title">Calculated Drawdown Amount</div>
+                            <div className="value">
+
+                                {calculateDrawdown(inAmount, drawDownFee)}
+                                {' '}
+                                {denomToSymbol(pair?.denomIn)}
+
+                            </div>
+                        </Row>
+                        <Row>
+                            <div className="title">CMST to be minted</div>
+                            <div className="value">
+                                {calcutlateCMSTToBeMinted(inAmount, drawDownFee)}
+                                {" "}
+                                {denomToSymbol(pair?.denomOut)}
+                            </div>
                         </Row>
                     </div>
 
@@ -540,6 +563,7 @@ Deposit.propTypes = {
         denomIn: PropTypes.string,
         denomOut: PropTypes.string,
     }),
+    assetMap: PropTypes.object,
 };
 const stateToProps = (state) => {
     return {
@@ -552,6 +576,7 @@ const stateToProps = (state) => {
         whiteListedAsset: state.locker.whiteListedAssetById.list,
         refreshBalance: state.account.refreshBalance,
         ownerLockerInfo: state.locker.ownerVaultInfo,
+        assetMap: state.asset.map,
     };
 };
 

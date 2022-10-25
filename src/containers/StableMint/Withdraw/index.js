@@ -74,6 +74,7 @@ const Deposit = ({
     setCollectorData,
     pair,
     setPair,
+    assetMap
 }) => {
     const { pathVaultId } = useParams();
 
@@ -81,9 +82,8 @@ const Deposit = ({
     const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
     const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
     const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomOut));
-    console.log(selectedExtentedPairVaultListData, "selectedExtentedPairVaultListData");
-    console.log(pairId, "pairId");
-    console.log(pair, "pair");
+    const drawDownFee = decimalConversion(selectedExtentedPairVaultListData[0]?.drawDownFee) * 100 || "0"
+
 
 
     const dispatch = useDispatch();
@@ -279,6 +279,23 @@ const Deposit = ({
         }
     };
 
+
+    const calculateDrawdown = (userAmount, fee) => {
+        console.log(userAmount, "userAmount");
+        console.log(fee, "fee");
+        let drawDownFee = fee;
+        let amount = userAmount;
+        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(6);
+        return calculatePercentage;
+    }
+    const calcutlateCMSTToBeBurned = (userAmount, fee) => {
+        let drawDownFee = fee;
+        let amount = userAmount;
+        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(6);
+        let calculateCMSTToBeMinted = amount - calculatePercentage;
+        return calculateCMSTToBeMinted
+    }
+
     const handleSubmitCreateLocker = () => {
         if (!address) {
             message.error("Address not found, please connect to Keplr");
@@ -424,7 +441,7 @@ const Deposit = ({
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, selectedIBCAsset[0]?.coinDecimals)} {denomConversion(pair?.denomOut)}
+                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals.toNumber())} {denomConversion(pair?.denomOut)}
                                 </span>
                                 <div className="maxhalf">
                                     <Button className="active" onClick={() => handleInputMax()}>
@@ -447,12 +464,22 @@ const Deposit = ({
 
                     <div className="interest-rate-container mt-4">
                         <Row>
-                            <div className="title">Current Reward Rate</div>
-                            <div className="value"> {collectorInfo?.lockerSavingRate
-                                ? Number(
-                                    decimalConversion(collectorInfo?.lockerSavingRate) * 100
-                                ).toFixed(DOLLAR_DECIMALS)
-                                : Number().toFixed(DOLLAR_DECIMALS)}%</div>
+                            <div className="title">Calculated Drawdown Amount</div>
+                            <div className="value">
+
+                                {calculateDrawdown(inAmount, drawDownFee)}
+                                {' '}
+                                {denomToSymbol(pair?.denomOut)}
+
+                            </div>
+                        </Row>
+                        <Row>
+                            <div className="title">User asset -----</div>
+                            <div className="value">
+                                {calcutlateCMSTToBeBurned(inAmount, drawDownFee)}
+                                {" "}
+                                {denomToSymbol(pair?.denomIn)}
+                            </div>
                         </Row>
                     </div>
 
@@ -537,6 +564,7 @@ Deposit.propTypes = {
         denomIn: PropTypes.string,
         denomOut: PropTypes.string,
     }),
+    assetMap: PropTypes.object,
 };
 const stateToProps = (state) => {
     return {
@@ -549,6 +577,7 @@ const stateToProps = (state) => {
         whiteListedAsset: state.locker.whiteListedAssetById.list,
         refreshBalance: state.account.refreshBalance,
         ownerLockerInfo: state.locker.ownerVaultInfo,
+        assetMap: state.asset.map,
     };
 };
 

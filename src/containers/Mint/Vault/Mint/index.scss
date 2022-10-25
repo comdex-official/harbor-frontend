@@ -196,4 +196,27 @@
   width: 100% !important;
   padding-left: 15px !important;
   padding: 10px 15px 15px 15px;
+  height: 100%;
+  @media only screen and (max-width: 960px) {
+    height: max-content;
+  }
+  .composite-card {
+    margin-top: 2rem;
+    height: 100%;
+    .ant-list {
+      height: 100%;
+      .ant-list-item h3 {
+        font-size: 1.3rem !important;
+      }
+      .ant-spin-nested-loading {
+        height: 100%;
+        .ant-spin-container {
+          height: 100%;
+          .ant-row {
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
 }

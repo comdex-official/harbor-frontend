@@ -40,7 +40,6 @@ const StableMint = ({
         (state) => state.stableMint.stableMintVaultList
     );
 
-    console.log(stableMintExtenedPairVaultList, "stableMintExtenedPairVaultList");
 
     const [loading, setLoading] = useState(false);
     const [vaultDebt, setVaultDebt] = useState([])
@@ -52,14 +51,11 @@ const StableMint = ({
     const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
         setLoading(true);
         queryStableMintExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
-            // queryExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
             setLoading(false);
             if (error) {
-                console.log(error);
                 message.error(error);
                 return;
             }
-            console.log(data);
             dispatch(setStableMintVaultList(data?.extendedPair));
             setTotalExtendedPair(data?.pagination?.total?.low)
         });
@@ -153,23 +149,6 @@ const StableMint = ({
                                                         </div>
                                                     </div>
                                                     <div className="bottom-container">
-                                                        {/* <div className="contenet-container">
-                                                            <div className="name">
-                                                                Min. Collateralization Ratio{" "}
-                                                                <TooltipIcon text="Minimum collateral ratio at which Composite should be minted" />
-                                                            </div>
-                                                            <div className="value">
-                                                                {(decimalConversion(item?.minCr) * 100).toFixed(2)} %
-                                                            </div>
-                                                        </div> */}
-                                                        {/* <div className="contenet-container">
-                                                            <div className="name">
-                                                                Stability Fee <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
-                                                            </div>
-                                                            <div className="value">
-                                                                {(decimalConversion(item?.stabilityFee) * 100).toFixed(2)} %
-                                                            </div>
-                                                        </div> */}
                                                         <div className="contenet-container">
                                                             <div className="name">
                                                                 Min. Borrow Amount <TooltipIcon text="Minimum Composite that should be borrowed for any active vault" />
