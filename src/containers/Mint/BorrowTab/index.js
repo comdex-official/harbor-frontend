@@ -1,15 +1,12 @@
 import * as PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { setVault } from "../../../actions/account";
 import {
-  setPair,
-  setAssetIn,
-  setAssetOut,
-  setAmountIn,
-  setAmountOut,
-  setCollateralRatio,
+    setAmountIn,
+    setAmountOut, setAssetIn,
+    setAssetOut, setCollateralRatio, setPair
 } from "../../../actions/asset";
 import { setComplete } from "../../../actions/swap";
-import { setVault } from "../../../actions/account";
 import BorrowTab from "./Tab";
 
 BorrowTab.propTypes = {
@@ -31,17 +28,7 @@ BorrowTab.propTypes = {
   ),
   collateralRatio: PropTypes.number,
   inAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
   outAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   pair: PropTypes.shape({
     denomIn: PropTypes.string,
@@ -100,7 +87,7 @@ const stateToProps = (state) => {
     pairs: state.asset.pairs,
     inAmount: state.asset.inAmount,
     outAmount: state.asset.outAmount,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     collateralRatio: state.asset.collateralRatio,
     balances: state.account.balances.list,
     vaults: state.account.vaults.list,

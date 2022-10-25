@@ -1,47 +1,43 @@
-import { Button, Slider, message, Spin } from "antd";
+import { Button, message, Slider, Spin } from "antd";
+import Long from "long";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { setVault } from "../../../../actions/account";
+import {
+  setAmountIn,
+  setAmountOut, setAssetIn,
+  setAssetOut, setCollateralRatio, setPair
+} from "../../../../actions/asset";
+import { setExtendedPairVaultListData, setSelectedExtentedPairvault } from "../../../../actions/locker";
+import { setOwnerCurrentCollateral } from "../../../../actions/mint";
+import { setComplete } from "../../../../actions/swap";
 import { SvgIcon } from "../../../../components/common";
+import Snack from "../../../../components/common/Snack";
 import CustomInput from "../../../../components/CustomInput";
 import TooltipIcon from "../../../../components/TooltipIcon";
-import { useParams } from "react-router";
+import { comdex } from "../../../../config/network";
+import { ValidateInputNumber } from "../../../../config/_validation";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { queryPair, queryPairVault } from "../../../../services/asset/query";
+import { signAndBroadcastTransaction } from "../../../../services/helper";
+import { getTypeURL } from "../../../../services/transaction";
+import { queryUserVaultsInfo } from "../../../../services/vault/query";
 import {
   amountConversion,
   amountConversionWithComma,
   getAmount,
-  getDenomBalance,
+  getDenomBalance
 } from "../../../../utils/coin";
+import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
 import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/string";
 import variables from "../../../../utils/variables";
 import "./index.scss";
 import PricePool from "./PricePool";
-import {
-  setPair,
-  setAssetIn,
-  setAssetOut,
-  setAmountIn,
-  setAmountOut,
-  setCollateralRatio,
-} from "../../../../actions/asset";
-import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
 import AssetList from "../../../../config/ibc_assets.json";
 import "./index.scss";
 import VaultDetails from "./VaultDetails";
-import { connect, useDispatch } from "react-redux";
-import { ValidateInputNumber } from "../../../../config/_validation";
-import { setComplete } from "../../../../actions/swap";
-import { setVault } from "../../../../actions/account";
-import { comdex } from "../../../../config/network";
-import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
-import { signAndBroadcastTransaction } from "../../../../services/helper";
-import { getTypeURL } from "../../../../services/transaction";
-import Snack from "../../../../components/common/Snack";
-import { useSelector } from "react-redux";
-import Long from "long";
-import { queryPair, queryPairVault } from "../../../../services/asset/query";
-import { setExtendedPairVaultListData, setSelectedExtentedPairvault } from "../../../../actions/locker";
-import { queryUserVaultsInfo } from "../../../../services/vault/query";
-import { setOwnerCurrentCollateral } from "../../../../actions/mint";
 
 const Mint = ({
   lang,
@@ -62,6 +58,7 @@ const Mint = ({
   setOwnerCurrentCollateral,
   ownerVaultInfo,
   ownerCurrrentCollateral,
+  assetMap,
 }) => {
   // pathVaultId ----> extentedPairvaultId
   const { pathVaultId } = useParams();
@@ -147,7 +144,7 @@ const Mint = ({
       value,
       selectedTokenPrice,
       Number(ownerCurrrentCollateral) / 100,
-      marketPrice(markets, pair && pair?.denomOut)
+      marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
     );
     setAmountOut(dataAmount);
   }
@@ -170,7 +167,7 @@ const Mint = ({
       value,
       selectedTokenPrice,
       collateralRatio / 100,
-      marketPrice(markets, pair && pair?.denomOut)
+      marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
     );
     setAmountOut(dataAmount);
     setDebtValidationError(
@@ -193,15 +190,15 @@ const Mint = ({
     return ((isFinite(amount) && amount) || 0).toFixed(6);
   };
 
-  const selectedTokenPrice = marketPrice(markets, pair && pair?.denomIn);
-  const stableTokenPrice = marketPrice(markets, pair && pair?.denomOut);
+  const selectedTokenPrice = marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
+  const stableTokenPrice = marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
 
   let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
   minCrRatio = Number(minCrRatio);
   let safeCrRatio = minCrRatio + 50;
 
   const showInAssetValue = () => {
-    const oralcePrice = marketPrice(markets, pair?.denomIn);
+    const oralcePrice = marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
     const total = oralcePrice * inAmount;
 
     return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
@@ -210,7 +207,7 @@ const Mint = ({
   };
 
   const showOutAssetValue = () => {
-    const oralcePrice = marketPrice(markets, pair?.denomOut);
+    const oralcePrice = marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
     const total = oralcePrice * outAmount;
 
     return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
@@ -227,14 +224,14 @@ const Mint = ({
         inAmount,
         selectedTokenPrice,
         value / 100,
-        marketPrice(markets, pair && pair?.denomOut)
+        marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
       )
     );
     amountOutCalculated = calculateAmountOut(
       inAmount,
       selectedTokenPrice,
       value / 100,
-      marketPrice(markets, pair && pair?.denomOut)
+      marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
     )
 
     setDebtValidationError(
@@ -716,7 +713,7 @@ const Mint = ({
                 max={500}
                 onChange={handleSliderChange}
                 min={0}
-                tooltipVisible={false}
+                tooltip={{ open: false }}
               />
               {/* collateral container  */}
               <div className="slider-input-box-container mt-2">
@@ -797,6 +794,7 @@ Mint.prototype = {
   setPair: PropTypes.func.isRequired,
   setVault: PropTypes.func.isRequired,
   address: PropTypes.string,
+  assetMap: PropTypes.object,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -805,17 +803,7 @@ Mint.prototype = {
   ),
   collateralRatio: PropTypes.number,
   inAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
   outAmount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   pair: PropTypes.shape({
     denomIn: PropTypes.string,
@@ -876,7 +864,7 @@ const stateToProps = (state) => {
     pairs: state.asset.pairs,
     inAmount: state.asset.inAmount,
     outAmount: state.asset.outAmount,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     collateralRatio: state.asset.collateralRatio,
     balances: state.account.balances.list,
     vaults: state.account.vaults.list,
@@ -885,6 +873,7 @@ const stateToProps = (state) => {
     ownerVaultInfo: state.locker.ownerVaultInfo,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
     ownerVaultId: state.locker.ownerVaultId,
+    assetMap: state.asset.map,
   };
 };
 

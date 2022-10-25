@@ -106,6 +106,24 @@ export const fetchVolumeChartData =
       );
   };
 
+export const fetchCoinPrices = (ids, callback) =>
+  CoinGeckoClient.coins
+    .markets({
+      ids: ids,
+      vs_currency: "usd",
+    })
+    .then((res) => {
+      if (res.data) {
+        callback(null, res.data);
+      }
+    })
+    .catch((error) => {
+      callback(error);
+      message.error(
+        error.response ? error.response.data.message : error.message
+      );
+    });
+
 export const setPriceChartData = (data) => {
   return {
     type: PRICE_CHART_DATA_SET,

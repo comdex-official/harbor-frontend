@@ -1,44 +1,38 @@
-import "../index.scss";
-import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../../../components/common";
-import React, { useEffect, useState } from "react";
 import { Button, message, Slider } from "antd";
-import TooltipIcon from "../../../../components/TooltipIcon";
-import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
-import { amountConversion, getDenomBalance } from "../../../../utils/coin";
-import { signAndBroadcastTransaction } from "../../../../services/helper";
-import { defaultFee } from "../../../../services/transaction";
-import { getAmount } from "../../../../utils/coin";
-import { getTypeURL } from "../../../../services/transaction";
+import Long from "long";
+import * as PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { setAccountVaults, setBalanceRefresh } from "../../../../actions/account";
+import { setPairs } from "../../../../actions/asset";
+import { setEstimatedLiquidationPrice, setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
+import { setOwnerCurrentCollateral } from "../../../../actions/mint";
+import { Col, Row, SvgIcon } from "../../../../components/common";
 import CustomInput from "../../../../components/CustomInput";
+import TooltipIcon from "../../../../components/TooltipIcon";
+import { ValidateInputNumber } from "../../../../config/_validation";
+import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
+import { queryPairVault } from "../../../../services/asset/query";
+import { signAndBroadcastTransaction } from "../../../../services/helper";
+import { defaultFee, getTypeURL } from "../../../../services/transaction";
+import {
+  queryOwnerVaults,
+  queryOwnerVaultsInfo,
+  queryUserVaultsInfo
+} from "../../../../services/vault/query";
+import { amountConversion, getAmount, getDenomBalance } from "../../../../utils/coin";
 import {
   commaSeparator,
   decimalConversion,
   formatNumber,
   marketPrice,
-  truncateToDecimals,
+  truncateToDecimals
 } from "../../../../utils/number";
-import { ValidateInputNumber } from "../../../../config/_validation";
-import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
-import { setExtendedPairVaultListData, setEstimatedLiquidationPrice } from "../../../../actions/locker";
-import {
-  queryOwnerVaults,
-  queryOwnerVaultsInfo,
-  queryUserVaultsInfo,
-} from "../../../../services/vault/query";
-import { connect } from "react-redux";
-import { setPairs } from "../../../../actions/asset";
-import { setAccountVaults } from "../../../../actions/account";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setBalanceRefresh } from "../../../../actions/account";
-import { setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
-import { useParams } from "react-router";
-import Long from "long";
-import { queryPairVault } from "../../../../services/asset/query";
-import { setOwnerCurrentCollateral } from "../../../../actions/mint";
 import { comdex } from "../../../../config/network";
 import AssetList from "../../../../config/ibc_assets.json";
+import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
+import "../index.scss";
 
 const Edit = ({
   address,
@@ -53,6 +47,7 @@ const Edit = ({
   refreshBalance,
   balances,
   setEstimatedLiquidationPrice,
+  assetMap,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -142,9 +137,9 @@ const Edit = ({
 
   const currentDebt = ownerVaultInfo?.amountOut || 0;
 
-  const collateralPrice = marketPrice(markets, pair?.denomIn);
+  const collateralPrice = marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
 
-  const debtPrice = marketPrice(markets, pair?.denomOut);
+  const debtPrice = marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
 
   const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
 
@@ -729,7 +724,7 @@ const Edit = ({
                   max={500}
                   onChange={handleSliderChange}
                   min={0}
-                  tooltipVisible={false}
+                  tooltip={{ open: false }}
                 />
 
 
@@ -803,6 +798,7 @@ Edit.propTypes = {
   setBalanceRefresh: PropTypes.func.isRequired,
   refreshBalance: PropTypes.number.isRequired,
   address: PropTypes.string,
+  assetMap: PropTypes.object,
   pair: PropTypes.shape({
     denomIn: PropTypes.string,
     denomOut: PropTypes.string,
@@ -837,10 +833,11 @@ const stateToProps = (state) => {
     pair: state.asset.pair,
     pairs: state.asset.pairs,
     refreshBalance: state.account.refreshBalance,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,
     ownerVaultInfo: state.locker.ownerVaultInfo,
+    assetMap: state.asset.map,
   };
 };
 

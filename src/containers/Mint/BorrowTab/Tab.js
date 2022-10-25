@@ -1,33 +1,29 @@
-import "../index.scss";
-import { Col, Row, SvgIcon } from "../../../components/common";
+import { Button, message, Slider } from "antd";
+import Long from "long";
 import React, { useEffect, useState } from "react";
-import variables from "../../../utils/variables";
-import { Button, Slider, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { Col, Row, SvgIcon } from "../../../components/common";
+import Snack from "../../../components/common/Snack";
+import CustomInput from "../../../components/CustomInput";
+import CustomSelect from "../../../components/CustomSelect";
 import TooltipIcon from "../../../components/TooltipIcon";
+import { comdex } from "../../../config/network";
+import { ValidateInputNumber } from "../../../config/_validation";
+import { DEFAULT_FEE, DOLLAR_DECIMALS } from "../../../constants/common";
+import { queryPair } from "../../../services/asset/query";
+import { signAndBroadcastTransaction } from "../../../services/helper";
+import { getTypeURL } from "../../../services/transaction";
+import {
+  amountConversion, amountConversionWithComma, denomConversion, getAmount, getDenomBalance
+} from "../../../utils/coin";
+import { marketPrice } from "../../../utils/number";
 import {
   iconNameFromDenom,
   toDecimals,
-  uniqueDenoms,
+  uniqueDenoms
 } from "../../../utils/string";
-import {
-  amountConversion,
-  denomConversion,
-  amountConversionWithComma,
-} from "../../../utils/coin";
-import { queryPair } from "../../../services/asset/query";
-import { getDenomBalance } from "../../../utils/coin";
-import { getTypeURL } from "../../../services/transaction";
-import { signAndBroadcastTransaction } from "../../../services/helper";
-import { getAmount } from "../../../utils/coin";
-import CustomInput from "../../../components/CustomInput";
-import { ValidateInputNumber } from "../../../config/_validation";
-import CustomSelect from "../../../components/CustomSelect";
-import { marketPrice } from "../../../utils/number";
-import { DEFAULT_FEE, DOLLAR_DECIMALS } from "../../../constants/common";
-import Long from "long";
-import { useDispatch } from "react-redux";
-import Snack from "../../../components/common/Snack";
-import { comdex } from "../../../config/network";
+import variables from "../../../utils/variables";
+import "../index.scss";
 
 const marks = {
   0: "0%",
@@ -59,6 +55,11 @@ const BorrowTab = ({
 }) => {
   const [inProgress, setInProgress] = useState(false);
   const [validationError, setValidationError] = useState();
+
+  const assetMap = useSelector(
+    (state) => state.asset.map
+  );
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -140,7 +141,7 @@ const BorrowTab = ({
         inAmount,
         selectedTokenPrice,
         collateralRatio / 100,
-        marketPrice(markets, value)
+        marketPrice(markets, value, assetMap[value]?.id)
       )
     );
   };
@@ -163,7 +164,7 @@ const BorrowTab = ({
         inAmount,
         selectedTokenPrice,
         collateralRatio / 100,
-        marketPrice(markets, value)
+        marketPrice(markets, value, assetMap[value]?.id)
       )
     );
   };
@@ -175,7 +176,7 @@ const BorrowTab = ({
         inAmount,
         selectedTokenPrice,
         value / 100,
-        marketPrice(markets, pair && pair.denomOut)
+        marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
       )
     );
   };
@@ -190,7 +191,7 @@ const BorrowTab = ({
         value,
         selectedTokenPrice,
         collateralRatio / 100,
-        marketPrice(markets, pair && pair.denomOut)
+        marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
       )
     );
   };
@@ -263,12 +264,12 @@ const BorrowTab = ({
     );
   };
 
-  const selectedTokenPrice = marketPrice(markets, pair && pair.denomIn);
+  const selectedTokenPrice = marketPrice(markets, pair?.denomIn);
 
   const showAssetSpotPrice = (In) => {
-    const price = marketPrice(markets, pair && pair.denomOut);
-    const denomIn = denomConversion(pair && pair.denomIn);
-    const denomOut = denomConversion(pair && pair.denomOut);
+    const price = marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
+    const denomIn = denomConversion(pair?.denomIn);
+    const denomOut = denomConversion(pair?.denomOut);
 
     if (In) {
       return `1 ${denomIn || ""} = ${Number(
@@ -282,7 +283,7 @@ const BorrowTab = ({
   };
 
   const showInAssetValue = () => {
-    const oralcePrice = marketPrice(markets, pair?.denomIn);
+    const oralcePrice = marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
     const total = oralcePrice * inAmount;
 
     return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
@@ -291,7 +292,7 @@ const BorrowTab = ({
   };
 
   const showOutAssetValue = () => {
-    const oralcePrice = marketPrice(markets, pair?.denomOut);
+    const oralcePrice = marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
     const total = oralcePrice * outAmount;
 
     return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
@@ -441,7 +442,7 @@ const BorrowTab = ({
               <label>{variables[lang].oracle_price}</label>
             </Col>
             <Col className="text-right">
-              {marketPrice(markets, pair && pair.denomOut)?.toFixed(
+              {marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)?.toFixed(
                 DOLLAR_DECIMALS
               )}{" "}
               {variables[lang].USD}

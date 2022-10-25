@@ -1,15 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import thunk from "redux-thunk";
-import reducer from "./reducers";
-import "./index.scss";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import Disclaimer from "./components/common/Disclaimer";
+import reducer from "./reducers";
+import reportWebVitals from "./reportWebVitals";
 
 const store = createStore(
   reducer,

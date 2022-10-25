@@ -28,6 +28,13 @@ const Vesting = ({
     const [withdrawableToken, setWithdrawableToken] = useState();
     const [loading, setLoading] = useState(false)
     const [activeKey, setActiveKey] = useState("1")
+
+    const tabItems =
+        [
+            { label: "Create", key: "1", children: <Create /> },
+            { label: "Staked HARBOR", key: "2", disabled: !issuedToken?.length > 0, children: <Lock /> },
+        ]
+
     const callback = (key) => {
         setActiveKey(key)
     };
@@ -78,7 +85,9 @@ const Vesting = ({
     const BackButton = {
         right: (
             <>
-                <Link to="/more"><Button className="back-btn" type="primary">Back</Button></Link>
+                <div className="more-locker-tab-back-btn">
+                    <Link to="/more"><Button className="back-btn" type="primary">Back</Button></Link>
+                </div>
             </>
         ),
     };
@@ -135,18 +144,12 @@ const Vesting = ({
                 <Row>
                     <Col>
                         <Tabs
-                            className="comdex-tabs"
+                            className="comdex-tabs more-locker-tab"
                             activeKey={activeKey}
                             onChange={callback}
                             tabBarExtraContent={activeKey === "2" ? claimButton : BackButton}
-                        >
-                            <TabPane tab="Create" key="1">
-                                <Create />
-                            </TabPane>
-                            <TabPane tab="Staked HARBOR" key="2" disabled={!issuedToken?.length > 0}>
-                                <Lock />
-                            </TabPane>
-                        </Tabs>
+                            items={tabItems}
+                        />
                     </Col>
                 </Row>
             </div>

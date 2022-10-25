@@ -33,7 +33,7 @@ const PlaceBidModal = ({
   params,
   balances,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCurrentAuction, setNewCurrentAuction] = useState(auction)
   const [bidAmount, setBidAmount] = useState(0);
   const [inProgress, setInProgress] = useState(false);
@@ -54,15 +54,15 @@ const PlaceBidModal = ({
 
   const showModal = () => {
     fetchFilteredDutchAuctions(auction?.auctionId, auction?.auctionMappingId);
-    setIsModalVisible(true);
+    setIsModalOpen(true);
   };
 
   const handleOk = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalOpen(false);
   };
 
   const handleClick = () => {
@@ -94,7 +94,7 @@ const PlaceBidModal = ({
       address,
       (error, result) => {
         setInProgress(false);
-        setIsModalVisible(false);
+        setIsModalOpen(false);
         if (error) {
           setBidAmount(0);
           setMaxPrice(0);
@@ -156,7 +156,7 @@ const PlaceBidModal = ({
   }, [bidAmount, newCurrentAuction?.outflowTokenCurrentPrice])
 
   useEffect(() => {
-    if (isModalVisible) {
+    if (isModalOpen) {
       const interval = setInterval(() => {
         fetchFilteredDutchAuctions(newCurrentAuction?.auctionId, newCurrentAuction?.auctionMappingId)
       }, 5000)
@@ -164,7 +164,7 @@ const PlaceBidModal = ({
         clearInterval(interval);
       }
     }
-  }, [isModalVisible])
+  }, [isModalOpen])
 
 
   return (
@@ -178,7 +178,7 @@ const PlaceBidModal = ({
         className="palcebid-modal auction-placebid-modal"
         footer={null}
         header={null}
-        visible={isModalVisible}
+        open={isModalOpen}
         width={550}
         closable={false}
         onOk={handleOk}
