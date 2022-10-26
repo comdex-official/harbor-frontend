@@ -39,10 +39,10 @@ const PricePool = ({ setOwnerCurrentCollateral,
     (state) => state.locker.extenedPairVaultListData[0]
   );
   const collateralDeposited =
-    Number(amountConversion(ownerVaultInfo?.amountIn)) *
+    Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())) *
     marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
   const withdrawn =
-    Number(amountConversion(ownerVaultInfo?.amountOut)) *
+    Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) *
     marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
 
   const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
@@ -145,7 +145,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
       counts: (
         <div className="collateral-deposit-main-box">
           <div className="collateral-deposit-up-box">
-            {ownerVaultInfo ? amountConversion(ownerVaultInfo?.amountIn) : "0.000000"}
+            {ownerVaultInfo ? amountConversion(ownerVaultInfo?.amountIn, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals.toNumber()) : "0.000000"}
             <span className="small-text">
               {denomToSymbol(pair && pair?.denomIn)}
             </span>
@@ -164,7 +164,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
       title: "Stability Fee Due",
       counts: (
         <>
-          {amountConversion(ownerVaultInfo?.interestAccumulated || 0)}
+          {amountConversion(ownerVaultInfo?.interestAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())}
           <span className="small-text">
             {denomToSymbol(pair && pair?.denomOut)}
           </span>

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import { setBalanceRefresh, setVault } from "../../../../actions/account";
 import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
 import TooltipIcon from "../../../../components/TooltipIcon";
+import { comdex } from "../../../../config/network";
 import { PRODUCT_ID } from "../../../../constants/common";
 import { queryPair, queryPairVault } from "../../../../services/asset/query";
 import { signAndBroadcastTransaction } from "../../../../services/helper";
@@ -29,6 +30,7 @@ const CloseTab = ({
   ownerVaultInfo,
   setOwnerVaultId,
   setOwnerVaultInfo,
+  assetMap,
 }) => {
   const dispatch = useDispatch();
   const { pathVaultId } = useParams();
@@ -173,7 +175,7 @@ const CloseTab = ({
             <TooltipIcon text="CMST to be repaid" />
           </div>
           <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountOut || 0)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : "Loading..."}
+            {amountConversion(ownerVaultInfo?.amountOut || 0,comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : "Loading..."}
           </div>
         </div>
         <div className="close-tab-row">
@@ -182,7 +184,7 @@ const CloseTab = ({
             <TooltipIcon text="Collateral to be received" />
           </div>
           <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountIn || 0)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}
+            {amountConversion(ownerVaultInfo?.amountIn || 0, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}
           </div>
         </div>
       </div>
@@ -214,6 +216,7 @@ CloseTab.propTypes = {
   ),
   markets: PropTypes.object,
   refreshBalance: PropTypes.number.isRequired,
+  assetMap: PropTypes.object,
   vault: PropTypes.shape({
     collateral: PropTypes.shape({
       denom: PropTypes.string,
@@ -238,7 +241,8 @@ const stateToProps = (state) => {
     refreshBalance: state.account.refreshBalance,
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,
-    ownerVaultInfo: state.locker.ownerVaultInfo
+    ownerVaultInfo: state.locker.ownerVaultInfo,
+    assetMap: state.asset.map,
   };
 };
 

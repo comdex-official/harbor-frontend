@@ -150,17 +150,16 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
     const ibcBalance = balances.find(
       (item) => item.denom === token?.ibcDenomHash
     );
-
     return {
       chainInfo: getChainConfig(token),
       coinMinimalDenom: token?.coinMinimalDenom,
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-              ibcBalance.amount,
-              comdex?.coinDecimals,
-              token?.coinDecimals
-            )
+            ibcBalance.amount,
+            comdex?.coinDecimals,
+            assetMap[ibcBalance?.denom]?.decimals.toNumber()
+          )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },

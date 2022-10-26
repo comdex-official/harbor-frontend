@@ -3,17 +3,17 @@ import { commaSeparator } from "./number";
 import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
 
 export const getAmount = (selectedAmount, coinDecimals) =>
-  (selectedAmount * (10 ** coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
+  (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
 
 export const amountConversionWithComma = (amount, decimals, chainDecimals) => {
 
-  const result = Number(amount) / (10 ** chainDecimals || 10 ** comdex.coinDecimals);
+  const result = Number(amount) / (chainDecimals || 10 ** comdex.coinDecimals);
 
   return commaSeparator(result.toFixed(decimals || comdex.coinDecimals));
 };
 
 export const amountConversion = (amount, decimals, chainDecimals) => {
-  const result = Number(amount) / (10 ** chainDecimals || 10 ** comdex.coinDecimals);
+  const result = Number(amount) / (chainDecimals || 10 ** comdex.coinDecimals);
   return result.toFixed(decimals || comdex.coinDecimals);
 };
 

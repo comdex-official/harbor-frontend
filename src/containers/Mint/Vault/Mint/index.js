@@ -111,7 +111,7 @@ const Mint = ({
 
     if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
       setValidationError(
-        ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
+        ValidateInputNumber(value, (collateralAssetBalance / assetMap[pair?.denomIn]?.decimals.toNumber()).toFixed(6))
       );
     }
     else {
@@ -128,16 +128,9 @@ const Mint = ({
 
   const handleAmountInChangeWhenVaultExist = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
-    if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
-      setValidationError(
-        ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
-      );
-    }
-    else {
-      setValidationError(
-        ValidateInputNumber(getAmount(value), collateralAssetBalance)
-      );
-    }
+    setValidationError(
+      ValidateInputNumber(getAmount(value, assetMap[pair?.denomIn]?.decimals.toNumber()), collateralAssetBalance)
+    );
 
     setAmountIn(value);
     let dataAmount = calculateAmountOut(
@@ -148,20 +141,12 @@ const Mint = ({
     );
     setAmountOut(dataAmount);
   }
-
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
+    setValidationError(
+      ValidateInputNumber(getAmount(value, assetMap[pair?.denomIn]?.decimals.toNumber()), collateralAssetBalance)
+    );
 
-    if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
-      setValidationError(
-        ValidateInputNumber(value, (collateralAssetBalance / 10 ** selectedIBCAsset[0]?.coinDecimals).toFixed(6))
-      );
-    }
-    else {
-      setValidationError(
-        ValidateInputNumber(getAmount(value), collateralAssetBalance)
-      );
-    }
     setAmountIn(value);
     let dataAmount = calculateAmountOut(
       value,
@@ -247,11 +232,7 @@ const Mint = ({
         )
         : handleAmountInChange();
     } else {
-      if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
-        return handleAmountInChange(amountConversion(collateralAssetBalance, comdex.coinDecimals, selectedIBCAsset[0]?.coinDecimals));
-      } else {
-        return handleAmountInChange(amountConversion(collateralAssetBalance));
-      }
+      return handleAmountInChange(amountConversion(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()));
     }
   };
 
@@ -297,203 +278,105 @@ const Mint = ({
       setInProgress(true);
       message.info("Transaction initiated");
 
-      if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
-        signAndBroadcastTransaction(
-          {
-            message: {
-              typeUrl: getTypeURL("drawAndRepay"),
-              value: {
-                from: address,
-                appId: Long.fromNumber(PRODUCT_ID),
-                extendedPairVaultId: Long.fromNumber(pathVaultId),
-                userVaultId: Long.fromNumber(ownerVaultId),
-                amount: getAmount(inAmount, selectedIBCAsset && selectedIBCAsset[0]?.coinDecimals),
-              },
-            },
-            fee: {
-              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-              gas: "2500000",
+      signAndBroadcastTransaction(
+        {
+          message: {
+            typeUrl: getTypeURL("drawAndRepay"),
+            value: {
+              from: address,
+              appId: Long.fromNumber(PRODUCT_ID),
+              extendedPairVaultId: Long.fromNumber(pathVaultId),
+              userVaultId: Long.fromNumber(ownerVaultId),
+              amount: getAmount(inAmount, assetMap[pair?.denomIn]?.decimals.toNumber()),
             },
           },
-          address,
-          (error, result) => {
-            setInProgress(false);
-            if (error) {
-              message.error(error);
-              resetValues();
-              return;
-            }
-
-            if (result?.code) {
-              message.info(result?.rawLog);
-              resetValues();
-              return;
-            }
-
-            setComplete(true);
-            message.success(
-              <Snack
-                message={variables[lang].tx_success}
-                hash={result?.transactionHash}
-              />
-            );
-            resetValues();
-            dispatch({
-              type: "BALANCE_REFRESH_SET",
-              value: refreshBalance + 1,
-            });
-          }
-        );
-      }
-      else {
-        signAndBroadcastTransaction(
-          {
-            message: {
-              typeUrl: getTypeURL("drawAndRepay"),
-              value: {
-                from: address,
-                appId: Long.fromNumber(PRODUCT_ID),
-                extendedPairVaultId: Long.fromNumber(pathVaultId),
-                userVaultId: Long.fromNumber(ownerVaultId),
-                amount: getAmount(inAmount),
-              },
-            },
-            fee: {
-              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-              gas: "2500000",
-            },
+          fee: {
+            amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+            gas: "2500000",
           },
-          address,
-          (error, result) => {
-            setInProgress(false);
-            if (error) {
-              message.error(error);
-              resetValues();
-              return;
-            }
-
-            if (result?.code) {
-              message.info(result?.rawLog);
-              resetValues();
-              return;
-            }
-
-            setComplete(true);
-            message.success(
-              <Snack
-                message={variables[lang].tx_success}
-                hash={result?.transactionHash}
-              />
-            );
+        },
+        address,
+        (error, result) => {
+          setInProgress(false);
+          if (error) {
+            message.error(error);
             resetValues();
-            dispatch({
-              type: "BALANCE_REFRESH_SET",
-              value: refreshBalance + 1,
-            });
+            return;
           }
-        );
-      }
+
+          if (result?.code) {
+            message.info(result?.rawLog);
+            resetValues();
+            return;
+          }
+
+          setComplete(true);
+          message.success(
+            <Snack
+              message={variables[lang].tx_success}
+              hash={result?.transactionHash}
+            />
+          );
+          resetValues();
+          dispatch({
+            type: "BALANCE_REFRESH_SET",
+            value: refreshBalance + 1,
+          });
+        }
+      );
       return;
     } else {
       setInProgress(true);
       message.info("Transaction initiated");
-
-      if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
-        signAndBroadcastTransaction(
-          {
-            message: {
-              typeUrl: getTypeURL("create"),
-              value: {
-                from: address,
-                appId: Long.fromNumber(PRODUCT_ID),
-                extendedPairVaultId: Long.fromNumber(pathVaultId),
-                amountIn: getAmount(inAmount, selectedIBCAsset && selectedIBCAsset[0]?.coinDecimals),
-                amountOut: getAmount(outAmount, selectedIBCAsset && selectedIBCAsset[0]?.coinDecimals),
-              },
-            },
-            fee: {
-              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-              gas: "2500000",
+      console.log(
+        address, "--------", Long.fromNumber(PRODUCT_ID), "-----------", Long.fromNumber(pathVaultId), "---------", getAmount(inAmount, assetMap[pair?.denomIn]?.decimals.toNumber()), "------------", getAmount(outAmount, assetMap[pair?.denomOut]?.decimals.toNumber())
+      );
+      signAndBroadcastTransaction(
+        {
+          message: {
+            typeUrl: getTypeURL("create"),
+            value: {
+              from: address,
+              appId: Long.fromNumber(PRODUCT_ID),
+              extendedPairVaultId: Long.fromNumber(pathVaultId),
+              amountIn: getAmount(inAmount, assetMap[pair?.denomIn]?.decimals.toNumber()),
+              amountOut: getAmount(outAmount, assetMap[pair?.denomOut]?.decimals.toNumber()),
             },
           },
-          address,
-          (error, result) => {
-            setInProgress(false);
-            if (error) {
-              message.error(error);
-              resetValues();
-              return;
-            }
-
-            if (result?.code) {
-              message.info(result?.rawLog);
-              resetValues();
-              return;
-            }
-
-            setComplete(true);
-            message.success(
-              <Snack
-                message={variables[lang].tx_success}
-                hash={result?.transactionHash}
-              />
-            );
-            resetValues();
-            dispatch({
-              type: "BALANCE_REFRESH_SET",
-              value: refreshBalance + 1,
-            });
-          }
-        );
-      } else {
-        signAndBroadcastTransaction(
-          {
-            message: {
-              typeUrl: getTypeURL("create"),
-              value: {
-                from: address,
-                appId: Long.fromNumber(PRODUCT_ID),
-                extendedPairVaultId: Long.fromNumber(pathVaultId),
-                amountIn: getAmount(inAmount),
-                amountOut: getAmount(outAmount),
-              },
-            },
-            fee: {
-              amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-              gas: "2500000",
-            },
+          fee: {
+            amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
+            gas: "2500000",
           },
-          address,
-          (error, result) => {
-            setInProgress(false);
-            if (error) {
-              message.error(error);
-              resetValues();
-              return;
-            }
-
-            if (result?.code) {
-              message.info(result?.rawLog);
-              resetValues();
-              return;
-            }
-
-            setComplete(true);
-            message.success(
-              <Snack
-                message={variables[lang].tx_success}
-                hash={result?.transactionHash}
-              />
-            );
+        },
+        address,
+        (error, result) => {
+          setInProgress(false);
+          if (error) {
+            message.error(error);
             resetValues();
-            dispatch({
-              type: "BALANCE_REFRESH_SET",
-              value: refreshBalance + 1,
-            });
+            return;
           }
-        );
-      }
 
+          if (result?.code) {
+            message.info(result?.rawLog);
+            resetValues();
+            return;
+          }
+
+          setComplete(true);
+          message.success(
+            <Snack
+              message={variables[lang].tx_success}
+              hash={result?.transactionHash}
+            />
+          );
+          resetValues();
+          dispatch({
+            type: "BALANCE_REFRESH_SET",
+            value: refreshBalance + 1,
+          });
+        }
+      );
     }
   };
 
@@ -613,7 +496,7 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, selectedIBCAsset[0]?.coinDecimals)}
+                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())}
                   {denomToSymbol(pair && pair?.denomIn)}
                 </span>
                 <div className="maxhalf">
