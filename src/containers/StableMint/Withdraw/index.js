@@ -281,8 +281,6 @@ const Deposit = ({
 
 
     const calculateDrawdown = (userAmount, fee) => {
-        console.log(userAmount, "userAmount");
-        console.log(fee, "fee");
         let drawDownFee = fee;
         let amount = userAmount;
         let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(6);
@@ -350,14 +348,6 @@ const Deposit = ({
         }
         setInProgress(true);
         message.info("Transaction initiated");
-
-        console.log(
-            address, "address",
-            PRODUCT_ID, "appId",
-            selectedExtentedPairVaultListData[0]?.id?.low, "extendedPairVaultId",
-            getAmount(inAmount, assetMap[pair && pair?.denomOut]?.decimals.toNumber()), "amount",
-            psmLockedAndMintedData?.id?.low, "stbale vault id"
-        );
         signAndBroadcastTransaction(
             {
                 message: {

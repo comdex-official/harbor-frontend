@@ -72,7 +72,6 @@ const PricePool = ({ setOwnerCurrentCollateral,
                 message.error(error);
                 return;
             }
-            console.log(data, "Locked and minted data");
             dispatch(setLockAndMintedData(data?.stableMintVault))
         })
     }
