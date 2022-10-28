@@ -394,7 +394,7 @@ const Deposit = ({
                     <div className="assets-select-card  ">
                         <div className="assets-left">
                             <label className="leftlabel">
-                                Deposit <TooltipIcon text="" />
+                                Deposit <TooltipIcon text="Deposit stable coin to mint CMST" />
                             </label>
                             <Row>
                                 <Col>
@@ -447,7 +447,7 @@ const Deposit = ({
                                     validationError={inputValidationError}
                                 // disabled={true}
                                 />
-                                <small>{showInDollarValue()}</small>
+                                {/* <small>{showInDollarValue()}</small> */}
                             </div>
                         </div>
                     </div>

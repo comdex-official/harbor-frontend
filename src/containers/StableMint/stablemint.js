@@ -32,7 +32,7 @@ const StableMint = ({
 
     const navigateToStableMintVault = (path) => {
         navigate({
-            pathname: `./stableMintVault/${path}`,
+            pathname: `./${path}`,
         });
     };
 
@@ -151,11 +151,11 @@ const StableMint = ({
                                                     <div className="bottom-container">
                                                         <div className="contenet-container">
                                                             <div className="name">
-                                                                Min. Borrow Amount <TooltipIcon text="Minimum Composite that should be borrowed for any active vault" />
+                                                                Drawdown Fee <TooltipIcon text="Fixed amount of $CMST deducted at every withdrawal" />
                                                             </div>
                                                             <div className="value">
                                                                 {" "}
-                                                                {amountConversionWithComma(item?.debtFloor, DOLLAR_DECIMALS)} CMST
+                                                                {decimalConversion(item?.drawDownFee) * 100 || "0"}%
                                                             </div>
                                                         </div>
                                                         <div className="contenet-container">

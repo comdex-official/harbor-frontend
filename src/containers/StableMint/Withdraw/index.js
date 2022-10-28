@@ -397,7 +397,7 @@ const Deposit = ({
                     <div className="assets-select-card  ">
                         <div className="assets-left">
                             <label className="leftlabel">
-                                Withdraw <TooltipIcon text="" />
+                                Withdraw <TooltipIcon text="Burn CMST to withdraw stable coin" />
                             </label>
                             <Row>
                                 <Col>
@@ -447,7 +447,7 @@ const Deposit = ({
                                     }}
                                     validationError={inputValidationError}
                                 />
-                                <small>{showInDollarValue()}</small>
+                                {/* <small>{showInDollarValue()}</small> */}
                             </div>
                         </div>
                     </div>
@@ -464,7 +464,7 @@ const Deposit = ({
                             </div>
                         </Row>
                         <Row>
-                            <div className="title">User asset -----</div>
+                            <div className="title"> {denomToSymbol(pair?.denomIn)}  to be withdrawn </div>
                             <div className="value">
                                 {calcutlateCMSTToBeBurned(inAmount, drawDownFee)}
                                 {" "}
