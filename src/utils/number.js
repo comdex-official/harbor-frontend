@@ -49,7 +49,7 @@ export const calculateROI = (principal, interestRate, years, months, days) => {
   const earns =
     Number(principal) *
     (1 + Number(interestRate) / 100) **
-      (Number(years) + Number(months) / 12 + Number(days) / 365);
+    (Number(years) + Number(months) / 12 + Number(days) / 365);
   if (earns) {
     return earns.toFixed(DOLLAR_DECIMALS);
   } else {

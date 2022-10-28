@@ -15,6 +15,7 @@ import mint from './mint'
 import govern from "./govern";
 import ledger from "./ledger";
 import vesting from "./vesting";
+import stableMint from "./stableMint"
 
 const app = combineReducers({
   language,
@@ -27,6 +28,7 @@ const app = combineReducers({
   auction,
   theme,
   mint,
+  stableMint,
   oracle,
   order,
   locker,

@@ -302,3 +302,49 @@ export const queryVaultMintedStatistic = (
             });
     });
 };
+
+export const queryStableVaultStatistic = (
+    extendedPairId,
+    callback
+) => {
+    getQueryService((error, queryService) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        queryService
+            .QueryStableVaultByAppAndExtendedPair({
+                appId: Long.fromNumber(PRODUCT_ID),
+                extendedPairId: Long.fromNumber(extendedPairId)
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};
+
+export const queryStableBalanceUserPosition = (
+    address,
+    callback
+) => {
+    getQueryService((error, queryService) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        queryService
+            .QueryUserMyPositionByApp({
+                appId: Long.fromNumber(PRODUCT_ID),
+                owner: address
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};

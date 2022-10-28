@@ -1226,11 +1226,12 @@ button {
   justify-content: center;
 
   .icon {
+    transition: 0.3s linear;
     width: 22px;
     cursor: pointer;
-
     &:hover {
       opacity: 0.8;
+      transform: rotate(180deg);
     }
   }
 }
@@ -1586,7 +1587,7 @@ button {
             @media only screen and (min-width: 1050px) and (max-width: 1199px) {
               font-size: 0.8rem;
             }
-           
+
             .dark-mode & {
               color: $white;
             }
@@ -1695,6 +1696,9 @@ button {
 }
 .display-right {
   justify-content: flex-end;
+}
+.align-center{
+  align-items: center;
 }
 
 .alert-label {

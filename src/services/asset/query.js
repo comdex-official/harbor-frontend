@@ -1,5 +1,6 @@
 import { QueryClientImpl } from "comdex-codec/build/comdex/asset/v1beta1/query";
 import Long from "long";
+import { PRODUCT_ID } from "../../constants/common";
 import { createQueryClient } from "../helper";
 
 
@@ -134,6 +135,37 @@ export const queryExtendedPairVaultById = (
   });
 };
 
+export const queryStableMintExtendedPairVaultById = (
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  productId,
+  callback) => {
+  getQueryService((error, queryService) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+    queryService
+      .QueryAllExtendedPairStableVaultsByApp({
+        appId: Long.fromNumber(productId),
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
+      })
+      .then((result) => {
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
 
 
 export const queryPairVault = (pairId, callback) => {
@@ -166,7 +198,7 @@ export const queryPairVaults = (callback) => {
 
     queryService
       .QueryAllExtendedPairVaultsByApp({
-        appId: Long.fromNumber(1),
+        appId: Long.fromNumber(PRODUCT_ID),
       })
       .then((result) => {
         callback(null, result);
