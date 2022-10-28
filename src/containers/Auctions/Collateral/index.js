@@ -29,8 +29,9 @@ import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
 import { commaSeparator, decimalConversion } from "../../../utils/number";
 import TooltipIcon from "../../../components/TooltipIcon";
+import { comdex } from "../../../config/network";
 
-const CollateralAuctions = ({ setPairs, auctions, setAuctions, address }) => {
+const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap, }) => {
   const dispatch = useDispatch()
   const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
@@ -176,12 +177,12 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address }) => {
       dataIndex: "current_price",
       key: "current_price",
       width: 200,
-      render: (price) => (
+      render: (item) => (
         <>
           $
           {commaSeparator(
             Number(
-              amountConversionWithComma(decimalConversion(price) || 0) || 0
+              amountConversionWithComma(decimalConversion(item?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()) || 0
             ).toFixed(DOLLAR_DECIMALS)
           )}
         </>
@@ -249,10 +250,10 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address }) => {
             <div>
               {item?.outflowTokenCurrentAmount?.amount &&
                 amountConversionWithComma(
-                  item?.outflowTokenCurrentAmount?.amount
+                  item?.outflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
                 )} {denomConversion(item?.outflowTokenCurrentAmount?.denom)}
             </div>,
-          current_price: item?.outflowTokenCurrentPrice,
+          current_price: item,
           action: item,
         };
       })
@@ -286,7 +287,7 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address }) => {
           <div className="more-bottom">
             <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
-              <Bidding biddingList={biddings} inProgress={inProgress} />
+              <Bidding biddingList={biddings} inProgress={inProgress} assetMap={assetMap} />
             </div>
           </div>
         </Col>
@@ -300,6 +301,7 @@ CollateralAuctions.propTypes = {
   setPairs: PropTypes.func.isRequired,
   address: PropTypes.string,
   auctions: PropTypes.string.isRequired,
+  assetMap: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -307,6 +309,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     auctions: state.auction.auctions,
+    assetMap: state.asset.map,
   };
 };
 

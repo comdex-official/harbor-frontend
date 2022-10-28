@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import {
-  BASE_COIN_POOL_PRICE_SET, FIRST_RESERVE_COIN_DENOM_SET, POOLS_LIQUIDITY_LIST_SET, POOLS_SET, POOL_BALANCES_SET, POOL_BALANCE_FETCH_IN_PROGRESS, POOL_BALANCE_SET, POOL_DEPOSITS_SET, POOL_SET, POOL_TOKEN_SUPPLY_SET, SECOND_RESERVE_COIN_DENOM_SET, SPOT_PRICE_SET
+  BASE_COIN_POOL_PRICE_SET, FIRST_RESERVE_COIN_DENOM_SET, POOLS_LIQUIDITY_LIST_SET, POOLS_SET, POOL_BALANCES_SET, POOL_BALANCE_FETCH_IN_PROGRESS, POOL_BALANCE_SET, POOL_DEPOSITS_SET, POOL_SET, POOL_TOKEN_SUPPLY_SET, SECOND_RESERVE_COIN_DENOM_SET, SPOT_PRICE_SET, SET_HARBOR_PRICE
 } from "../constants/liquidity";
 
 const pool = (
@@ -120,6 +120,13 @@ const baseCoinPoolPrice = (state = 0, action) => {
   }
   return state;
 };
+const harborPrice = (state = 0, action) => {
+  if (action.type === SET_HARBOR_PRICE) {
+    return action.value;
+  }
+  return state;
+};
+
 
 export default combineReducers({
   pool,
@@ -133,4 +140,5 @@ export default combineReducers({
   poolBalances,
   list,
   baseCoinPoolPrice,
+  harborPrice,
 });

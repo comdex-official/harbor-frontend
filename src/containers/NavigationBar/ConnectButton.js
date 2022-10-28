@@ -14,12 +14,13 @@ import {
 } from "../../actions/account";
 import { setAssetList } from "../../actions/asset";
 import { setMarkets } from "../../actions/oracle";
+import { setHarborPrice } from "../../actions/liquidity";
 import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
 import { queryAssets } from "../../services/asset/query";
 import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { queryMarketList } from "../../services/oracle/query";
+import { fetchRestPrices, queryMarketList } from "../../services/oracle/query";
 import { marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
 import DisConnectModal from "../DisConnectModal";
@@ -39,9 +40,10 @@ const ConnectButton = ({
   setAccountName,
   balances,
   assetMap,
+  setHarborPrice,
+  harborPrice
 }) => {
   const dispatch = useDispatch();
-
   useEffect(() => {
     const savedAddress = localStorage.getItem("ac");
     const userAddress = savedAddress ? decode(savedAddress) : address;
@@ -68,7 +70,6 @@ const ConnectButton = ({
   const getPrice = (denom) => {
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
-
   const calculateAssetBalance = useCallback(
     (balances) => {
       const assetBalances = balances.filter(
@@ -120,6 +121,10 @@ const ConnectButton = ({
   }, [address, refreshBalance, markets]);
 
   useEffect(() => {
+    fetchPrices();
+  }, []);
+
+  useEffect(() => {
     calculateAssetBalance(balances);
   }, [balances, markets]);
 
@@ -139,8 +144,18 @@ const ConnectButton = ({
         message.error(error);
         return;
       }
-      
+
       dispatch(setAssetList(data.assets));
+    });
+  };
+
+  const fetchPrices = () => {
+    fetchRestPrices((error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setHarborPrice(result?.data?.ucmst?.uharbor?.price)
     });
   };
 
@@ -181,6 +196,7 @@ ConnectButton.propTypes = {
   setPoolBalance: PropTypes.func.isRequired,
   address: PropTypes.string,
   assetMap: PropTypes.object,
+  harborPrice: PropTypes.number.isRequired,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -212,6 +228,7 @@ const stateToProps = (state) => {
     markets: state.oracle.market.map,
     refreshBalance: state.account.refreshBalance,
     poolBalances: state.liquidity.poolBalances,
+    harborPrice: state.liquidity.harborPrice,
     pools: state.liquidity.pool.list,
     balances: state.account.balances.list,
     assetMap: state.asset.map,
@@ -226,6 +243,7 @@ const actionsToProps = {
   setAssetBalance,
   setMarkets,
   setAccountName,
+  setHarborPrice,
 };
 
 export default connect(stateToProps, actionsToProps)(ConnectButton);

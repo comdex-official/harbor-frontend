@@ -1,6 +1,8 @@
 import { QueryClientImpl } from "comdex-codec/build/comdex/market/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
+import { API_URL } from "../../constants/url";
+import axios from "axios";
 
 let myClient = null;
 
@@ -53,4 +55,15 @@ export const queryMarketList = (
         callback(error?.message);
       });
   });
+};
+
+export const fetchRestPrices = (callback) => {
+  axios
+    .get(`${API_URL}/cswap/prices`)
+    .then((result) => {
+      callback(null, result?.data);
+    })
+    .catch((error) => {
+      callback(error?.message);
+    });
 };

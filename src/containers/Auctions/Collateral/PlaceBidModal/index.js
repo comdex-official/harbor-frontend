@@ -32,6 +32,7 @@ const PlaceBidModal = ({
   refreshData,
   params,
   balances,
+  assetMap,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCurrentAuction, setNewCurrentAuction] = useState(auction)
@@ -77,11 +78,7 @@ const PlaceBidModal = ({
             auctionId: newCurrentAuction?.auctionId,
             amount: {
               denom: newCurrentAuction?.outflowTokenInitAmount?.denom,
-              amount: getAmount(Number(bidAmount / Number(
-                amountConversion(
-                  decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0
-                ) || 0
-              ).toFixed(DOLLAR_DECIMALS)).toFixed(6)),
+              amount: getAmount(bidAmount, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()),
             },
             max: orderPriceConversion(maxPrice || 0),
             appId: Long.fromNumber(PRODUCT_ID),
@@ -122,12 +119,14 @@ const PlaceBidModal = ({
   };
 
   const handleChange = (value) => {
+    console.log(value, "value");
     value = toDecimals(value).toString().trim();
+    console.log(value, "value");
 
     setValidationError(
       ValidateInputNumber(
         value,
-        Number(amountConversion(newCurrentAuction?.inflowTokenTargetAmount?.amount) - amountConversion(newCurrentAuction?.inflowTokenCurrentAmount?.amount)).toFixed(6) || 0, "", "", "Bid must be less than target CMST"
+        Number(amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()) || 0), "", "", "Bid must be less than Auction Quantity"
       )
     );
     setBidAmount(value);
@@ -142,9 +141,9 @@ const PlaceBidModal = ({
 
   const calculateQuantityBidFor = () => {
 
-    let calculatedAmount = Number(bidAmount / Number(
+    let calculatedAmount = Number(bidAmount * Number(
       amountConversion(
-        decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0
+        decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
       )
     )
     ).toFixed(6);
@@ -165,7 +164,6 @@ const PlaceBidModal = ({
       }
     }
   }, [isModalOpen])
-
 
   return (
     <>
@@ -203,13 +201,16 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label> $
-                {commaSeparator(
-                  Number(
-                    amountConversionWithComma(
-                      decimalConversion(newCurrentAuction?.outflowTokenInitialPrice) || 0, 4
-                    ) || 0
+                {
+                  commaSeparator(
+                    Number(
+                      amountConversionWithComma(
+                        decimalConversion(newCurrentAuction?.outflowTokenInitialPrice || 0) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
+                      ) || 0
+                    )
                   )
-                )}</label>
+                }
+              </label>
             </Col>
           </Row>
           <Row>
@@ -222,7 +223,7 @@ const PlaceBidModal = ({
                 {commaSeparator(
                   Number(
                     amountConversionWithComma(
-                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4
+                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
                     ) || 0
                   )
                 )}
@@ -234,10 +235,12 @@ const PlaceBidModal = ({
             <Col sm="6">
               <p>Auctioned Quantity </p>
             </Col>
-            <Col sm="6" className="text-right">
-              <label>
+            <Col sm="6" className="text-right" onClick={() => {
+              handleChange((amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber())))
+            }}>
+              <label style={{ cursor: "pointer" }} >
                 {amountConversionWithComma(
-                  newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0
+                  newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
                 )} {denomConversion(newCurrentAuction?.outflowTokenCurrentAmount?.denom)}
               </label>
             </Col>
@@ -248,11 +251,9 @@ const PlaceBidModal = ({
               <p> Target CMST</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label style={{ cursor: "pointer" }} onClick={() => {
-                handleChange(Number(amountConversion(newCurrentAuction?.inflowTokenTargetAmount?.amount) - amountConversion(newCurrentAuction?.inflowTokenCurrentAmount?.amount)).toFixed(6) || 0)
-              }}>
+              <label >
                 {commaSeparator(
-                  Number(amountConversion(newCurrentAuction?.inflowTokenTargetAmount?.amount) - amountConversion(newCurrentAuction?.inflowTokenCurrentAmount?.amount)).toFixed(6) || 0
+                  Number(amountConversion(newCurrentAuction?.inflowTokenTargetAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.inflowTokenCurrentAmount?.denom]?.decimals.toNumber()) - amountConversion(newCurrentAuction?.inflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.inflowTokenCurrentAmount?.denom]?.decimals.toNumber())).toFixed(6) || 0
                 )} {denomConversion(newCurrentAuction?.inflowTokenCurrentAmount?.denom)}
               </label>
             </Col>
@@ -263,10 +264,13 @@ const PlaceBidModal = ({
               <p>Quantity Bid For</p>
             </Col>
             <Col sm="6" className="text-right">
-              <label >
-                {calculatedQuantityBid}{" "}
-                {denomConversion(newCurrentAuction?.outflowTokenCurrentAmount?.denom)}
-              </label>
+              <CustomInput
+                value={bidAmount}
+                onChange={(event) => handleChange(event.target.value)}
+                validationError={validationError}
+              />
+              <label><div className="input-denom">{denomConversion(newCurrentAuction?.outflowTokenCurrentAmount?.denom)}</div></label>
+
             </Col>
           </Row>
           <Row>
@@ -274,13 +278,10 @@ const PlaceBidModal = ({
               <p>Your CMST Bid</p>
             </Col>
             <Col sm="6" className="text-right">
-              <CustomInput
-                value={bidAmount}
-                onChange={(event) => handleChange(event.target.value)}
-                validationError={validationError}
-              />
-              <label><div className="input-denom">{denomConversion(newCurrentAuction?.inflowTokenCurrentAmount?.denom)}</div></label>
-
+              <label >
+                {calculatedQuantityBid}{" "}
+                {denomConversion(newCurrentAuction?.inflowTokenCurrentAmount?.denom)}
+              </label>
             </Col>
           </Row>
           <Row>
@@ -320,6 +321,7 @@ PlaceBidModal.propTypes = {
   refreshData: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  assetMap: PropTypes.object,
   auction: PropTypes.shape({
     minBid: PropTypes.shape({
       amount: PropTypes.string,
@@ -353,6 +355,7 @@ const stateToProps = (state) => {
     bidAmount: state.auction.bidAmount,
     address: state.account.address,
     balances: state.account.balances.list,
+    assetMap: state.asset.map,
   };
 };
 

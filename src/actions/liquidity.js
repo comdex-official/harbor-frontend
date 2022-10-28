@@ -9,7 +9,8 @@ import {
   POOL_SET,
   POOL_TOKEN_SUPPLY_SET,
   SECOND_RESERVE_COIN_DENOM_SET,
-  SPOT_PRICE_SET
+  SPOT_PRICE_SET,
+  SET_HARBOR_PRICE,
 } from "../constants/liquidity";
 
 export const setPools = (list, pagination) => {
@@ -89,5 +90,13 @@ export const setBaseCoinPoolPrice = (value) => {
   return {
     type: BASE_COIN_POOL_PRICE_SET,
     value,
+  };
+};
+
+
+export const setHarborPrice = (value) => {
+  return {
+    type: SET_HARBOR_PRICE,
+    value
   };
 };

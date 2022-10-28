@@ -21,7 +21,7 @@ import Deposit from "./Deposit";
 import "./index.scss";
 import Withdraw from "./Withdraw";
 
-const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap }) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap, harborPrice }) => {
   const dispatch = useDispatch();
 
   const handleBalanceRefresh = () => {
@@ -143,6 +143,9 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
   ];
 
   const getPrice = (denom) => {
+    if (denom === harbor?.coinMinimalDenom) {
+      return harborPrice;
+    }
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
 
@@ -319,6 +322,7 @@ Assets.propTypes = {
   assetBalance: PropTypes.number,
   refreshBalance: PropTypes.number.isRequired,
   assetMap: PropTypes.object,
+  harborPrice: PropTypes.number.isRequired,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
@@ -336,6 +340,7 @@ const stateToProps = (state) => {
     markets: state.oracle.market.map,
     refreshBalance: state.account.refreshBalance,
     assetMap: state.asset.map,
+    harborPrice: state.liquidity.harborPrice,
   };
 };
 

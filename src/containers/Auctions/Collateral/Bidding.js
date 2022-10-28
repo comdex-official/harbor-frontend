@@ -4,8 +4,9 @@ import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversionWithComma } from "../../../utils/coin";
 import TooltipIcon from "../../../components/TooltipIcon";
 import moment from "moment";
+import { comdex } from "../../../config/network";
 
-export const Bidding = ({ biddingList, inProgress }) => {
+export const Bidding = ({ biddingList, inProgress, assetMap }) => {
   const columnsBidding = [
     {
       title: (
@@ -73,7 +74,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
                   name={iconNameFromDenom(item?.outflowTokenAmount?.denom)}
                 />
               </div>
-              {amountConversionWithComma(item?.outflowTokenAmount?.amount || 0)}{" "}
+              {amountConversionWithComma(item?.outflowTokenAmount?.amount || 0, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber())}{" "}
               {denomConversion(item?.outflowTokenAmount?.denom)}
             </div>
           </>
@@ -86,7 +87,7 @@ export const Bidding = ({ biddingList, inProgress }) => {
                   name={iconNameFromDenom(item?.inflowTokenAmount?.denom)}
                 />
               </div>
-              {amountConversionWithComma(item?.inflowTokenAmount?.amount || 0)}{" "}
+              {amountConversionWithComma(item?.inflowTokenAmount?.amount || 0, comdex?.coinDecimals, assetMap[item?.inflowTokenAmount?.denom]?.decimals.toNumber())}{" "}
               {denomConversion(item?.inflowTokenAmount?.denom)}
             </div>
           </>

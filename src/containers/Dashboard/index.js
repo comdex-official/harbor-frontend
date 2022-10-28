@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Col, Row } from "../../components/common";
 import TooltipIcon from "../../components/TooltipIcon";
-import { cmst, harbor, ibcDenoms } from "../../config/network";
+import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import {
   fetchProposalUpData,
@@ -19,7 +19,7 @@ import variables from "../../utils/variables";
 import Banner from "./Banner";
 import "./index.scss";
 
-const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
+const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
   const [harborSupply, setHarborSupply] = useState(0);
@@ -29,7 +29,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
   const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
 
   useEffect(() => {
-    if (markets.length > 0) {
+    if (markets) {
       fetchTVL();
     }
     fetchTotalTokenMinted(PRODUCT_ID);
@@ -42,7 +42,6 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
         message.error(error);
         return;
       }
-
       if (result?.tvldata && result?.tvldata?.length > 0) {
         const uniqueVaults = Array.from(
           result?.tvldata?.reduce(
@@ -62,7 +61,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
         const totalValue = new Map(
           uniqueVaults?.map((item) => {
             let value =
-              Number(amountConversion(item.collateralLockedAmount)) *
+              Number(amountConversion(item.collateralLockedAmount, comdex.coinDecimals, assetMap[item?.assetDenom]?.decimals.toNumber())) *
               marketPrice(markets, item?.assetDenom, assetMap[item?.assetDenom]?.id);
             total += value;
             item.dollarValue = value;
@@ -139,6 +138,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
   }, [harborSupply, harborCurrentSypply]);
 
   const getPrice = (denom) => {
+    if (denom === harbor?.coinMinimalDenom) {
+      return harborPrice;
+    }
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
   const calculatedCmstCurrentSupply = () => {
@@ -349,9 +351,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
   };
   const harborMarketCap = () => {
     let supply = Number(amountConversion(harborCurrentSypply, DOLLAR_DECIMALS));
-    let price = Number(getPrice(harbor?.coinMinimalDenom)).toFixed(
-      DOLLAR_DECIMALS
-    );
+    let price = Number(getPrice(harbor?.coinMinimalDenom)).toFixed(DOLLAR_DECIMALS);
     let marketCap = supply * price;
     marketCap = Number(marketCap).toFixed(DOLLAR_DECIMALS);
     marketCap = commaSeparator(marketCap);
@@ -445,9 +445,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
                   <p>
                     {calculatedCMSTSupply
                       ? amountConversionWithComma(
-                          calculatedCMSTSupply,
-                          DOLLAR_DECIMALS
-                        )
+                        calculatedCMSTSupply,
+                        DOLLAR_DECIMALS
+                      )
                       : "00.00"}
                     <span> CMST</span>
                   </p>
@@ -470,10 +470,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap }) => {
                   <div className="col1">
                     <small>HARBOR Price</small>
                     <h4>
-                      $
-                      {Number(getPrice(harbor?.coinMinimalDenom)).toFixed(
-                        DOLLAR_DECIMALS
-                      )}
+                      ${Number(harborPrice).toFixed(DOLLAR_DECIMALS)}
                       <span> 2.41%</span>
                     </h4>
                   </div>
@@ -520,6 +517,7 @@ Dashboard.propTypes = {
   lang: PropTypes.string.isRequired,
   assetMap: PropTypes.object,
   markets: PropTypes.object,
+  harborPrice: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -528,6 +526,7 @@ const stateToProps = (state) => {
     isDarkMode: state.theme.theme.darkThemeEnabled,
     markets: state.oracle.market.map,
     assetMap: state.asset.map,
+    harborPrice: state.liquidity.harborPrice,
   };
 };
 
