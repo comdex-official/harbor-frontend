@@ -12,6 +12,7 @@ import { getChainConfig } from "../../services/keplr";
 import {
   amountConversion,
   amountConversionWithComma,
+  commaSeparatorWithRounding,
   denomConversion
 } from "../../utils/coin";
 import { commaSeparator, marketPrice } from "../../utils/number";
@@ -285,7 +286,8 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
               </div>
               <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
-                {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
+                {/* {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "} */}
+                {commaSeparatorWithRounding(assetBalance, DOLLAR_DECIMALS)}{" "}
                 {variables[lang].USD}{" "}
                 <div className="d-flex">
                   <span

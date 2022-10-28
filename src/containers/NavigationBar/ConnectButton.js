@@ -25,6 +25,7 @@ import { marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
 import DisConnectModal from "../DisConnectModal";
 import ConnectModal from "../Modal";
+import { amountConversion } from "../../utils/coin";
 
 const ConnectButton = ({
   setAccountAddress,
@@ -68,6 +69,9 @@ const ConnectButton = ({
   }, []);
 
   const getPrice = (denom) => {
+    if (denom === harbor?.coinMinimalDenom) {
+      return harborPrice;
+    }
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
   const calculateAssetBalance = useCallback(
@@ -81,12 +85,10 @@ const ConnectButton = ({
       );
 
       const value = assetBalances.map((item) => {
-        if (item?.denom === ibcDenoms["weth-wei"]) {
-          return getPrice(item.denom) * (item.amount / 10 ** 12); // dividing with 10**12 as it is a ethereum network
-        }
-
-        return getPrice(item.denom) * item.amount;
+        return getPrice(item.denom) * amountConversion(item.amount, comdex?.coinDecimals, assetMap[item?.denom]?.decimals?.toNumber());
       });
+
+
 
       setAssetBalance(Lodash.sum(value));
     },
@@ -126,7 +128,7 @@ const ConnectButton = ({
 
   useEffect(() => {
     calculateAssetBalance(balances);
-  }, [balances, markets]);
+  }, [balances, markets, assetMap]);
 
   const fetchMarkets = (offset, limit, isTotal, isReverse) => {
     queryMarketList(offset, limit, isTotal, isReverse, (error, result) => {

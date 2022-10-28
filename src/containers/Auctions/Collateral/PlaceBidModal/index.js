@@ -155,7 +155,7 @@ const PlaceBidModal = ({
   useEffect(() => {
     if (isModalOpen) {
       const interval = setInterval(() => {
-        fetchFilteredDutchAuctions(newCurrentAuction?.auctionId, newCurrentAuction?.auctionMappingId)
+        fetchFilteredDutchAuctions(auction?.auctionId, auction?.auctionMappingId)
       }, 5000)
       return () => {
         clearInterval(interval);

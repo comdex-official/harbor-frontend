@@ -1,5 +1,5 @@
 import { comdex } from "../config/network";
-import { commaSeparator } from "./number";
+import { commaSeparator, getExponent } from "./number";
 import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
 
 export const getAmount = (selectedAmount, coinDecimals) =>
@@ -62,3 +62,8 @@ export const getDenomBalance = (balances, denom) =>
   balances.length > 0 &&
   balances.find((item) => item.denom === denom) &&
   balances.find((item) => item.denom === denom).amount;
+
+
+export const commaSeparatorWithRounding = (amount, round) => {
+  return commaSeparator(amount.toFixed(getExponent(round)));
+};
