@@ -119,9 +119,7 @@ const PlaceBidModal = ({
   };
 
   const handleChange = (value) => {
-    console.log(value, "value");
     value = toDecimals(value).toString().trim();
-    console.log(value, "value");
 
     setValidationError(
       ValidateInputNumber(
@@ -143,7 +141,7 @@ const PlaceBidModal = ({
 
     let calculatedAmount = Number(bidAmount * Number(
       amountConversion(
-        decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
+        decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals.toNumber()
       )
     )
     ).toFixed(6);
@@ -205,7 +203,7 @@ const PlaceBidModal = ({
                   commaSeparator(
                     Number(
                       amountConversionWithComma(
-                        decimalConversion(newCurrentAuction?.outflowTokenInitialPrice || 0) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
+                        decimalConversion(newCurrentAuction?.outflowTokenInitialPrice || 0) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals.toNumber()
                       ) || 0
                     )
                   )
@@ -223,7 +221,7 @@ const PlaceBidModal = ({
                 {commaSeparator(
                   Number(
                     amountConversionWithComma(
-                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
+                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals.toNumber()
                     ) || 0
                   )
                 )}
