@@ -1345,7 +1345,7 @@
     ledger-cosmos-js "^2.1.8"
     semver "^7.3.2"
 
-"@cosmjs/ledger-amino@^0.29.2":
+"@cosmjs/ledger-amino@^0.29.3":
   version "0.29.3"
   resolved "https://registry.yarnpkg.com/@cosmjs/ledger-amino/-/ledger-amino-0.29.3.tgz#8206a0c79c1a6a55312f87d43afd2c9a711f870f"
   integrity sha512-PBDMWPfH8K3dYR020o2OZkV/96eUXOytaRnEYw5nItMJhUKPQZ/FKaCuvi0GiJluQw/39Y/cI4IIlVKCDXWUIQ==
@@ -1408,7 +1408,7 @@
     long "^4.0.0"
     protobufjs "~6.10.2"
 
-"@cosmjs/proto-signing@^0.29.0", "@cosmjs/proto-signing@^0.29.3":
+"@cosmjs/proto-signing@^0.29.2", "@cosmjs/proto-signing@^0.29.3":
   version "0.29.3"
   resolved "https://registry.yarnpkg.com/@cosmjs/proto-signing/-/proto-signing-0.29.3.tgz#fa5ed609ed2a0007d8d5eacbeb1f5a89ba1b77ff"
   integrity sha512-Ai3l9THjMOrLJ4Ebn1Dgptwg6W5ZIRJqtnJjijHhGwTVC1WT0WdYU3aMZ7+PwubcA/cA1rH4ZTK7jrfYbra63g==
@@ -2327,6 +2327,20 @@
     elliptic "^6.5.3"
     sha.js "^2.4.11"
 
+"@keplr-wallet/crypto@0.11.13":
+  version "0.11.13"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/crypto/-/crypto-0.11.13.tgz#9df302aa2788f3eaf4e7e5f5f976b0ec6f16b180"
+  integrity sha512-SNZc34Ry7gNlHB3SeyS326rzqRj0HnetAPeQBR09RqkgAFGsBOq9ZC/eJIVtTYsKv8qEgFZo86/Jo5dQuu8lyQ==
+  dependencies:
+    "@ethersproject/keccak256" "^5.5.0"
+    bip32 "^2.0.6"
+    bip39 "^3.0.3"
+    bs58check "^2.1.2"
+    buffer "^6.0.3"
+    crypto-js "^4.0.0"
+    elliptic "^6.5.3"
+    sha.js "^2.4.11"
+
 "@keplr-wallet/popup@0.11.12":
   version "0.11.12"
   resolved "https://registry.yarnpkg.com/@keplr-wallet/popup/-/popup-0.11.12.tgz#f32bf06c0cdf2add316d8d32c2026fa4b40888bf"
@@ -2345,7 +2359,7 @@
   resolved "https://registry.yarnpkg.com/@keplr-wallet/router/-/router-0.11.12.tgz#b7de29f143054cfae8fba358cf4ffe8007d85745"
   integrity sha512-rBfEFVU53ghUgLm3vRC5ulqc0MH3IEo3wdaRylwy6R5eB90ReD9KT/yJvvBj2ryHGCZo+x2Moi6v3Fm0XRM9aQ==
 
-"@keplr-wallet/stores@^0.11.11":
+"@keplr-wallet/stores@^0.11.12":
   version "0.11.12"
   resolved "https://registry.yarnpkg.com/@keplr-wallet/stores/-/stores-0.11.12.tgz#b35914c28602b741a19d6f7c7f0d46c94420170a"
   integrity sha512-b/HA8q9/DOHgXBN8cdJoxzzDbSirzpwU8EgdRjQ/9DESpJnN0JU0QIPyqdL969bVMsmsSVXwYAKF9CJleg1VJg==
