@@ -3,6 +3,7 @@ import Dashboard from "./containers/Dashboard";
 import Earn from "./containers/Earn";
 import BorrowTab from "./containers/Mint";
 import Vault from "./containers/Mint/Vault";
+import StableMint from "./containers/StableMint/stablemint";
 import MyPositions from "./containers/MyPosition";
 import Assets from "./containers/Assets";
 import More from './containers/More'
@@ -11,6 +12,7 @@ import GovernDetails from './containers/More/Govern/Details'
 import Airdrop from "./containers/More/Airdrop";
 import Vesting from "./containers/More/Locker";
 import Vote from "./containers/More/Vote";
+import StableMintVault from "./containers/StableMint/vault";
 
 const routes = [
   {
@@ -28,6 +30,14 @@ const routes = [
   {
     path: "/mint",
     element: <BorrowTab />,
+  },
+  {
+    path: "more/stableMint",
+    element: <StableMint />,
+  },
+  {
+    path: "/more/stableMint/:pathVaultId",
+    element: <StableMintVault />,
   },
   {
     path: "mint/vault/:pathVaultId",

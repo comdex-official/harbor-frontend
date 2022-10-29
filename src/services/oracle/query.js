@@ -1,6 +1,8 @@
 import { QueryClientImpl } from "comdex-codec/build/comdex/market/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
+import { API_URL } from "../../constants/url";
+import axios from "axios";
 
 let myClient = null;
 
@@ -12,8 +14,9 @@ const getQueryService = (callback) => {
   } else {
     createQueryClient((error, client) => {
       if (error) {
-        callback(error);
+        return callback(error);
       }
+
       myClient = client;
       const queryService = new QueryClientImpl(client);
 
@@ -21,7 +24,6 @@ const getQueryService = (callback) => {
     });
   }
 };
-
 
 export const queryMarketList = (
   offset,
@@ -35,6 +37,7 @@ export const queryMarketList = (
       callback(error);
       return;
     }
+
     queryService
       .QueryMarkets({
         pagination: {
@@ -52,4 +55,15 @@ export const queryMarketList = (
         callback(error?.message);
       });
   });
+};
+
+export const fetchRestPrices = (callback) => {
+  axios
+    .get(`${API_URL}/cswap/prices`)
+    .then((result) => {
+      callback(null, result?.data);
+    })
+    .catch((error) => {
+      callback(error?.message);
+    });
 };

@@ -538,6 +538,75 @@ export const customAminoTypes = {
       };
     },
   },
+
+  "/comdex.vault.v1beta1.MsgDepositStableMintRequest": {
+    aminoType: "comdex/vault/v1beta1/MsgDepositStableMintRequest",
+    toAmino: ({
+      from,
+      appId,
+      extendedPairVaultId,
+      amount,
+      stableVaultId,
+    }) => {
+      return {
+        from,
+        app_id: String(appId),
+        extended_pair_vault_id: String(extendedPairVaultId),
+        amount,
+        stable_vault_id: String(stableVaultId),
+      };
+    },
+    fromAmino: ({
+      from,
+      app_id,
+      extended_pair_vault_id,
+      amount,
+      stable_vault_id,
+    }) => {
+      return {
+        from,
+        appId: Number(app_id),
+        extendedPairVaultId: Number(extended_pair_vault_id),
+        amount,
+        stableVaultId: Number(stable_vault_id)
+      };
+    },
+  },
+
+
+  "/comdex.vault.v1beta1.MsgWithdrawStableMintRequest": {
+    aminoType: "comdex/vault/v1beta1/MsgWithdrawStableMintRequest",
+    toAmino: ({
+      from,
+      appId,
+      extendedPairVaultId,
+      amount,
+      stableVaultId,
+    }) => {
+      return {
+        from,
+        app_id: String(appId),
+        extended_pair_vault_id: String(extendedPairVaultId),
+        amount,
+        stable_vault_id: String(stableVaultId),
+      };
+    },
+    fromAmino: ({
+      from,
+      app_id,
+      extended_pair_vault_id,
+      amount,
+      stable_vault_id,
+    }) => {
+      return {
+        from,
+        appId: Number(app_id),
+        extendedPairVaultId: Number(extended_pair_vault_id),
+        amount,
+        stableVaultId: Number(stable_vault_id)
+      };
+    },
+  },
 };
 
 

@@ -1,6 +1,5 @@
 import { Decimal } from "@cosmjs/math";
 import { DOLLAR_DECIMALS } from "../constants/common";
-import { denomToSymbol } from "./string";
 
 export const formatNumber = (number) => {
   if (number >= 1000 && number < 1000000) {
@@ -30,54 +29,44 @@ export const decimalConversion = (data) => {
 export const truncateToDecimals = (num, dec = 2) => {
   const calcDec = Math.pow(10, dec);
   return Math.trunc(num * calcDec) / calcDec;
-}
+};
 
-export const marketPrice = (array, denom) => {
-  const value = array.filter((item) => item.symbol === denomToSymbol(denom));
+export const marketPrice = (marketsMap, denom, assetId) => {
+  const value = marketsMap[assetId];
 
   if (denom === "ucmst") {
     return 1;
   }
 
-  if (value && value[0]) {
-    return value[0] && value[0].rates / 1000000;
+  if (value && value?.twa) {
+    return value?.twa?.toNumber() / 1000000;
   }
 
   return 0;
 };
 
 export const calculateROI = (principal, interestRate, years, months, days) => {
-  const earns = Number(principal) * (1 + (Number(interestRate) / 100)) ** (Number(years) + Number(months) / 12 + Number(days) / 365);
+  const earns =
+    Number(principal) *
+    (1 + Number(interestRate) / 100) **
+    (Number(years) + Number(months) / 12 + Number(days) / 365);
   if (earns) {
-    return earns.toFixed(DOLLAR_DECIMALS)
+    return earns.toFixed(DOLLAR_DECIMALS);
+  } else {
+    return 0;
   }
-  else {
-    return 0
-  }
-}
+};
 
 export const getAccountNumber = (value) => {
   return value === "" ? "0" : value;
 };
 
-export const getPoolPrice = (
-  oraclePrice,
-  oracleAssetDenom,
-  firstAsset,
-  secondAsset
-) => {
-  let x = firstAsset?.amount,
-    y = secondAsset?.amount,
-    xPoolPrice,
-    yPoolPrice;
-
-  if (oracleAssetDenom === firstAsset?.denom) {
-    yPoolPrice = (x / y) * oraclePrice;
-    xPoolPrice = (y / x) * yPoolPrice;
-  } else {
-    xPoolPrice = (y / x) * oraclePrice;
-    yPoolPrice = (x / y) * xPoolPrice;
+export const getExponent = (number) => {
+  let count = 0;
+  while (number > 1) {
+    number = number / 10;
+    count++;
   }
 
-  return { xPoolPrice, yPoolPrice };
+  return count;
 };

@@ -304,6 +304,29 @@ const More = ({
           </div>
         </Col>
 
+
+        <Col lg="6" md="6" sm="12" className="mb-3">
+          <div className="more-card">
+            <div className="more-card-inner">
+              <div className="morecard-left">
+                <h2>Stable Mint</h2>
+                <p>
+                  Swap between whitelisted stablecoins and $CMST
+                </p>
+                <div className="button-container">
+                  <Button
+                    type="primary"
+                    className="btn-filled"
+                    onClick={() => handleRouteChange("./stableMint")}
+                  >
+                    Stable Mint
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
+
       </Row>
     </div>
   );

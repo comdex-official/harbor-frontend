@@ -9,6 +9,7 @@ const variables = {
     borrow: "Borrow",
     farm: "Farm",
     mint: "Mint",
+    stableMint: "Stable Mint",
     MyHome: "My Home",
     assets: "Assets",
     govern: "Govern",
