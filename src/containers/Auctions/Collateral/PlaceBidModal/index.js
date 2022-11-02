@@ -78,7 +78,7 @@ const PlaceBidModal = ({
             auctionId: newCurrentAuction?.auctionId,
             amount: {
               denom: newCurrentAuction?.outflowTokenInitAmount?.denom,
-              amount: getAmount(bidAmount, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()),
+              amount: getAmount(bidAmount, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals),
             },
             max: orderPriceConversion(maxPrice || 0),
             appId: Long.fromNumber(PRODUCT_ID),
@@ -124,7 +124,7 @@ const PlaceBidModal = ({
     setValidationError(
       ValidateInputNumber(
         value,
-        Number(amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()) || 0), "", "", "Bid must be less than Auction Quantity"
+        Number(amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals) || 0), "", "", "Bid must be less than Auction Quantity"
       )
     );
     setBidAmount(value);
@@ -141,7 +141,7 @@ const PlaceBidModal = ({
 
     let calculatedAmount = Number(bidAmount * Number(
       amountConversion(
-        decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals.toNumber()
+        decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals
       )
     )
     ).toFixed(6);
@@ -203,7 +203,7 @@ const PlaceBidModal = ({
                   commaSeparator(
                     Number(
                       amountConversionWithComma(
-                        decimalConversion(newCurrentAuction?.outflowTokenInitialPrice || 0) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals.toNumber()
+                        decimalConversion(newCurrentAuction?.outflowTokenInitialPrice || 0) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals
                       ) || 0
                     )
                   )
@@ -221,7 +221,7 @@ const PlaceBidModal = ({
                 {commaSeparator(
                   Number(
                     amountConversionWithComma(
-                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals.toNumber()
+                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals
                     ) || 0
                   )
                 )}
@@ -234,11 +234,11 @@ const PlaceBidModal = ({
               <p>Auctioned Quantity </p>
             </Col>
             <Col sm="6" className="text-right" onClick={() => {
-              handleChange((amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber())))
+              handleChange((amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals)))
             }}>
               <label style={{ cursor: "pointer" }} >
                 {amountConversionWithComma(
-                  newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
+                  newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals
                 )} {denomConversion(newCurrentAuction?.outflowTokenCurrentAmount?.denom)}
               </label>
             </Col>
@@ -251,7 +251,7 @@ const PlaceBidModal = ({
             <Col sm="6" className="text-right">
               <label >
                 {commaSeparator(
-                  Number(amountConversion(newCurrentAuction?.inflowTokenTargetAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.inflowTokenCurrentAmount?.denom]?.decimals.toNumber()) - amountConversion(newCurrentAuction?.inflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.inflowTokenCurrentAmount?.denom]?.decimals.toNumber())).toFixed(6) || 0
+                  Number(amountConversion(newCurrentAuction?.inflowTokenTargetAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.inflowTokenCurrentAmount?.denom]?.decimals) - amountConversion(newCurrentAuction?.inflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[newCurrentAuction?.inflowTokenCurrentAmount?.denom]?.decimals)).toFixed(6) || 0
                 )} {denomConversion(newCurrentAuction?.inflowTokenCurrentAmount?.denom)}
               </label>
             </Col>

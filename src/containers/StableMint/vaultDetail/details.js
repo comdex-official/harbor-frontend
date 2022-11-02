@@ -166,7 +166,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             title: `Total ${denomToSymbol(pair?.denomIn) || "Loading..."} locked in Stablemint`,
             counts: (
                 <div>
-                    {amountConversionWithComma(psmLockedAndMintedData?.amountIn || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals.toNumber())}
+                    {amountConversionWithComma(psmLockedAndMintedData?.amountIn || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals)}
                     <span className="small-text">
                         {denomToSymbol(pair && pair?.denomIn)}
                     </span>
@@ -178,7 +178,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             counts: (
                 <div className="collateral-deposit-main-box">
                     <div className="collateral-deposit-up-box">
-                        {amountConversionWithComma(selectedExtendedPairVaultListData?.debtCeiling || 0, DOLLAR_DECIMALS, assetMap[pair && pair?.denomOut]?.decimals.toNumber())}
+                        {amountConversionWithComma(selectedExtendedPairVaultListData?.debtCeiling || 0, DOLLAR_DECIMALS, assetMap[pair && pair?.denomOut]?.decimals)}
                         <span className="small-text">
                             {denomToSymbol(pair && pair?.denomOut)}
                         </span>
@@ -190,7 +190,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             title: `Total ${denomToSymbol(pair && pair?.denomOut) || "Loading..."}  minted`,
             counts: (
                 <>
-                    {amountConversionWithComma(psmLockedAndMintedData?.amountOut || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals.toNumber())}
+                    {amountConversionWithComma(psmLockedAndMintedData?.amountOut || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals)}
                     <span className="small-text">
                         {denomToSymbol(pair && pair?.denomOut)}
                     </span>

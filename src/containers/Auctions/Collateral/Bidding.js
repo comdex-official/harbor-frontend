@@ -74,7 +74,7 @@ export const Bidding = ({ biddingList, inProgress, assetMap }) => {
                   name={iconNameFromDenom(item?.outflowTokenAmount?.denom)}
                 />
               </div>
-              {amountConversionWithComma(item?.outflowTokenAmount?.amount || 0, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber())}{" "}
+              {amountConversionWithComma(item?.outflowTokenAmount?.amount || 0, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals)}{" "}
               {denomConversion(item?.outflowTokenAmount?.denom)}
             </div>
           </>
@@ -87,7 +87,7 @@ export const Bidding = ({ biddingList, inProgress, assetMap }) => {
                   name={iconNameFromDenom(item?.inflowTokenAmount?.denom)}
                 />
               </div>
-              {amountConversionWithComma(item?.inflowTokenAmount?.amount || 0, comdex?.coinDecimals, assetMap[item?.inflowTokenAmount?.denom]?.decimals.toNumber())}{" "}
+              {amountConversionWithComma(item?.inflowTokenAmount?.amount || 0, comdex?.coinDecimals, assetMap[item?.inflowTokenAmount?.denom]?.decimals)}{" "}
               {denomConversion(item?.inflowTokenAmount?.denom)}
             </div>
           </>

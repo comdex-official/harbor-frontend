@@ -194,9 +194,9 @@ const Edit = ({
 
   const getAmountBasedOnDenom = (editType) => {
     if (editType === "deposit" || editType === "withdraw") {
-      return getAmount(inputAmount, assetMap[pair?.denomIn]?.decimals.toNumber())
+      return getAmount(inputAmount, assetMap[pair?.denomIn]?.decimals)
     } else {
-      return getAmount(inputAmount, assetMap[pair?.denomOut]?.decimals.toNumber())
+      return getAmount(inputAmount, assetMap[pair?.denomOut]?.decimals)
 
     }
   }
@@ -248,12 +248,12 @@ const Edit = ({
 
   const getMaxRepay = () => {
     let debtFloor = Number(
-      amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())
+      amountConversion(selectedExtentedPairVaultListData[0]?.debtFloor, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)
     );
     let interestAccumulated = Number(
       amountConversion(ownerVaultInfo?.interestAccumulated)
     );
-    let currentBorrowed = Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber()));
+    let currentBorrowed = Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals));
     let maxRepay = currentBorrowed + interestAccumulated - debtFloor;
     maxRepay = truncateToDecimals(maxRepay, 6);
     if (maxRepay < 0) {
@@ -285,8 +285,8 @@ const Edit = ({
     debtToBeBorrowed = Number(0),
     collateralToBeTaken = Number(0)
   ) => {
-    const collateral = amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber());
-    const borrowed = amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber());
+    const collateral = amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals);
+    const borrowed = amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals);
     const liquidationRatio =
       selectedExtendedPairVaultListData?.minCr;
     setEstimatedLiquidationPrice(
@@ -297,10 +297,10 @@ const Edit = ({
   };
 
   const withdrawableCollateral = () => {
-    let depositedAsset = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()))
+    let depositedAsset = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
     let minCr = minCrRatio / 100;
     // let safeMinCr = (minCrRatio / 100) + 1;
-    let borrowedCMST = Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber()));
+    let borrowedCMST = Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals));
     let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
     let collateralAssetPrice = collateralPrice;
     let withdrawableAmount = depositedAsset - ((minCr * (borrowedCMST + intrest)) / collateralAssetPrice)
@@ -312,11 +312,11 @@ const Edit = ({
     return withdrawableAmount;
   }
   const availableToBorrow = () => {
-    let collateralLocked = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()))
+    let collateralLocked = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
     let collateralAssetPrice = collateralPrice;
     let minCr = minCrRatio / 100;
     // let safeMinCr = (minCrRatio / 100) + 1;
-    let mintedCMST = Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber()));
+    let mintedCMST = Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals));
     let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
     let calculatedAmount = ((collateralLocked * collateralAssetPrice) / minCr) - (mintedCMST + intrest);
     calculatedAmount = truncateToDecimals(calculatedAmount, 6)
@@ -327,8 +327,7 @@ const Edit = ({
   }
 
   const getDepositMax = () => {
-    let availableBalance = amountConversion(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber());
-    console.log(availableBalance, "availableBalance");
+    let availableBalance = amountConversion(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals);
     checkValidation(availableBalance, "deposit")
     setInputAmount(availableBalance);
     setEditType("deposit")
@@ -370,16 +369,10 @@ const Edit = ({
 
   const handleSliderChange = (value, type = editType) => {
     const newRatio = value / 100; // converting value to ratio
-    console.log(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber()), "currentDebt");
-    console.log(debtPrice, "debtPrice");
-    console.log(collateralPrice, "collateralPrice");
-    console.log(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()), "currentCollateral");
-    console.log(newRatio, "newRatio");
     if (type === "deposit") {
-      let newInput = ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) * Number(debtPrice) * Number(newRatio)) / collateralPrice) - Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()))
+      let newInput = ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * Number(debtPrice) * Number(newRatio)) / collateralPrice) - Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
       newInput = Math.max(newInput, 0).toFixed(comdex?.coinDecimals)
 
-      console.log(newInput, "newInput");
       setNewCollateralRatio(value);
       setDeposit(newInput);
       setInputAmount(newInput);
@@ -389,11 +382,11 @@ const Edit = ({
       setInputValidationError(
         ValidateInputNumber(
           Number(Number(newInput).toFixed(DOLLAR_DECIMALS)),
-          Number(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals.toNumber()))
+          Number(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals))
         )
       );
     } else if (type === "withdraw") {
-      let newInput = Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())) - ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) * Number(debtPrice) * Number(newRatio)) / collateralPrice)
+      let newInput = Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) - ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * Number(debtPrice) * Number(newRatio)) / collateralPrice)
 
       newInput = Math.max(newInput, 0).toFixed(comdex?.coinDecimals)
       setNewCollateralRatio(value);
@@ -403,11 +396,11 @@ const Edit = ({
       setDraw(0);
       setRepay(0);
       setInputValidationError(ValidateInputNumber(
-        Number(newInput, assetMap[pair?.denomIn]?.decimals.toNumber()),
+        Number(newInput, assetMap[pair?.denomIn]?.decimals),
         Number(withdrawableCollateral()).toFixed(DOLLAR_DECIMALS)
       ));
     } else if (type === "repay") {
-      let newInput = Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) - ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())) * Number(collateralPrice))) / (Number(debtPrice) * Number(newRatio))
+      let newInput = Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) - ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) * Number(collateralPrice))) / (Number(debtPrice) * Number(newRatio))
 
       newInput = Math.max(newInput, 0).toFixed(comdex?.coinDecimals)
       setNewCollateralRatio(value);
@@ -421,7 +414,7 @@ const Edit = ({
         Number(getAmount(newInput)),
         Number(getAmount(getMaxRepay()))));
     } else {
-      let newInput = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())) * Number(collateralPrice)) / (Number(debtPrice) * Number(newRatio))) - Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber()))
+      let newInput = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) * Number(collateralPrice)) / (Number(debtPrice) * Number(newRatio))) - Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals))
 
       newInput = Math.max(newInput, 0).toFixed(comdex?.coinDecimals)
       setNewCollateralRatio(value);
@@ -430,10 +423,6 @@ const Edit = ({
       setDeposit(0);
       setWithdraw(0);
       setRepay(0);
-      console.log(
-        Number(newInput),
-        Number(availableToBorrow())
-      );
       setInputValidationError(
         ValidateInputNumber(
           Number(newInput),
@@ -445,40 +434,40 @@ const Edit = ({
   const checkValidation = (value, type) => {
     if (type === "deposit") {
 
-      const ratio = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())) + Number(value)) * Number(collateralPrice)) / (Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) * Number(debtPrice))
+      const ratio = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) + Number(value)) * Number(collateralPrice)) / (Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * Number(debtPrice))
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
 
       setInputValidationError(
         ValidateInputNumber(
           Number(value).toFixed(DOLLAR_DECIMALS),
-          Number(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals.toNumber()))
+          Number(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals))
         )
       )
     } else if (type === "withdraw") {
-      const ratio = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())) - Number(value)) * Number(collateralPrice)) / (Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) * Number(debtPrice))
+      const ratio = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) - Number(value)) * Number(collateralPrice)) / (Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * Number(debtPrice))
       setNewCollateralRatio((ratio * 100).toFixed(1));
       let withdrawableAmount = Number(withdrawableCollateral()).toFixed(6);
       setInputValidationError(
         ValidateInputNumber(
-          Number(getAmount(value, assetMap[pair?.denomIn]?.decimals.toNumber())),
-          Number(getAmount(withdrawableAmount, assetMap[pair?.denomIn]?.decimals.toNumber())))
+          Number(getAmount(value, assetMap[pair?.denomIn]?.decimals)),
+          Number(getAmount(withdrawableAmount, assetMap[pair?.denomIn]?.decimals)))
       );
     } else if (type === "repay") {
-      const ratio = (Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()) * Number(collateralPrice))) / ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) - Number(value)) * Number(debtPrice))
+      const ratio = (Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals) * Number(collateralPrice))) / ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) - Number(value)) * Number(debtPrice))
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(
         ValidateInputNumber(
-          Number(getAmount(value, assetMap[pair?.denomOut]?.decimals.toNumber())),
-          Number(getAmount(getMaxRepay(), assetMap[pair?.denomOut]?.decimals.toNumber())))
+          Number(getAmount(value, assetMap[pair?.denomOut]?.decimals)),
+          Number(getAmount(getMaxRepay(), assetMap[pair?.denomOut]?.decimals)))
       );
     } else {
-      const ratio = (Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()) * Number(collateralPrice))) / ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())) + Number(value)) * Number(debtPrice))
+      const ratio = (Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals) * Number(collateralPrice))) / ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) + Number(value)) * Number(debtPrice))
 
       setNewCollateralRatio((ratio * 100).toFixed(1));
       setInputValidationError(ValidateInputNumber(
-        Number(getAmount(value, assetMap[pair?.denomOut]?.decimals.toNumber())),
-        Number(getAmount(availableToBorrow(), assetMap[pair?.denomOut]?.decimals.toNumber()))
+        Number(getAmount(value, assetMap[pair?.denomOut]?.decimals)),
+        Number(getAmount(availableToBorrow(), assetMap[pair?.denomOut]?.decimals))
       ));
     }
   };
@@ -537,7 +526,7 @@ const Edit = ({
                   </label>
                   {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
                     <span className="available">Avl.</span>
-                    {formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals.toNumber()))} {" "}
+                    {formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals))} {" "}
                     {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>

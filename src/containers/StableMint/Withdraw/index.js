@@ -272,7 +272,7 @@ const Deposit = ({
     const handleInputMax = () => {
         if (Number(AvailableAssetBalance)) {
             return dispatch(
-                setAmountIn(amountConversion(AvailableAssetBalance))
+                setAmountIn(amountConversion(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals))
             );
         } else {
             return null;
@@ -283,63 +283,16 @@ const Deposit = ({
     const calculateDrawdown = (userAmount, fee) => {
         let drawDownFee = fee;
         let amount = userAmount;
-        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(6);
+        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(comdex?.coinDecimals);
         return calculatePercentage;
     }
     const calcutlateCMSTToBeBurned = (userAmount, fee) => {
         let drawDownFee = fee;
         let amount = userAmount;
-        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(6);
-        let calculateCMSTToBeMinted = amount - calculatePercentage;
-        return calculateCMSTToBeMinted
+        let calculatePercentage = Number((drawDownFee / 100) * amount).toFixed(comdex?.coinDecimals);
+        let calculateCMSTToBeBurned = (amount - calculatePercentage).toFixed(comdex?.coinDecimals);
+        return calculateCMSTToBeBurned
     }
-
-    const handleSubmitCreateLocker = () => {
-        if (!address) {
-            message.error("Address not found, please connect to Keplr");
-            return;
-        }
-        setInProgress(true);
-        message.info("Transaction initiated");
-        signAndBroadcastTransaction(
-            {
-                message: {
-                    typeUrl: "/comdex.locker.v1beta1.MsgCreateLockerRequest",
-                    value: {
-                        depositor: address,
-                        amount: getAmount(inAmount),
-                        assetId: Long.fromNumber(whiteListedAssetId),
-                        appId: Long.fromNumber(PRODUCT_ID),
-                    },
-                },
-                fee: defaultFee(),
-            },
-            address,
-            (error, result) => {
-                setInProgress(false);
-                if (error) {
-                    message.error(error);
-                    return;
-                }
-
-                if (result?.code) {
-                    message.info(result?.rawLog);
-                    return;
-                }
-                message.success(
-                    <Snack
-                        message={variables[lang].tx_success}
-                        hash={result?.transactionHash}
-                    />
-                );
-                resetValues();
-                dispatch({
-                    type: "BALANCE_REFRESH_SET",
-                    value: refreshBalance + 1,
-                });
-            }
-        );
-    };
 
     const handleWithdrawStableToken = () => {
         if (!address) {
@@ -356,7 +309,7 @@ const Deposit = ({
                         from: address,
                         appId: Long.fromNumber(PRODUCT_ID),
                         extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
-                        amount: getAmount(inAmount, assetMap[pair && pair?.denomOut]?.decimals.toNumber()),
+                        amount: getAmount(inAmount, assetMap[pair && pair?.denomOut]?.decimals),
                         stableVaultId: Long.fromNumber(psmLockedAndMintedData?.id?.low),
                     },
                 },
@@ -431,7 +384,7 @@ const Deposit = ({
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals.toNumber())} {denomConversion(pair?.denomOut)}
+                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals)} {denomConversion(pair?.denomOut)}
                                 </span>
                                 <div className="maxhalf">
                                     <Button className="active" onClick={() => handleInputMax()}>
