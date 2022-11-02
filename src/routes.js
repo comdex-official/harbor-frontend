@@ -64,10 +64,10 @@ const routes = [
     path: "/more/govern/govern-details/:proposalId",
     element: <GovernDetails />,
   },
-  {
-    path: "/more/airdrop",
-    element: <Airdrop />,
-  },
+  // {
+  //   path: "/more/airdrop",
+  //   element: <Airdrop />,
+  // },
   {
     path: "/more/airdrop/complete-mission/:chainId",
     element: <CompleteMission />,
