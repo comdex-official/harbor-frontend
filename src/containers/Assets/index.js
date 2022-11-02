@@ -162,7 +162,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
           ? amountConversion(
             ibcBalance.amount,
             comdex?.coinDecimals,
-            assetMap[ibcBalance?.denom]?.decimals.toNumber()
+            assetMap[ibcBalance?.denom]?.decimals
           )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,

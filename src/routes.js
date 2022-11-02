@@ -10,6 +10,7 @@ import More from './containers/More'
 import Govern from './containers/More/Govern'
 import GovernDetails from './containers/More/Govern/Details'
 import Airdrop from "./containers/More/Airdrop";
+import CompleteMission from './containers/More/Airdrop/CompleteMission';
 import Vesting from "./containers/More/Locker";
 import Vote from "./containers/More/Vote";
 import StableMintVault from "./containers/StableMint/vault";
@@ -67,6 +68,10 @@ const routes = [
   //   path: "/more/airdrop",
   //   element: <Airdrop />,
   // },
+  {
+    path: "/more/airdrop/complete-mission/:chainId",
+    element: <CompleteMission />,
+  },
   {
     path: "/more/vesting",
     element: <Vesting />,

@@ -16,7 +16,7 @@ export const getTypeURL = (key) => {
       return "/comdex.vault.v1beta1.MsgDrawRequest";
     case "repay":
       return "/comdex.vault.v1beta1.MsgRepayRequest";
-    case "drawAndRepay":
+    case "depositAndDraw":
       return "/comdex.vault.v1beta1.MsgDepositAndDrawRequest";
 
     default:

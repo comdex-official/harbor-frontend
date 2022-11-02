@@ -1,4 +1,5 @@
 import { sha256, stringToPath } from "@cosmjs/crypto";
+import moment from "moment";
 import { comdex, ibcDenoms } from "../config/network";
 import { denomConversion } from "./coin";
 
@@ -218,3 +219,10 @@ export const makeHdPath = (
     "m/44'/" + coinType + "'/" + accountNumber + "'/0/" + addressIndex
   );
 };
+
+export const unixToGMTTime = (time) => {
+  let newTime = Math.floor(time / 1000000000);
+  var timestamp = moment.unix(newTime);
+  timestamp = timestamp.format("DD/MMMM/YYYY")
+  return timestamp;
+}

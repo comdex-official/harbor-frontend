@@ -111,7 +111,7 @@ const Mint = ({
 
     if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
       setValidationError(
-        ValidateInputNumber(value, (collateralAssetBalance / assetMap[pair?.denomIn]?.decimals.toNumber()).toFixed(6))
+        ValidateInputNumber(value, (collateralAssetBalance / assetMap[pair?.denomIn]?.decimals).toFixed(6))
       );
     }
     else {
@@ -129,7 +129,7 @@ const Mint = ({
   const handleAmountInChangeWhenVaultExist = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
     setValidationError(
-      ValidateInputNumber(getAmount(value, assetMap[pair?.denomIn]?.decimals.toNumber()), collateralAssetBalance)
+      ValidateInputNumber(getAmount(value, assetMap[pair?.denomIn]?.decimals), collateralAssetBalance)
     );
 
     setAmountIn(value);
@@ -144,7 +144,7 @@ const Mint = ({
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
     setValidationError(
-      ValidateInputNumber(getAmount(value, assetMap[pair?.denomIn]?.decimals.toNumber()), collateralAssetBalance)
+      ValidateInputNumber(getAmount(value, assetMap[pair?.denomIn]?.decimals), collateralAssetBalance)
     );
 
     setAmountIn(value);
@@ -232,7 +232,7 @@ const Mint = ({
         )
         : handleAmountInChange();
     } else {
-      return handleAmountInChange(amountConversion(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber()));
+      return handleAmountInChange(amountConversion(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals));
     }
   };
 
@@ -277,17 +277,23 @@ const Mint = ({
     if (ownerVaultId) {
       setInProgress(true);
       message.info("Transaction initiated");
-
+      console.log(
+        "From->", address,
+        "appId->", Long.fromNumber(PRODUCT_ID),
+        "extendedPairId->", Long.fromNumber(pathVaultId),
+        "UserVaultId->", Long.fromNumber(ownerVaultId),
+        "amount->", getAmount(inAmount, assetMap[pair?.denomIn]?.decimals)
+      );
       signAndBroadcastTransaction(
         {
           message: {
-            typeUrl: getTypeURL("drawAndRepay"),
+            typeUrl: getTypeURL("depositAndDraw"),
             value: {
               from: address,
               appId: Long.fromNumber(PRODUCT_ID),
               extendedPairVaultId: Long.fromNumber(pathVaultId),
               userVaultId: Long.fromNumber(ownerVaultId),
-              amount: getAmount(inAmount, assetMap[pair?.denomIn]?.decimals.toNumber()),
+              amount: getAmount(inAmount, assetMap[pair?.denomIn]?.decimals),
             },
           },
           fee: {
@@ -328,9 +334,6 @@ const Mint = ({
     } else {
       setInProgress(true);
       message.info("Transaction initiated");
-      console.log(
-        address, "--------", Long.fromNumber(PRODUCT_ID), "-----------", Long.fromNumber(pathVaultId), "---------", getAmount(inAmount, assetMap[pair?.denomIn]?.decimals.toNumber()), "------------", getAmount(outAmount, assetMap[pair?.denomOut]?.decimals.toNumber())
-      );
       signAndBroadcastTransaction(
         {
           message: {
@@ -339,8 +342,8 @@ const Mint = ({
               from: address,
               appId: Long.fromNumber(PRODUCT_ID),
               extendedPairVaultId: Long.fromNumber(pathVaultId),
-              amountIn: getAmount(inAmount, assetMap[pair?.denomIn]?.decimals.toNumber()),
-              amountOut: getAmount(outAmount, assetMap[pair?.denomOut]?.decimals.toNumber()),
+              amountIn: getAmount(inAmount, assetMap[pair?.denomIn]?.decimals),
+              amountOut: getAmount(outAmount, assetMap[pair?.denomOut]?.decimals),
             },
           },
           fee: {
@@ -496,7 +499,7 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())}
+                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)}
                   {denomToSymbol(pair && pair?.denomIn)}
                 </span>
                 <div className="maxhalf">

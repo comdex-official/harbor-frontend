@@ -175,7 +175,7 @@ const CloseTab = ({
             <TooltipIcon text="CMST to be repaid" />
           </div>
           <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountOut || 0,comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals.toNumber())} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : "Loading..."}
+            {amountConversion(ownerVaultInfo?.amountOut || 0,comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : "Loading..."}
           </div>
         </div>
         <div className="close-tab-row">
@@ -184,7 +184,7 @@ const CloseTab = ({
             <TooltipIcon text="Collateral to be received" />
           </div>
           <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountIn || 0, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals.toNumber())} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}
+            {amountConversion(ownerVaultInfo?.amountIn || 0, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}
           </div>
         </div>
       </div>

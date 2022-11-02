@@ -174,7 +174,7 @@ const More = ({
                     disabled={true}
                   // onClick={() => handleRouteChange("./airdrop")}
                   >
-                    Coming Soon
+                    Airdrop
                   </Button>
                 </div>
               </div>

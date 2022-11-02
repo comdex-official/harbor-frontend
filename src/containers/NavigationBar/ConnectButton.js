@@ -85,7 +85,7 @@ const ConnectButton = ({
       );
 
       const value = assetBalances.map((item) => {
-        return getPrice(item.denom) * amountConversion(item.amount, comdex?.coinDecimals, assetMap[item?.denom]?.decimals?.toNumber());
+        return getPrice(item.denom) * amountConversion(item.amount, comdex?.coinDecimals, assetMap[item?.denom]?.decimals);
       });
 
 
@@ -157,7 +157,7 @@ const ConnectButton = ({
         message.error(error);
         return;
       }
-      setHarborPrice(result?.data?.ucmst?.uharbor?.price)
+      setHarborPrice(result?.data?.others?.uharbor[0]?.price)
     });
   };
 

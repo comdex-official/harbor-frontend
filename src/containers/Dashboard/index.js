@@ -61,7 +61,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
         const totalValue = new Map(
           uniqueVaults?.map((item) => {
             let value =
-              Number(amountConversion(item.collateralLockedAmount, comdex.coinDecimals, assetMap[item?.assetDenom]?.decimals.toNumber())) *
+              Number(amountConversion(item.collateralLockedAmount, comdex.coinDecimals, assetMap[item?.assetDenom]?.decimals)) *
               marketPrice(markets, item?.assetDenom, assetMap[item?.assetDenom]?.id);
             total += value;
             item.dollarValue = value;

@@ -182,7 +182,7 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap
           $
           {commaSeparator(
             Number(
-              amountConversionWithComma(decimalConversion(item?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentPrice?.denom]?.decimals.toNumber()) || 0
+              amountConversionWithComma(decimalConversion(item?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentPrice?.denom]?.decimals) || 0
             ).toFixed(DOLLAR_DECIMALS)
           )}
         </>
@@ -250,7 +250,7 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap
             <div>
               {item?.outflowTokenCurrentAmount?.amount &&
                 amountConversionWithComma(
-                  item?.outflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals.toNumber()
+                  item?.outflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals
                 )} {denomConversion(item?.outflowTokenCurrentAmount?.denom)}
             </div>,
           current_price: item,
