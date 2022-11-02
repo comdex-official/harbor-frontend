@@ -37,6 +37,9 @@ export const marketPrice = (marketsMap, denom, assetId) => {
   if (denom === "ucmst") {
     return 1;
   }
+  if (denom === "ucmdx") {
+    return 0.14;
+  }
 
   if (value && value?.twa) {
     return value?.twa?.toNumber() / 1000000;

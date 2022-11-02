@@ -171,10 +171,9 @@ const More = ({
                   <Button
                     type="primary"
                     className="btn-filled"
-                    disabled={true}
-                  // onClick={() => handleRouteChange("./airdrop")}
+                    onClick={() => handleRouteChange("./airdrop")}
                   >
-                    Coming Soon
+                    Airdrop
                   </Button>
                 </div>
               </div>

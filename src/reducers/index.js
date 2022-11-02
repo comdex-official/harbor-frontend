@@ -16,6 +16,7 @@ import govern from "./govern";
 import ledger from "./ledger";
 import vesting from "./vesting";
 import stableMint from "./stableMint"
+import airdrop from "./airdrop";
 
 const app = combineReducers({
   language,
@@ -35,6 +36,7 @@ const app = combineReducers({
   govern,
   ledger,
   vesting,
+  airdrop,
 });
 
 const root = (state, action) => {
