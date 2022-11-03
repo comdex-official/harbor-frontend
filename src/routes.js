@@ -3,14 +3,17 @@ import Dashboard from "./containers/Dashboard";
 import Earn from "./containers/Earn";
 import BorrowTab from "./containers/Mint";
 import Vault from "./containers/Mint/Vault";
+import StableMint from "./containers/StableMint/stablemint";
 import MyPositions from "./containers/MyPosition";
 import Assets from "./containers/Assets";
 import More from './containers/More'
 import Govern from './containers/More/Govern'
 import GovernDetails from './containers/More/Govern/Details'
 import Airdrop from "./containers/More/Airdrop";
+import CompleteMission from './containers/More/Airdrop/CompleteMission';
 import Vesting from "./containers/More/Locker";
 import Vote from "./containers/More/Vote";
+import StableMintVault from "./containers/StableMint/vault";
 
 const routes = [
   {
@@ -28,6 +31,14 @@ const routes = [
   {
     path: "/mint",
     element: <BorrowTab />,
+  },
+  {
+    path: "more/stableMint",
+    element: <StableMint />,
+  },
+  {
+    path: "/more/stableMint/:pathVaultId",
+    element: <StableMintVault />,
   },
   {
     path: "mint/vault/:pathVaultId",
@@ -57,6 +68,10 @@ const routes = [
   //   path: "/more/airdrop",
   //   element: <Airdrop />,
   // },
+  {
+    path: "/more/airdrop/complete-mission/:chainId",
+    element: <CompleteMission />,
+  },
   {
     path: "/more/vesting",
     element: <Vesting />,

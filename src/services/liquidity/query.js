@@ -122,25 +122,3 @@ export const queryLiquidityParams = (
     });
 };
 
-export const queryPool = (id, callback) => {
-    createQueryClient((error, client) => {
-        if (error) {
-            callback(error);
-            return;
-        }
-
-        const queryService = new QueryClientImpl(client);
-
-        queryService
-            .Pool({
-                appId: Long.fromNumber(CSWAP_APP_ID),
-                poolId: Long.fromNumber(id),
-            })
-            .then((result) => {
-                callback(null, result);
-            })
-            .catch((error) => {
-                callback(error?.message);
-            });
-    });
-};

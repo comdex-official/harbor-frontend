@@ -7,6 +7,7 @@ import {
 
 export const contractAddress = process.env.REACT_APP_GOVERNANCE_CONTRACT;
 export const lockingContractAddress = process.env.REACT_APP_LOCKING_CONTRACT;
+export const airdropContractAddress = process.env.REACT_APP_AIRDROP_CONTRACT;
 
 const getCurrencies = (chain) => {
   if (chain?.rpc === comdex?.rpc) {

@@ -1,25 +1,25 @@
 import { Button, List, message } from "antd";
+import Long from "long";
 import * as PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
+import { setBalanceRefresh } from "../../../../../actions/account";
+import { setOwnerVaultInfo } from '../../../../../actions/locker';
+import { setOwnerCurrentCollateral } from "../../../../../actions/mint";
+import { SvgIcon } from "../../../../../components/common";
+import Snack from "../../../../../components/common/Snack";
+import { cmst, comdex } from "../../../../../config/network";
+import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../../constants/common";
+import { signAndBroadcastTransaction } from "../../../../../services/helper";
+import { queryUserVaultsInfo } from "../../../../../services/vault/query";
+import { amountConversion, denomConversion } from "../../../../../utils/coin";
 import {
   commaSeparator,
   decimalConversion,
-  marketPrice,
+  marketPrice
 } from "../../../../../utils/number";
-import { amountConversion, denomConversion } from "../../../../../utils/coin";
-import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../../constants/common";
-import { cmst, comdex } from "../../../../../config/network";
-import { SvgIcon } from "../../../../../components/common";
 import { denomToSymbol, iconNameFromDenom } from "../../../../../utils/string";
 import variables from "../../../../../utils/variables";
-import { queryUserVaultsInfo } from "../../../../../services/vault/query";
-import { setOwnerVaultInfo } from '../../../../../actions/locker';
-import { setOwnerCurrentCollateral } from "../../../../../actions/mint";
-import { useEffect, useState } from "react";
-import { signAndBroadcastTransaction } from "../../../../../services/helper";
-import Long from "long";
-import Snack from "../../../../../components/common/Snack";
-import { setBalanceRefresh } from "../../../../../actions/account";
 const PricePool = ({ setOwnerCurrentCollateral,
   ownerVaultInfo,
   markets,
@@ -31,6 +31,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
   address,
   setBalanceRefresh,
   refreshBalance,
+  assetMap,
 }) => {
 
   const dispatch = useDispatch();
@@ -38,11 +39,11 @@ const PricePool = ({ setOwnerCurrentCollateral,
     (state) => state.locker.extenedPairVaultListData[0]
   );
   const collateralDeposited =
-    Number(amountConversion(ownerVaultInfo?.amountIn)) *
-    marketPrice(markets, pair?.denomIn);
+    Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) *
+    marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
   const withdrawn =
-    Number(amountConversion(ownerVaultInfo?.amountOut)) *
-    marketPrice(markets, pair?.denomOut);
+    Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) *
+    marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
 
   const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
   const borrowed = Number(amountConversion(ownerVaultInfo?.amountOut || 0));
@@ -144,7 +145,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
       counts: (
         <div className="collateral-deposit-main-box">
           <div className="collateral-deposit-up-box">
-            {ownerVaultInfo ? amountConversion(ownerVaultInfo?.amountIn) : "0.000000"}
+            {ownerVaultInfo ? amountConversion(ownerVaultInfo?.amountIn, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals) : "0.000000"}
             <span className="small-text">
               {denomToSymbol(pair && pair?.denomIn)}
             </span>
@@ -163,7 +164,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
       title: "Stability Fee Due",
       counts: (
         <>
-          {amountConversion(ownerVaultInfo?.interestAccumulated || 0)}
+          {amountConversion(ownerVaultInfo?.interestAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)}
           <span className="small-text">
             {denomToSymbol(pair && pair?.denomOut)}
           </span>
@@ -224,7 +225,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
               {" "}
               $
               {commaSeparator(
-                Number(marketPrice(markets, pair?.denomIn) || 0).toFixed(
+                Number(marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id) || 0).toFixed(
                   DOLLAR_DECIMALS
                 )
               )}
@@ -261,17 +262,8 @@ PricePool.prototype = {
   address: PropTypes.string,
   refreshBalance: PropTypes.number.isRequired,
   setBalanceRefresh: PropTypes.func.isRequired,
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
+  assetMap: PropTypes.object,
   ownerVaultId: PropTypes.string,
   ownerVaultInfo: PropTypes.array,
   pair: PropTypes.shape({
@@ -286,11 +278,12 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     ownerVaultInfo: state.locker.ownerVaultInfo,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     pair: state.asset.pair,
     ownerVaultId: state.locker.ownerVaultId,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,
     refreshBalance: state.account.refreshBalance,
+    assetMap: state.asset.map,
   };
 };
 const actionsToProps = {

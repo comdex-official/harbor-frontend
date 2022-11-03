@@ -1,5 +1,5 @@
 import { MsgCreateLockerRequest, MsgDepositAssetRequest, MsgWithdrawAssetRequest, MsgCloseLockerRequest, MsgLockerRewardCalcRequest } from 'comdex-codec/build/comdex/locker/v1beta1/tx';
-import { MsgCreateRequest, MsgDepositRequest, MsgWithdrawRequest, MsgDrawRequest, MsgRepayRequest, MsgCloseRequest, MsgDepositAndDrawRequest, MsgVaultInterestCalcRequest } from 'comdex-codec/build/comdex/vault/v1beta1/tx'
+import { MsgCreateRequest, MsgDepositRequest, MsgWithdrawRequest, MsgDrawRequest, MsgRepayRequest, MsgCloseRequest, MsgDepositAndDrawRequest, MsgVaultInterestCalcRequest, MsgDepositStableMintRequest, MsgWithdrawStableMintRequest } from 'comdex-codec/build/comdex/vault/v1beta1/tx'
 
 import { MsgPlaceDutchBidRequest, MsgPlaceSurplusBidRequest, MsgPlaceDebtBidRequest } from 'comdex-codec/build/comdex/auction/v1beta1/tx';
 
@@ -21,6 +21,8 @@ export const myRegistry = new Registry([
   ["/comdex.vault.v1beta1.MsgCloseRequest", MsgCloseRequest],
   ["/comdex.vault.v1beta1.MsgDepositAndDrawRequest", MsgDepositAndDrawRequest],
   ["/comdex.vault.v1beta1.MsgVaultInterestCalcRequest", MsgVaultInterestCalcRequest],
+  ["/comdex.vault.v1beta1.MsgDepositStableMintRequest", MsgDepositStableMintRequest],
+  ["/comdex.vault.v1beta1.MsgWithdrawStableMintRequest", MsgWithdrawStableMintRequest],
   ["/comdex.auction.v1beta1.MsgPlaceSurplusBidRequest", MsgPlaceSurplusBidRequest],
   ["/comdex.auction.v1beta1.MsgPlaceDebtBidRequest", MsgPlaceDebtBidRequest],
   ["/comdex.auction.v1beta1.MsgPlaceDutchBidRequest", MsgPlaceDutchBidRequest],

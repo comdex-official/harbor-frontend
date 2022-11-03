@@ -1,8 +1,7 @@
-import { comdex } from "../config/network";
-import { denomConversion } from "./coin";
-import { calculatePoolShare } from "./calculations";
-import { ibcDenoms } from "../config/network";
 import { sha256, stringToPath } from "@cosmjs/crypto";
+import moment from "moment";
+import { comdex, ibcDenoms } from "../config/network";
+import { denomConversion } from "./coin";
 
 const encoding = require("@cosmjs/encoding");
 
@@ -80,6 +79,26 @@ export const denomToSymbol = (key) => {
   }
 };
 
+export const minimalDenomToDenom = (key) => {
+  switch (key) {
+    case "uatom":
+    case ibcDenoms["uatom"]:
+      return "atom";
+    case "udvpn":
+      return "dvpn";
+    case "uxprt":
+    case ibcDenoms["uxprt"]:
+      return "xprt";
+    case "uosmo":
+    case ibcDenoms["uosmo"]:
+      return "osmo";
+    case "ucmdx":
+      return "cmdx";
+    default:
+      return "";
+  }
+};
+
 export const iconNameFromDenom = (key) => {
   switch (key) {
     case "uatom":
@@ -148,12 +167,6 @@ export const toDecimals = (value, decimal = comdex.coinDecimals) =>
     value.substr(value.indexOf("."), decimal + 1)
     : value;
 
-export const showTotalAssetCount = (asset) => {
-  return `${(asset && calculatePoolShare(asset)) || 0} ${denomConversion(
-    asset?.denom || ""
-  )}`;
-};
-
 export const showUserAssetCount = (assetShare, denom) => {
   return `${assetShare} ${denomConversion(denom) || ""}`;
 };
@@ -206,3 +219,10 @@ export const makeHdPath = (
     "m/44'/" + coinType + "'/" + accountNumber + "'/0/" + addressIndex
   );
 };
+
+export const unixToGMTTime = (time) => {
+  let newTime = Math.floor(time / 1000000000);
+  var timestamp = moment.unix(newTime);
+  timestamp = timestamp.format("DD/MMMM/YYYY")
+  return timestamp;
+}

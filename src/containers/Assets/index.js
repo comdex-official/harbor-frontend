@@ -12,6 +12,7 @@ import { getChainConfig } from "../../services/keplr";
 import {
   amountConversion,
   amountConversionWithComma,
+  commaSeparatorWithRounding,
   denomConversion
 } from "../../utils/coin";
 import { commaSeparator, marketPrice } from "../../utils/number";
@@ -21,23 +22,16 @@ import Deposit from "./Deposit";
 import "./index.scss";
 import Withdraw from "./Withdraw";
 
-const Assets = ({
-  lang,
-  assetBalance,
-  balances,
-  markets,
-  refreshBalance,
-  poolPriceMap,
-}) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap, harborPrice }) => {
   const dispatch = useDispatch();
 
   const handleBalanceRefresh = () => {
-    let assetReloadBth = document.getElementById('reload-btn');
-    assetReloadBth.classList.toggle("reload")
+    let assetReloadBth = document.getElementById("reload-btn");
+    assetReloadBth.classList.toggle("reload");
     if (!assetReloadBth.classList.contains("reload")) {
-      assetReloadBth.classList.add("reload-2")
+      assetReloadBth.classList.add("reload-2");
     } else {
-      assetReloadBth.classList.remove("reload-2")
+      assetReloadBth.classList.remove("reload-2");
     }
 
     dispatch({
@@ -150,14 +144,16 @@ const Assets = ({
   ];
 
   const getPrice = (denom) => {
-    return poolPriceMap[denom] || marketPrice(markets, denom) || 0;
+    if (denom === harbor?.coinMinimalDenom) {
+      return harborPrice;
+    }
+    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
 
   let ibcBalances = AssetList?.tokens.map((token) => {
     const ibcBalance = balances.find(
       (item) => item.denom === token?.ibcDenomHash
     );
-
     return {
       chainInfo: getChainConfig(token),
       coinMinimalDenom: token?.coinMinimalDenom,
@@ -166,7 +162,7 @@ const Assets = ({
           ? amountConversion(
             ibcBalance.amount,
             comdex?.coinDecimals,
-            token?.coinDecimals
+            assetMap[ibcBalance?.denom]?.decimals
           )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
@@ -290,7 +286,8 @@ const Assets = ({
               </div>
               <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
-                {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "}
+                {/* {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "} */}
+                {commaSeparatorWithRounding(assetBalance, DOLLAR_DECIMALS)}{" "}
                 {variables[lang].USD}{" "}
                 <div className="d-flex">
                   <span
@@ -326,24 +323,15 @@ Assets.propTypes = {
   lang: PropTypes.string.isRequired,
   assetBalance: PropTypes.number,
   refreshBalance: PropTypes.number.isRequired,
+  assetMap: PropTypes.object,
+  harborPrice: PropTypes.number.isRequired,
   balances: PropTypes.arrayOf(
     PropTypes.shape({
       denom: PropTypes.string.isRequired,
       amount: PropTypes.string,
     })
   ),
-  poolPriceMap: PropTypes.object,
-  markets: PropTypes.arrayOf(
-    PropTypes.shape({
-      rates: PropTypes.shape({
-        high: PropTypes.number,
-        low: PropTypes.number,
-        unsigned: PropTypes.bool,
-      }),
-      symbol: PropTypes.string,
-      script_id: PropTypes.string,
-    })
-  ),
+  markets: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -351,9 +339,10 @@ const stateToProps = (state) => {
     lang: state.language,
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
-    markets: state.oracle.market.list,
+    markets: state.oracle.market.map,
     refreshBalance: state.account.refreshBalance,
-    poolPriceMap: state.liquidity.poolPriceMap,
+    assetMap: state.asset.map,
+    harborPrice: state.liquidity.harborPrice,
   };
 };
 

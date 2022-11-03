@@ -1,25 +1,19 @@
-import { Button, message } from 'antd';
+import { Button, DatePicker, message, Radio, Space } from 'antd';
+import moment from 'moment';
 import * as PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from 'react'
-import { connect } from "react-redux";
-import { Col, Row, SvgIcon } from '../../../components/common';
+import React, { useEffect, useState } from 'react';
+import { connect, useDispatch, useSelector } from "react-redux";
+import { setBalanceRefresh } from "../../../actions/account";
+import { setAmountIn } from '../../../actions/asset';
+import { setVestingRadioInput } from "../../../actions/vesting";
 import CustomInput from '../../../components/CustomInput';
 import TooltipIcon from '../../../components/TooltipIcon';
-import { amountConversion, amountConversionWithComma, denomConversion, getAmount, getDenomBalance } from '../../../utils/coin';
-import { iconNameFromDenom, toDecimals } from '../../../utils/string';
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { ValidateInputNumber } from '../../../config/_validation';
-import { setAmountIn } from '../../../actions/asset';
-import { DatePicker, Space } from 'antd';
-import { Radio } from 'antd';
+import { PRODUCT_ID } from '../../../constants/common';
 import { vestingCreateWeightage } from '../../../services/vestingContractsRead';
 import { transactionForCreateVesting } from '../../../services/vestingContractsWrite';
-import { PRODUCT_ID } from '../../../constants/common';
-import { setBalanceRefresh } from "../../../actions/account";
-import { setVestingRadioInput } from "../../../actions/vesting";
-import { marketPrice } from '../../../utils/number';
-import moment from 'moment';
+import { amountConversion, amountConversionWithComma, denomConversion, getAmount, getDenomBalance } from '../../../utils/coin';
+import { toDecimals } from '../../../utils/string';
 
 
 const Create = ({
@@ -39,7 +33,7 @@ const Create = ({
     const [radioValue, setRadioValue] = useState("t1");
     const [totalVestingData, setTotalVestingData] = useState();
     const [veHarbor, setVeHarbor] = useState(0);
-    const [unlockDate, setUnlockDate] = useState(moment().add(1, 'week').format("DD - MMMM - YYYY"));
+    const [unlockDate, setUnlockDate] = useState(moment().add(1, 'month').format("DD - MMMM - YYYY"));
     const dateFormat = 'DD-MMMM-YYYY';
 
 
@@ -116,18 +110,6 @@ const Create = ({
             setVeHarbor(calculateveharborAmount);
 
         }
-        else if (vestingRadioInput === "t3") {
-            let amount = getAmount(value)
-            let calculateveharborAmount = amount * totalVestingData?.t3?.weight;
-            calculateveharborAmount = amountConversion(calculateveharborAmount || 0);
-            setVeHarbor(calculateveharborAmount);
-        }
-        else if (vestingRadioInput === "t4") {
-            let amount = getAmount(value)
-            let calculateveharborAmount = amount * totalVestingData?.t4?.weight;
-            calculateveharborAmount = amountConversion(calculateveharborAmount || 0);
-            setVeHarbor(calculateveharborAmount);
-        }
     }
 
     const handleMaxClick = () => {
@@ -139,23 +121,13 @@ const Create = ({
     const calculateDateValue = (value = "t1") => {
         let currentData = moment().format(dateFormat)
         if (value === "t1") {
-            let new_date = moment(currentData, "DD-MMMM-YYYY").add(1, 'week').format(dateFormat);
-            return new_date;
-        }
-        else if (value === "t2") {
             let new_date = moment(currentData, "DD-MMMM-YYYY").add(1, 'month').format(dateFormat);
             return new_date;
         }
-        else if (value === "t3") {
-            let new_date = moment(currentData, "DD-MMMM-YYYY").add(1, 'year').format(dateFormat);
+        else if (value === "t2") {
+            let new_date = moment(currentData, "DD-MMMM-YYYY").add(4, 'month').format(dateFormat);
             return new_date;
         }
-        else if (value === "t4") {
-            let new_date = moment(currentData, "DD-MMMM-YYYY").add(4, 'year').format(dateFormat);
-            return new_date;
-        }
-        console.log(currentData, "current date");
-        console.log(new_date, "newData");
     }
 
     // calculateDateValue()
@@ -223,10 +195,10 @@ const Create = ({
                             <div className="assets-right">
                                 <div className="input-select">
                                     <Radio.Group onChange={onRadioInputChange} value={radioValue}>
-                                        <Radio value="t1" >1 Week <TooltipIcon text="1 week - 1000/208 = 4.80 veHARBOR" /></Radio>
-                                        <Radio value="t2" >1 Month <TooltipIcon text="1 month - 1000/48 = 20.83 veHARBOR" /></Radio>
-                                        <Radio value="t3" >1 Years <TooltipIcon text="1 year - 1000/4 = 250 veHARBOR" /></Radio>
-                                        <Radio value="t4" >4 Years <TooltipIcon text="4 year = 1000 veHARBOR" /></Radio>
+                                        <Radio value="t1" >1 Month <TooltipIcon text="1 week - 1000/208 = 4.80 veHARBOR" /></Radio>
+                                        <Radio value="t2" >4 Month <TooltipIcon text="1 month - 1000/48 = 20.83 veHARBOR" /></Radio>
+                                        {/* <Radio value="t3" >1 Years <TooltipIcon text="1 year - 1000/4 = 250 veHARBOR" /></Radio>
+                                        <Radio value="t4" >4 Years <TooltipIcon text="4 year = 1000 veHARBOR" /></Radio> */}
                                     </Radio.Group>
                                 </div>
                             </div>
@@ -294,7 +266,7 @@ const stateToProps = (state) => {
         address: state.account.address,
         refreshBalance: state.account.refreshBalance,
         balances: state.account.balances.list,
-        markets: state.oracle.market.list,
+        markets: state.oracle.market.map,
         vestingRadioInput: state.vesting.vestingRadioInput,
     };
 };
