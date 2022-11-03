@@ -210,7 +210,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
         <>
             <div className="composite-card farm-content-card earn-deposite-card ">
                 <div className="card-head">
-                    {/* <div className="liquidation-price-container">
+                    <div className="liquidation-price-container">
                         <div className="svg-icon-inner">
                             <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                         </div>
@@ -219,7 +219,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
                             <SvgIcon name={iconNameFromDenom(pair && pair?.denomOut)} />{" "}
                         </div>
 
-                    </div> */}
+                    </div>
 
                     {/* <div className="oracle-price-container">
                         <span className="title">Oracle Price </span>{" "}
