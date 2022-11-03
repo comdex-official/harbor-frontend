@@ -266,7 +266,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
           </>
         ),
         noOfTokens: item?.balance?.amount,
-        oraclePrice: getPrice(item?.coinMinimalDenom),
+        oraclePrice: getPrice(item?.ibcDenomHash),
         amount: Number(item.balance?.amount) * item.balance?.price,
         ibcdeposit: item,
         ibcwithdraw: item,
@@ -286,7 +286,6 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
               </div>
               <div className="total-asset-balance-main-container">
                 <span>{variables[lang].total_asset_balance}</span>{" "}
-                {/* {amountConversionWithComma(assetBalance, DOLLAR_DECIMALS)}{" "} */}
                 {commaSeparatorWithRounding(assetBalance, DOLLAR_DECIMALS)}{" "}
                 {variables[lang].USD}{" "}
                 <div className="d-flex">

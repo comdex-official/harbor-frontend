@@ -103,8 +103,8 @@ const Deposit = ({
   useEffect(() => {
     resetValues();
     fetchAssets(
-      (DEFAULT_PAGE_NUMBER - 1) * DEFAULT_PAGE_SIZE,
-      DEFAULT_PAGE_SIZE,
+      (DEFAULT_PAGE_NUMBER - 1) * (DEFAULT_PAGE_SIZE * 2),
+      (DEFAULT_PAGE_SIZE * 2),
       true,
       false
     );
