@@ -167,21 +167,13 @@ const Deposit = ({
         value = toDecimals(value).toString().trim();
         setInputValidationError(
             ValidateInputNumber(
-                Number(getAmount(value)),
-                AvailableAssetBalance,
-                "macro"
+                value,
+                amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals),
             )
         );
         dispatch(setAmountIn(value));
     };
 
-    const showInDollarValue = () => {
-        const total = inAmount;
-
-        return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
-            DOLLAR_DECIMALS
-        )}`;
-    };
 
     useEffect(() => {
         resetValues();
@@ -382,7 +374,7 @@ const Deposit = ({
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals)} {denomConversion(pair?.denomIn)}
+                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals)} {denomToSymbol(pair?.denomIn)}
                                 </span>
                                 <div className="maxhalf">
                                     <Button className="active" onClick={() => handleInputMax()}>
@@ -398,9 +390,7 @@ const Deposit = ({
                                         calculateDrawdown(inAmount, drawDownFee)
                                     }}
                                     validationError={inputValidationError}
-                                // disabled={true}
                                 />
-                                {/* <small>{showInDollarValue()}</small> */}
                             </div>
                         </div>
                     </div>
@@ -432,6 +422,10 @@ const Deposit = ({
                                 loading={inProgress}
                                 type="primary"
                                 className="btn-filled"
+                                disabled={
+                                    !Number(inAmount) ||
+                                    inputValidationError?.message
+                                }
                                 onClick={() => {
                                     handleSubmitAssetDepositStableMint()
                                 }}
@@ -445,7 +439,6 @@ const Deposit = ({
         </>
     );
 };
-
 Deposit.propTypes = {
     address: PropTypes.string.isRequired,
     assets: PropTypes.arrayOf(

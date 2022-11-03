@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { amountConversionWithComma } from "../../utils/coin";
 import NoData from "../../components/NoData";
-import { queryExtendedPairVaultById, queryStableMintExtendedPairVaultById } from "../../services/asset/query";
+import { queryExtendedPairVaultById, queryPairVault, queryStableMintExtendedPairVaultById } from "../../services/asset/query";
 import { setStableMintVaultList } from "../../actions/stableMint"
 import {
     setCurrentPairID,
@@ -48,18 +48,34 @@ const StableMint = ({
     const [activePage, setActivePage] = useState(DEFAULT_PAGE_NUMBER)
     const [totalExtendedPair, setTotalExtendedPair] = useState()
 
-    const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
+    const fetchExtendexPairList = (pairId) => {
         setLoading(true);
-        queryStableMintExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
+        queryPairVault(pairId, (error, data) => {
             setLoading(false);
             if (error) {
                 message.error(error);
                 return;
             }
-            dispatch(setStableMintVaultList(data?.extendedPair));
-            setTotalExtendedPair(data?.pagination?.total?.low)
+            console.log(data?.pairVault, "psm data");
+            dispatch(setStableMintVaultList([data?.pairVault]));
+            // setTotalExtendedPair(data?.pagination?.total?.low)
+            // dispatch(setStableMintVaultList(data?.extendedPair));
+            // setTotalExtendedPair(data?.pagination?.total?.low)
         });
     };
+    // const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
+    //     setLoading(true);
+    //     queryStableMintExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
+    //         setLoading(false);
+    //         if (error) {
+    //             message.error(error);
+    //             return;
+    //         }
+    //         console.log(data, "psm data");
+    //         dispatch(setStableMintVaultList(data?.extendedPair));
+    //         setTotalExtendedPair(data?.pagination?.total?.low)
+    //     });
+    // };
 
 
     const fetchVaultMintedTokenStatistic = (productId) => {
@@ -101,7 +117,8 @@ const StableMint = ({
     };
 
     useEffect(() => {
-        fetchExtendexPairList((pageNumber - 1) * pageSize, pageSize, true, false, PRODUCT_ID)
+        fetchExtendexPairList(14)
+        // fetchExtendexPairList((pageNumber - 1) * pageSize, pageSize, true, false, PRODUCT_ID)
     }, [address])
 
     useEffect(() => {
@@ -141,7 +158,8 @@ const StableMint = ({
                                                 >
                                                     <div className="up-container">
                                                         <div className="icon-container">
-                                                            <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} />
+                                                            {/* <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} /> */}
+                                                            <SvgIcon name={iconNameFromDenom(symbolToDenom("usdc"))} />
                                                         </div>
                                                         <div className="vault-name-container">
                                                             <div className="vault-name">{item?.pairName}</div>

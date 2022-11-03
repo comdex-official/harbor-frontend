@@ -384,7 +384,7 @@ const Deposit = ({
                             <div className="label-right">
                                 Available
                                 <span className="ml-1">
-                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals)} {denomConversion(pair?.denomOut)}
+                                    {amountConversionWithComma(AvailableAssetBalance, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals)} {denomToSymbol(pair?.denomOut)}
                                 </span>
                                 <div className="maxhalf">
                                     <Button className="active" onClick={() => handleInputMax()}>
@@ -400,7 +400,6 @@ const Deposit = ({
                                     }}
                                     validationError={inputValidationError}
                                 />
-                                {/* <small>{showInDollarValue()}</small> */}
                             </div>
                         </div>
                     </div>
@@ -432,6 +431,10 @@ const Deposit = ({
                                 loading={inProgress}
                                 type="primary"
                                 className="btn-filled"
+                                disabled={
+                                    !Number(inAmount) ||
+                                    inputValidationError?.message
+                                }
                                 onClick={() => {
                                     handleWithdrawStableToken()
                                 }}
