@@ -124,7 +124,7 @@ const ConnectButton = ({
 
   useEffect(() => {
     fetchPrices();
-  }, []);
+  }, [markets, assetMap]);
 
   useEffect(() => {
     calculateAssetBalance(balances);
@@ -157,7 +157,16 @@ const ConnectButton = ({
         message.error(error);
         return;
       }
-      setHarborPrice(result?.data?.others?.uharbor[0]?.price)
+
+      if (result?.data?.ucmst?.uharbor?.price) {
+        return setHarborPrice(result?.data?.ucmst?.uharbor?.price)
+      }
+      else if (result?.data?.others?.uharbor[0]?.price) {
+        return setHarborPrice(getPrice(result?.data?.others?.uharbor[0]?.denom) * result?.data?.others?.uharbor[0]?.price)
+      }
+      else {
+        return setHarborPrice(0)
+      }
     });
   };
 
