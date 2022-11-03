@@ -56,7 +56,6 @@ const StableMint = ({
                 message.error(error);
                 return;
             }
-            console.log(data?.pairVault, "psm data");
             dispatch(setStableMintVaultList([data?.pairVault]));
             // setTotalExtendedPair(data?.pagination?.total?.low)
             // dispatch(setStableMintVaultList(data?.extendedPair));
