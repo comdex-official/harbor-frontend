@@ -58,21 +58,10 @@ const Withdraw = ({
 
   const whiteListedAssetData = [];
   const resetValues = () => {
+    setSliderValue(0)
     dispatch(setAmountIn(0));
   };
   const getAssetDenom = () => {
-    // When we get multiple whiteListed Asset
-    // ************************************************
-    // let filterAssets = assets?.filter((item, index) => {
-    //   return (
-    //     item.id.low === whiteListedAsset[index]?.low
-    //   )
-    // })
-    // whiteListedAssetData.push(filterAssets);
-    // ************************************************
-
-    // when we fetching data from whiteListedAssetByAppId query , then chnage "CMDX" to query.id and match with whiteListedAsset Id.
-
     assets?.map((item) => {
       if (item.id.low === whiteListedAsset[0]?.low) {
         whiteListedAssetData.push(item);
@@ -132,6 +121,7 @@ const Withdraw = ({
   const handleMaxClick = () => {
     let amount = amountConversion(ownerLockerInfo?.netBalance || 0)
     dispatch(setAmountIn(amount));
+    setSliderValue(100)
   }
 
   const fetchOwnerLockerExistByAssetId = (

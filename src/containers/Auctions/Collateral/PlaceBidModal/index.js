@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Button, Modal, message } from "antd";
 import { Row, Col } from "../../../../components/common";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { comdex } from "../../../../config/network";
 import variables from "../../../../utils/variables";
@@ -14,6 +14,7 @@ import {
   getAmount,
   orderPriceConversion,
 } from "../../../../utils/coin";
+import { setBalanceRefresh } from "../../../../actions/account";
 import Snack from "../../../../components/common/Snack";
 import { ValidateInputNumber } from "../../../../config/_validation";
 import { toDecimals } from "../../../../utils/string";
@@ -33,7 +34,11 @@ const PlaceBidModal = ({
   params,
   balances,
   assetMap,
+  setBalanceRefresh,
+  refreshBalance,
 }) => {
+  const dispatch = useDispatch();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCurrentAuction, setNewCurrentAuction] = useState(auction)
   const [bidAmount, setBidAmount] = useState(0);
@@ -114,6 +119,10 @@ const PlaceBidModal = ({
             hash={result?.transactionHash}
           />
         );
+        dispatch({
+          type: "BALANCE_REFRESH_SET",
+          value: refreshBalance + 1,
+        });
       }
     );
   };
@@ -320,6 +329,7 @@ PlaceBidModal.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   assetMap: PropTypes.object,
+  refreshBalance: PropTypes.number.isRequired,
   auction: PropTypes.shape({
     minBid: PropTypes.shape({
       amount: PropTypes.string,
@@ -354,9 +364,12 @@ const stateToProps = (state) => {
     address: state.account.address,
     balances: state.account.balances.list,
     assetMap: state.asset.map,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 
-const actionsToProps = {};
+const actionsToProps = {
+  setBalanceRefresh,
+};
 
 export default connect(stateToProps, actionsToProps)(PlaceBidModal);
