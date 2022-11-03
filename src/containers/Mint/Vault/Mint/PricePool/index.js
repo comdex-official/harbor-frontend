@@ -113,7 +113,6 @@ const PricePool = ({ setOwnerCurrentCollateral,
             hash={result?.transactionHash}
           />
         );
-        // resetValues();
         dispatch({
           type: "BALANCE_REFRESH_SET",
           value: refreshBalance + 1,

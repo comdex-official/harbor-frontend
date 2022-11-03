@@ -8,6 +8,7 @@ import FilterModal from "../FilterModal/FilterModal";
 import { setPairs } from "../../../actions/asset";
 import { setAuctions } from "../../../actions/auction";
 import Bidding from "./Bidding";
+import { setBalanceRefresh } from "../../../actions/account";
 import {
   queryDutchAuctionList,
   queryDutchBiddingList,
@@ -31,7 +32,7 @@ import { commaSeparator, decimalConversion } from "../../../utils/number";
 import TooltipIcon from "../../../components/TooltipIcon";
 import { comdex } from "../../../config/network";
 
-const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap, }) => {
+const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, address, assetMap, }) => {
   const dispatch = useDispatch()
   const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
@@ -44,11 +45,11 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap
   useEffect(() => {
     fetchData();
     queryParams();
-  }, [address]);
+  }, [address, refreshBalance]);
 
   useEffect(() => {
     fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
-  }, [address])
+  }, [address, refreshBalance])
 
   const fetchData = () => {
     fetchBiddings(address);
@@ -64,18 +65,8 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap
     });
   };
 
-  const handleChange = (value) => {
-    setPageNumber(value.current - 1);
-    setPageSize(value.pageSize);
-    fetchAuctions(
-      (value.current - 1) * value.pageSize,
-      value.pageSize,
-      true,
-      false
-    );
-  };
-
   const fetchAuctions = (offset, limit, isTotal, isReverse) => {
+    setInProgress(true);
     queryDutchAuctionList(
       offset,
       limit,
@@ -83,6 +74,7 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap
       isReverse,
       (error, result) => {
         if (error) {
+          setInProgress(false);
           message.error(error);
           return;
         }
@@ -270,14 +262,6 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, address, assetMap
                 dataSource={tableData}
                 columns={columns}
                 loading={inProgress}
-                // onChange={(event) => handleChange(event)}
-                // pagination={{
-                //   total:
-                //     auctions &&
-                //     auctions.pagination &&
-                //     auctions.pagination.total,
-                //   pageSize,
-                // }}
                 pagination={{ defaultPageSize: 10 }}
                 scroll={{ x: "100%" }}
               />
@@ -302,6 +286,7 @@ CollateralAuctions.propTypes = {
   address: PropTypes.string,
   auctions: PropTypes.string.isRequired,
   assetMap: PropTypes.object,
+  refreshBalance: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -310,12 +295,14 @@ const stateToProps = (state) => {
     address: state.account.address,
     auctions: state.auction.auctions,
     assetMap: state.asset.map,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 
 const actionsToProps = {
   setPairs,
   setAuctions,
+  setBalanceRefresh,
 };
 
 export default connect(stateToProps, actionsToProps)(CollateralAuctions);

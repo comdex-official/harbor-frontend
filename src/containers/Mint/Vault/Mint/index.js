@@ -277,13 +277,6 @@ const Mint = ({
     if (ownerVaultId) {
       setInProgress(true);
       message.info("Transaction initiated");
-      console.log(
-        "From->", address,
-        "appId->", Long.fromNumber(PRODUCT_ID),
-        "extendedPairId->", Long.fromNumber(pathVaultId),
-        "UserVaultId->", Long.fromNumber(ownerVaultId),
-        "amount->", getAmount(inAmount, assetMap[pair?.denomIn]?.decimals)
-      );
       signAndBroadcastTransaction(
         {
           message: {
