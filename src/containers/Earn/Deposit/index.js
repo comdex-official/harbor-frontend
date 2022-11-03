@@ -377,6 +377,10 @@ const Deposit = ({
                 loading={inProgress}
                 type="primary"
                 className="btn-filled"
+                disabled={
+                  !Number(inAmount) ||
+                  inputValidationError?.message
+                }
                 onClick={() => {
                   if (isLockerExist) {
                     handleSubmitAssetDepositLocker();
