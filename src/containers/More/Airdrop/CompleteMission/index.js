@@ -276,12 +276,12 @@ const CompleteMission = ({
           <div className="mission-card claim-airdrop-card">
             <div className="claim-airdrop-head">
               <h2>Claim Airdrop</h2>
-              <div className="head-right">
-                {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Time Left"} />
+              {/* <div className="head-right">
+                {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Ends in "} />
                   :
                   <div><span>Time Left</span> 0 <small>D</small> 0 <small>H</small> 0 <small>M</small> 0 <small>S</small>  </div>
                 }
-              </div>
+              </div> */}
             </div>
             <Row>
               <Col md='6'>
