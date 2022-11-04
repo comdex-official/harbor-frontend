@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import React from "react";
 import routes from "./routes";
 import Dashboard from "./containers/Dashboard";
+import Airdrop from "./containers/More/Airdrop";
 
 const Router = () => {
   return (
@@ -15,7 +16,8 @@ const Router = () => {
             path={route.path}
           />
         ))}
-        <Route exact element={<Dashboard />} path="*" />
+        {/* <Route exact element={<Dashboard />} path="*" /> */}
+        <Route exact element={<Airdrop />} path="*" />
       </Routes>
     </div>
   );

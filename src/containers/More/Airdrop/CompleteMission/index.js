@@ -268,7 +268,7 @@ const CompleteMission = ({
     <div className="app-content-wrapper">
       <Row className="text-right">
         <Col>
-          <Link to="/more/airdrop"><Button type="primary" className="btn-filled px-4">Back</Button></Link>
+          <Link to="/"><Button type="primary" className="btn-filled px-4">Back</Button></Link>
         </Col>
       </Row>
       <Row className="complete-mission-main-container">

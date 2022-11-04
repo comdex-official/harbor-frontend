@@ -15,7 +15,7 @@ const App = () => {
     <>
       <SvgSprite url={svgFile} />
       <div className="main_wrapper">
-        <SideBar />
+        {/* <SideBar /> */}
         <div className="main-container">
           <NavigationBar />
           <Router />

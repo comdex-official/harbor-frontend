@@ -213,11 +213,11 @@ const Airdrop = ({
 
   return (
     <div className="app-content-wrapper">
-      <Row className="text-right">
+      {/* <Row className="text-right">
         <Col>
           <Link to="/more"><Button type="primary" className="btn-filled px-4">Back</Button></Link>
         </Col>
-      </Row>
+      </Row> */}
       <Row>
         <Col>
           <div className="time-left-head">

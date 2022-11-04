@@ -16,70 +16,78 @@ import Vote from "./containers/More/Vote";
 import StableMintVault from "./containers/StableMint/vault";
 
 const routes = [
+  // {
+  //   path: "/dashboard",
+  //   element: <Dashboard />,
+  // },
+  // {
+  //   path: "/my-positions",
+  //   element: <MyPositions />,
+  // },
+  // {
+  //   path: "/assets",
+  //   element: <Assets />,
+  // },
+  // {
+  //   path: "/mint",
+  //   element: <BorrowTab />,
+  // },
+  // {
+  //   path: "more/stableMint",
+  //   element: <StableMint />,
+  // },
+  // {
+  //   path: "/more/stableMint/:pathVaultId",
+  //   element: <StableMintVault />,
+  // },
+  // {
+  //   path: "mint/vault/:pathVaultId",
+  //   element: <Vault />,
+  // },
+  // {
+  //   path: "/earn",
+  //   element: <Earn />,
+  // },
+  // {
+  //   path: "/auctions",
+  //   element: <Auctions />,
+  // },
+  // {
+  //   path: "/more",
+  //   element: <More />,
+  // },
+  // {
+  //   path: "/more/govern",
+  //   element: <Govern />,
+  // },
+  // {
+  //   path: "/more/govern/govern-details/:proposalId",
+  //   element: <GovernDetails />,
+  // },
   {
-    path: "/dashboard",
-    element: <Dashboard />,
-  },
-  {
-    path: "/my-positions",
-    element: <MyPositions />,
-  },
-  {
-    path: "/assets",
-    element: <Assets />,
-  },
-  {
-    path: "/mint",
-    element: <BorrowTab />,
-  },
-  {
-    path: "more/stableMint",
-    element: <StableMint />,
-  },
-  {
-    path: "/more/stableMint/:pathVaultId",
-    element: <StableMintVault />,
-  },
-  {
-    path: "mint/vault/:pathVaultId",
-    element: <Vault />,
-  },
-  {
-    path: "/earn",
-    element: <Earn />,
-  },
-  {
-    path: "/auctions",
-    element: <Auctions />,
-  },
-  {
-    path: "/more",
-    element: <More />,
-  },
-  {
-    path: "/more/govern",
-    element: <Govern />,
-  },
-  {
-    path: "/more/govern/govern-details/:proposalId",
-    element: <GovernDetails />,
-  },
-  {
-    path: "/more/airdrop",
+    path: "/airdrop",
     element: <Airdrop />,
   },
+  // {
+  //   path: "/more/airdrop",
+  //   element: <Airdrop />,
+  // },
   {
-    path: "/more/airdrop/complete-mission/:chainId",
+    path: "/complete-mission/:chainId",
     element: <CompleteMission />,
   },
-  {
-    path: "/more/vesting",
-    element: <Vesting />,
-  },
-  {
-    path: "/more/vote",
-    element: <Vote />,
-  },
+  // {
+  //   path: "/more/airdrop/complete-mission/:chainId",
+  //   element: <CompleteMission />,
+  // },
+  // {
+  //   path: "/more/vesting",
+  //   element: <Vesting />,
+  // },
+  // {
+  //   path: "/more/vote",
+  //   element: <Vote />,
+  // },
 ];
 
 export default routes;
