@@ -26,7 +26,7 @@
 .airdrop-upper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1.75rem;
+  grid-gap: 1rem;
   .airdrop-upper-card {
     border-radius: 20px;
     padding: 1.5rem;
@@ -395,5 +395,20 @@
         padding: 0 2rem;
       }
     }
+  }
+}
+.different-chain-eligibility {
+  background-color: transparent !important;
+  border-color: $secondary-color !important;
+  cursor: auto !important;
+  &:hover {
+    background-color: transparent !important;
+  }
+}
+.allChain-mission-btn-container {
+  display: flex;
+  column-gap: 10px;
+  .mission-btn {
+    background-color: $secondary-color !important;
   }
 }
