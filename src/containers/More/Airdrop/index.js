@@ -222,12 +222,15 @@ const Airdrop = ({
         <Col>
           <div className="time-left-head">
             <div className="left-text">
-              {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Time Left to Claim Airdrop"} />
+              {/* {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Airdrop Claim to Begin"} />
                 :
                 <div style={{ display: "flex" }}>
                   <div> Time Left to Claim Airdrop </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
                 </div>
-              }
+              } */}
+              <div style={{ display: "flex" }}>
+                <div> Airdrop Claim to Begin Soon </div>
+              </div>
             </div>
           </div>
           <div className="airdrop-upper">
