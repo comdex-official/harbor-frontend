@@ -94,7 +94,6 @@ const Create = ({
         dispatch(setAmountIn(value));
         calculateveHarbor(value, vestingRadioInput);
     };
-
     const calculateveHarbor = (value, vestingRadioInput = "t1") => {
         if (vestingRadioInput === "t1") {
             let amount = getAmount(value)
@@ -195,10 +194,8 @@ const Create = ({
                             <div className="assets-right">
                                 <div className="input-select">
                                     <Radio.Group onChange={onRadioInputChange} value={radioValue}>
-                                        <Radio value="t1" >1 Month <TooltipIcon text="1 week - 1000/208 = 4.80 veHARBOR" /></Radio>
-                                        <Radio value="t2" >4 Month <TooltipIcon text="1 month - 1000/48 = 20.83 veHARBOR" /></Radio>
-                                        {/* <Radio value="t3" >1 Years <TooltipIcon text="1 year - 1000/4 = 250 veHARBOR" /></Radio>
-                                        <Radio value="t4" >4 Years <TooltipIcon text="4 year = 1000 veHARBOR" /></Radio> */}
+                                        <Radio value="t1" >1 Month <TooltipIcon text="1 Harbor locked for 1 month = 0.25 veHarbor" /></Radio>
+                                        <Radio value="t2" >4 Month <TooltipIcon text="1 Harbor locked for 4 month = 1 veHarbor" /></Radio>
                                     </Radio.Group>
                                 </div>
                             </div>

@@ -38,7 +38,7 @@ import HUAHUA_ICON from '../../../assets/images/icons/HUAHUA.png';
 import STATOM_ICON from '../../../assets/images/icons/STATOM.png';
 import ChainModal from "./ChainModal";
 import { Link } from "react-router-dom";
-import { checkEligibility, timeLeftToClaim, totalStatsOFClaimedData } from '../../../services/airdropContractRead';
+import { checkEligibility, checkTotalEligibility, timeLeftToClaim, totalStatsOFClaimedData } from '../../../services/airdropContractRead';
 import { unixToGMTTime } from '../../../utils/string'
 import { useTimer } from 'react-timer-hook';
 import { amountConversion, amountConversionWithComma } from "../../../utils/coin";
@@ -70,6 +70,7 @@ const Airdrop = ({
   const [totalClaimedHarbor, setTotalClaimedHarbor] = useState(0);
   const [totalClaimedveHarbor, setTotalClaimedveHarbor] = useState(0);
   const [claimAllEligibility, setClaimAllEligibility] = useState(false)
+  const [totalEligibleToken, setTotalEligibletoken] = useState(0)
 
   // Query 
   const fetchTimeLeftToClaim = () => {
@@ -91,6 +92,17 @@ const Airdrop = ({
     })
   }
 
+  const fetchCheckTotalEligibility = (address) => {
+    setLoading(true)
+    checkTotalEligibility(address).then((res) => {
+      setTotalEligibletoken(res)
+      setLoading(false)
+    }).catch((error) => {
+      setLoading(false)
+      console.log(error);
+    })
+  }
+
   const fetchTotalStatsOFClaimedData = () => {
     totalStatsOFClaimedData().then((res) => {
       setTotalAllocation(res?.total_allocated)
@@ -104,13 +116,14 @@ const Airdrop = ({
 
   const handleClaimAll = () => {
     fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
-    if (!claimAllEligibility) {
-      message.error("Sorry you are not Eligible! 🙁")
-    }
-    else {
-      message.success("Wow You are Eligible! 🤩")
-      navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)
-    }
+    navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)
+    // if (!claimAllEligibility) {
+    //   message.error("Sorry you are not Eligible! 🙁")
+    // }
+    // else {
+    //   message.success("Wow You are Eligible! 🤩")
+    //   navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)
+    // }
   }
 
   useEffect(() => {
@@ -125,6 +138,7 @@ const Airdrop = ({
     fetchTimeLeftToClaim()
     fetchTotalStatsOFClaimedData()
     fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
+    fetchCheckTotalEligibility(address)
   }, [address])
 
 
@@ -245,7 +259,7 @@ const Airdrop = ({
                 })}
               </ul>
               <div className="text-center mt-auto">
-                <Button type="primary">Click on different chains to check eligibility</Button>
+                <Button type="primary" className="different-chain-eligibility">Click on different chains to check eligibility</Button>
               </div>
             </div>
             <div className="airdrop-upper-card airdrop-upper-card3">
@@ -409,9 +423,9 @@ const Airdrop = ({
                   <p>LP POOL 803</p>
                 </li>
               </ul>
-              <div className="text-center mt-auto">
-                {/* <Link to={`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`}><Button type="primary" onClick={() => handleClaimAll()}>Claim All</Button></Link> */}
-                <Button type="primary" disabled={loading} loading={loading} onClick={() => handleClaimAll()}>Claim All</Button>
+              <div className="text-center mt-auto allChain-mission-btn-container" >
+                <Button type="primary" disabled={true}  >Check Eligibility</Button>
+                <Button type="primary" className="btn-filled mission-btn" onClick={() => handleClaimAll()}>Complete Mission</Button>
               </div>
             </div>
           </div>
@@ -420,11 +434,11 @@ const Airdrop = ({
               <h2>Your Airdrop Details</h2>
               <div className="airdrop-statics">
                 <p className="total-value">$Harbor Airdrop <TooltipIcon text="User’s Total $Harbor airdrop across all chains and pools" /></p>
-                <h2>{amountConversionWithComma(claimAllEligibility?.claimable_amount / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
+                <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
               </div>
               <div className="airdrop-statics mb-0">
                 <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 1 year once he completes the missions" /></p>
-                <h2>{amountConversionWithComma((Number(claimAllEligibility?.claimable_amount / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)}<sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
+                <h2>{amountConversionWithComma((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)}<sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
               </div>
             </div>
             <div className="airdrop-bottom-card airdrop-bottom-card2">

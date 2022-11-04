@@ -66,11 +66,11 @@ const ChainModal = ({
   }
   return (
     <>
-      <div className="icons" onClick={showModal}>
+      <Button className="icons" disabled={true} onClick={showModal}>
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>
-      </div>
+      </Button>
       <Modal
         className="claimrewards-modal"
         centered={true}

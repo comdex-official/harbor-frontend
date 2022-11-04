@@ -57,17 +57,11 @@ const CompleteMission = ({
       console.log(error);
     })
   }
-
   const fetchCheckEligibility = (address, chainId) => {
     setLoading(true)
     checkEligibility(address, chainId).then((res) => {
-      console.log(res);
-      if (res == null) {
-        navigate(`/more/airdrop`)
-      } else {
-        setuserEligibilityData(res)
-        setLoading(false)
-      }
+      setuserEligibilityData(res)
+      setLoading(false)
     }).catch((error) => {
       console.log(error);
       setLoading(false)
@@ -235,10 +229,9 @@ const CompleteMission = ({
           <Button type="primary"
             disabled={
               loading
+              || !userEligibilityData
               || userEligibilityData && userEligibilityData?.claimed?.[item?.id - 1]
               || !airdropMission[item?.name]
-              // || !airdropMission[item?.name] && !userEligibilityData?.claimed?.[item?.id - 1]
-
             }
             loading={item?.id === current ? loading : false}
             className="btn-filled ml-3"
@@ -278,13 +271,12 @@ const CompleteMission = ({
           <Link to="/more/airdrop"><Button type="primary" className="btn-filled px-4">Back</Button></Link>
         </Col>
       </Row>
-      <Row>
-        <Col lg="6" className="mt-4">
+      <Row className="complete-mission-main-container">
+        <Col lg="6" className="mt-4 left-column">
           <div className="mission-card claim-airdrop-card">
             <div className="claim-airdrop-head">
               <h2>Claim Airdrop</h2>
               <div className="head-right">
-                {/* <span>Time Left</span> 10 <small>D</small> 21 <small>H</small> 24 <small>M</small> */}
                 {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Time Left"} />
                   :
                   <div><span>Time Left</span> 0 <small>D</small> 0 <small>H</small> 0 <small>M</small> 0 <small>S</small>  </div>
@@ -295,7 +287,7 @@ const CompleteMission = ({
               <Col md='6'>
                 <div className="airdrop-statics">
                   <p className="total-value">Claimed veHarbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
-                  <h2>{amountConversionWithComma(userClaimveHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2>
+                  <h2>{amountConversionWithComma(userClaimveHarbor || 0)} <br /> <sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </Col>
               <Col md='6'>
@@ -313,7 +305,8 @@ const CompleteMission = ({
             </Row>
           </div>
         </Col>
-        <Col lg="6" className="mt-4">
+
+        <Col lg="6" className="mt-4 right-column">
           <div className="mission-card progress-card">
             <div className="progress-airdrop-head">
               <h2>Your Progress</h2>
@@ -321,8 +314,6 @@ const CompleteMission = ({
             </div>
             <div className="mt-4 pt-3">
               <Steps size="small" current={currentStep} labelPlacement="vertical" icon={<SvgIcon name="plane-icon" viewbox="0 0 54 50" />} >
-                {/* <Step title="20%" icon={<SvgIcon name="check" viewbox="0 0 13.062 10.393" />} />
-                <Step title="40%" icon={<SvgIcon name="plane-icon" viewbox="0 0 54 50" />} /> */}
                 <Step title="20%" key={0} icon={currentStep === 0 ? <SvgIcon name="plane-icon" viewbox="0 0 54 50" /> : ""} />
                 <Step title="40%" key={1} icon={currentStep === 1 ? <SvgIcon name="plane-icon" viewbox="0 0 54 50" /> : ""} />
                 <Step title="60%" key={2} icon={currentStep === 2 ? <SvgIcon name="plane-icon" viewbox="0 0 54 50" /> : ""} />
