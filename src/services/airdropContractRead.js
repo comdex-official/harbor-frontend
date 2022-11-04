@@ -26,6 +26,12 @@ export const checkEligibility = async (address, chainId) => {
     return await config;
 }
 
+export const checkTotalEligibility = async (address) => {
+    const client = await CosmWasmClient.connect(configin.rpcEndpoint);
+    const config = await client.queryContractSmart(airdropContractAddress, { "total_eligible": { "address": address } });
+    return await config;
+}
+
 export const claimHarbor = async (address, chainId) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
     const config = await client.queryContractSmart(airdropContractAddress, { "harbor_claimed": { "address": address, "chain_id": chainId } });

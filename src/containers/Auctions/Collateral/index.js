@@ -183,7 +183,7 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, a
     {
       title: (
         <>
-          <FilterModal setPairs={setPairs} />
+          Bid
         </>
       ),
       dataIndex: "action",
