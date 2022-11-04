@@ -242,10 +242,8 @@ const PlaceBidModal = ({
             <Col sm="6">
               <p>Auctioned Quantity </p>
             </Col>
-            <Col sm="6" className="text-right" onClick={() => {
-              handleChange((amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals)))
-            }}>
-              <label style={{ cursor: "pointer" }} >
+            <Col sm="6" className="text-right" >
+              <label >
                 {amountConversionWithComma(
                   newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals
                 )} {denomConversion(newCurrentAuction?.outflowTokenCurrentAmount?.denom)}
@@ -270,14 +268,20 @@ const PlaceBidModal = ({
             <Col sm="6">
               <p>Quantity Bid For</p>
             </Col>
-            <Col sm="6" className="text-right">
+            <Col sm="6" className="text-right auction-quantity-max-btn-main-container">
               <CustomInput
                 value={bidAmount}
                 onChange={(event) => handleChange(event.target.value)}
                 validationError={validationError}
               />
               <label><div className="input-denom">{denomConversion(newCurrentAuction?.outflowTokenCurrentAmount?.denom)}</div></label>
-
+              <div className="auction-quantity-max-btn"><button
+                onClick={() => {
+                  handleChange((amountConversion(newCurrentAuction?.outflowTokenCurrentAmount?.amount || 0, comdex?.coinDecimals, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.decimals)))
+                }}>
+                Max
+              </button>
+              </div>
             </Col>
           </Row>
           <Row>
