@@ -12,6 +12,9 @@ import { setBalanceRefresh } from "../../actions/account";
 import { claimableRewards } from "../../services/rewardContractsWrite";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import { transactionClaimRewards } from "../../services/rewardContractsRead";
+import { totalClaimableRebase } from "../../services/rebasingContractRead";
+import TooltipIcon from "../../components/TooltipIcon";
+import { transactionForClaimRebase } from "../../services/rebaseingContractWrite";
 
 const More = ({
   address,
@@ -21,7 +24,11 @@ const More = ({
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isRebasingModalVisible, setIsRebasingModalVisible] = useState(false);
   const [claimableRewardsData, setClaimableRewardsData] = useState()
+  const [claimableRebaseData, setClaimableRebaseData] = useState()
+  const [current, setCurrent] = useState(0);
+
   const handleRouteChange = (path) => {
     navigate({
       pathname: path,
@@ -34,12 +41,24 @@ const More = ({
     setIsModalVisible(true);
   };
 
+  const showRebasingModal = () => {
+    setIsRebasingModalVisible(true);
+  };
+
   const handleOk = () => {
     setIsModalVisible(false);
   };
 
+  const handleRebasingOk = () => {
+    setIsRebasingModalVisible(false);
+  };
+
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const handleRebasingCancel = () => {
+    setIsRebasingModalVisible(false);
   };
 
 
@@ -54,6 +73,18 @@ const More = ({
       setLoading(false)
     })
   }
+
+  const fetchClaimeableRebase = (productId, address) => {
+    setLoading(true)
+    totalClaimableRebase(productId, address).then((res) => {
+      setClaimableRebaseData(res)
+      setLoading(false)
+    }).catch((error) => {
+      console.log(error);
+      setLoading(false)
+    })
+  }
+
   const claimReward = () => {
     setLoading(true)
     if (address) {
@@ -73,9 +104,32 @@ const More = ({
       message.error("Please Connect Wallet")
     }
   }
+
+  const claimRebase = (proposalId) => {
+    setCurrent(proposalId)
+    setLoading(true)
+    if (address) {
+      transactionForClaimRebase(address, PRODUCT_ID, proposalId, (error, result) => {
+        if (error) {
+          message.error("Transaction failed")
+          setLoading(false)
+          return;
+        }
+        message.success("Success")
+        setBalanceRefresh(refreshBalance + 1);
+        setLoading(false)
+      })
+    }
+    else {
+      setLoading(false)
+      message.error("Please Connect Wallet")
+    }
+  }
+
   // UseEffect calls 
   useEffect(() => {
     fetchClaimeableRewards(PRODUCT_ID, address)
+    fetchClaimeableRebase(PRODUCT_ID, address)
   }, [address, refreshBalance])
 
   const columns = [
@@ -132,11 +186,84 @@ const More = ({
     })
 
 
+  const rebasingColumns = [
+    {
+      title: (
+        <>
+          Epoch Id <TooltipIcon text="Unique proposal id for weekely voting" />
+        </>
+      ),
+      dataIndex: "epocId",
+      key: "epocId",
+      width: 150,
+    },
+    {
+      title: (
+        <>
+          Rebase Amount <TooltipIcon text="Eligible Harbor rebase amount " />
+        </>
+      ),
+      dataIndex: "rebaseAmount",
+      key: "rebaseAmount",
+      width: 250,
+    },
+    {
+      title: (
+        <>
+          Action <TooltipIcon text="Action button to claim rebase" />
+        </>
+      ),
+      dataIndex: "claim",
+      key: "claim",
+      width: 150,
+      align: "right",
+    },
+
+  ];
+
+  const rebasingTableData =
+    claimableRebaseData && claimableRebaseData.length > 0 &&
+    claimableRebaseData?.map((item) => {
+      return (
+        {
+          key: item?.proposal_id,
+          epocId: item?.proposal_id,
+          rebaseAmount: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(
+                      "uharbor"
+                    )}
+                  />
+                </div>
+                {amountConversionWithComma(item?.rebase_amount || 0)}
+              </div>
+            </>
+          ),
+          claim: (
+            <Button
+              type="primary"
+              className="btn-filled"
+              loading={item?.proposal_id === current ? loading : false}
+              disabled={loading}
+              onClick={() => claimRebase(item?.proposal_id)}
+            >
+              Claim
+            </Button>
+          )
+        }
+      )
+
+    })
+
   return (
 
 
     <div className="app-content-wrapper">
       <Row>
+        {/* Govern  */}
         <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
@@ -159,6 +286,7 @@ const More = ({
           </div>
         </Col>
 
+        {/* Airdrop  */}
         <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
@@ -181,6 +309,7 @@ const More = ({
           </div>
         </Col>
 
+        {/* stake  */}
         <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
@@ -203,6 +332,7 @@ const More = ({
           </div>
         </Col>
 
+        {/* Vote  */}
         <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
@@ -226,6 +356,7 @@ const More = ({
           </div>
         </Col>
 
+        {/* Reward  */}
         <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
@@ -302,6 +433,70 @@ const More = ({
             </div>
           </div>
         </Col>
+
+        {/* Rebasing  */}
+        <Col lg="6" md="6" sm="12" className="mb-3">
+          <div className="more-card">
+            <div className="more-card-inner">
+              <div className="morecard-left">
+                <h2>Rebase</h2>
+                <p>
+                  Rebase displayed are an estimation of claimable of veHarbor.
+                </p>
+                <div className="button-container">
+                  <Button
+                    type="primary"
+                    className="btn-filled"
+                    onClick={showRebasingModal}
+                  >
+                    Rebasing
+                  </Button>
+
+
+                  <Modal
+                    centered={true}
+                    className="palcebid-modal reward-collect-modal"
+                    footer={null}
+                    header={null}
+                    open={isRebasingModalVisible}
+                    width={600}
+                    closable={false}
+                    onOk={handleRebasingOk}
+                    loading={loading}
+                    onCancel={handleRebasingCancel}
+                    closeIcon={null}
+                  >
+                    <div className="palcebid-modal-inner rewards-modal-main-container">
+                      <Row>
+                        <Col>
+                          <div className="rewards-title">
+                            Claim Rebase
+                          </div>
+                        </Col>
+                      </Row>
+
+                      <Row style={{ paddingTop: 0 }}>
+                        <Col>
+                          <div className="card-content ">
+                            <Table
+                              className="custom-table liquidation-table"
+                              dataSource={rebasingTableData}
+                              columns={rebasingColumns}
+                              pagination={false}
+                              scroll={{ x: "100%" }}
+                            />
+                          </div>
+                        </Col>
+                      </Row>
+                    </div>
+                  </Modal>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
+
 
 
         <Col lg="6" md="6" sm="12" className="mb-3">
