@@ -87,23 +87,15 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
       render: (value) => {
         if (value) {
           return value?.depositUrlOverride ? (
-            <Button
-              type="primary btn-filled"
-              size="small"
-              className="external-btn"
+            <a
+              href={value?.depositUrlOverride}
+              target="_blank"
+              rel="noreferrer"
             >
-              <a
-                href={value?.depositUrlOverride}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Deposit{" "}
-                <span className="hyperlink-icon">
-                  {" "}
-                  <SvgIcon name="hyperlink" />
-                </span>
-              </a>
-            </Button>
+              <Button type="primary btn-filled" size="small" className="asset-ibc-btn-container">
+                {variables[lang].deposit} <span className="asset-ibc-btn"> 	&#62;</span>
+              </Button>
+            </a>
           ) : (
             <Deposit chain={value} />
           );
@@ -118,23 +110,15 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
       render: (value) => {
         if (value) {
           return value?.withdrawUrlOverride ? (
-            <Button
-              type="primary btn-filled"
-              size="small"
-              className="external-btn"
+            <a
+              href={value?.withdrawUrlOverride}
+              target="_blank"
+              rel="noreferrer"
             >
-              <a
-                href={value?.withdrawUrlOverride}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Withdraw{" "}
-                <span className="hyperlink-icon">
-                  {" "}
-                  <SvgIcon name="hyperlink" />
-                </span>
-              </a>
-            </Button>
+              <Button type="primary btn-filled" size="small" className="asset-ibc-btn-container">
+                {variables[lang].withdraw}  <span className="asset-ibc-btn"> 	&#62;</span>
+              </Button>
+            </a>
           ) : (
             <Withdraw chain={value} />
           );
