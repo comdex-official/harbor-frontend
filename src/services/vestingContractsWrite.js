@@ -64,13 +64,12 @@ export const transactionForCreateVesting = async (address, productId, lockingPer
                 customFees.exec,
             ).then((response) => {
                 if (!response?.code) {
-                    console.log(response?.rawLog);
                     callback(null, response)
 
                 }
                 else {
                     console.log(response?.rawLog);
-                    callback(response?.rawLog)
+                    callback(response)
 
                 }
 

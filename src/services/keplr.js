@@ -102,6 +102,30 @@ export const initializeChain = (callback) => {
   })();
 };
 
+export const magicInitializeChain = (networkChain, callback) => {
+  (async () => {
+    if (!window.getOfflineSignerAuto || !window.keplr) {
+      const error = "Please install keplr extension";
+      callback(error);
+    } else {
+      if (window.keplr.experimentalSuggestChain) {
+        try {
+          await window.keplr.experimentalSuggestChain(getChainConfig(networkChain));
+          const offlineSigner = await window.getOfflineSignerAuto(networkChain?.chainId);
+          const accounts = await offlineSigner.getAccounts();
+
+          callback(null, accounts[0]);
+        } catch (error) {
+          callback(error?.message);
+        }
+      } else {
+        const versionError = "Please use the recent version of keplr extension";
+        callback(versionError);
+      }
+    }
+  })();
+}
+
 export const initializeIBCChain = (config, callback) => {
   (async () => {
     if (!window.getOfflineSignerAuto || !window.keplr) {
