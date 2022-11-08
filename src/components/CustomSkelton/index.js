@@ -7,7 +7,7 @@ const CustomSkelton = ({
 }) => {
     return (
         <>
-            <SkeletonTheme height={height} width={width} baseColor="#665aa6" highlightColor="#D0CDE5">
+            <SkeletonTheme height={height} width={width} baseColor="#51468C" highlightColor="#665aa6">
                 <p>
                     <Skeleton />
                 </p>
