@@ -320,7 +320,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.auction.v1beta1.MsgPlaceSurplusBidRequest": {
-    aminoType: "auction/MsgPlaceSurplusBidRequest",
+    aminoType: "comdex/auction/MsgPlaceSurplusBidRequest",
     toAmino: ({
       bidder,
       amount,
@@ -353,7 +353,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.auction.v1beta1.MsgPlaceDebtBidRequest": {
-    aminoType: "auction/MsgPlaceDebtBidRequest",
+    aminoType: "comdex/auction/MsgPlaceDebtBidRequest",
     toAmino: ({
       bidder,
       bid,
@@ -390,7 +390,7 @@ export const customAminoTypes = {
     },
   },
   "/comdex.auction.v1beta1.MsgPlaceDutchBidRequest": {
-    aminoType: "auction/MsgPlaceDutchBidRequest",
+    aminoType: "comdex/auction/MsgPlaceDutchBidRequest",
     toAmino: ({
       bidder,
       max,
@@ -540,7 +540,7 @@ export const customAminoTypes = {
   },
 
   "/comdex.vault.v1beta1.MsgDepositStableMintRequest": {
-    aminoType: "comdex/vault/v1beta1/MsgDepositStableMintRequest",
+    aminoType: "comdex/vault/MsgDepositStableMintRequest",
     toAmino: ({
       from,
       appId,
@@ -575,7 +575,7 @@ export const customAminoTypes = {
 
 
   "/comdex.vault.v1beta1.MsgWithdrawStableMintRequest": {
-    aminoType: "comdex/vault/v1beta1/MsgWithdrawStableMintRequest",
+    aminoType: "comdex/vault/MsgWithdrawStableMintRequest",
     toAmino: ({
       from,
       appId,
