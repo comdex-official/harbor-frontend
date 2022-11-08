@@ -103,7 +103,8 @@ const Create = ({
         setInputValidationError(
             ValidateInputNumber(
                 Number(getAmount(value)),
-                getDenomBalance(balances, "uharbor")
+                getDenomBalance(balances, "uharbor") || 0,
+                "macro"
             )
         );
         dispatch(setAmountIn(value));
