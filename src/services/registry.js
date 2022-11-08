@@ -1,10 +1,10 @@
-import { MsgCreateLockerRequest, MsgDepositAssetRequest, MsgWithdrawAssetRequest, MsgCloseLockerRequest, MsgLockerRewardCalcRequest } from 'comdex-codec/build/comdex/locker/v1beta1/tx';
-import { MsgCreateRequest, MsgDepositRequest, MsgWithdrawRequest, MsgDrawRequest, MsgRepayRequest, MsgCloseRequest, MsgDepositAndDrawRequest, MsgVaultInterestCalcRequest, MsgDepositStableMintRequest, MsgWithdrawStableMintRequest } from 'comdex-codec/build/comdex/vault/v1beta1/tx'
-
-import { MsgPlaceDutchBidRequest, MsgPlaceSurplusBidRequest, MsgPlaceDebtBidRequest } from 'comdex-codec/build/comdex/auction/v1beta1/tx';
-
 import { Registry } from "@cosmjs/proto-signing";
 import { defaultRegistryTypes } from "@cosmjs/stargate";
+import { MsgPlaceDebtBidRequest, MsgPlaceDutchBidRequest, MsgPlaceSurplusBidRequest } from 'comdex-codec/build/comdex/auction/v1beta1/tx';
+import { MsgCloseLockerRequest, MsgCreateLockerRequest, MsgDepositAssetRequest, MsgLockerRewardCalcRequest, MsgWithdrawAssetRequest } from 'comdex-codec/build/comdex/locker/v1beta1/tx';
+import { MsgCloseRequest, MsgCreateRequest, MsgDepositAndDrawRequest, MsgDepositRequest, MsgDepositStableMintRequest, MsgDrawRequest, MsgRepayRequest, MsgVaultInterestCalcRequest, MsgWithdrawRequest, MsgWithdrawStableMintRequest } from 'comdex-codec/build/comdex/vault/v1beta1/tx';
+
+
 
 export const myRegistry = new Registry([
   ...defaultRegistryTypes,
