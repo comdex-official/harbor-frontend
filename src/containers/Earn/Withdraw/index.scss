@@ -247,6 +247,9 @@
           flex-direction: column;
           row-gap: 10px;
         }
+        .withdraw-stats-right {
+          text-align: end;
+        }
         .withdraw-stats {
           .stats-title {
             font-size: 12px;
@@ -278,7 +281,6 @@
               width: 30px;
               height: 15px;
               border: 0;
-              cursor: pointer;
               border-radius: 2px;
               background: #fff;
               text-transform: capitalize;

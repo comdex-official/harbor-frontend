@@ -6,6 +6,7 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { setBalanceRefresh, setVault } from "../../../../actions/account";
 import { setExtendedPairVaultListData, setOwnerVaultId, setOwnerVaultInfo } from "../../../../actions/locker";
+import CustomSkelton from "../../../../components/CustomSkelton";
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { comdex } from "../../../../config/network";
 import { PRODUCT_ID } from "../../../../constants/common";
@@ -174,8 +175,8 @@ const CloseTab = ({
             CMST Payable{" "}
             <TooltipIcon text="CMST to be repaid" />
           </div>
-          <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountOut || 0,comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : "Loading..."}
+          <div className="text-right d-flex align-center">
+            {amountConversion(ownerVaultInfo?.amountOut || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1"><CustomSkelton height={20} /></span>}
           </div>
         </div>
         <div className="close-tab-row">
@@ -183,8 +184,8 @@ const CloseTab = ({
             Collateral Receivable{" "}
             <TooltipIcon text="Collateral to be received" />
           </div>
-          <div className="text-right">
-            {amountConversion(ownerVaultInfo?.amountIn || 0, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}
+          <div className="text-right d-flex align-center">
+            {amountConversion(ownerVaultInfo?.amountIn || 0, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : <span className="ml-1"><CustomSkelton height={20} /></span>}
           </div>
         </div>
       </div>

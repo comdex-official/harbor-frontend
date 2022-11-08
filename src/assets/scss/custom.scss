@@ -405,6 +405,12 @@ button {
   }
 }
 
+.earn-tabs {
+  .ant-tabs-nav {
+    padding: 0 15px;
+  }
+}
+
 .comdex-tabs {
   .ant-tabs-nav {
     margin-bottom: 10px;
@@ -1697,7 +1703,7 @@ button {
 .display-right {
   justify-content: flex-end;
 }
-.align-center{
+.align-center {
   align-items: center;
 }
 
