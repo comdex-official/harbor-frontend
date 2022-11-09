@@ -674,6 +674,16 @@ button {
         }
       }
     }
+    &.ant-table-empty{
+      tr {
+        td{
+          border-radius: 15px !important;
+        }
+      }
+      .ant-table-content{
+        overflow: hidden !important;
+      }
+    }
   }
 }
 
@@ -1720,4 +1730,27 @@ button {
 
 .height-16 {
   height: 16rem !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(#232231, 0.8); 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #665aa6;
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(#665aa6, 0.8); 
 }

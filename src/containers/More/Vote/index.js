@@ -320,7 +320,7 @@ const Vote = ({
       ),
       dataIndex: "total_votes",
       key: "total_votes",
-      width: 230,
+      width: 200,
     },
 
     {
