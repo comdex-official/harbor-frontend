@@ -674,15 +674,18 @@ button {
         }
       }
     }
-    &.ant-table-empty{
-      tr {
-        td{
-          border-radius: 15px !important;
-        }
+  }
+}
+
+.ant-table {
+  &.ant-table-empty{
+    tr {
+      td{
+        border-radius: 15px !important;
       }
-      .ant-table-content{
-        overflow: hidden !important;
-      }
+    }
+    .ant-table-content{
+      overflow: hidden !important;
     }
   }
 }
