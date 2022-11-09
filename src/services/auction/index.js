@@ -41,6 +41,13 @@ export const queryDutchAuctionList = (
     queryService
       .QueryDutchAuctions({
         appId: Long.fromNumber(PRODUCT_ID),
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
       })
       .then((result) => {
 
@@ -106,7 +113,13 @@ export const queryFilterDutchAuctions = (
       });
   });
 };
-export const queryDutchBiddingList = (bidder, callback) => {
+export const queryDutchBiddingList = (
+  bidder,
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  callback) => {
   getQueryService((error, queryService) => {
     if (error) {
       callback(error);
@@ -118,6 +131,13 @@ export const queryDutchBiddingList = (bidder, callback) => {
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
         history: false,
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
       })
       .then((result) => {
         callback(null, result);

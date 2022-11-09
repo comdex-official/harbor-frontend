@@ -55,13 +55,7 @@ const Create = ({
             if (inAmount) {
                 transactionForCreateVesting(address, PRODUCT_ID, radioValue, inAmount, (error, result) => {
                     if (error) {
-                        message.error(
-                            < Snack
-                                message={variables[lang].tx_failed}
-                                explorerUrlToTx={comdex?.explorerUrlToTx}
-                                hash={result?.transactionHash}
-                            />
-                        )
+                        message.error(error?.rawLog || "Transaction Failed")
                         setLoading(false)
                         return;
                     }

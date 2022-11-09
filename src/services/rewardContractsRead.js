@@ -54,13 +54,12 @@ export const transactionClaimRewards = async (address, productId, callback) => {
                 customFees.exec,
             ).then((response) => {
                 if (!response?.code) {
-                    console.log(response?.rawLog);
-                    callback(null, response?.rawLog)
-              
+                    callback(null, response)
+
                 }
                 else {
-                    console.log(response?.rawLog);
-                    callback(response?.rawLog)
+                    console.log(response);
+                    callback(response)
 
                 }
 

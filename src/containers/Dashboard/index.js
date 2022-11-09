@@ -34,7 +34,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     }
     fetchTotalTokenMinted(PRODUCT_ID);
     fetchAllProposalUpData(PRODUCT_ID);
-  }, [markets]);
+  }, [markets, assetMap]);
 
   const fetchTVL = () => {
     queryAppTVL(PRODUCT_ID, (error, result) => {
