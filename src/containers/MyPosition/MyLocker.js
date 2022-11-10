@@ -13,7 +13,7 @@ import {
 } from "../../constants/common";
 import { queryAssets } from '../../services/asset/query';
 import { queryUserLockerHistory } from "../../services/locker/query";
-import { amountConversion } from "../../utils/coin";
+import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import "./index.scss";
 
 const MyEarn = ({ address }) => {
@@ -26,9 +26,7 @@ const MyEarn = ({ address }) => {
   const [cmstAssetId, setCmstAssetId] = useState();
 
   useEffect(() => {
-    if (address && cmstAssetId) {
-      fetchLockers(cmstAssetId, (pageNumber - 1) * pageSize, pageSize, true, false);
-    }
+    fetchLockers(cmstAssetId, (pageNumber - 1) * pageSize, pageSize, true, false);
   }, [address, cmstAssetId]);
 
   useEffect(() => {
@@ -69,6 +67,7 @@ const MyEarn = ({ address }) => {
       (error, result) => {
         if (error) {
           message.error(error);
+          setInProgress(false);
           return;
         }
         let reverseData = [...result?.userTxData].reverse()
@@ -138,13 +137,13 @@ const MyEarn = ({ address }) => {
         amount: (
           <>
             <div className="assets-withicon">
-              {amountConversion(item?.amount || 0)} CMST
+              {amountConversionWithComma(item?.amount || 0)} CMST
             </div>
           </>
         ),
         transaction: item?.txType,
         date: moment(item?.txTime).format("MMM DD, YYYY HH:mm"),
-        balance: <>{amountConversion(item?.balance || 0)} CMST</>,
+        balance: <>{amountConversionWithComma(item?.balance || 0)} CMST</>,
         action: item,
       };
     });
@@ -160,14 +159,6 @@ const MyEarn = ({ address }) => {
                 dataSource={tableData}
                 columns={columns}
                 loading={inProgress}
-                onChange={(event) => handleChange(event)}
-                // pagination={{
-                //   total:
-                //     lockers && lockers.pagination && lockers.pagination.total,
-                //   showSizeChanger: true,
-                //   defaultPageSize: pageSize,
-                //   pageSizeOptions: ["5", "10", "20", "50"],
-                // }}
                 pagination={{ defaultPageSize: 5 }}
                 scroll={{ x: "100%" }}
               />

@@ -5,8 +5,57 @@ import { denomConversion, amountConversionWithComma } from "../../../utils/coin"
 import TooltipIcon from "../../../components/TooltipIcon";
 import moment from "moment";
 import { comdex } from "../../../config/network";
+import { queryDutchBiddingList } from "../../../services/auction";
+import { useEffect, useState } from "react";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../../constants/common";
 
-export const Bidding = ({ biddingList, inProgress, assetMap }) => {
+export const Bidding = ({ address, refreshBalance, assetMap }) => {
+
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(5);
+  const [inProgress, setInProgress] = useState(false);
+  const [biddingList, setBiddingList] = useState("");
+  const [biddingsTotalCount, setBiddingsTotalCounts] = useState(0);
+
+
+
+  const fetchBiddings = (address, offset, limit, countTotal, reverse,) => {
+    setInProgress(true);
+    queryDutchBiddingList(address, offset, limit, countTotal, reverse, (error, result) => {
+      setInProgress(false);
+
+      if (error) {
+        message.error(error);
+        return;
+      }
+      if (result?.biddings?.length > 0) {
+        let reverseData = result && result.biddings;
+        setBiddingList(reverseData);
+        setBiddingsTotalCounts(result?.pagination?.total?.low);
+      } else {
+        setBiddingList("");
+      }
+    });
+  };
+
+
+  useEffect(() => {
+    if (address) {
+      fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true);
+    }
+  }, [address, refreshBalance])
+
+  const handleChange = (value) => {
+    setPageNumber(value.current);
+    setPageSize(value.pageSize);
+    fetchBiddings(address,
+      (value.current - 1) * value.pageSize,
+      value.pageSize,
+      true,
+      true
+    );
+  };
+
   const columnsBidding = [
     {
       title: (
@@ -131,7 +180,13 @@ export const Bidding = ({ biddingList, inProgress, assetMap }) => {
       className="custom-table more-table liquidation-table bidding-bottom-table"
       dataSource={tableBiddingData}
       columns={columnsBidding}
-      pagination={{ defaultPageSize: 5 }}
+      onChange={(event) => handleChange(event)}
+      pagination={{
+        total:
+          biddingsTotalCount &&
+          biddingsTotalCount,
+        pageSize,
+      }}
       loading={inProgress}
       scroll={{ x: "100%" }}
     />

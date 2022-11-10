@@ -24,6 +24,7 @@ import {
   denomConversion,
 } from "../../../utils/coin";
 import moment from "moment";
+import TooltipIcon from "../../../components/TooltipIcon";
 
 const DebtAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -98,13 +99,22 @@ const DebtAuctions = ({ setPairs, address }) => {
 
   const columns = [
     {
-      title: "Auctioned Asset",
+      title: (
+        <>
+          Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
+        </>
+      ),
       dataIndex: "auctioned_asset",
       key: "auctioned_asset",
       width: 150,
     },
     {
-      title: "Bidding Asset",
+      title: (
+        <>
+          Bidding Asset{" "}
+          <TooltipIcon text="Asset used to buy the auctioned asset" />
+        </>
+      ),
       dataIndex: "payable_token",
       key: "payable_token",
       width: 150,
@@ -116,7 +126,11 @@ const DebtAuctions = ({ setPairs, address }) => {
       width: 200,
     },
     {
-      title: "End Time",
+      title: (
+        <>
+          End Time <TooltipIcon text="Auction closing time" />
+        </>
+      ),
       dataIndex: "end_time",
       key: "end_time",
       width: 200,
@@ -142,7 +156,6 @@ const DebtAuctions = ({ setPairs, address }) => {
     {
       title: (
         <>
-          {/* <FilterModal setPairs={setPairs} /> */}
           Bid
         </>
       ),
@@ -217,7 +230,6 @@ const DebtAuctions = ({ setPairs, address }) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          {/* <div className="composite-card py-3"> */}
           <div className={auctions?.auctions?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16"}>
             <div className="card-content">
               <Table
@@ -238,7 +250,7 @@ const DebtAuctions = ({ setPairs, address }) => {
               />
             </div>
           </div>
-          <div className="more-bottom">
+          <div className="more-bottom mt-3">
             <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
               <Bidding biddingList={biddings} />
