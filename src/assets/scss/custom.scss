@@ -1095,6 +1095,7 @@ button {
         align-items: baseline;
       }
       span {
+        width: max-content;
         color: $secondary-color;
         margin: 0;
         .dark-mode & {
