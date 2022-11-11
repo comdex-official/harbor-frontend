@@ -34,8 +34,11 @@ import { comdex } from "../../../../config/network";
 import AssetList from "../../../../config/ibc_assets.json";
 import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
 import "../index.scss";
+import Snack from "../../../../components/common/Snack";
+import variables from "../../../../utils/variables";
 
 const Edit = ({
+  lang,
   address,
   pair,
   markets,
@@ -205,7 +208,6 @@ const Edit = ({
     setInProgress(true);
     message.info("Transaction initiated");
 
-    // if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
     signAndBroadcastTransaction(
       {
         message: {
@@ -239,11 +241,16 @@ const Edit = ({
 
         resetValues();
         setBalanceRefresh(refreshBalance + 1);
-        message.success("success");
+        message.success(
+          <Snack
+            message={variables[lang].tx_success}
+            explorerUrlToTx={comdex?.explorerUrlToTx}
+            hash={result?.transactionHash}
+          />
+        );
         getOwnerVaultInfoByVaultId(ownerVaultId);
       }
     );
-    // }
   };
 
   const getMaxRepay = () => {
@@ -311,7 +318,7 @@ const Edit = ({
     }
     return commaSeparator(withdrawableAmount || 0);
   }
-  
+
   const availableToBorrow = () => {
     let collateralLocked = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
     let collateralAssetPrice = collateralPrice;

@@ -72,8 +72,3 @@ export const chainNetworks = {
         coinType: 118,
     },
 };
-
-
-// Cronos 
-// Luna 2
-// Agoric
