@@ -15,8 +15,13 @@ import { setBalanceRefresh } from "../../../actions/account";
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import TooltipIcon from '../../../components/TooltipIcon';
+import Snack from '../../../components/common/Snack';
+import variables from '../../../utils/variables';
+import { comdex } from '../../../config/network';
+import NoDataIcon from '../../../components/common/NoDataIcon';
 
 const Vote = ({
+  lang,
   address,
   refreshBalance,
   setBalanceRefresh,
@@ -240,11 +245,17 @@ const Vote = ({
         else {
           transactionForVotePairProposal(address, PRODUCT_ID, proposalId, item, (error, result) => {
             if (error) {
-              message.error(error)
+              message.error(error?.rawLog || "Transaction Failed")
               setInProcess(false)
               return;
             }
-            message.success("Success")
+            message.success(
+              < Snack
+                message={variables[lang].tx_success}
+                explorerUrlToTx={comdex?.explorerUrlToTx}
+                hash={result?.transactionHash}
+              />
+            )
             setBalanceRefresh(refreshBalance + 1);
             setInProcess(false)
           })
@@ -459,6 +470,7 @@ const Vote = ({
                   loading={loading}
                   pagination={false}
                   scroll={{ x: "100%" }}
+                  locale={{ emptyText: <NoDataIcon /> }}
                 />
               </div>
             </div>

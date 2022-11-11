@@ -24,6 +24,7 @@ import '../../Mint/Vault/Mint/index.scss'
 import { useParams } from "react-router";
 import { setLockAndMintedData } from "../../../actions/stableMint";
 import AssetList from '../../../config/ibc_assets.json'
+import CustomSkelton from "../../../components/CustomSkelton";
 
 
 const PricePool = ({ setOwnerCurrentCollateral,
@@ -163,7 +164,14 @@ const PricePool = ({ setOwnerCurrentCollateral,
 
     const data = [
         {
-            title: `Total ${denomToSymbol(pair?.denomIn) || "Loading..."} locked in Stablemint`,
+            // title: `Total ${denomToSymbol(pair?.denomIn) || "Loading..."} locked in Stablemint`,
+            title: (
+                <>
+                    <div className="d-flex">
+                        Total {pair && pair?.denomIn ? denomToSymbol(pair?.denomIn) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>} locked in Stablemint
+                    </div>
+                </>
+            ),
             counts: (
                 <div>
                     {amountConversionWithComma(psmLockedAndMintedData?.amountIn || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomIn]?.decimals)}
@@ -174,7 +182,13 @@ const PricePool = ({ setOwnerCurrentCollateral,
             ),
         },
         {
-            title: `${denomToSymbol(pair && pair?.denomOut) || " Loading..."} ceiling`,
+            title: (
+                <>
+                    <div className="d-flex">
+                        {pair && pair?.denomOut ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>} ceiling
+                    </div>
+                </>
+            ),
             counts: (
                 <div className="collateral-deposit-main-box">
                     <div className="collateral-deposit-up-box">
@@ -187,7 +201,13 @@ const PricePool = ({ setOwnerCurrentCollateral,
             ),
         },
         {
-            title: `Total ${denomToSymbol(pair && pair?.denomOut) || "Loading..."}  minted`,
+            title: (
+                <>
+                    <div className="d-flex">
+                        Total {pair && pair?.denomOut ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>}  minted
+                    </div>
+                </>
+            ),
             counts: (
                 <>
                     {amountConversionWithComma(psmLockedAndMintedData?.amountOut || 0, comdex?.coinDecimals, assetMap[pair && pair?.denomOut]?.decimals)}

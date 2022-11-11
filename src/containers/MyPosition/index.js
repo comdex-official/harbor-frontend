@@ -241,7 +241,7 @@ const MyPositions = ({ address, balances }) => {
               <h3>
                 {collectorInfo?.lockerSavingRate
                   ? Number(
-                    decimalConversion(collectorInfo?.lockerSavingRate) * 100
+                    decimalConversion(collectorInfo?.lockerSavingRate || 0) * 100
                   ).toFixed(DOLLAR_DECIMALS)
                   : Number().toFixed(DOLLAR_DECIMALS)}
                 %
@@ -313,7 +313,7 @@ const MyPositions = ({ address, balances }) => {
 
 
                         {vaultsInfo?.averageCrRatio
-                          ? Number(Number(decimalConversion(vaultsInfo?.averageCrRatio)) * 100).toFixed(DOLLAR_DECIMALS)
+                          ? Number(Number(decimalConversion(vaultsInfo?.averageCrRatio || 0)) * 100).toFixed(DOLLAR_DECIMALS)
                           : Number().toFixed(DOLLAR_DECIMALS)}
                         %
                       </h4>
@@ -323,7 +323,7 @@ const MyPositions = ({ address, balances }) => {
                     <Progress
                       percent={
                         vaultsInfo?.averageCrRatio
-                          ? calculateProgressPercentage(Number(decimalConversion((vaultsInfo?.averageCrRatio)) * 100))
+                          ? calculateProgressPercentage(Number(decimalConversion((vaultsInfo?.averageCrRatio || 0)) * 100))
                           : 0
                       }
                       showInfo={false}

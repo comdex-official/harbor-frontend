@@ -45,6 +45,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { queryCollectorInformation } from "../../../services/collector";
 import { decimalConversion } from "../../../utils/number";
+import CustomSkelton from "../../../components/CustomSkelton";
 
 const Deposit = ({
   lang,
@@ -303,7 +304,7 @@ const Deposit = ({
                 <Col>
                   <div className="assets-select-wrapper">
                     {/* For Single Asset */}
-                    {loading ? <h1>Loading...</h1> : null}
+                    {loading ? <CustomSkelton /> : null}
                     {whiteListedAssetData &&
                       whiteListedAssetData.map((item, index) => {
                         return (

@@ -4,12 +4,33 @@ import {
   BIDDING_LIST_SET,
   BID_AMOUNT_SET,
   CURRENT_AUCTION_SET,
+  SET_AUCTION_PAGE_NUMBER,
+  SET_AUCTION_PAGE_SIZE,
   SET_SELECTED_AUCTIONED_ASSET,
 } from "../constants/auction";
 
 const auctions = (state = "", action) => {
   if (action.type === AUCTION_LIST_SET) {
-    return action.list
+    return {
+      auctions: action.list,
+      pagination: action.pagination,
+    }
+  }
+
+  return state;
+};
+
+const auctionsPageSize = (state = 10, action) => {
+  if (action.type === SET_AUCTION_PAGE_SIZE) {
+    return action.value;
+  }
+
+  return state;
+};
+
+const auctionsPageNumber = (state = 1, action) => {
+  if (action.type === SET_AUCTION_PAGE_NUMBER) {
+    return action.value;
   }
 
   return state;
@@ -64,4 +85,6 @@ export default combineReducers({
   bidAmount,
   bidding,
   selectedAuctionedAsset,
+  auctionsPageSize,
+  auctionsPageNumber
 });

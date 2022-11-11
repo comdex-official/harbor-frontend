@@ -55,6 +55,7 @@ import {
 import { useParams } from "react-router";
 import AssetList from '../../../config/ibc_assets.json'
 import { comdex } from "../../../config/network";
+import CustomSkelton from "../../../components/CustomSkelton";
 
 
 const Deposit = ({
@@ -344,7 +345,7 @@ const Deposit = ({
                             <Row>
                                 <Col>
                                     <div className="assets-select-wrapper">
-                                        {loading ? <h1>Loading...</h1>
+                                        {loading ? <CustomSkelton />
                                             :
                                             <React.Fragment>
                                                 <div className="farm-asset-icon-container">

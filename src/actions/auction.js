@@ -3,13 +3,29 @@ import {
   BIDDING_LIST_SET,
   BID_AMOUNT_SET,
   CURRENT_AUCTION_SET,
+  SET_AUCTION_PAGE_NUMBER,
+  SET_AUCTION_PAGE_SIZE,
   SET_SELECTED_AUCTIONED_ASSET,
 } from "../constants/auction";
 
-export const setAuctions = (list) => {
+export const setAuctions = (list, pagination) => {
   return {
     type: AUCTION_LIST_SET,
     list,
+    pagination,
+  };
+};
+export const setAuctionsPageSize = (value) => {
+  return {
+    type: SET_AUCTION_PAGE_SIZE,
+    value,
+  };
+};
+
+export const setAuctionsPageNumber = (value) => {
+  return {
+    type: SET_AUCTION_PAGE_NUMBER,
+    value,
   };
 };
 

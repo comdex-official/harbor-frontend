@@ -301,7 +301,7 @@ const Withdraw = ({
                   </div>
 
                 </div>
-                <div className="withdraw-stats">
+                <div className="withdraw-stats withdraw-stats-right">
                   <div className="stats-title">Rewards Accumulated <TooltipIcon text="Rewards earned on locked CMST" /></div>
                   <div className="stats-value">
                     {returnsAccumulated || 0}{" "}

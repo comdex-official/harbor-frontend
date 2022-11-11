@@ -7,6 +7,7 @@ import {
 } from "../../../utils/coin";
 import TooltipIcon from "../../../components/TooltipIcon";
 import moment from "moment";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 
 export const Bidding = ({ biddingList }) => {
   const columnsBidding = [
@@ -135,6 +136,7 @@ export const Bidding = ({ biddingList }) => {
       columns={columnsBidding}
       pagination={{ defaultPageSize: 5 }}
       scroll={{ x: "100%" }}
+      locale={{ emptyText: <NoDataIcon /> }}
     />
   );
 };

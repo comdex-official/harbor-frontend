@@ -34,7 +34,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     }
     fetchTotalTokenMinted(PRODUCT_ID);
     fetchAllProposalUpData(PRODUCT_ID);
-  }, [markets]);
+  }, [markets, assetMap]);
 
   const fetchTVL = () => {
     queryAppTVL(PRODUCT_ID, (error, result) => {
@@ -171,6 +171,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
         size: "110%",
         innerSize: "82%",
         borderWidth: 0,
+        className: "totalvalue-chart",
         dataLabels: {
           enabled: false,
           distance: -14,
