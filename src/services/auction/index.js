@@ -84,6 +84,32 @@ export const querySingleDutchAuction = (
   });
 };
 
+export const querySingleDebtAuction = (
+  auctionId,
+  auctionMappingId,
+  callback
+) => {
+  getQueryService((error, queryService) => {
+    if (error) {
+      callback(error);
+      return;
+    }
+    queryService
+      .QueryDebtAuction({
+        appId: Long.fromNumber(PRODUCT_ID),
+        auctionMappingId: Long.fromNumber(auctionMappingId),
+        auctionId: Long.fromNumber(auctionId),
+      })
+      .then((result) => {
+
+        callback(null, result);
+      })
+      .catch((error) => {
+        callback(error?.message);
+      });
+  });
+};
+
 
 
 export const queryFilterDutchAuctions = (
@@ -198,7 +224,13 @@ export const queryDebtAuctionList = (
 
 
 
-export const queryDebtBiddingList = (bidder, callback) => {
+export const queryDebtBiddingList = (
+  bidder,
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  callback) => {
   getQueryService((error, queryService) => {
     if (error) {
       callback(error);
@@ -209,7 +241,13 @@ export const queryDebtBiddingList = (bidder, callback) => {
       .QueryDebtBiddings({
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
-        history: false,
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
       })
       .then((result) => {
         callback(null, result);

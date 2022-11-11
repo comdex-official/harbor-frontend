@@ -1,8 +1,8 @@
 import * as PropTypes from "prop-types";
 import { Button, Modal, message } from "antd";
 import { Row, Col } from "../../../../components/common";
-import { connect } from "react-redux";
-import React, { useState } from "react";
+import { connect, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { comdex } from "../../../../config/network";
 import variables from "../../../../utils/variables";
 import { defaultFee } from "../../../../services/transaction";
@@ -22,21 +22,39 @@ import { PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import moment from "moment";
 import Timer from "../../../../components/Timer";
+import { querySingleDebtAuction } from "../../../../services/auction";
 
 const PlaceBidModal = ({
   lang,
   address,
   auction,
-  refreshData,
+  refreshBalance,
   params,
   balances,
 }) => {
+  const dispatch = useDispatch();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bidAmount, setBidAmount] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [validationError, setValidationError] = useState();
+  const [newCurrentAuction, setNewCurrentAuction] = useState(auction)
+
+
+
+  const fetchSingleDebtAuction = (auctionId, auctionMappingId) => {
+    querySingleDebtAuction(auctionId, auctionMappingId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setNewCurrentAuction(data?.auction)
+    });
+  };
 
   const showModal = () => {
+    fetchSingleDebtAuction(auction?.auctionId, auction?.auctionMappingId);
+
     setIsModalOpen(true);
   };
 
@@ -87,7 +105,6 @@ const PlaceBidModal = ({
           return;
         }
 
-        refreshData();
         message.success(
           <Snack
             message={variables[lang].tx_success}
@@ -95,6 +112,11 @@ const PlaceBidModal = ({
             hash={result?.transactionHash}
           />
         );
+        setBidAmount()
+        dispatch({
+          type: "BALANCE_REFRESH_SET",
+          value: refreshBalance + 1,
+        });
       }
     );
   };
@@ -110,6 +132,17 @@ const PlaceBidModal = ({
     );
     setBidAmount(value);
   };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const interval = setInterval(() => {
+        fetchSingleDebtAuction(auction?.auctionId, auction?.auctionMappingId)
+      }, 5000)
+      return () => {
+        clearInterval(interval);
+      }
+    }
+  }, [isModalOpen])
 
   return (
     <>
@@ -136,7 +169,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                <Timer expiryTimestamp={auction && auction.endTime} />
+                <Timer expiryTimestamp={newCurrentAuction && newCurrentAuction.endTime} />
               </label>
             </Col>
           </Row>
@@ -146,7 +179,7 @@ const PlaceBidModal = ({
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {moment(auction && auction.bidEndTime).format(
+                {moment(newCurrentAuction && newCurrentAuction.bidEndTime).format(
                   "MMM DD, YYYY HH:mm"
                 )}
               </label>
@@ -159,9 +192,9 @@ const PlaceBidModal = ({
             <Col sm="6" className="text-right">
               <label>
                 {amountConversionWithComma(
-                  auction?.expectedUserToken?.amount || 0
+                  newCurrentAuction?.expectedUserToken?.amount || 0
                 )}{" "}
-                {denomConversion(auction?.expectedUserToken?.denom)}
+                {denomConversion(newCurrentAuction?.expectedUserToken?.denom)}
               </label>
             </Col>
           </Row>
@@ -172,9 +205,9 @@ const PlaceBidModal = ({
             <Col sm="6" className="text-right">
               <label>
                 {amountConversionWithComma(
-                  auction?.auctionedToken?.amount || 0
+                  newCurrentAuction?.auctionedToken?.amount || 0
                 )}{" "}
-                {denomConversion(auction?.auctionedToken?.denom)}
+                {denomConversion(newCurrentAuction?.auctionedToken?.denom)}
               </label>
             </Col>
           </Row>
@@ -185,9 +218,9 @@ const PlaceBidModal = ({
             <Col sm="6" className="text-right">
               <label>
                 {amountConversionWithComma(
-                  auction?.expectedMintedToken?.amount || 0
+                  newCurrentAuction?.expectedMintedToken?.amount || 0
                 )}{" "}
-                {denomConversion(auction?.expectedMintedToken?.denom)}
+                {denomConversion(newCurrentAuction?.expectedMintedToken?.denom)}
               </label>
             </Col>
           </Row>
@@ -209,12 +242,12 @@ const PlaceBidModal = ({
             <Col sm="6" className="text-right">
               <label>
                 {(
-                  Number(auction?.expectedUserToken?.amount) /
-                  Number(auction?.expectedMintedToken?.amount)
+                  Number(newCurrentAuction?.expectedUserToken?.amount) /
+                  Number(newCurrentAuction?.expectedMintedToken?.amount)
                 ).toFixed(comdex.coinDecimals)}{" "}
                 {`${denomConversion(
-                  auction?.expectedUserToken?.denom
-                )} / ${denomConversion(auction?.expectedMintedToken?.denom)}`}
+                  newCurrentAuction?.expectedUserToken?.denom
+                )} / ${denomConversion(newCurrentAuction?.expectedMintedToken?.denom)}`}
               </label>
             </Col>
           </Row>
@@ -225,7 +258,7 @@ const PlaceBidModal = ({
                 className="btn-filled px-5"
                 size="large"
                 loading={inProgress}
-                disabled={!Number(bidAmount)}
+                disabled={!Number(bidAmount) || inProgress}
                 onClick={handleClick}
               >
                 Place Bid
@@ -239,9 +272,9 @@ const PlaceBidModal = ({
 };
 
 PlaceBidModal.propTypes = {
-  refreshData: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  refreshBalance: PropTypes.number.isRequired,
   auction: PropTypes.shape({
     minBid: PropTypes.shape({
       amount: PropTypes.string,
@@ -275,6 +308,7 @@ const stateToProps = (state) => {
     bidAmount: state.auction.bidAmount,
     address: state.account.address,
     balances: state.account.balances.list,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 

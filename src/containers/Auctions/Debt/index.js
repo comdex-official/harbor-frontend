@@ -26,7 +26,7 @@ import {
 import moment from "moment";
 import TooltipIcon from "../../../components/TooltipIcon";
 
-const DebtAuctions = ({ setPairs, address }) => {
+const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
@@ -35,14 +35,10 @@ const DebtAuctions = ({ setPairs, address }) => {
   const [biddings, setBiddings] = useState();
 
   useEffect(() => {
-    fetchData();
     queryParams();
-  }, [address]);
-
-  const fetchData = () => {
     fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
-    fetchBiddings(address);
-  };
+  }, [address, refreshBalance]);
+
 
   const queryParams = () => {
     queryAuctionParams((error, result) => {
@@ -77,22 +73,6 @@ const DebtAuctions = ({ setPairs, address }) => {
       if (result?.auctions?.length > 0) {
         // setAuctions(result && result.auctions);
         setAuctions(result && result);
-      }
-    });
-  };
-
-  const fetchBiddings = (address) => {
-    setInProgress(true);
-    queryDebtBiddingList(address, (error, result) => {
-      setInProgress(false);
-
-      if (error) {
-        message.error(error);
-        return;
-      }
-
-      if (result?.biddings?.length > 0) {
-        setBiddings(result && result.biddings);
       }
     });
   };
@@ -137,7 +117,11 @@ const DebtAuctions = ({ setPairs, address }) => {
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Top Bid",
+      title: (
+        <>
+          Top Bid <TooltipIcon text="Current HARBOR bid" />
+        </>
+      ),
       dataIndex: "max_bid",
       key: "max_bid",
       width: 150,
@@ -168,7 +152,6 @@ const DebtAuctions = ({ setPairs, address }) => {
           <PlaceBidModal
             params={params}
             auction={item}
-            refreshData={fetchData}
             discount={params?.auctionDiscountPercent}
           />
         </>
@@ -238,13 +221,6 @@ const DebtAuctions = ({ setPairs, address }) => {
                 columns={columns}
                 loading={inProgress}
                 onChange={(event) => handleChange(event)}
-                // pagination={{
-                //   total:
-                //     auctions &&
-                //     auctions.pagination &&
-                //     auctions.pagination.total,
-                //   pageSize,
-                // }}
                 pagination={{ defaultPageSize: 10 }}
                 scroll={{ x: "100%" }}
               />
@@ -253,7 +229,7 @@ const DebtAuctions = ({ setPairs, address }) => {
           <div className="more-bottom mt-3">
             <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
-              <Bidding biddingList={biddings} />
+              <Bidding address={address} />
             </div>
           </div>
         </Col>
@@ -266,12 +242,14 @@ DebtAuctions.propTypes = {
   lang: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
   address: PropTypes.string,
+  refreshBalance: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 

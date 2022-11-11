@@ -92,8 +92,8 @@
   border: 2px solid $success-color !important;
 }
 .bid-btn-rejected {
-  background: $secondary-color !important;
-  border: 2px solid $secondary-color !important;
+  background: $error-color !important;
+  border: 2px solid $error-color !important;
 }
 .auction-extra-tabs {
   .ant-tabs-nav {

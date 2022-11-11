@@ -1,11 +1,48 @@
-import { Table, Button } from "antd";
+import * as PropTypes from "prop-types";
+import { Table, Button, message } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversionWithComma } from "../../../utils/coin";
 import TooltipIcon from "../../../components/TooltipIcon";
 import moment from "moment";
+import { queryDebtBiddingList } from "../../../services/auction";
+import { useEffect, useState } from "react";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../../constants/common";
+import { connect } from "react-redux";
 
-export const Bidding = ({ biddingList }) => {
+export const Bidding = ({ lang, address, refreshBalance }) => {
+
+  const [biddingList, setBiddingList] = useState();
+  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
+  const [pageSize, setPageSize] = useState(5);
+  const [inProgress, setInProgress] = useState(false);
+  const [biddingsTotalCount, setBiddingsTotalCounts] = useState(0);
+
+
+
+  const fetchBiddings = (address, offset, limit, isTotal, isReverse) => {
+    setInProgress(true);
+    queryDebtBiddingList(address, offset, limit, isTotal, isReverse, (error, result) => {
+      setInProgress(false);
+
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      if (result?.biddings?.length > 0) {
+        setBiddingList(result && result.biddings);
+        setBiddingsTotalCounts(result?.pagination?.total.toNumber())
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true);
+  }, [address, refreshBalance])
+
+
+
   const columnsBidding = [
     {
       title: (
@@ -28,7 +65,11 @@ export const Bidding = ({ biddingList }) => {
       width: 250,
     },
     {
-      title: "Timestamp",
+      title: (
+        <>
+          Timestamp <TooltipIcon text="Placed bid time" />
+        </>
+      ),
       dataIndex: "timestamp",
       key: "timestamp",
       width: 200,
@@ -56,7 +97,6 @@ export const Bidding = ({ biddingList }) => {
     },
   ];
 
-  biddingList?.reverse(); // showing newest bid first (ascending->descending)
 
   const tableBiddingData =
     biddingList &&
@@ -124,15 +164,49 @@ export const Bidding = ({ biddingList }) => {
       };
     });
 
+  const handleChange = (value) => {
+    setPageNumber(value.current);
+    setPageSize(value.pageSize);
+    fetchBiddings(address,
+      (value.current - 1) * value.pageSize,
+      value.pageSize,
+      true,
+      true
+    );
+  };
+
   return (
     <Table
       className="custom-table more-table  bidding-bottom-table"
       dataSource={tableBiddingData}
+      loading={inProgress}
       columns={columnsBidding}
-      pagination={{ defaultPageSize: 5 }}
+      onChange={(event) => handleChange(event)}
+      pagination={{
+        total:
+          biddingsTotalCount &&
+          biddingsTotalCount,
+        pageSize,
+      }}
       scroll={{ x: "100%" }}
     />
   );
 };
 
-export default Bidding;
+Bidding.prototype = {
+  lang: PropTypes.string.isRequired,
+  refreshBalance: PropTypes.number.isRequired,
+
+}
+
+const stateToProps = (state) => {
+  return {
+    lang: state.language,
+    refreshBalance: state.account.refreshBalance,
+  };
+};
+
+const actionsToProps = {
+};
+
+export default connect(stateToProps, actionsToProps)(Bidding);
