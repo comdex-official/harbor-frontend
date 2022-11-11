@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { setAssetList } from '../../actions/asset';
 import { Col, Row } from "../../components/common";
+import NoDataIcon from "../../components/common/NoDataIcon";
 import TooltipIcon from "../../components/TooltipIcon";
 import {
   DEFAULT_PAGE_NUMBER,
@@ -161,6 +162,7 @@ const MyEarn = ({ address }) => {
                 loading={inProgress}
                 pagination={{ defaultPageSize: 5 }}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

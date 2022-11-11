@@ -25,6 +25,7 @@ import {
 } from "../../../utils/coin";
 import moment from "moment";
 import TooltipIcon from "../../../components/TooltipIcon";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 
 const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -223,6 +224,7 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
                 onChange={(event) => handleChange(event)}
                 pagination={{ defaultPageSize: 10 }}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

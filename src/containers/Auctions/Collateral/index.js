@@ -32,6 +32,7 @@ import { iconNameFromDenom } from "../../../utils/string";
 import { commaSeparator, decimalConversion } from "../../../utils/number";
 import TooltipIcon from "../../../components/TooltipIcon";
 import { comdex } from "../../../config/network";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 
 const CollateralAuctions = ({ updateBtnLoading, setPairs, auctions, setAuctions, refreshBalance, address, assetMap, auctionsPageSize, auctionsPageNumber, setAuctionsPageSize, setAuctionsPageNumber }) => {
   const dispatch = useDispatch()
@@ -265,6 +266,7 @@ const CollateralAuctions = ({ updateBtnLoading, setPairs, auctions, setAuctions,
                   auctionsPageSize,
                 }}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

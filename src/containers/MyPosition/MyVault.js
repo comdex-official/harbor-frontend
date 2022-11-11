@@ -10,6 +10,7 @@ import { amountConversion, amountConversionWithComma, denomConversion } from "..
 import { useNavigate } from "react-router";
 import { DOLLAR_DECIMALS } from "../../constants/common";
 import { decimalConversion } from "../../utils/number";
+import NoDataIcon from "../../components/common/NoDataIcon";
 
 const MyVault = ({ address }) => {
   const [vaults, setVaults] = useState();
@@ -120,7 +121,7 @@ const MyVault = ({ address }) => {
   const handleRouteChange = (item) => {
     navigate(`/mint/vault/${item?.extendedPairId?.low}`);
   };
-  
+
   const tableData =
     vaults &&
     vaults?.length > 0 &&
@@ -152,6 +153,7 @@ const MyVault = ({ address }) => {
                 loading={inProgress}
                 pagination={{ defaultPageSize: 5 }}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

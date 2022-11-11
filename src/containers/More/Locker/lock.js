@@ -11,6 +11,7 @@ import { setIssuedveHARBOR } from "../../../actions/vesting";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import moment from 'moment';
 import { DOLLAR_DECIMALS } from '../../../constants/common';
+import NoDataIcon from '../../../components/common/NoDataIcon';
 
 
 const Lock = ({
@@ -173,6 +174,7 @@ const Lock = ({
                             loading={inProcess}
                             pagination={{ defaultPageSize: 10 }}
                             scroll={{ x: "100%" }}
+                            locale={{ emptyText: <NoDataIcon /> }}
                         />
                     </Col>
                 </Row>

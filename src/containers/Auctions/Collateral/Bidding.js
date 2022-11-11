@@ -8,6 +8,7 @@ import { comdex } from "../../../config/network";
 import { queryDutchBiddingList } from "../../../services/auction";
 import { useEffect, useState } from "react";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../../constants/common";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 
 export const Bidding = ({ address, refreshBalance, assetMap }) => {
 
@@ -189,6 +190,7 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
       }}
       loading={inProgress}
       scroll={{ x: "100%" }}
+      locale={{ emptyText: <NoDataIcon /> }}
     />
   );
 };

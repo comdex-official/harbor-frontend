@@ -18,6 +18,7 @@ import TooltipIcon from '../../../components/TooltipIcon';
 import Snack from '../../../components/common/Snack';
 import variables from '../../../utils/variables';
 import { comdex } from '../../../config/network';
+import NoDataIcon from '../../../components/common/NoDataIcon';
 
 const Vote = ({
   lang,
@@ -469,6 +470,7 @@ const Vote = ({
                   loading={loading}
                   pagination={false}
                   scroll={{ x: "100%" }}
+                  locale={{ emptyText: <NoDataIcon /> }}
                 />
               </div>
             </div>

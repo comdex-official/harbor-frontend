@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
 import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 import { Col, Row, SvgIcon } from "../../../components/common";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 import NoData from "../../../components/NoData";
 import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
 import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
@@ -204,7 +205,7 @@ const Govern = ({
           <div className="comdex-card govern-card earn-deposite-card ">
             <div className="governcard-head ">
               <a href="https://forum.comdex.one/" target="_blank" rel="noreferrer"><Button type="primary" className="btn-filled">Forum</Button></a>
-              <Select defaultValue="Filter" className="select-primary ml-2" onChange={(e) => filterAllProposal(e)} suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }}>
+              <Select defaultValue="Filter" className="select-primary ml-2" onChange={(e) => filterAllProposal(e)} suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }} notFoundContent={<NoDataIcon />}>
                 <Option value="all" className="govern-select-option">All</Option>
                 <Option value="open" >Open</Option>
                 <Option value="pending">Pending</Option>

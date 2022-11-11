@@ -9,6 +9,7 @@ import { queryDebtBiddingList } from "../../../services/auction";
 import { useEffect, useState } from "react";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../../constants/common";
 import { connect } from "react-redux";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 
 export const Bidding = ({ lang, address, refreshBalance }) => {
 
@@ -189,6 +190,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
         pageSize,
       }}
       scroll={{ x: "100%" }}
+      locale={{ emptyText: <NoDataIcon /> }}
     />
   );
 };

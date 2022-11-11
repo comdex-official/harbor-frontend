@@ -18,6 +18,7 @@ import { transactionForClaimRebase } from "../../services/rebaseingContractWrite
 import Snack from "../../components/common/Snack";
 import variables from "../../utils/variables";
 import { comdex } from "../../config/network";
+import NoDataIcon from "../../components/common/NoDataIcon";
 
 const More = ({
   lang,
@@ -438,6 +439,7 @@ const More = ({
                               columns={columns}
                               pagination={false}
                               scroll={{ x: "100%" }}
+                              locale={{ emptyText: <NoDataIcon /> }}
                             />
                           </div>
                         </Col>
@@ -499,6 +501,7 @@ const More = ({
                       columns={rebasingColumns}
                       pagination={false}
                       scroll={{ x: "100%" }}
+                      locale={{ emptyText: <NoDataIcon /> }}
                     />
                   </div>
                 </Col>

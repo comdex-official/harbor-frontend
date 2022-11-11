@@ -5,6 +5,7 @@ import React from "react";
 import { IoReload } from "react-icons/io5";
 import { connect, useDispatch } from "react-redux";
 import { Col, Row, SvgIcon } from "../../components/common";
+import NoDataIcon from "../../components/common/NoDataIcon";
 import AssetList from "../../config/ibc_assets.json";
 import { cmst, comdex, harbor } from "../../config/network";
 import { DOLLAR_DECIMALS } from "../../constants/common";
@@ -294,6 +295,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
               columns={columns}
               pagination={false}
               scroll={{ x: "100%" }}
+              locale={{ emptyText: <NoDataIcon /> }}
             />
           </Col>
         </Row>

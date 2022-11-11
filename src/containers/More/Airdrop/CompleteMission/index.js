@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import Snack from "../../../../components/common/Snack";
 import variables from "../../../../utils/variables";
 import { comdex } from "../../../../config/network";
+import NoDataIcon from "../../../../components/common/NoDataIcon";
 
 
 const { Step } = Steps;
@@ -351,6 +352,7 @@ const CompleteMission = ({
                 pagination={false}
                 showHeader={false}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>
