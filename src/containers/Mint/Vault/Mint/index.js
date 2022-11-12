@@ -1,4 +1,4 @@
-import { Button, message, Slider, Spin } from "antd";
+import { Button, message, Skeleton, Slider, Spin } from "antd";
 import Long from "long";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -30,6 +30,7 @@ import {
   getAmount,
   getDenomBalance
 } from "../../../../utils/coin";
+import CustomSkelton from "../../../../components/CustomSkelton";
 import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
 import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/string";
 import variables from "../../../../utils/variables";
@@ -479,8 +480,8 @@ const Mint = ({
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        <SvgIcon name={pair && pair.denomIn ? iconNameFromDenom(pair && pair?.denomIn) : ""} />
-                        <span> {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : "Loading..."}</span>
+                        {pair && pair.denomIn ? <SvgIcon name={pair && pair.denomIn ? iconNameFromDenom(pair && pair?.denomIn) : ""} /> : <span className="mint-custom-skelton" ><CustomSkelton /></span> }
+                        <span> {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : ""}</span>
                       </div>
                     </div>
                   </div>

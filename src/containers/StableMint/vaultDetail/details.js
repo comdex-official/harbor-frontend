@@ -164,7 +164,6 @@ const PricePool = ({ setOwnerCurrentCollateral,
 
     const data = [
         {
-            // title: `Total ${denomToSymbol(pair?.denomIn) || "Loading..."} locked in Stablemint`,
             title: (
                 <>
                     <div className="d-flex">
