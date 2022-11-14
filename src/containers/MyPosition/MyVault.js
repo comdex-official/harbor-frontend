@@ -119,7 +119,7 @@ const MyVault = ({ address }) => {
   ];
 
   const handleRouteChange = (item) => {
-    navigate(`/mint/vault/${item?.extendedPairId?.low}`);
+    navigate(`/mint/vault/${item?.extendedPairId?.toNumber()}`);
   };
 
   const tableData =

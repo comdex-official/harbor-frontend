@@ -105,8 +105,8 @@ const ChainModal = ({
     setIsModalVisible(false);
   };
 
-  const checkChainAddressEligibility = () => {
-    fetchCheckEligibility(address, currentChain?.chainId)
+  const checkChainAddressEligibility = (userAddress) => {
+    fetchCheckEligibility(userAddress, currentChain?.chainId)
   }
 
 
@@ -114,7 +114,7 @@ const ChainModal = ({
     setTxLogin(true);
     let msg = MsgSendTokens(
       userCurrentChainAddress,
-      "mantle1asmp93td4m865zvkpuy48u05yxcjtwkv45gghm",
+      currentChain?.magicTxAdd,
       chainNetworks[currentChain?.networkname],
       1
     );
@@ -151,9 +151,14 @@ const ChainModal = ({
     );
   }
 
+  useEffect(() => {
+    setUserAddress(userCurrentChainAddress)
+  }, [address, userCurrentChainAddress])
+
+
   return (
     <>
-      <Button className="icons" onClick={showModal} disabled={true}>
+      <Button className="icons" onClick={showModal} >
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>
@@ -188,7 +193,7 @@ const ChainModal = ({
           <Col>
             <label>Check Eligibility</label>
             <div className="d-flex">
-              <Input onChange={(e) => setUserAddress(e.target.value)} value={address} placeholder={`Entre Your ${currentChain?.chainName} Wallet Address`} /> <Button type="primary" className="btn-filled" loading={loading} onClick={() => checkChainAddressEligibility()}>Check</Button>
+              <Input onChange={(e) => setUserAddress(e.target.value)} value={userAddress} placeholder={`Entre Your ${currentChain?.chainName} Wallet Address`} /> <Button type="primary" className="btn-filled" loading={loading} onClick={() => checkChainAddressEligibility(userAddress)}>Check</Button>
             </div>
           </Col>
         </Row>
@@ -199,11 +204,11 @@ const ChainModal = ({
               <Input placeholder={`Entre Your Comdex Wallet Address`} onChange={(e) => setuserComdexAddress(e.target.value)} />
               <Button type="primary" className="btn-filled"
                 loading={txLogin}
-                disabled={
-                  !userEligibilityData
-                  || disableTxBtn
-                  || txLogin
-                }
+                // disabled={
+                //   !userEligibilityData
+                //   || disableTxBtn
+                //   || txLogin
+                // }
                 onClick={() => handleClickMagicTx()} >
                 Transaction
               </Button>

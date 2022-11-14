@@ -29,6 +29,14 @@
   }
 
 }
+.mission-claim-main-container{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  .claimAll-button{
+    margin-right: 1rem;
+  }
+}
 
 .mission-title {
   font-size: 1.588rem;

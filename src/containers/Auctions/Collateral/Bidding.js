@@ -32,7 +32,7 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
       if (result?.biddings?.length > 0) {
         let reverseData = result && result.biddings;
         setBiddingList(reverseData);
-        setBiddingsTotalCounts(result?.pagination?.total?.low);
+        setBiddingsTotalCounts(result?.pagination?.total?.toNumber());
       } else {
         setBiddingList("");
       }

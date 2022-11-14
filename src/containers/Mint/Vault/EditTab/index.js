@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 const EditTab = () => {
   const [loading, setLoading] = useState();
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
-  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
+  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.toNumber();
 
   useEffect(() => {
     if (pairId) {

@@ -91,11 +91,11 @@ const Edit = ({
   }, [address]);
 
   useEffect(() => {
-    if (address && selectedExtentedPairVaultListData[0]?.id?.low) {
+    if (address && selectedExtentedPairVaultListData[0]?.id?.toNumber()) {
       getOwnerVaultId(
         PRODUCT_ID,
         address,
-        selectedExtentedPairVaultListData[0]?.id?.low
+        selectedExtentedPairVaultListData[0]?.id?.toNumber()
       );
     } else {
       setOwnerVaultId("")
@@ -154,7 +154,7 @@ const Edit = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId?.low);
+      setOwnerVaultId(data?.vaultId?.toNumber());
     });
   };
 
@@ -216,7 +216,7 @@ const Edit = ({
             from: address,
             appId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(
-              selectedExtentedPairVaultListData[0]?.id?.low
+              selectedExtentedPairVaultListData[0]?.id?.toNumber()
             ),
             userVaultId: ownerVaultId,
             amount: getAmountBasedOnDenom(denom),
