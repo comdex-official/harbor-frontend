@@ -6,6 +6,7 @@ import { Col, Row } from "../../components/common";
 import SurplusAuction from "./Surplus";
 import DebtAuction from "./Debt";
 import { setPairs } from "../../actions/asset";
+import { setAuctionsPageSize, setAuctionsPageNumber } from "../../actions/auction";
 import Collateral from "./Collateral";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
 import { setAuctions } from "../../actions/auction";
@@ -15,20 +16,28 @@ import TooltipIcon from "../../components/TooltipIcon";
 const Auctions = ({
   auctions,
   setAuctions,
+  auctionsPageSize,
+  auctionsPageNumber,
+  setAuctionsPageSize,
+  setAuctionsPageNumber,
 }) => {
   const dispatch = useDispatch()
   const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
   const [activeKey, setActiveKey] = useState("1");
   const [disableFetchBtn, setdisableFetchBtn] = useState(false);
+  const [updateBtnLoading, setUpdateBtnLoadiing] = useState(false)
   const { TabPane } = Tabs;
 
-  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+
+  useEffect(() => {
+    setAuctionsPageSize(DEFAULT_PAGE_SIZE)
+    setAuctionsPageNumber(DEFAULT_PAGE_NUMBER)
+  }, [])
 
   const tabItems =
     [
-      { label: "Collateral", key: "1", children: <Collateral /> },
+      { label: "Collateral", key: "1", children: <Collateral updateBtnLoading={updateBtnLoading} /> },
       { label: "Debt", key: "2", children: <DebtAuction /> }
     ]
 
@@ -38,6 +47,7 @@ const Auctions = ({
 
 
   const fetchAuctions = (offset, limit, isTotal, isReverse) => {
+    setUpdateBtnLoadiing(true)
     queryDutchAuctionList(
       offset,
       limit,
@@ -45,14 +55,17 @@ const Auctions = ({
       isReverse,
       (error, result) => {
         if (error) {
+          setUpdateBtnLoadiing(false)
           message.error(error);
           return;
         }
         if (result?.auctions?.length > 0) {
-          setAuctions(result && result);
+          setAuctions(result && result?.auctions, result?.pagination?.total?.low);
+          setUpdateBtnLoadiing(false)
         }
         else {
           setAuctions("");
+          setUpdateBtnLoadiing(false)
         }
       }
     );
@@ -71,11 +84,12 @@ const Auctions = ({
   const fetchLatestPrice = () => {
     setdisableFetchBtn(true)
     if (selectedAuctionedAsset?.length > 0) {
-      fetchFilteredDutchAuctions((pageNumber - 1) * pageSize, pageSize, true, false, selectedAuctionedAsset)
+      fetchFilteredDutchAuctions((auctionsPageNumber - 1) * auctionsPageSize, auctionsPageSize, true, false, selectedAuctionedAsset)
     } else {
-      fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false)
+      fetchAuctions((auctionsPageNumber - 1) * auctionsPageSize, auctionsPageSize, true, true)
     }
   }
+
   useEffect(() => {
     const interval = setTimeout(() => {
       setdisableFetchBtn(false)
@@ -119,7 +133,7 @@ const Auctions = ({
               className="comdex-tabs auction-extra-tabs"
               onChange={callback}
               activeKey={activeKey}
-              tabBarExtraContent={refreshAuctionButton}
+              tabBarExtraContent={activeKey === "1" ? refreshAuctionButton : ""}
               items={tabItems}
             />
           </Col>
@@ -133,18 +147,24 @@ Auctions.propTypes = {
   lang: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
   auctions: PropTypes.string.isRequired,
+  auctionsPageSize: PropTypes.number.isRequired,
+  auctionsPageNumber: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     auctions: state.auction.auctions,
+    auctionsPageSize: state.auction.auctionsPageSize,
+    auctionsPageNumber: state.auction.auctionsPageNumber,
   };
 };
 
 const actionsToProps = {
   setPairs,
   setAuctions,
+  setAuctionsPageSize,
+  setAuctionsPageNumber,
 };
 
 export default connect(stateToProps, actionsToProps)(Auctions);

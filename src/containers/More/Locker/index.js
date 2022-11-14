@@ -15,10 +15,14 @@ import { transactionForClaimLockedHarbor } from "../../../services/vestingContra
 import TooltipIcon from "../../../components/TooltipIcon";
 import { commaSeparator } from "../../../utils/number";
 import { Link } from "react-router-dom";
+import Snack from "../../../components/common/Snack";
+import variables from "../../../utils/variables";
+import { comdex } from "../../../config/network";
 
 const { TabPane } = Tabs;
 
 const Vesting = ({
+    lang,
     address,
     refreshBalance,
     setBalanceRefresh,
@@ -60,11 +64,17 @@ const Vesting = ({
         if (address) {
             transactionForClaimLockedHarbor(address, (error, result) => {
                 if (error) {
-                    message.error("Transaction failed")
+                    message.error(error?.rawLog || "Transaction Failed")
                     setLoading(false)
                     return;
                 }
-                message.success("Success")
+                message.success(
+                    < Snack
+                        message={variables[lang].tx_success}
+                        explorerUrlToTx={comdex?.explorerUrlToTx}
+                        hash={result?.transactionHash}
+                    />
+                )
                 setBalanceRefresh(refreshBalance + 1);
                 setLoading(false)
             })
@@ -115,7 +125,10 @@ const Vesting = ({
                                         type="primary"
                                         className="btn-filled mr-1"
                                         loading={loading}
-                                        disabled={!Number(withdrawableToken?.amount)}
+                                        disabled={
+                                            !Number(withdrawableToken?.amount)
+                                            || loading
+                                        }
                                         onClick={() => handleClaimLockedharbor()}
                                     >Claim</Button>
                                 </div>

@@ -32,6 +32,11 @@
       .totalvalues-chart {
         width: 50%;
         text-align: left;
+        .totalvalue-chart {
+          .highcharts-empty-series {
+            fill: #c0c0c0;
+          }
+        }
       }
       .totalvalues-right {
         width: 48%;

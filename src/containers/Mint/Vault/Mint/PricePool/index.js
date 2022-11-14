@@ -12,7 +12,7 @@ import { cmst, comdex } from "../../../../../config/network";
 import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../../constants/common";
 import { signAndBroadcastTransaction } from "../../../../../services/helper";
 import { queryUserVaultsInfo } from "../../../../../services/vault/query";
-import { amountConversion, denomConversion } from "../../../../../utils/coin";
+import { amountConversion, amountConversionWithComma, denomConversion } from "../../../../../utils/coin";
 import {
   commaSeparator,
   decimalConversion,
@@ -42,7 +42,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
     Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) *
     marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
   const withdrawn =
-    Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) *
+    Number(amountConversion(ownerVaultInfo?.amountOut || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) *
     marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id);
 
   const collateral = Number(amountConversion(ownerVaultInfo?.amountIn || 0));
@@ -144,7 +144,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
       counts: (
         <div className="collateral-deposit-main-box">
           <div className="collateral-deposit-up-box">
-            {ownerVaultInfo ? amountConversion(ownerVaultInfo?.amountIn, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals) : "0.000000"}
+            {ownerVaultInfo ? amountConversionWithComma(ownerVaultInfo?.amountIn || 0, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals) : "0.000000"}
             <span className="small-text">
               {denomToSymbol(pair && pair?.denomIn)}
             </span>
@@ -163,7 +163,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
       title: "Stability Fee Due",
       counts: (
         <>
-          {amountConversion(ownerVaultInfo?.interestAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)}
+          {amountConversionWithComma(ownerVaultInfo?.interestAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)}
           <span className="small-text">
             {denomToSymbol(pair && pair?.denomOut)}
           </span>

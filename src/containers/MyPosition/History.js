@@ -12,6 +12,7 @@ import { generateHash, truncateString } from "../../utils/string";
 import Date from "./Date";
 
 import "./index.scss";
+import NoDataIcon from "../../components/common/NoDataIcon";
 
 const History = ({ address, setTransactionHistory, history }) => {
   const [inProgress, setInProgress] = useState(false);
@@ -126,6 +127,7 @@ const History = ({ address, setTransactionHistory, history }) => {
                 }}
                 total={history && history.count}
                 onChange={(event) => handleChange(event)}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

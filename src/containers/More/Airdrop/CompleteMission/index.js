@@ -17,6 +17,10 @@ import { missions } from "./mission";
 import { setBalanceRefresh } from "../../../../actions/account";
 import { transactionForClaimActivityMission, transactionForClaimLiquidHarbor } from "../../../../services/airdropContractWrite";
 import { useNavigate } from 'react-router-dom';
+import Snack from "../../../../components/common/Snack";
+import variables from "../../../../utils/variables";
+import { comdex } from "../../../../config/network";
+import NoDataIcon from "../../../../components/common/NoDataIcon";
 
 
 const { Step } = Steps;
@@ -146,22 +150,34 @@ const CompleteMission = ({
       if (activity === "liquid") {
         transactionForClaimLiquidHarbor(address, chainId, (error, result) => {
           if (error) {
-            message.error(error)
+            message.error(error?.rawLog || "Transaction Failed")
             setLoading(false)
             return;
           }
-          message.success("Success")
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
           setBalanceRefresh(refreshBalance + 1);
           setLoading(false)
         })
       } else {
         transactionForClaimActivityMission(address, chainId, activity, (error, result) => {
           if (error) {
-            message.error(error)
+            message.error(error?.rawLog || "Transaction Failed")
             setLoading(false)
             return;
           }
-          message.success("Success")
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
           setBalanceRefresh(refreshBalance + 1);
           setLoading(false)
         })
@@ -336,6 +352,7 @@ const CompleteMission = ({
                 pagination={false}
                 showHeader={false}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

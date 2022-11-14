@@ -7,6 +7,9 @@ import "./index.scss"
 import { transactionForVote } from '../../../../services/contractsWrite'
 import { useParams } from "react-router";
 import { setVoteCount } from "../../../../actions/govern";
+import Snack from "../../../../components/common/Snack";
+import variables from "../../../../utils/variables";
+import { comdex } from "../../../../config/network";
 
 const VoteNowModal = ({
   lang,
@@ -31,12 +34,18 @@ const VoteNowModal = ({
       if (userVote) {
         transactionForVote(currentProposalId, userVote, (error, result) => {
           if (error) {
-            message.error("Transaction failed")
+            message.error(error?.rawLog || "Transaction Failed")
             setLoading(false)
             return;
           }
           setVoteCount(voteCount + 1)
-          message.success("Success")
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
           setLoading(false)
           setIsModalOpen(false);
         })

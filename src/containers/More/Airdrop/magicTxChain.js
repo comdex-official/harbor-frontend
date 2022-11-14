@@ -11,41 +11,37 @@ export const maginTxChain = [
     {
         chainId: 2,
         chainName: "Luna 2",
+        networkname: "luna2",
         icon: LUNA2_ICON
     },
     {
         chainId: 3,
         chainName: "Agoric",
+        networkname: "agoric",
         icon: AGORIC_ICON
     },
     {
         chainId: 4,
         chainName: "Cronos",
+        networkname: "cronos",
         icon: CRONOS_ICON
     },
     {
         chainId: 5,
         chainName: "Evmos",
+        networkname: "evmos",
         icon: EVMOS_ICON
-    },
-    {
-        chainId: 6,
-        chainName: "Mntl",
-        icon: MNTL_ICON
-    },
-    {
-        chainId: 7,
-        chainName: "Xprt",
-        icon: XPRT_ICON
     },
     {
         chainId: 8,
         chainName: "Injective",
+        networkname: "injective",
         icon: INJECTIVE_ICON
     },
     {
         chainId: 9,
         chainName: "Scrt",
+        networkname: "secret",
         icon: SCRT_ICON
     },
 ]

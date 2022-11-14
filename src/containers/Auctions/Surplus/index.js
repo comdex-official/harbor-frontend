@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
 import { iconNameFromDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma, denomConversion } from "../../../utils/coin";
 import moment from "moment";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 
 const SurplusAuctions = ({ setPairs, address }) => {
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -230,6 +231,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
                   pageSize,
                 }}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

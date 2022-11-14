@@ -30,11 +30,8 @@ const PlaceBidModal = ({
   lang,
   address,
   auction,
-  refreshData,
   params,
-  balances,
   assetMap,
-  setBalanceRefresh,
   refreshBalance,
 }) => {
   const dispatch = useDispatch();
@@ -48,7 +45,7 @@ const PlaceBidModal = ({
   const [maxValidationError, setMaxValidationError] = useState();
   const [calculatedQuantityBid, setCalculatedQuantityBid] = useState();
 
-  const fetchFilteredDutchAuctions = (auctionId, auctionMappingId) => {
+  const fetchSingleDutchAuctions = (auctionId, auctionMappingId) => {
     querySingleDutchAuction(auctionId, auctionMappingId, (error, data) => {
       if (error) {
         message.error(error);
@@ -59,7 +56,7 @@ const PlaceBidModal = ({
   };
 
   const showModal = () => {
-    fetchFilteredDutchAuctions(auction?.auctionId, auction?.auctionMappingId);
+    fetchSingleDutchAuctions(auction?.auctionId, auction?.auctionMappingId);
     setIsModalOpen(true);
   };
 
@@ -73,7 +70,6 @@ const PlaceBidModal = ({
 
   const handleClick = () => {
     setInProgress(true);
-
     signAndBroadcastTransaction(
       {
         message: {
@@ -103,13 +99,10 @@ const PlaceBidModal = ({
           message.error(error);
           return;
         }
-
         if (result?.code) {
           message.info(result?.rawLog);
           return;
         }
-
-        refreshData();
         setBidAmount(0);
         setMaxPrice(0);
         message.success(
@@ -164,7 +157,7 @@ const PlaceBidModal = ({
   useEffect(() => {
     if (isModalOpen) {
       const interval = setInterval(() => {
-        fetchFilteredDutchAuctions(auction?.auctionId, auction?.auctionMappingId)
+        fetchSingleDutchAuctions(auction?.auctionId, auction?.auctionMappingId)
       }, 5000)
       return () => {
         clearInterval(interval);
@@ -211,8 +204,8 @@ const PlaceBidModal = ({
                 {
                   commaSeparator(
                     Number(
-                      amountConversionWithComma(
-                        decimalConversion(newCurrentAuction?.outflowTokenInitialPrice || 0) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals
+                      amountConversion(
+                        decimalConversion(newCurrentAuction?.outflowTokenInitialPrice || 0) || 0, 4
                       ) || 0
                     )
                   )
@@ -229,8 +222,8 @@ const PlaceBidModal = ({
                 $
                 {commaSeparator(
                   Number(
-                    amountConversionWithComma(
-                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4, assetMap[newCurrentAuction?.outflowTokenCurrentPrice?.denom]?.decimals
+                    amountConversion(
+                      decimalConversion(newCurrentAuction?.outflowTokenCurrentPrice) || 0, 4
                     ) || 0
                   )
                 )}
@@ -329,7 +322,6 @@ const PlaceBidModal = ({
 };
 
 PlaceBidModal.propTypes = {
-  refreshData: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   assetMap: PropTypes.object,
