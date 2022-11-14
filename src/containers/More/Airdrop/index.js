@@ -33,6 +33,7 @@ import REGEN_ICON from '../../../assets/images/icons/REGEN.png';
 import SIFCHAIN_ICON from '../../../assets/images/icons/SIFCHAIN.png';
 import STARGAZE_ICON from '../../../assets/images/icons/STARGAZE.png';
 import UMEE_ICON from '../../../assets/images/icons/UMEE.png';
+import KAVA_ICON from '../../../assets/images/icons/Kava.png';
 import KUJIRA_ICON from '../../../assets/images/icons/KUJIRA.png';
 import HUAHUA_ICON from '../../../assets/images/icons/HUAHUA.png';
 import STATOM_ICON from '../../../assets/images/icons/STATOM.png';
@@ -274,7 +275,7 @@ const Airdrop = ({
                       <img src={AKASH_ICON} alt="" />
                     </div>
                   </div>
-                  <p>AKASH</p>
+                  <p>AKT</p>
                 </li>
                 <li>
                   <div className="icons">
@@ -290,7 +291,7 @@ const Airdrop = ({
                       <img src={AXELAR_ICON} alt="" />
                     </div>
                   </div>
-                  <p>AXELAR</p>
+                  <p>AXL</p>
                 </li>
                 <li>
                   <div className="icons">
@@ -298,7 +299,7 @@ const Airdrop = ({
                       <img src={COMDEX_ICON} alt="" />
                     </div>
                   </div>
-                  <p>COMDEX</p>
+                  <p>CMDX</p>
                 </li>
                 <li>
                   <div className="icons">
@@ -306,7 +307,7 @@ const Airdrop = ({
                       <img src={CRESENT_ICON} alt="" />
                     </div>
                   </div>
-                  <p>CRESENT</p>
+                  <p>CRE</p>
                 </li>
                 <li>
                   <div className="icons">
@@ -346,7 +347,7 @@ const Airdrop = ({
                       <img src={SIFCHAIN_ICON} alt="" />
                     </div>
                   </div>
-                  <p>SIFCHAIN</p>
+                  <p>ROWAN</p>
                 </li>
                 <li>
                   <div className="icons">
@@ -354,7 +355,7 @@ const Airdrop = ({
                       <img src={STARGAZE_ICON} alt="" />
                     </div>
                   </div>
-                  <p>STARGAZE</p>
+                  <p>STARS</p>
                 </li>
                 <li>
                   <div className="icons">
@@ -370,8 +371,25 @@ const Airdrop = ({
                       <img src={KUJIRA_ICON} alt="" />
                     </div>
                   </div>
-                  <p>KUJIRA</p>
+                  <p>KUJI</p>
                 </li>
+                <li>
+                  <div className="icons">
+                    <div className="icon-inner">
+                      <img src={HUAHUA_ICON} alt="" />
+                    </div>
+                  </div>
+                  <p>HUAHUA</p>
+                </li>
+                <li>
+                  <div className="icons">
+                    <div className="icon-inner">
+                      <img src={KAVA_ICON} alt="" />
+                    </div>
+                  </div>
+                  <p>KAVA</p>
+                </li>
+
                 <li className="group-li">
                   <div className="icon-group">
                     <div className="icons">
@@ -387,14 +405,7 @@ const Airdrop = ({
                   </div>
                   <p>LP POOL 600</p>
                 </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={HUAHUA_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>HUAHUA</p>
-                </li>
+
                 <li className="group-li-40">
                   <div className="icon-group">
                     <div className="icons">
@@ -441,7 +452,7 @@ const Airdrop = ({
               </div>
               <div className="airdrop-statics mb-0">
                 <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 1 year once he completes the missions" /></p>
-                <h2>{amountConversionWithComma((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)}<sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
+                <h2>{amountConversionWithComma((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
               </div>
             </div>
             <div className="airdrop-bottom-card airdrop-bottom-card2">

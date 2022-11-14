@@ -10,38 +10,44 @@ import SCRT_ICON from '../../../assets/images/icons/SCRT.png';
 export const maginTxChain = [
     {
         chainId: 2,
-        chainName: "Luna 2",
-        networkname: "luna2",
-        icon: LUNA2_ICON
+        chainName: "BLD",
+        networkname: "agoric",
+        icon: AGORIC_ICON,
+        magicTxAdd: "agoric1natwpg0qwm0xtz8kymsz453wrspvcqv3r7me5u"
     },
     {
         chainId: 3,
-        chainName: "Agoric",
-        networkname: "agoric",
-        icon: AGORIC_ICON
+        chainName: "CRO",
+        networkname: "cronos",
+        icon: CRONOS_ICON,
+        magicTxAdd: "crc1asmp93td4m865zvkpuy48u05yxcjtwkvuwfm60"
     },
     {
         chainId: 4,
-        chainName: "Cronos",
-        networkname: "cronos",
-        icon: CRONOS_ICON
+        chainName: "EVMOS",
+        networkname: "evmos",
+        icon: EVMOS_ICON,
+        magicTxAdd: "evmos18gnk7zkj3k7tdf8dwfst6uvnspvhu0y0dnu5kq"
     },
     {
         chainId: 5,
-        chainName: "Evmos",
-        networkname: "evmos",
-        icon: EVMOS_ICON
+        chainName: "INJ",
+        networkname: "injective",
+        icon: INJECTIVE_ICON,
+        magicTxAdd: "inj1asmp93td4m865zvkpuy48u05yxcjtwkvpeyf6f"
     },
     {
         chainId: 8,
-        chainName: "Injective",
-        networkname: "injective",
-        icon: INJECTIVE_ICON
+        chainName: "LUNA",
+        networkname: "luna2",
+        icon: LUNA2_ICON,
+        magicTxAdd: "terra1asmp93td4m865zvkpuy48u05yxcjtwkvd5fd23"
     },
     {
-        chainId: 9,
-        chainName: "Scrt",
+        chainId: 6,
+        chainName: "SCRT",
         networkname: "secret",
-        icon: SCRT_ICON
+        icon: SCRT_ICON,
+        magicTxAdd: "secret1k8243674hy30hlq9729sv90xf9xkrkfal4ms6c"
     },
 ]
