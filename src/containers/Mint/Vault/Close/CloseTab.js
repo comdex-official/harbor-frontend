@@ -39,7 +39,7 @@ const CloseTab = ({
 
   const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
-  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
+  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.toNumber();
   const [inProgress, setInProgress] = useState(false);
   const [pair, setPair] = useState();
   const navigate = useNavigate();
@@ -49,8 +49,8 @@ const CloseTab = ({
   }, [address])
 
   useEffect(() => {
-    if (address && selectedExtentedPairVaultListData[0]?.id?.low) {
-      getOwnerVaultId(PRODUCT_ID, address, selectedExtentedPairVaultListData[0]?.id?.low);
+    if (address && selectedExtentedPairVaultListData[0]?.id?.toNumber()) {
+      getOwnerVaultId(PRODUCT_ID, address, selectedExtentedPairVaultListData[0]?.id?.toNumber());
     }
     else {
       setOwnerVaultId("")
@@ -77,7 +77,7 @@ const CloseTab = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId?.low)
+      setOwnerVaultId(data?.vaultId?.toNumber())
     })
   }
 
@@ -134,7 +134,7 @@ const CloseTab = ({
           value: {
             from: address,
             appId: Long.fromNumber(PRODUCT_ID),
-            extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
+            extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.toNumber()),
             userVaultId: ownerVaultId,
           },
         },

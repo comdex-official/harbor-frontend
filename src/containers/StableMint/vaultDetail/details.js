@@ -246,7 +246,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
                             {" "}
                             $
                             {commaSeparator(
-                                Number(marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id?.low) || 0).toFixed(
+                                Number(marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id?.toNumber()) || 0).toFixed(
                                     DOLLAR_DECIMALS
                                 )
                             )}

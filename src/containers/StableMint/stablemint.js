@@ -57,9 +57,9 @@ const StableMint = ({
                 return;
             }
             dispatch(setStableMintVaultList([data?.pairVault]));
-            // setTotalExtendedPair(data?.pagination?.total?.low)
+            // setTotalExtendedPair(data?.pagination?.total?.toNumber())
             // dispatch(setStableMintVaultList(data?.extendedPair));
-            // setTotalExtendedPair(data?.pagination?.total?.low)
+            // setTotalExtendedPair(data?.pagination?.total?.toNumber())
         });
     };
     // const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
@@ -72,7 +72,7 @@ const StableMint = ({
     //         }
     //         console.log(data, "psm data");
     //         dispatch(setStableMintVaultList(data?.extendedPair));
-    //         setTotalExtendedPair(data?.pagination?.total?.low)
+    //         setTotalExtendedPair(data?.pagination?.total?.toNumber())
     //     });
     // };
 
@@ -101,7 +101,7 @@ const StableMint = ({
     }
 
     const calculateGlobalDebt = (value) => {
-        let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.low === value?.id?.low)
+        let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.toNumber() === value?.id?.toNumber())
         if (matchData[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
             return amountConversionWithComma(matchData[0]?.mintedAmount, DOLLAR_DECIMALS);
         }
@@ -141,7 +141,7 @@ const StableMint = ({
                             if (
                                 item &&
                                 item.isStableMintVault &&
-                                item.appId.low === PRODUCT_ID
+                                item.appId.toNumber() === PRODUCT_ID
                             ) {
                                 return (
                                     <React.Fragment key={index}>
@@ -150,9 +150,9 @@ const StableMint = ({
                                                 <div
                                                     className="card-container "
                                                     onClick={() => {
-                                                        dispatch(setCurrentPairID(item?.pairId?.low));
+                                                        dispatch(setCurrentPairID(item?.pairId?.toNumber()));
                                                         dispatch(setSelectedExtentedPairvault(item));
-                                                        navigateToStableMintVault(item?.id?.low);
+                                                        navigateToStableMintVault(item?.id?.toNumber());
                                                     }}
                                                 >
                                                     <div className="up-container">

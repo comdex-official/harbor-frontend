@@ -60,7 +60,7 @@ const Auctions = ({
           return;
         }
         if (result?.auctions?.length > 0) {
-          setAuctions(result && result?.auctions, result?.pagination?.total?.low);
+          setAuctions(result && result?.auctions, result?.pagination?.total?.toNumber());
           setUpdateBtnLoadiing(false)
         }
         else {

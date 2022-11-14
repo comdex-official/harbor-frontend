@@ -74,7 +74,7 @@ const Mint = ({
 
   const dispatch = useDispatch();
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
-  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
+  const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.toNumber();
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
   const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomIn));
 
@@ -480,7 +480,7 @@ const Mint = ({
                   <div className="select-inner">
                     <div className="svg-icon">
                       <div className="svg-icon-inner">
-                        {pair && pair.denomIn ? <SvgIcon name={pair && pair.denomIn ? iconNameFromDenom(pair && pair?.denomIn) : ""} /> : <span className="mint-custom-skelton" ><CustomSkelton /></span> }
+                        {pair && pair.denomIn ? <SvgIcon name={pair && pair.denomIn ? iconNameFromDenom(pair && pair?.denomIn) : ""} /> : <span className="mint-custom-skelton" ><CustomSkelton /></span>}
                         <span> {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : ""}</span>
                       </div>
                     </div>

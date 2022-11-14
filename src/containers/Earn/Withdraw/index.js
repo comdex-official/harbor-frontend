@@ -63,7 +63,7 @@ const Withdraw = ({
   };
   const getAssetDenom = () => {
     assets?.map((item) => {
-      if (item.id.low === whiteListedAsset[0]?.low) {
+      if (item?.id?.toNumber() === whiteListedAsset[0]?.toNumber()) {
         whiteListedAssetData.push(item);
       }
     });
@@ -113,7 +113,7 @@ const Withdraw = ({
     fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
   }, [address, userDeposite, refreshBalance]);
 
-  const whiteListedAssetId = whiteListedAsset[0]?.low;
+  const whiteListedAssetId = whiteListedAsset[0]?.toNumber();
   const lockerId = ownerLockerInfo?.lockerId;
   const returnsAccumulated = amountConversion(ownerLockerInfo?.returnsAccumulated || 0);
   const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo?.netBalance || 0);
@@ -144,7 +144,7 @@ const Withdraw = ({
         setReward(data?.lockerInfo?.returnsAccumulated);
         setuserDeposite(balance);
         setUserLockedValue(data?.lockerInfo?.netBalance || "0");
-        let lockerExist = data?.lockerInfo?.lockerId?.low;
+        let lockerExist = data?.lockerInfo?.lockerId?.toNumber();
         if (lockerExist > 0) {
           dispatch(setIsLockerExist(true));
         } else {

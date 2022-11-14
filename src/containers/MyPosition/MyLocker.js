@@ -80,7 +80,7 @@ const MyEarn = ({ address }) => {
 
   const getCMSTAsssetId = () => {
     const selectedItem = assetList.length > 0 && assetList.filter((item) => (item?.denom) === "ucmst");
-    setCmstAssetId(selectedItem[0]?.id?.low || "")
+    setCmstAssetId(selectedItem[0]?.id?.toNumber() || "")
   }
   const handleChange = (value) => {
     setPageNumber(value.current - 1);
