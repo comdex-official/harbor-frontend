@@ -33,13 +33,21 @@ const routes = [
     element: <BorrowTab />,
   },
   {
-    path: "more/stableMint",
+    path: "/stableMint",
     element: <StableMint />,
   },
   {
-    path: "/more/stableMint/:pathVaultId",
+    path: "/stableMint/:pathVaultId",
     element: <StableMintVault />,
   },
+  // {
+  //   path: "more/stableMint",
+  //   element: <StableMint />,
+  // },
+  // {
+  //   path: "/more/stableMint/:pathVaultId",
+  //   element: <StableMintVault />,
+  // },
   {
     path: "mint/vault/:pathVaultId",
     element: <Vault />,

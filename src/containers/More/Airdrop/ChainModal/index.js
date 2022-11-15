@@ -158,7 +158,7 @@ const ChainModal = ({
 
   return (
     <>
-      <Button className="icons" onClick={showModal} >
+      <Button className="icons" onClick={showModal} disabled={true} >
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>

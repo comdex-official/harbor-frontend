@@ -511,8 +511,8 @@ const More = ({
         </div>
 
 
-
-        <Col lg="6" md="6" sm="12" className="mb-3">
+        {/* Stable Mint  */}
+        {/* <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
@@ -532,7 +532,7 @@ const More = ({
               </div>
             </div>
           </div>
-        </Col>
+        </Col> */}
 
       </Row>
     </div>
