@@ -1,6 +1,6 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../../components/common";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { Button, message, Steps, Table } from "antd";
 import "./index.scss";
 import TooltipIcon from "../../../../components/TooltipIcon";
@@ -15,8 +15,11 @@ import { MyTimer } from "../../../../components/TimerForAirdrop";
 import { setuserEligibilityData } from "../../../../actions/airdrop";
 import { missions } from "./mission";
 import { setBalanceRefresh } from "../../../../actions/account";
-import { transactionForClaimActivityMission, transactionForClaimLiquidHarbor } from "../../../../services/airdropContractWrite";
-import { useNavigate } from 'react-router-dom';
+import { transactionForClaimActivityMission, transactionForClaimAllActivityMission, transactionForClaimLiquidHarbor } from "../../../../services/airdropContractWrite";
+import Snack from "../../../../components/common/Snack";
+import variables from "../../../../utils/variables";
+import { comdex } from "../../../../config/network";
+import NoDataIcon from "../../../../components/common/NoDataIcon";
 
 
 const { Step } = Steps;
@@ -31,7 +34,6 @@ const CompleteMission = ({
 }) => {
 
   const { chainId } = useParams();
-  const navigate = useNavigate();
 
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -41,6 +43,9 @@ const CompleteMission = ({
   const [userClaimHarbor, setUserClaimHarbor] = useState(0);
   const [userClaimveHarbor, setUserClaimveHarbor] = useState(0);
   const [userUnClaimveHarbor, setUserUnClaimveHarbor] = useState(0);
+  const [loadingClaimAll, setLoadingClaimAll] = useState(false);
+  const [checkClaimAllBtnDisable, setCheckAllBtnDisable] = useState(true);
+  const [updateAllQuery, setUpdateAllQuery] = useState(0);
   const [airdropMission, setAirdropMission] = useState({
     mint: false,
     vote: false,
@@ -124,6 +129,19 @@ const CompleteMission = ({
     })
   }
 
+  const checkEligiblityOfClaimAllButton = () => {
+    let allMission = airdropMission;
+    let disable = true;
+    for (var key of Object.keys(allMission)) {
+      if (allMission[key]) {
+        disable = false;
+      }
+    }
+    setCheckAllBtnDisable(disable);
+    return disable;
+  }
+
+
   const checkCalculateCompletedMissionStape = () => {
     let MissionClaimeArray = userEligibilityData?.claimed;
     MissionClaimeArray = MissionClaimeArray?.filter(Boolean).length;
@@ -146,23 +164,35 @@ const CompleteMission = ({
       if (activity === "liquid") {
         transactionForClaimLiquidHarbor(address, chainId, (error, result) => {
           if (error) {
-            message.error(error)
+            message.error(error?.rawLog || "Transaction Failed")
             setLoading(false)
             return;
           }
-          message.success("Success")
-          setBalanceRefresh(refreshBalance + 1);
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
+          setUpdateAllQuery(updateAllQuery + 1);
           setLoading(false)
         })
       } else {
         transactionForClaimActivityMission(address, chainId, activity, (error, result) => {
           if (error) {
-            message.error(error)
+            message.error(error?.rawLog || "Transaction Failed")
             setLoading(false)
             return;
           }
-          message.success("Success")
-          setBalanceRefresh(refreshBalance + 1);
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
+          setUpdateAllQuery(updateAllQuery + 1);
           setLoading(false)
         })
       }
@@ -175,6 +205,31 @@ const CompleteMission = ({
     }
   }
 
+  const claimAllActivityMission = (address, chainId) => {
+    setLoadingClaimAll(true)
+    if (address) {
+      transactionForClaimAllActivityMission(address, chainId, (error, result) => {
+        if (error) {
+          setLoadingClaimAll(false)
+          message.error(error?.rawLog || "Transaction Failed")
+
+          return;
+        }
+        message.success(
+          < Snack
+            message={variables[lang].tx_success}
+            explorerUrlToTx={comdex?.explorerUrlToTx}
+            hash={result?.transactionHash}
+          />
+        )
+        setUpdateAllQuery(updateAllQuery + 1);
+        setLoadingClaimAll(false)
+      })
+    } else {
+      setLoadingClaimAll(false)
+      message.error("Please Connect Wallet")
+    }
+  }
 
 
   useEffect(() => {
@@ -185,7 +240,7 @@ const CompleteMission = ({
       fetchClaimveHarbor(address, Number(chainId))
       fetchUnClaimveHarbor(address, Number(chainId))
     }
-  }, [address, chainId])
+  }, [address, chainId, updateAllQuery])
 
   useEffect(() => {
     if (address) {
@@ -194,7 +249,7 @@ const CompleteMission = ({
       fetchAirdropMissionLiquidity(address)
       fetchAirdropMissionBorrow(address)
     }
-  }, [address, refreshBalance])
+  }, [address, refreshBalance, updateAllQuery])
 
   useEffect(() => {
     checkCalculateCompletedMissionStape()
@@ -206,7 +261,12 @@ const CompleteMission = ({
     if (totalTimeLeft) {
       setCounterEndTime(unixToGMTTime(totalTimeLeft))
     }
-  }, [totalTimeLeft])
+  }, [totalTimeLeft, updateAllQuery])
+
+  useEffect(() => {
+    checkEligiblityOfClaimAllButton()
+  }, [airdropMission, updateAllQuery])
+
 
   const time = new Date(counterEndTime);
   time.setSeconds(time.getSeconds());
@@ -226,23 +286,24 @@ const CompleteMission = ({
       align: "right",
       render: (item, index) =>
         <>
+          {item?.path && <a href={item?.path} target="_blank"> <Button className="ml-3" type="primary">Take me there</Button></a>}
           <Button type="primary"
             disabled={
               loading
               || !userEligibilityData
               || userEligibilityData && userEligibilityData?.claimed?.[item?.id - 1]
               || !airdropMission[item?.name]
+              || loadingClaimAll
             }
             loading={item?.id === current ? loading : false}
             className="btn-filled ml-3"
+            style={{ width: "118px" }}
             onClick={() => {
-              console.log(airdropMission[item?.name], userEligibilityData?.claimed?.[item?.id - 1]);
               handleClaimMissionReward(address, Number(chainId), item?.name, item?.id)
             }
             }>
             {userEligibilityData && userEligibilityData?.claimed?.[item?.id - 1] ? "Claimed" : "Claim"}
           </Button>
-          {item?.path && <a href={item?.path} target="_blank"> <Button className="ml-3" type="primary">Take me there</Button></a>}
         </>
     },
   ];
@@ -326,7 +387,23 @@ const CompleteMission = ({
       </Row>
       <Row className="mt-4">
         <Col>
-          <h2 className="mission-title">Mission</h2>
+          <div className="mission-claim-main-container">
+            <h2 className="mission-title">Mission</h2>
+            <div className="claimAll-button">
+              <Button type="primary" className="btn-filled "
+                loading={loadingClaimAll}
+                style={{ width: "118px" }}
+                disabled={
+                  loading
+                  || !userEligibilityData
+                  || checkClaimAllBtnDisable
+                  || loadingClaimAll
+                }
+                onClick={() => claimAllActivityMission(address, Number(chainId))}>
+                Claim All
+              </Button>
+            </div>
+          </div>
           <div className="composite-card pb-3">
             <div className="card-content">
               <Table
@@ -336,6 +413,7 @@ const CompleteMission = ({
                 pagination={false}
                 showHeader={false}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>

@@ -15,8 +15,13 @@ import { transactionClaimRewards } from "../../services/rewardContractsRead";
 import { totalClaimableRebase } from "../../services/rebasingContractRead";
 import TooltipIcon from "../../components/TooltipIcon";
 import { transactionForClaimRebase } from "../../services/rebaseingContractWrite";
+import Snack from "../../components/common/Snack";
+import variables from "../../utils/variables";
+import { comdex } from "../../config/network";
+import NoDataIcon from "../../components/common/NoDataIcon";
 
 const More = ({
+  lang,
   address,
   refreshBalance,
   setBalanceRefresh,
@@ -90,11 +95,17 @@ const More = ({
     if (address) {
       transactionClaimRewards(address, PRODUCT_ID, (error, result) => {
         if (error) {
-          message.error("Transaction failed")
+          message.error(error?.rawLog || "Transaction Failed")
           setLoading(false)
           return;
         }
-        message.success("Success")
+        message.success(
+          < Snack
+            message={variables[lang].tx_success}
+            explorerUrlToTx={comdex?.explorerUrlToTx}
+            hash={result?.transactionHash}
+          />
+        )
         setBalanceRefresh(refreshBalance + 1);
         setLoading(false)
       })
@@ -111,11 +122,17 @@ const More = ({
     if (address) {
       transactionForClaimRebase(address, PRODUCT_ID, proposalId, (error, result) => {
         if (error) {
-          message.error("Transaction failed")
+          message.error(error?.rawLog || "Transaction Failed")
           setLoading(false)
           return;
         }
-        message.success("Success")
+        message.success(
+          < Snack
+            message={variables[lang].tx_success}
+            explorerUrlToTx={comdex?.explorerUrlToTx}
+            hash={result?.transactionHash}
+          />
+        )
         setBalanceRefresh(refreshBalance + 1);
         setLoading(false)
       })
@@ -230,7 +247,7 @@ const More = ({
           epocId: item?.proposal_id,
           rebaseAmount: (
             <>
-              <div className="assets-withicon">
+              <div className="assets-withicon justify-content-center mr-2">
                 <div className="assets-icon">
                   <SvgIcon
                     name={iconNameFromDenom(
@@ -363,16 +380,32 @@ const More = ({
               <div className="morecard-left">
                 <h2>Rewards</h2>
                 <p>
-                  Rewards displayed are an estimation of the external incentives and surplus rewards that you can claim.
+                  Rewards displayed are an estimation of the external incentives, surplus rewards and the rebases that you can claim.
                 </p>
                 <div className="button-container">
-                  <Button
-                    type="primary"
-                    className="btn-filled"
-                    onClick={showModal}
-                  >
-                    Claim
-                  </Button>
+                  <Row>
+                    <Col>
+                      <Button
+                        type="primary"
+                        className="btn-filled"
+                        onClick={showModal}
+                      >
+                        Claim Rewards
+                      </Button>
+                    </Col>
+
+                    <Col>
+                      <Button
+                        type="primary"
+                        className="btn-filled"
+                        onClick={showRebasingModal}
+                      >
+                        Claim Rebase
+                      </Button>
+                    </Col>
+
+                  </Row>
+
 
 
                   <Modal
@@ -406,6 +439,7 @@ const More = ({
                               columns={columns}
                               pagination={false}
                               scroll={{ x: "100%" }}
+                              locale={{ emptyText: <NoDataIcon /> }}
                             />
                           </div>
                         </Col>
@@ -435,71 +469,50 @@ const More = ({
         </Col>
 
         {/* Rebasing  */}
-        <Col lg="6" md="6" sm="12" className="mb-3">
-          <div className="more-card">
-            <div className="more-card-inner">
-              <div className="morecard-left">
-                <h2>Rebase</h2>
-                <p>
-                  Rebase displayed are an estimation of claimable of veHarbor.
-                </p>
-                <div className="button-container">
-                  <Button
-                    type="primary"
-                    className="btn-filled"
-                    onClick={showRebasingModal}
-                  >
-                    Rebasing
-                  </Button>
+        <div>
+          <Modal
+            centered={true}
+            className="palcebid-modal reward-collect-modal"
+            footer={null}
+            header={null}
+            open={isRebasingModalVisible}
+            width={600}
+            closable={false}
+            onOk={handleRebasingOk}
+            loading={loading}
+            onCancel={handleRebasingCancel}
+            closeIcon={null}
+          >
+            <div className="palcebid-modal-inner rewards-modal-main-container">
+              <Row>
+                <Col>
+                  <div className="rewards-title">
+                    Claim Rebase
+                  </div>
+                </Col>
+              </Row>
 
-
-                  <Modal
-                    centered={true}
-                    className="palcebid-modal reward-collect-modal"
-                    footer={null}
-                    header={null}
-                    open={isRebasingModalVisible}
-                    width={600}
-                    closable={false}
-                    onOk={handleRebasingOk}
-                    loading={loading}
-                    onCancel={handleRebasingCancel}
-                    closeIcon={null}
-                  >
-                    <div className="palcebid-modal-inner rewards-modal-main-container">
-                      <Row>
-                        <Col>
-                          <div className="rewards-title">
-                            Claim Rebase
-                          </div>
-                        </Col>
-                      </Row>
-
-                      <Row style={{ paddingTop: 0 }}>
-                        <Col>
-                          <div className="card-content ">
-                            <Table
-                              className="custom-table liquidation-table"
-                              dataSource={rebasingTableData}
-                              columns={rebasingColumns}
-                              pagination={false}
-                              scroll={{ x: "100%" }}
-                            />
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
-                  </Modal>
-
-                </div>
-              </div>
+              <Row style={{ paddingTop: 0 }}>
+                <Col>
+                  <div className="card-content ">
+                    <Table
+                      className="custom-table liquidation-table"
+                      dataSource={rebasingTableData}
+                      columns={rebasingColumns}
+                      pagination={false}
+                      scroll={{ x: "100%" }}
+                      locale={{ emptyText: <NoDataIcon /> }}
+                    />
+                  </div>
+                </Col>
+              </Row>
             </div>
-          </div>
-        </Col>
+          </Modal>
+        </div>
 
 
-
-        <Col lg="6" md="6" sm="12" className="mb-3">
+        {/* Stable Mint  */}
+        {/* <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
@@ -519,7 +532,7 @@ const More = ({
               </div>
             </div>
           </div>
-        </Col>
+        </Col> */}
 
       </Row>
     </div>

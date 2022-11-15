@@ -1,10 +1,11 @@
 import { Button, Table } from "antd";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { IoReload } from "react-icons/io5";
 import { connect, useDispatch } from "react-redux";
 import { Col, Row, SvgIcon } from "../../components/common";
+import NoDataIcon from "../../components/common/NoDataIcon";
 import AssetList from "../../config/ibc_assets.json";
 import { cmst, comdex, harbor } from "../../config/network";
 import { DOLLAR_DECIMALS } from "../../constants/common";
@@ -25,7 +26,10 @@ import Withdraw from "./Withdraw";
 const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap, harborPrice }) => {
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false)
+
   const handleBalanceRefresh = () => {
+    setLoading(true);
     let assetReloadBth = document.getElementById("reload-btn");
     assetReloadBth.classList.toggle("reload");
     if (!assetReloadBth.classList.contains("reload")) {
@@ -38,6 +42,9 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
       type: "BALANCE_REFRESH_SET",
       value: refreshBalance + 1,
     });
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   };
 
   const columns = [
@@ -87,23 +94,15 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
       render: (value) => {
         if (value) {
           return value?.depositUrlOverride ? (
-            <Button
-              type="primary btn-filled"
-              size="small"
-              className="external-btn"
+            <a
+              href={value?.depositUrlOverride}
+              target="_blank"
+              rel="noreferrer"
             >
-              <a
-                href={value?.depositUrlOverride}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Deposit{" "}
-                <span className="hyperlink-icon">
-                  {" "}
-                  <SvgIcon name="hyperlink" />
-                </span>
-              </a>
-            </Button>
+              <Button type="primary btn-filled" size="small" className="asset-ibc-btn-container">
+                {variables[lang].deposit} <span className="asset-ibc-btn"> 	&#62;</span>
+              </Button>
+            </a>
           ) : (
             <Deposit chain={value} />
           );
@@ -118,23 +117,15 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
       render: (value) => {
         if (value) {
           return value?.withdrawUrlOverride ? (
-            <Button
-              type="primary btn-filled"
-              size="small"
-              className="external-btn"
+            <a
+              href={value?.withdrawUrlOverride}
+              target="_blank"
+              rel="noreferrer"
             >
-              <a
-                href={value?.withdrawUrlOverride}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Withdraw{" "}
-                <span className="hyperlink-icon">
-                  {" "}
-                  <SvgIcon name="hyperlink" />
-                </span>
-              </a>
-            </Button>
+              <Button type="primary btn-filled" size="small" className="asset-ibc-btn-container">
+                {variables[lang].withdraw}  <span className="asset-ibc-btn"> 	&#62;</span>
+              </Button>
+            </a>
           ) : (
             <Withdraw chain={value} />
           );
@@ -308,8 +299,10 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
               className="custom-table assets-table"
               dataSource={tableData}
               columns={columns}
+              loading={loading}
               pagination={false}
               scroll={{ x: "100%" }}
+              locale={{ emptyText: <NoDataIcon /> }}
             />
           </Col>
         </Row>

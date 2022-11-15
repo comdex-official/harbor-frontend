@@ -325,6 +325,27 @@ export const queryStableVaultStatistic = (
             });
     });
 };
+export const queryStableVault = (
+    appId,
+    callback
+) => {
+    getQueryService((error, queryService) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        queryService
+            .QueryStableVaultByApp({
+                appId: Long.fromNumber(PRODUCT_ID),
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};
 
 export const queryStableBalanceUserPosition = (
     address,

@@ -25,16 +25,11 @@
   }
   &.fixedHeaderOnScroll {
     background: #ffffff;
-    // box-shadow: $box-shadow-inner-light;
+    box-shadow: $box-shadow-inner-light;
     .dark-mode & {
-      /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#16375c+1,040516+72 */
-      // background: #16375c; /* Old browsers */
-      // background: -moz-linear-gradient(left,  #16375c 1%, #040516 72%); /* FF3.6-15 */
-      // background: -webkit-linear-gradient(left,  #16375c 1%,#040516 72%); /* Chrome10-25,Safari5.1-6 */
-      // background: linear-gradient(to right,  #16375c 1%,#040516 72%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-      // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#16375c', endColorstr='#040516',GradientType=1 ); /* IE6-9 */
-      // box-shadow: $box-shadow-inner-dark;
-      background: $body-background-dark;
+      box-shadow: none;
+      background: transparent;
+      backdrop-filter: blur(15px) brightness(70%) opacity(1);
     }
   }
   .theme-toogle {

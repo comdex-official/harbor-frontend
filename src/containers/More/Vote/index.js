@@ -15,8 +15,14 @@ import { setBalanceRefresh } from "../../../actions/account";
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import TooltipIcon from '../../../components/TooltipIcon';
+import Snack from '../../../components/common/Snack';
+import variables from '../../../utils/variables';
+import { comdex } from '../../../config/network';
+import NoDataIcon from '../../../components/common/NoDataIcon';
+import CustomSkelton from '../../../components/CustomSkelton';
 
 const Vote = ({
+  lang,
   address,
   refreshBalance,
   setBalanceRefresh,
@@ -114,7 +120,7 @@ const Vote = ({
         return;
       }
       setPairIdData((prevState) => ({
-        ...prevState, [extendedPairId]: data?.pairVault?.pairId?.low
+        ...prevState, [extendedPairId]: data?.pairVault?.pairId?.toNumber()
       }))
       setPairValutData((prevState) => ({
         ...prevState, [extendedPairId]: data?.pairVault?.pairName
@@ -140,7 +146,7 @@ const Vote = ({
         return;
       }
       setVaultId((prevState) => ({
-        ...prevState, [extentedPairId]: data?.vaultId?.low
+        ...prevState, [extentedPairId]: data?.vaultId?.toNumber()
       }))
     })
   }
@@ -152,7 +158,7 @@ const Vote = ({
         return;
       }
       setMyBorrowed((prevData) => ({
-        ...prevData, [data?.vault?.extendedPairVaultId?.low]: data?.vault?.amountOut
+        ...prevData, [data?.vault?.extendedPairVaultId?.toNumber()]: data?.vault?.amountOut
       }))
     })
   }
@@ -240,11 +246,17 @@ const Vote = ({
         else {
           transactionForVotePairProposal(address, PRODUCT_ID, proposalId, item, (error, result) => {
             if (error) {
-              message.error(error)
+              message.error(error?.rawLog || "Transaction Failed")
               setInProcess(false)
               return;
             }
-            message.success("Success")
+            message.success(
+              < Snack
+                message={variables[lang].tx_success}
+                explorerUrlToTx={comdex?.explorerUrlToTx}
+                hash={result?.transactionHash}
+              />
+            )
             setBalanceRefresh(refreshBalance + 1);
             setInProcess(false)
           })
@@ -443,7 +455,7 @@ const Vote = ({
           <Col>
             <div className="vote-text-main-container mt-3">
               <div className="vote-text-container">
-                Votes are due by {calculteVotingTime()}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
+                {currentProposalAllData ? "Votes are due by" + calculteVotingTime() : "Voting for epoc proposal not active "}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
               </div>
             </div>
           </Col>
@@ -459,6 +471,7 @@ const Vote = ({
                   loading={loading}
                   pagination={false}
                   scroll={{ x: "100%" }}
+                  locale={{ emptyText: <NoDataIcon /> }}
                 />
               </div>
             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as PropTypes from "prop-types";
 import { SvgIcon, Row, Col } from "../../../../components/common";
 import { connect } from "react-redux";
-import { Button, Modal, Input } from "antd";
+import { Button, Modal, Input, message } from "antd";
 import "./index.scss";
 
 import AGORIC_ICON from '../../../../assets/images/icons/AGORIC.png';
@@ -10,10 +10,21 @@ import TooltipIcon from "../../../../components/TooltipIcon";
 import { checkEligibility, unclaimHarbor } from "../../../../services/airdropContractRead";
 import { setuserEligibilityData } from "../../../../actions/airdrop";
 import { TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../../constants/common";
-import { amountConversionWithComma } from "../../../../utils/coin";
+import { amountConversionWithComma, getAmount, getAmountForMagicTx } from "../../../../utils/coin";
 import { Link } from "react-router-dom";
 import { truncateString } from "../../../../utils/string";
 import Copy from "../../../../components/Copy";
+import { fetchKeplrAccountName, initializeChain, magicInitializeChain } from "../../../../services/keplr";
+import { chainNetworks } from "../../../../config/magixTx_chain_config";
+import { maginTxChain } from '../magicTxChain'
+import { Fee, MsgSendTokens, signAndBroadcastMagicTransaction, signAndBroadcastTransaction } from "../../../../services/helper";
+import Snack from "../../../../components/common/Snack";
+import variables from "../../../../utils/variables";
+import { encode } from "js-base64";
+import {
+  setAccountAddress,
+  setAccountName,
+} from "../../../../actions/account";
 
 const ChainModal = ({
   currentChain,
@@ -22,17 +33,30 @@ const ChainModal = ({
   refreshBalance,
   userEligibilityData,
   setuserEligibilityData,
+  setAccountAddress,
+  setAccountName,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false)
   const [userAddress, setUserAddress] = useState("");
+  const [userComdexAddress, setuserComdexAddress] = useState("")
+  const [userCurrentChainAddress, setUserCurrentChainAddress] = useState("")
+  const [txLogin, setTxLogin] = useState(false);
+  const [disableTxBtn, setDisableTxBtn] = useState(true)
 
   // Query 
   const fetchCheckEligibility = (address, chainId) => {
     setLoading(true)
     checkEligibility(address, chainId).then((res) => {
-      console.log(res);
+      if (res) {
+        setDisableTxBtn(false)
+        message.success("Wow You are Eligible!")
+      }
+      else {
+        message.error("Sorry, Not Eligible ")
+      }
       setuserEligibilityData(res)
+
       setLoading(false)
     }).catch((error) => {
       setLoading(false)
@@ -42,13 +66,33 @@ const ChainModal = ({
 
 
 
-  useEffect(() => {
-    if (isModalVisible) {
-      fetchCheckEligibility(address, currentChain?.chainId)
-    }
-  }, [address, isModalVisible])
-
   const showModal = () => {
+
+    initializeChain((error, account) => {
+
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      setAccountAddress(account.address);
+      fetchKeplrAccountName().then((name) => {
+        setAccountName(name);
+      })
+
+      localStorage.setItem("ac", encode(account.address));
+      localStorage.setItem("loginType", "keplr")
+    });
+
+    magicInitializeChain(chainNetworks[currentChain?.networkname], (error, account) => {
+      if (error) {
+        console.log(error, "error");
+        message.error(error);
+        return;
+      }
+      setUserCurrentChainAddress(account?.address)
+    });
+
     setIsModalVisible(true);
   };
 
@@ -57,16 +101,64 @@ const ChainModal = ({
   };
 
   const handleCancel = () => {
+    setuserEligibilityData(0)
     setIsModalVisible(false);
   };
 
-  const checkChainAddressEligibility = () => {
-    console.log(userAddress, "userAddress");
+  const checkChainAddressEligibility = (userAddress) => {
     fetchCheckEligibility(userAddress, currentChain?.chainId)
   }
+
+
+  const handleClickMagicTx = () => {
+    setTxLogin(true);
+    let msg = MsgSendTokens(
+      userCurrentChainAddress,
+      currentChain?.magicTxAdd,
+      chainNetworks[currentChain?.networkname],
+      1
+    );
+
+    signAndBroadcastMagicTransaction(
+      {
+        message: msg,
+        fee: Fee(0, 250000, chainNetworks[currentChain?.networkname]),
+        memo: userComdexAddress,
+      },
+      userCurrentChainAddress,
+      chainNetworks[currentChain?.networkname],
+      (error, result) => {
+        if (error) {
+          console.log(error);
+          setTxLogin(false);
+        }
+        if (result && !result?.code) {
+          console.log(result);
+          message.success(
+            <Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={chainNetworks[currentChain?.networkname].explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
+        } else {
+          message.error("Transaction failed")
+          console.log(result?.rawLog);
+        }
+        setTxLogin(false);
+
+      }
+    );
+  }
+
+  useEffect(() => {
+    setUserAddress(userCurrentChainAddress)
+  }, [address, userCurrentChainAddress])
+
+
   return (
     <>
-      <Button className="icons" disabled={true} onClick={showModal}>
+      <Button className="icons" onClick={showModal} disabled={true} >
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>
@@ -101,17 +193,26 @@ const ChainModal = ({
           <Col>
             <label>Check Eligibility</label>
             <div className="d-flex">
-              <Input onChange={(e) => setUserAddress(e.target.value)} placeholder={`Entre Your ${currentChain?.chainName} Wallet Address`} /> <Button type="primary" className="btn-filled" loading={loading} onClick={() => checkChainAddressEligibility()}>Check</Button>
+              <Input onChange={(e) => setUserAddress(e.target.value)} value={userAddress} placeholder={`Entre Your ${currentChain?.chainName} Wallet Address`} /> <Button type="primary" className="btn-filled" loading={loading} onClick={() => checkChainAddressEligibility(userAddress)}>Check</Button>
             </div>
           </Col>
         </Row>
         <Row>
           <Col>
             <label>Magic Transaction</label>
-            <div className="address-text-container">
-              <div className="address"> <span>xxxxx1r09tg524dd7xxxxxxxxxxxxxxxxx2737us</span>  <span className="modal-address-copy-icon">{<Copy text="xxxxx1r09tg524dd7xxxxxxxxxxxxxxxxx2737us" />}</span></div>
+            <div className="d-flex">
+              <Input placeholder={`Entre Your Comdex Wallet Address`} onChange={(e) => setuserComdexAddress(e.target.value)} />
+              <Button type="primary" className="btn-filled"
+                loading={txLogin}
+                // disabled={
+                //   !userEligibilityData
+                //   || disableTxBtn
+                //   || txLogin
+                // }
+                onClick={() => handleClickMagicTx()} >
+                Transaction
+              </Button>
             </div>
-            <div className="error-text"><SvgIcon name="info" viewbox="0 0 16.25 16.25" /> Send a minimal amount to the above address. Users need to input Comdex address in MEMO.</div>
           </Col>
         </Row>
         <Row>
@@ -141,6 +242,8 @@ ChainModal.propTypes = {
   address: PropTypes.string.isRequired,
   refreshBalance: PropTypes.number.isRequired,
   userEligibilityData: PropTypes.object.isRequired,
+  setAccountAddress: PropTypes.func.isRequired,
+  setAccountName: PropTypes.func.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -154,6 +257,8 @@ const stateToProps = (state) => {
 
 const actionsToProps = {
   setuserEligibilityData,
+  setAccountAddress,
+  setAccountName,
 };
 
 export default connect(stateToProps, actionsToProps)(ChainModal);

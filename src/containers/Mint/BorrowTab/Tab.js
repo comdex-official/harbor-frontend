@@ -66,10 +66,10 @@ const BorrowTab = ({
     if (!vault.id) {
       const initialPairId = Long.fromNumber(34);
       //TODO: take it from array
-      fetchSelectedPair(initialPairId?.low);
+      fetchSelectedPair(initialPairId?.toNumber());
       updateSelectedVault(initialPairId);
     } else {
-      fetchSelectedPair(vault?.pairId?.low);
+      fetchSelectedPair(vault?.pairId?.toNumber());
     }
   }, [pairs, vaults]);
 
@@ -304,8 +304,8 @@ const BorrowTab = ({
     if (pair?.denomIn === comdex.coinMinimalDenom) {
       return Number(collateralAssetBalance) > DEFAULT_FEE
         ? handleAmountInChange(
-            amountConversion(collateralAssetBalance - DEFAULT_FEE)
-          )
+          amountConversion(collateralAssetBalance - DEFAULT_FEE)
+        )
         : handleAmountInChange();
     } else {
       return handleAmountInChange(amountConversion(collateralAssetBalance));
@@ -390,10 +390,10 @@ const BorrowTab = ({
               (collateralRatio <= 150
                 ? " red-track"
                 : collateralRatio < 200
-                ? " orange-track"
-                : collateralRatio >= 200
-                ? " green-track"
-                : " ")
+                  ? " orange-track"
+                  : collateralRatio >= 200
+                    ? " green-track"
+                    : " ")
             }
             defaultValue={collateralRatio}
             marks={marks}

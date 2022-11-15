@@ -36,7 +36,7 @@
 }
 
 .locker-create-main-wrapper {
-  max-width: 60%;
+  max-width: 50%;
   width: 100%;
   margin: auto;
   margin-top: 2rem;
@@ -84,6 +84,7 @@
             color: $white;
           }
           span {
+            width: max-content;
             .dark-mode & {
               color: $text-color-light;
             }

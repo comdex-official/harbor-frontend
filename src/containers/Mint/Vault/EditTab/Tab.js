@@ -34,8 +34,11 @@ import { comdex } from "../../../../config/network";
 import AssetList from "../../../../config/ibc_assets.json";
 import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
 import "../index.scss";
+import Snack from "../../../../components/common/Snack";
+import variables from "../../../../utils/variables";
 
 const Edit = ({
+  lang,
   address,
   pair,
   markets,
@@ -88,11 +91,11 @@ const Edit = ({
   }, [address]);
 
   useEffect(() => {
-    if (address && selectedExtentedPairVaultListData[0]?.id?.low) {
+    if (address && selectedExtentedPairVaultListData[0]?.id?.toNumber()) {
       getOwnerVaultId(
         PRODUCT_ID,
         address,
-        selectedExtentedPairVaultListData[0]?.id?.low
+        selectedExtentedPairVaultListData[0]?.id?.toNumber()
       );
     } else {
       setOwnerVaultId("")
@@ -151,7 +154,7 @@ const Edit = ({
         message.error(error);
         return;
       }
-      setOwnerVaultId(data?.vaultId?.low);
+      setOwnerVaultId(data?.vaultId?.toNumber());
     });
   };
 
@@ -205,7 +208,6 @@ const Edit = ({
     setInProgress(true);
     message.info("Transaction initiated");
 
-    // if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
     signAndBroadcastTransaction(
       {
         message: {
@@ -214,7 +216,7 @@ const Edit = ({
             from: address,
             appId: Long.fromNumber(PRODUCT_ID),
             extendedPairVaultId: Long.fromNumber(
-              selectedExtentedPairVaultListData[0]?.id?.low
+              selectedExtentedPairVaultListData[0]?.id?.toNumber()
             ),
             userVaultId: ownerVaultId,
             amount: getAmountBasedOnDenom(denom),
@@ -239,11 +241,16 @@ const Edit = ({
 
         resetValues();
         setBalanceRefresh(refreshBalance + 1);
-        message.success("success");
+        message.success(
+          <Snack
+            message={variables[lang].tx_success}
+            explorerUrlToTx={comdex?.explorerUrlToTx}
+            hash={result?.transactionHash}
+          />
+        );
         getOwnerVaultInfoByVaultId(ownerVaultId);
       }
     );
-    // }
   };
 
   const getMaxRepay = () => {
@@ -309,8 +316,9 @@ const Edit = ({
     if (withdrawableAmount < 0) {
       withdrawableAmount = "0";
     }
-    return withdrawableAmount;
+    return commaSeparator(withdrawableAmount || 0);
   }
+
   const availableToBorrow = () => {
     let collateralLocked = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
     let collateralAssetPrice = collateralPrice;
@@ -323,7 +331,7 @@ const Edit = ({
     if (calculatedAmount < 0) {
       calculatedAmount = "0";
     }
-    return calculatedAmount;
+    return commaSeparator(calculatedAmount || 0);
   }
 
   const getDepositMax = () => {
@@ -525,7 +533,7 @@ const Edit = ({
                     Deposit <TooltipIcon text="Deposit collateral to reduce chances of liquidation" />
                   </label>
                   {showDepositMax && <span className="ml-1" onClick={getDepositMax}>
-                    <span className="available">Avl.</span>
+                    <span className="available">Avl. </span>
                     {formatNumber(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals))} {" "}
                     {denomToSymbol(pair && pair?.denomIn)}
                   </span>}
@@ -621,7 +629,7 @@ const Edit = ({
               <Col sm="6" className="mb-3">
                 <div className="label_max_button">
                   <label>
-                    Repay <TooltipIcon text="Partially repay your borrowed cAsset" />
+                    Repay <TooltipIcon text="Partially repay your Borrowed Collateral" />
                   </label>
                   {showRepayMax && <span className="ml-1" onClick={getRepayMax}>
                     <span className="available">Avl.</span>   {formatNumber(Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}

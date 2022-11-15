@@ -45,6 +45,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { queryCollectorInformation } from "../../../services/collector";
 import { decimalConversion } from "../../../utils/number";
+import CustomSkelton from "../../../components/CustomSkelton";
 
 const Deposit = ({
   lang,
@@ -75,7 +76,7 @@ const Deposit = ({
 
   const getAssetDenom = () => {
     assets?.map((item) => {
-      if (item.id.low === whiteListedAsset[0]?.low) {
+      if (item?.id?.toNumber() === whiteListedAsset[0]?.toNumber()) {
         whiteListedAssetData.push(item);
       }
     });
@@ -157,7 +158,7 @@ const Deposit = ({
           message.error(error);
           return;
         }
-        let lockerExist = data?.lockerInfo?.lockerId?.low;
+        let lockerExist = data?.lockerInfo?.lockerId?.toNumber();
         setOwnerVaultInfo(data?.lockerInfo);
         if (lockerExist) {
           dispatch(setIsLockerExist(true));
@@ -182,7 +183,7 @@ const Deposit = ({
 
   const AvailableAssetBalance =
     getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
-  const whiteListedAssetId = whiteListedAsset[0]?.low;
+  const whiteListedAssetId = whiteListedAsset[0]?.toNumber();
   const lockerId = ownerLockerInfo?.lockerId;
 
   const handleInputMax = () => {
@@ -303,7 +304,7 @@ const Deposit = ({
                 <Col>
                   <div className="assets-select-wrapper">
                     {/* For Single Asset */}
-                    {loading ? <h1>Loading...</h1> : null}
+                    {loading ? <CustomSkelton /> : null}
                     {whiteListedAssetData &&
                       whiteListedAssetData.map((item, index) => {
                         return (

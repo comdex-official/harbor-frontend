@@ -55,6 +55,7 @@ import {
 import { useParams } from "react-router";
 import AssetList from '../../../config/ibc_assets.json'
 import { comdex } from "../../../config/network";
+import CustomSkelton from "../../../components/CustomSkelton";
 
 
 const Deposit = ({
@@ -80,7 +81,7 @@ const Deposit = ({
 
     // New 
     const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
-    const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.low;
+    const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.toNumber();
     const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomOut));
     const drawDownFee = decimalConversion(selectedExtentedPairVaultListData[0]?.drawDownFee) * 100 || "0"
 
@@ -157,7 +158,7 @@ const Deposit = ({
 
     const getAssetDenom = () => {
         assets?.map((item) => {
-            if (item.id.low === whiteListedAsset[0]?.low) {
+            if (item.id.toNumber() === whiteListedAsset[0]?.toNumber()) {
                 whiteListedAssetData.push(item);
             }
         });
@@ -240,7 +241,7 @@ const Deposit = ({
                     message.error(error);
                     return;
                 }
-                let lockerExist = data?.lockerInfo?.lockerId?.low;
+                let lockerExist = data?.lockerInfo?.lockerId?.toNumber();
                 setOwnerVaultInfo(data?.lockerInfo);
                 if (lockerExist) {
                     dispatch(setIsLockerExist(true));
@@ -266,7 +267,7 @@ const Deposit = ({
 
     const AvailableAssetBalance =
         getDenomBalance(balances, pair?.denomOut) || 0;
-    const whiteListedAssetId = whiteListedAsset[0]?.low;
+    const whiteListedAssetId = whiteListedAsset[0]?.toNumber();
     const lockerId = ownerLockerInfo?.lockerId;
 
     const handleInputMax = () => {
@@ -308,9 +309,9 @@ const Deposit = ({
                     value: {
                         from: address,
                         appId: Long.fromNumber(PRODUCT_ID),
-                        extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.low),
+                        extendedPairVaultId: Long.fromNumber(selectedExtentedPairVaultListData[0]?.id?.toNumber()),
                         amount: getAmount(inAmount, assetMap[pair && pair?.denomOut]?.decimals),
-                        stableVaultId: Long.fromNumber(psmLockedAndMintedData?.id?.low),
+                        stableVaultId: Long.fromNumber(psmLockedAndMintedData?.id?.toNumber()),
                     },
                 },
                 fee: defaultFee(),
@@ -355,7 +356,7 @@ const Deposit = ({
                             <Row>
                                 <Col>
                                     <div className="assets-select-wrapper">
-                                        {loading ? <h1>Loading...</h1>
+                                        {loading ? <CustomSkelton />
                                             :
                                             <React.Fragment>
                                                 <div className="farm-asset-icon-container">
@@ -432,7 +433,8 @@ const Deposit = ({
                                 type="primary"
                                 className="btn-filled"
                                 disabled={
-                                    !Number(inAmount) ||
+                                    inProgress
+                                    || !Number(inAmount) ||
                                     inputValidationError?.message
                                 }
                                 onClick={() => {

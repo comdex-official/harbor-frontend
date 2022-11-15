@@ -5,6 +5,7 @@ import svgFile from "./assets/images/svg/svg-sprite.svg";
 import SideBar from "./containers/SideBar";
 import { message } from 'antd';
 import "./App.scss";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 message.config({
   maxCount: 2,

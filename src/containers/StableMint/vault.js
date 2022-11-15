@@ -18,6 +18,7 @@ import { DOLLAR_DECIMALS } from "../../constants/common";
 import Deposit from "./Deposit/index";
 import Withdraw from "./Withdraw/index";
 import PricePool from "./vaultDetail/details";
+import './index.scss'
 
 const StableMintVault = ({
     lang,
@@ -138,7 +139,7 @@ const StableMintVault = ({
     return (
         <>
             <div className="app-content-wrapper details-wrapper">
-                <Row className="earn-main-container">
+                <Row className="earn-main-container stableMint-main-container">
                     <Col>
                         <Tabs
                             type="card"

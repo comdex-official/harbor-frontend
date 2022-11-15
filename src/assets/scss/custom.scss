@@ -405,6 +405,12 @@ button {
   }
 }
 
+.earn-tabs {
+  .ant-tabs-nav {
+    padding: 0 15px;
+  }
+}
+
 .comdex-tabs {
   .ant-tabs-nav {
     margin-bottom: 10px;
@@ -768,7 +774,6 @@ button {
         .dark-mode & {
           background: $background-dark2;
           color: $white;
-          box-shadow: $box-shadow-input-dark;
         }
       }
     }
@@ -1103,6 +1108,7 @@ button {
         align-items: baseline;
       }
       span {
+        width: max-content;
         color: $secondary-color;
         margin: 0;
         .dark-mode & {
@@ -1710,7 +1716,7 @@ button {
 .display-right {
   justify-content: flex-end;
 }
-.align-center{
+.align-center {
   align-items: center;
 }
 

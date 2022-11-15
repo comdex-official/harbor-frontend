@@ -18,7 +18,7 @@ import {
     setSelectedExtentedPairvault,
 } from "../../actions/locker";
 import { decimalConversion } from "../../utils/number";
-import { queryVaultMintedStatistic } from "../../services/vault/query";
+import { queryStableVault, queryVaultMintedStatistic } from "../../services/vault/query";
 import { connect } from "react-redux";
 import { Pagination } from 'antd';
 
@@ -41,41 +41,31 @@ const StableMint = ({
     );
 
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [vaultDebt, setVaultDebt] = useState([])
     const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
     const [pageSize, setPageSize] = useState(6);
     const [activePage, setActivePage] = useState(DEFAULT_PAGE_NUMBER)
-    const [totalExtendedPair, setTotalExtendedPair] = useState()
+    const [totalExtendedPair, setTotalExtendedPair] = useState({})
+    const [stableMintExtendedPairIdData, setStableMintExtendedPairIdData] = useState();
+
 
     const fetchExtendexPairList = (pairId) => {
         setLoading(true);
         queryPairVault(pairId, (error, data) => {
-            setLoading(false);
+
             if (error) {
                 message.error(error);
+                setLoading(false);
                 return;
             }
-            dispatch(setStableMintVaultList([data?.pairVault]));
-            // setTotalExtendedPair(data?.pagination?.total?.low)
-            // dispatch(setStableMintVaultList(data?.extendedPair));
-            // setTotalExtendedPair(data?.pagination?.total?.low)
+            setTotalExtendedPair(datas => ({
+                ...datas,
+                [pairId]: data?.pairVault
+            }))
+            setLoading(false);
         });
     };
-    // const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
-    //     setLoading(true);
-    //     queryStableMintExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
-    //         setLoading(false);
-    //         if (error) {
-    //             message.error(error);
-    //             return;
-    //         }
-    //         console.log(data, "psm data");
-    //         dispatch(setStableMintVaultList(data?.extendedPair));
-    //         setTotalExtendedPair(data?.pagination?.total?.low)
-    //     });
-    // };
-
 
     const fetchVaultMintedTokenStatistic = (productId) => {
         queryVaultMintedStatistic(productId, (error, data) => {
@@ -87,45 +77,63 @@ const StableMint = ({
         });
     };
 
+    const fetchStableVault = (productId) => {
+        setLoading(true);
+        queryStableVault(productId, (error, data) => {
+            if (error) {
+                message.error(error);
+                setLoading(false);
+                return;
+            }
+            setStableMintExtendedPairIdData(data?.stableMintVault);
+            setLoading(false);
+        });
+    };
+
+    const getStableMintExtendexPairValut = () => {
+        stableMintExtendedPairIdData && stableMintExtendedPairIdData?.map((item) => {
+            fetchExtendexPairList(item?.extendedPairVaultId?.toNumber())
+        })
+        dispatch(setStableMintVaultList(totalExtendedPair));
+    }
 
     const getIconFromPairName = (extendexPairVaultPairName) => {
         let pairName = extendexPairVaultPairName;
         pairName = pairName?.replace(/\s+/g, ' ').trim()
-        if (!pairName?.includes("-")) {
-            return pairName?.toLowerCase();
-        } else {
-            pairName = pairName?.slice(0, -2);
-            pairName = pairName?.toLowerCase()
-            return pairName;
-        }
+        pairName = pairName?.substring(pairName?.indexOf('-') + 1);
+        pairName = pairName?.substring(0, pairName?.indexOf('-'));
+        pairName = pairName?.toLowerCase();
+        return pairName;
     }
 
     const calculateGlobalDebt = (value) => {
-        let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.low === value?.id?.low)
+        let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.toNumber() === value?.id?.toNumber())
         if (matchData[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
             return amountConversionWithComma(matchData[0]?.mintedAmount, DOLLAR_DECIMALS);
         }
         return (0).toFixed(6)
     }
 
-    const handlePageChange = (currentPage, pageSize) => {
-        setPageNumber(currentPage - 1);
-        setPageSize(pageSize);
-        setActivePage(currentPage)
-        fetchExtendexPairList((currentPage - 1) * pageSize, pageSize, true, false, PRODUCT_ID);
-    };
-
     useEffect(() => {
-        fetchExtendexPairList(14)
-        // fetchExtendexPairList((pageNumber - 1) * pageSize, pageSize, true, false, PRODUCT_ID)
+        fetchStableVault()
     }, [address])
 
     useEffect(() => {
-        if (stableMintExtenedPairVaultList?.length > 0) {
+        if (Object.keys(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList)?.length > 0) {
             fetchVaultMintedTokenStatistic(PRODUCT_ID)
         }
-
     }, [address, stableMintExtenedPairVaultList])
+
+    useEffect(() => {
+        if (stableMintExtendedPairIdData?.length > 0) {
+            getStableMintExtendexPairValut()
+        }
+    }, [address, stableMintExtendedPairIdData])
+
+    useEffect(() => {
+        dispatch(setStableMintVaultList(totalExtendedPair));
+    }, [totalExtendedPair])
+
 
     if (loading) {
         return <Spin />;
@@ -135,13 +143,13 @@ const StableMint = ({
         <>
             <div className="app-content-wrapper vault-mint-main-container">
                 <div className="card-main-container">
-                    {stableMintExtenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose Your Stable Mint Vault Type</h1> : ""}
-                    {stableMintExtenedPairVaultList?.length > 0 ? (
-                        stableMintExtenedPairVaultList?.map((item, index) => {
+                    {Object.keys(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList)?.length > 0 ? <h1 className="choose-vault">Choose Your Stable Mint Vault Type</h1> : ""}
+                    {Object.keys(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList)?.length > 0 ? (
+                        Object.values(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList).map((item, index) => {
                             if (
                                 item &&
                                 item.isStableMintVault &&
-                                item.appId.low === PRODUCT_ID
+                                item.appId.toNumber() === PRODUCT_ID
                             ) {
                                 return (
                                     <React.Fragment key={index}>
@@ -150,15 +158,14 @@ const StableMint = ({
                                                 <div
                                                     className="card-container "
                                                     onClick={() => {
-                                                        dispatch(setCurrentPairID(item?.pairId?.low));
+                                                        dispatch(setCurrentPairID(item?.pairId?.toNumber()));
                                                         dispatch(setSelectedExtentedPairvault(item));
-                                                        navigateToStableMintVault(item?.id?.low);
+                                                        navigateToStableMintVault(item?.id?.toNumber());
                                                     }}
                                                 >
                                                     <div className="up-container">
                                                         <div className="icon-container">
-                                                            {/* <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} /> */}
-                                                            <SvgIcon name={iconNameFromDenom(symbolToDenom("usdc"))} />
+                                                            <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} />
                                                         </div>
                                                         <div className="vault-name-container">
                                                             <div className="vault-name">{item?.pairName}</div>
@@ -219,10 +226,11 @@ const StableMint = ({
                 {stableMintExtenedPairVaultList?.length > 0 ? <div >
                     <Pagination
                         defaultCurrent={activePage}
-                        onChange={handlePageChange}
-                        total={totalExtendedPair &&
-                            totalExtendedPair}
-                        pageSize={pageSize}
+                        // onChange={handlePageChange}
+                        // total={totalExtendedPair &&
+                        //     totalExtendedPair}
+                        pagination={{ defaultPageSize: 6 }}
+                    // pageSize={pageSize}
                     />
                 </div> : ""}
             </div >

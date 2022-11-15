@@ -9,9 +9,9 @@ import { setPairs } from "../../../actions/asset";
 import { setAuctions } from "../../../actions/auction";
 import Bidding from "./Bidding";
 import { setBalanceRefresh } from "../../../actions/account";
+import { setAuctionsPageSize, setAuctionsPageNumber } from "../../../actions/auction";
 import {
   queryDutchAuctionList,
-  queryDutchBiddingList,
   queryAuctionParams,
   queryFilterDutchAuctions,
 } from "../../../services/auction";
@@ -23,6 +23,7 @@ import {
 import { message } from "antd";
 import { useState, useEffect } from "react";
 import {
+  amountConversion,
   amountConversionWithComma,
   denomConversion,
 } from "../../../utils/coin";
@@ -31,29 +32,30 @@ import { iconNameFromDenom } from "../../../utils/string";
 import { commaSeparator, decimalConversion } from "../../../utils/number";
 import TooltipIcon from "../../../components/TooltipIcon";
 import { comdex } from "../../../config/network";
+import NoDataIcon from "../../../components/common/NoDataIcon";
 
-const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, address, assetMap, }) => {
+const CollateralAuctions = ({ updateBtnLoading, setPairs, auctions, setAuctions, refreshBalance, address, assetMap, auctionsPageSize, auctionsPageNumber, setAuctionsPageSize, setAuctionsPageNumber }) => {
   const dispatch = useDispatch()
   const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
-  const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
-  const [biddings, setBiddings] = useState("");
+
 
   useEffect(() => {
-    fetchData();
     queryParams();
   }, [address, refreshBalance]);
 
-  useEffect(() => {
-    fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
-  }, [address, refreshBalance])
 
-  const fetchData = () => {
-    fetchBiddings(address);
-  };
+  useEffect(() => {
+    setAuctionsPageSize(DEFAULT_PAGE_SIZE)
+    setAuctionsPageNumber(DEFAULT_PAGE_NUMBER)
+  }, [])
+
+
+  useEffect(() => {
+    fetchAuctions((auctionsPageNumber - 1) * auctionsPageSize, auctionsPageSize, true, true);
+  }, [address, refreshBalance])
 
   const queryParams = () => {
     queryAuctionParams((error, result) => {
@@ -79,33 +81,16 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, a
           return;
         }
         if (result?.auctions?.length > 0) {
-          setAuctions(result && result);
+          setAuctions(result && result?.auctions, result?.pagination?.total?.toNumber());
         }
         else {
           setAuctions("");
         }
+        setInProgress(false);
       }
     );
   };
 
-  const fetchBiddings = (address) => {
-    setInProgress(true);
-    queryDutchBiddingList(address, (error, result) => {
-      setInProgress(false);
-
-      if (error) {
-        message.error(error);
-        return;
-      }
-
-      if (result?.biddings?.length > 0) {
-        let reverseData = (result && result.biddings).reverse();
-        setBiddings(reverseData);
-      } else {
-        setBiddings("");
-      }
-    });
-  };
 
   const fetchFilteredDutchAuctions = (offset, limit, countTotal, reverse, asset) => {
     queryFilterDutchAuctions(offset, limit, countTotal, reverse, asset, (error, data) => {
@@ -174,7 +159,7 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, a
           $
           {commaSeparator(
             Number(
-              amountConversionWithComma(decimalConversion(item?.outflowTokenCurrentPrice) || 0, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentPrice?.denom]?.decimals) || 0
+              amountConversion(decimalConversion(item?.outflowTokenCurrentPrice) || 0) || 0
             ).toFixed(DOLLAR_DECIMALS)
           )}
         </>
@@ -195,7 +180,6 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, a
           <PlaceBidModal
             params={params}
             auction={item}
-            refreshData={fetchData}
             discount={params?.auctionDiscountPercent}
           />
         </>
@@ -204,8 +188,8 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, a
   ];
 
   const tableData =
-    auctions && auctions?.auctions.length > 0
-      ? auctions?.auctions.reverse().map((item, index) => {
+    auctions && auctions?.auctions?.length > 0
+      ? auctions?.auctions?.map((item, index) => {
         return {
           key: index,
           id: item.id,
@@ -251,6 +235,17 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, a
       })
       : [];
 
+  const handleChange = (value) => {
+    setAuctionsPageNumber(value.current);
+    setAuctionsPageSize(value.auctionsPageSize);
+    fetchAuctions(
+      (value.current - 1) * value.auctionsPageSize,
+      value.auctionsPageSize,
+      true,
+      true
+    );
+  };
+
   return (
     <div className="app-content-wrapper">
       <Row>
@@ -261,17 +256,25 @@ const CollateralAuctions = ({ setPairs, auctions, setAuctions, refreshBalance, a
                 className="custom-table liquidation-table"
                 dataSource={tableData}
                 columns={columns}
-                loading={inProgress}
-                pagination={{ defaultPageSize: 10 }}
+                loading={inProgress || updateBtnLoading}
+                onChange={(event) => handleChange(event)}
+                pagination={{
+                  total:
+                    auctions &&
+                    auctions.pagination &&
+                    auctions.pagination,
+                  auctionsPageSize,
+                }}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>
 
-          <div className="more-bottom">
+          <div className="more-bottom mt-3">
             <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
-              <Bidding biddingList={biddings} inProgress={inProgress} assetMap={assetMap} />
+              <Bidding address={address} refreshBalance={refreshBalance} assetMap={assetMap} />
             </div>
           </div>
         </Col>
@@ -287,6 +290,8 @@ CollateralAuctions.propTypes = {
   auctions: PropTypes.string.isRequired,
   assetMap: PropTypes.object,
   refreshBalance: PropTypes.number.isRequired,
+  auctionsPageSize: PropTypes.number.isRequired,
+  auctionsPageNumber: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -294,6 +299,8 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     auctions: state.auction.auctions,
+    auctionsPageSize: state.auction.auctionsPageSize,
+    auctionsPageNumber: state.auction.auctionsPageNumber,
     assetMap: state.asset.map,
     refreshBalance: state.account.refreshBalance,
   };
@@ -303,6 +310,8 @@ const actionsToProps = {
   setPairs,
   setAuctions,
   setBalanceRefresh,
+  setAuctionsPageSize,
+  setAuctionsPageNumber,
 };
 
 export default connect(stateToProps, actionsToProps)(CollateralAuctions);

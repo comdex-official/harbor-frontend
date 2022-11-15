@@ -205,6 +205,9 @@
     height: 93%;
     .ant-list {
       height: 100%;
+      @media only screen and (min-width: 960px) and (max-width: 981px) {
+        height: auto;
+      }
       .ant-list-item h3 {
         font-size: 1.3rem !important;
         @media only screen and (min-width: 1200px) and (max-width: 1430px) {
@@ -224,5 +227,11 @@
         }
       }
     }
+  }
+}
+.mint-custom-skelton {
+  span {
+    margin-left: -5px !important;
+    margin-top: 20px;
   }
 }

@@ -6,14 +6,17 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { setBalanceRefresh } from "../../../actions/account";
 import { setAmountIn } from '../../../actions/asset';
 import { setVestingRadioInput } from "../../../actions/vesting";
+import Snack from '../../../components/common/Snack';
 import CustomInput from '../../../components/CustomInput';
 import TooltipIcon from '../../../components/TooltipIcon';
+import { comdex } from '../../../config/network';
 import { ValidateInputNumber } from '../../../config/_validation';
 import { PRODUCT_ID } from '../../../constants/common';
 import { vestingCreateWeightage } from '../../../services/vestingContractsRead';
 import { transactionForCreateVesting } from '../../../services/vestingContractsWrite';
 import { amountConversion, amountConversionWithComma, denomConversion, getAmount, getDenomBalance } from '../../../utils/coin';
 import { toDecimals } from '../../../utils/string';
+import variables from '../../../utils/variables';
 
 
 const Create = ({
@@ -52,11 +55,17 @@ const Create = ({
             if (inAmount) {
                 transactionForCreateVesting(address, PRODUCT_ID, radioValue, inAmount, (error, result) => {
                     if (error) {
-                        message.error("Transaction failed")
+                        message.error(error?.rawLog || "Transaction Failed")
                         setLoading(false)
                         return;
                     }
-                    message.success("Success")
+                    message.success(
+                        < Snack
+                            message={variables[lang].tx_success}
+                            explorerUrlToTx={comdex?.explorerUrlToTx}
+                            hash={result?.transactionHash}
+                        />
+                    )
                     dispatch(setAmountIn());
                     setVeHarbor(0)
                     setBalanceRefresh(refreshBalance + 1);
@@ -88,12 +97,14 @@ const Create = ({
         setInputValidationError(
             ValidateInputNumber(
                 Number(getAmount(value)),
-                getDenomBalance(balances, "uharbor")
+                getDenomBalance(balances, "uharbor") || 0,
+                "macro"
             )
         );
         dispatch(setAmountIn(value));
         calculateveHarbor(value, vestingRadioInput);
     };
+
     const calculateveHarbor = (value, vestingRadioInput = "t1") => {
         if (vestingRadioInput === "t1") {
             let amount = getAmount(value)

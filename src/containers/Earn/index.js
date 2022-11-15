@@ -127,7 +127,7 @@ const Earn = ({
               type="card"
               activeKey={lockerDefaultSelectTab}
               onChange={callback}
-              className="comdex-tabs farm-modal-tab"
+              className="comdex-tabs farm-modal-tab earn-tabs"
               items={tabItems}
             />
           </Col>

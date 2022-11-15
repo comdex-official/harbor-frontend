@@ -6,10 +6,11 @@ import "./index.scss";
 import TooltipIcon from "../../components/TooltipIcon";
 import { useEffect, useState } from "react";
 import { queryUserVaults } from "../../services/vault/query";
-import { amountConversion, denomConversion } from "../../utils/coin";
+import { amountConversion, amountConversionWithComma, denomConversion } from "../../utils/coin";
 import { useNavigate } from "react-router";
 import { DOLLAR_DECIMALS } from "../../constants/common";
 import { decimalConversion } from "../../utils/number";
+import NoDataIcon from "../../components/common/NoDataIcon";
 
 const MyVault = ({ address }) => {
   const [vaults, setVaults] = useState();
@@ -33,6 +34,7 @@ const MyVault = ({ address }) => {
       setVaults(result?.vaultsInfo);
     });
   };
+
   const calculateProgressPercentage = (number) => {
     let ratio = 500 / number;
     let percentage = 100 / ratio;
@@ -117,8 +119,9 @@ const MyVault = ({ address }) => {
   ];
 
   const handleRouteChange = (item) => {
-    navigate(`/mint/vault/${item?.extendedPairId?.low}`);
+    navigate(`/mint/vault/${item?.extendedPairId?.toNumber()}`);
   };
+
   const tableData =
     vaults &&
     vaults?.length > 0 &&
@@ -130,7 +133,7 @@ const MyVault = ({ address }) => {
             <div className="assets-withicon">{item?.extendedPairName || ""}</div>
           </>
         ),
-        debt: <> {amountConversion(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
+        debt: <> {amountConversionWithComma(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
         apy: decimalConversion(item?.interestRate || 0),
         health: (item ? item : 0),
         action: item,
@@ -150,6 +153,7 @@ const MyVault = ({ address }) => {
                 loading={inProgress}
                 pagination={{ defaultPageSize: 5 }}
                 scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
               />
             </div>
           </div>
