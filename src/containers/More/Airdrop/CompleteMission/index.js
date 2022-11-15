@@ -333,7 +333,7 @@ const CompleteMission = ({
         </Col>
       </Row>
       <Row className="complete-mission-main-container">
-        <Col lg="6" className="mt-4 left-column">
+        <Col className="mt-4 left-column">
           <div className="mission-card claim-airdrop-card">
             <div className="claim-airdrop-head">
               <h2>Claim Airdrop</h2>
@@ -367,7 +367,7 @@ const CompleteMission = ({
           </div>
         </Col>
 
-        <Col lg="6" className="mt-4 right-column">
+        <Col className="mt-4 right-column">
           <div className="mission-card progress-card">
             <div className="progress-airdrop-head">
               <h2>Your Progress</h2>
