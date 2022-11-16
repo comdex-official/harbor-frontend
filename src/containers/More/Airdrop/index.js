@@ -28,6 +28,7 @@ import COMDEX_ICON from '../../../assets/images/icons/COMDEX.png';
 import CRESENT_ICON from '../../../assets/images/icons/CRESENT.png';
 import JUNO_ICON from '../../../assets/images/icons/JUNO.png';
 import XKI_ICON from '../../../assets/images/icons/XKI.png';
+import KAVA_ICON from '../../../assets/images/icons/Kava.png';
 import OSMO_ICON from '../../../assets/images/icons/OSMO.png';
 import REGEN_ICON from '../../../assets/images/icons/REGEN.png';
 import SIFCHAIN_ICON from '../../../assets/images/icons/SIFCHAIN.png';
@@ -377,7 +378,26 @@ const Airdrop = ({
                     </div>
                     <p>KUJIRA</p>
                   </li>
-                  <li className="group-li">
+
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={HUAHUA_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>HUAHUA</p>
+                  </li>
+
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={KAVA_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>KAVA</p>
+                  </li>
+
+                  <li className="group-li pool-group-width">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -392,15 +412,8 @@ const Airdrop = ({
                     </div>
                     <p>LP POOL 600</p>
                   </li>
-                  <li>
-                    <div className="icons">
-                      <div className="icon-inner">
-                        <img src={HUAHUA_ICON} alt="" />
-                      </div>
-                    </div>
-                    <p>HUAHUA</p>
-                  </li>
-                  <li className="group-li-40">
+
+                  <li className="group-li-40 pool-group-width">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -415,7 +428,7 @@ const Airdrop = ({
                     </div>
                     <p>LP POOL 601</p>
                   </li>
-                  <li className="group-li-40">
+                  <li className="group-li-40 pool-group-width">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">

@@ -347,8 +347,8 @@ const CompleteMission = ({
             <Row>
               <Col md='6'>
                 <div className="airdrop-statics">
-                  <p className="total-value">Claimed veHarbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
-                  <h2>{amountConversionWithComma(userClaimveHarbor || 0)} <br /> <sub className="text-uppercase">harbor</sub></h2>
+                  <p className="total-value">Claimed Harbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
+                  <h2>{amountConversionWithComma(userClaimHarbor || 0)} <br /> <sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </Col>
               <Col md='6'>
@@ -359,8 +359,8 @@ const CompleteMission = ({
               </Col>
               <Col md='6'>
                 <div className="airdrop-statics">
-                  <p className="total-value">Claimed Harbor Airdrop <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
-                  <h2>{amountConversionWithComma(userClaimHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
+                  <p className="total-value">Claimed veHarbor Airdrop <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
+                  <h2>{amountConversionWithComma(userClaimveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </Col>
             </Row>
