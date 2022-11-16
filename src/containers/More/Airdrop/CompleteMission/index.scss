@@ -15,6 +15,10 @@
     font-weight: 600;
     font-size: 1.05rem;
 
+    @media screen and (max-width:767px) {
+      font-size: 0.9rem;
+    }
+
     .left-icon {
       width: 40px;
       text-align: center;
@@ -28,6 +32,14 @@
     }
   }
 
+}
+.mission-claim-main-container{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  .claimAll-button{
+    margin-right: 1rem;
+  }
 }
 
 .mission-title {
@@ -208,6 +220,10 @@
               padding: 0 1.1rem;
               position: relative;
               margin-top: 1rem;
+                @media screen and (max-width:576px) {
+                margin-top: 0;
+                margin-left: 0.5rem;
+              }
               &::before {
                 content: " ";
                 width: 0;
@@ -220,6 +236,12 @@
                 left: 0;
                 right: 0;
                 margin: auto;
+                  @media screen and (max-width:576px) {
+                  left: -8px;
+                  right: auto;
+                  top: 45%;
+                  transform: rotate(265deg);
+                }
               }
             }
           }
@@ -269,10 +291,28 @@
   }
 }
 .complete-mission-main-container {
+  @media screen and (max-width:1260px) {
+    display: block !important;
+  }
   .left-column {
-    max-width: 46% !important;
+    width: 45% !important;
+    @media screen and (max-width:1500px) {
+      width: 40% !important;
+    }
+    @media screen and (max-width:1260px) {
+      width: 100% !important;
+    }
   }
   .right-column {
-    max-width: 54% !important;
+    width: 55% !important;
+    .ant-steps{
+      justify-content: center;
+    }
+    @media screen and (max-width:1500px) {
+      width: 60% !important;
+    }
+    @media screen and (max-width:1260px) {
+      width: 100% !important;
+    }
   }
 }

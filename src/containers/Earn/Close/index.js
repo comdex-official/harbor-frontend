@@ -22,7 +22,7 @@ const CloseLocker = ({ lang, address, ownerLockerInfo, whiteListedAsset, refresh
     const userBalanceInLocker = amountConversionWithComma(ownerLockerInfo?.netBalance || 0);
     const isLockerExist = useSelector((state) => state.locker.isLockerExist);
     const lockerId = ownerLockerInfo?.lockerId;
-    const whiteListedAssetId = whiteListedAsset[0]?.low;
+    const whiteListedAssetId = whiteListedAsset[0]?.toNumber();
     const [inProgress, setInProgress] = useState(false);
 
     const handleCloseLocker = () => {

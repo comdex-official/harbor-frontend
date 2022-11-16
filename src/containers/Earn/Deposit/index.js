@@ -76,7 +76,7 @@ const Deposit = ({
 
   const getAssetDenom = () => {
     assets?.map((item) => {
-      if (item.id.low === whiteListedAsset[0]?.low) {
+      if (item?.id?.toNumber() === whiteListedAsset[0]?.toNumber()) {
         whiteListedAssetData.push(item);
       }
     });
@@ -158,7 +158,7 @@ const Deposit = ({
           message.error(error);
           return;
         }
-        let lockerExist = data?.lockerInfo?.lockerId?.low;
+        let lockerExist = data?.lockerInfo?.lockerId?.toNumber();
         setOwnerVaultInfo(data?.lockerInfo);
         if (lockerExist) {
           dispatch(setIsLockerExist(true));
@@ -183,7 +183,7 @@ const Deposit = ({
 
   const AvailableAssetBalance =
     getDenomBalance(balances, whiteListedAssetData[0]?.denom) || 0;
-  const whiteListedAssetId = whiteListedAsset[0]?.low;
+  const whiteListedAssetId = whiteListedAsset[0]?.toNumber();
   const lockerId = ownerLockerInfo?.lockerId;
 
   const handleInputMax = () => {

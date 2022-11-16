@@ -1,7 +1,7 @@
 import { Button, Table } from "antd";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { IoReload } from "react-icons/io5";
 import { connect, useDispatch } from "react-redux";
 import { Col, Row, SvgIcon } from "../../components/common";
@@ -26,7 +26,10 @@ import Withdraw from "./Withdraw";
 const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap, harborPrice }) => {
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false)
+
   const handleBalanceRefresh = () => {
+    setLoading(true);
     let assetReloadBth = document.getElementById("reload-btn");
     assetReloadBth.classList.toggle("reload");
     if (!assetReloadBth.classList.contains("reload")) {
@@ -39,6 +42,9 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
       type: "BALANCE_REFRESH_SET",
       value: refreshBalance + 1,
     });
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   };
 
   const columns = [
@@ -293,6 +299,7 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
               className="custom-table assets-table"
               dataSource={tableData}
               columns={columns}
+              loading={loading}
               pagination={false}
               scroll={{ x: "100%" }}
               locale={{ emptyText: <NoDataIcon /> }}

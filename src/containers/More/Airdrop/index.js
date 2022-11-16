@@ -28,6 +28,7 @@ import COMDEX_ICON from '../../../assets/images/icons/COMDEX.png';
 import CRESENT_ICON from '../../../assets/images/icons/CRESENT.png';
 import JUNO_ICON from '../../../assets/images/icons/JUNO.png';
 import XKI_ICON from '../../../assets/images/icons/XKI.png';
+import KAVA_ICON from '../../../assets/images/icons/Kava.png';
 import OSMO_ICON from '../../../assets/images/icons/OSMO.png';
 import REGEN_ICON from '../../../assets/images/icons/REGEN.png';
 import SIFCHAIN_ICON from '../../../assets/images/icons/SIFCHAIN.png';
@@ -233,227 +234,249 @@ const Airdrop = ({
               </div>
             </div>
           </div>
-          <div className="airdrop-upper">
-            <div className="airdrop-upper-card airdrop-upper-card1">
-              <h2>Airdrop Details</h2>
-              <div className="total-airdrop">
-                <p>Total Airdrop</p>
-                <HighchartsReact highcharts={Highcharts} options={options} />
+          <Row className="airdrop-upper pt-2">
+            <Col xl="4" lg="12">
+              <div className="airdrop-upper-card airdrop-upper-card1">
+                <h2>Airdrop Details</h2>
+                <div className="total-airdrop">
+                  <p>Total Airdrop</p>
+                  <HighchartsReact highcharts={Highcharts} options={options} />
+                </div>
+                <div className="airdrop-statics mt-n4">
+                  <p className="total-value">Total Claimed $Harbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
+                  <h2>{amountConversionWithComma(totalClaimedHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2>
+                </div>
+                <div className="airdrop-statics mb-0">
+                  <p className="total-value">Total Claimed veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
+                  <h2>{amountConversionWithComma(totalClaimedveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
+                </div>
               </div>
-              <div className="airdrop-statics mt-n4">
-                <p className="total-value">Total Claimed $Harbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
-                <h2>{amountConversionWithComma(totalClaimedHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2>
+            </Col>
+            <Col xl="4" lg="6">
+              <div className="airdrop-upper-card airdrop-upper-card2">
+                <h3>Airdrop for Chains with Magic Txn <TooltipIcon text="Users need to perform the Magic Txn for every individual chain listed below to recieve there airdrop which will get distributed to their Comdex address." /></h3>
+                <ul>
+                  {maginTxChain?.map((item) => {
+                    return (
+                      <li key={item?.chainId}>
+                        <ChainModal currentChain={item} />
+                        <p>{item?.chainName}</p>
+                      </li>
+                    )
+                  })}
+                </ul>
+                <div className="text-center mt-auto">
+                  <Button type="primary" className="different-chain-eligibility">Click on different chains to check eligibility</Button>
+                </div>
               </div>
-              <div className="airdrop-statics mb-0">
-                <p className="total-value">Total Claimed veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
-                <h2>{amountConversionWithComma(totalClaimedveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
-              </div>
-            </div>
-            <div className="airdrop-upper-card airdrop-upper-card2">
-              <h3>Airdrop for Chains with Magic Txn <TooltipIcon text="Users need to perform the Magic Txn for every individual chain listed below to recieve there airdrop which will get distributed to their Comdex address." /></h3>
-              <ul>
-                {maginTxChain?.map((item) => {
-                  return (
-                    <li key={item?.chainId}>
-                      <ChainModal currentChain={item} />
-                      <p>{item?.chainName}</p>
-                    </li>
-                  )
-                })}
-              </ul>
-              <div className="text-center mt-auto">
-                <Button type="primary" className="different-chain-eligibility">Click on different chains to check eligibility</Button>
-              </div>
-            </div>
-            <div className="airdrop-upper-card airdrop-upper-card3">
-              <h3>Airdrop for below Chains <TooltipIcon text="$Harbor and $veHarbor airdrop has been distributed to users for below chains and pools. Users need to complete missions to claim it." /></h3>
-              <ul>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={AKASH_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>AKASH</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={ATOM_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>ATOM</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={AXELAR_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>AXELAR</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={COMDEX_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>COMDEX</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={CRESENT_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>CRESENT</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={JUNO_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>JUNO</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={XKI_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>XKI</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={OSMO_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>OSMO</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={REGEN_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>REGEN</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={SIFCHAIN_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>SIFCHAIN</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={STARGAZE_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>STARGAZE</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={UMEE_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>UMEE</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={KUJIRA_ICON} alt="" />
-                    </div>
-                  </div>
-                  <p>KUJIRA</p>
-                </li>
-                <li className="group-li">
-                  <div className="icon-group">
+            </Col>
+            <Col xl="4" lg="6">
+              <div className="airdrop-upper-card airdrop-upper-card3">
+                <h3>Airdrop for below Chains <TooltipIcon text="$Harbor and $veHarbor airdrop has been distributed to users for below chains and pools. Users need to complete missions to claim it." /></h3>
+                <ul>
+                  <li>
                     <div className="icons">
                       <div className="icon-inner">
-                        <img src={COMDEX_ICON} alt="" />
+                        <img src={AKASH_ICON} alt="" />
                       </div>
                     </div>
+                    <p>AKASH</p>
+                  </li>
+                  <li>
                     <div className="icons">
                       <div className="icon-inner">
                         <img src={ATOM_ICON} alt="" />
                       </div>
                     </div>
-                  </div>
-                  <p>LP POOL 600</p>
-                </li>
-                <li>
-                  <div className="icons">
-                    <div className="icon-inner">
-                      <img src={HUAHUA_ICON} alt="" />
+                    <p>ATOM</p>
+                  </li>
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={AXELAR_ICON} alt="" />
+                      </div>
                     </div>
-                  </div>
-                  <p>HUAHUA</p>
-                </li>
-                <li className="group-li-40">
-                  <div className="icon-group">
+                    <p>AXELAR</p>
+                  </li>
+                  <li>
                     <div className="icons">
                       <div className="icon-inner">
                         <img src={COMDEX_ICON} alt="" />
                       </div>
                     </div>
+                    <p>COMDEX</p>
+                  </li>
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={CRESENT_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>CRESENT</p>
+                  </li>
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={JUNO_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>JUNO</p>
+                  </li>
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={XKI_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>XKI</p>
+                  </li>
+                  <li>
                     <div className="icons">
                       <div className="icon-inner">
                         <img src={OSMO_ICON} alt="" />
                       </div>
                     </div>
-                  </div>
-                  <p>LP POOL 601</p>
-                </li>
-                <li className="group-li-40">
-                  <div className="icon-group">
+                    <p>OSMO</p>
+                  </li>
+                  <li>
                     <div className="icons">
                       <div className="icon-inner">
-                        <img src={STATOM_ICON} alt="" />
+                        <img src={REGEN_ICON} alt="" />
                       </div>
                     </div>
+                    <p>REGEN</p>
+                  </li>
+                  <li>
                     <div className="icons">
                       <div className="icon-inner">
-                        <img src={ATOM_ICON} alt="" />
+                        <img src={SIFCHAIN_ICON} alt="" />
                       </div>
                     </div>
-                  </div>
-                  <p>LP POOL 803</p>
-                </li>
-              </ul>
-              <div className="text-center mt-auto allChain-mission-btn-container" >
-                <Button type="primary" disabled={true}  >Check Eligibility</Button>
-                <Button type="primary" className="btn-filled mission-btn" onClick={() => handleClaimAll()}>Complete Mission</Button>
-              </div>
-            </div>
-          </div>
-          <div className="airdrop-bottom">
-            <div className="airdrop-bottom-card airdrop-bottom-card1">
-              <h2>Your Airdrop Details</h2>
-              <div className="airdrop-statics">
-                <p className="total-value">$Harbor Airdrop <TooltipIcon text="User’s Total $Harbor airdrop across all chains and pools" /></p>
-                <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
-              </div>
-              <div className="airdrop-statics mb-0">
-                <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 1 year once he completes the missions" /></p>
-                <h2>{amountConversionWithComma((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)}<sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
-              </div>
-            </div>
-            <div className="airdrop-bottom-card airdrop-bottom-card2">
-              <img className="card-bg" src={MissonCardBg} alt="bg" />
-              <div className="airdrop-bottom-card2-inner">
-                <div>
-                  <h1>Complete missions to get <br /> <span>HARBOR</span> Airdrop</h1>
+                    <p>SIFCHAIN</p>
+                  </li>
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={STARGAZE_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>STARGAZE</p>
+                  </li>
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={UMEE_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>UMEE</p>
+                  </li>
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={KUJIRA_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>KUJIRA</p>
+                  </li>
+
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={HUAHUA_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>HUAHUA</p>
+                  </li>
+
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={KAVA_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>KAVA</p>
+                  </li>
+
+                  <li className="group-li pool-group-width">
+                    <div className="icon-group">
+                      <div className="icons">
+                        <div className="icon-inner">
+                          <img src={COMDEX_ICON} alt="" />
+                        </div>
+                      </div>
+                      <div className="icons">
+                        <div className="icon-inner">
+                          <img src={ATOM_ICON} alt="" />
+                        </div>
+                      </div>
+                    </div>
+                    <p>LP POOL 600</p>
+                  </li>
+
+                  <li className="group-li-40 pool-group-width">
+                    <div className="icon-group">
+                      <div className="icons">
+                        <div className="icon-inner">
+                          <img src={COMDEX_ICON} alt="" />
+                        </div>
+                      </div>
+                      <div className="icons">
+                        <div className="icon-inner">
+                          <img src={OSMO_ICON} alt="" />
+                        </div>
+                      </div>
+                    </div>
+                    <p>LP POOL 601</p>
+                  </li>
+                  <li className="group-li-40 pool-group-width">
+                    <div className="icon-group">
+                      <div className="icons">
+                        <div className="icon-inner">
+                          <img src={STATOM_ICON} alt="" />
+                        </div>
+                      </div>
+                      <div className="icons">
+                        <div className="icon-inner">
+                          <img src={ATOM_ICON} alt="" />
+                        </div>
+                      </div>
+                    </div>
+                    <p>LP POOL 803</p>
+                  </li>
+                </ul>
+                <div className="text-center mt-auto allChain-mission-btn-container" >
+                  <Button type="primary" disabled={true}  >Check Eligibility</Button>
+                  <Button type="primary" className="btn-filled mission-btn" onClick={() => handleClaimAll()}>Complete Mission</Button>
                 </div>
-                <img src={PlanePic} alt="" />
               </div>
-            </div>
-          </div>
+            </Col>
+          </Row>
+          <Row className="airdrop-bottom">
+            <Col lg="4">
+              <div className="airdrop-bottom-card airdrop-bottom-card1">
+                <h2>Your Airdrop Details</h2>
+                <div className="airdrop-statics">
+                  <p className="total-value">$Harbor Airdrop <TooltipIcon text="User’s Total $Harbor airdrop across all chains and pools" /></p>
+                  <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
+                </div>
+                <div className="airdrop-statics mb-0">
+                  <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 1 year once he completes the missions" /></p>
+                  <h2>{amountConversionWithComma((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)}<sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
+                </div>
+              </div>
+            </Col>
+            <Col lg="8">
+              <div className="airdrop-bottom-card airdrop-bottom-card2">
+                <img className="card-bg" src={MissonCardBg} alt="bg" />
+                <div className="airdrop-bottom-card2-inner">
+                  <div>
+                    <h1>Complete missions to get <br /> <span>HARBOR</span> Airdrop</h1>
+                  </div>
+                  <img src={PlanePic} alt="" />
+                </div>
+              </div>
+            </Col>
+          </Row>
         </Col>
       </Row>
     </div>
