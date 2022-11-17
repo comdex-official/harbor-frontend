@@ -296,10 +296,11 @@
     background: $background-dark1;
     box-shadow: $box-shadow-inner-dark;
     background-image: url("../../assets/images/dashboard-banner.svg");
-    background-size: 100%;
     background-repeat: no-repeat;
-    background-size: cover;
     background-position: center;
+    @media only screen and (min-width: 1800px) {
+      background-size: 110%;
+    }
   }
   .banner-left {
     width: 100%;
