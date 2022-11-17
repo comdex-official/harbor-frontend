@@ -147,7 +147,6 @@ export const queryOwnerVaults = (productId, address, extentedPairId, callback) =
             })
             .catch((error) => {
                 callback(error?.message);
-                // callback("Vault does't exist");
             });
     })
 }
