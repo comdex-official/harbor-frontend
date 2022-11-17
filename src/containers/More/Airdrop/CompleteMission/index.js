@@ -286,7 +286,7 @@ const CompleteMission = ({
       align: "right",
       render: (item, index) =>
         <>
-          {item?.path && <a href={item?.path} target="_blank"> <Button className="ml-3" type="primary">Take me there</Button></a>}
+          {item?.path && <a href={item?.path} target="_blank"> <Button className="ml-3" type="primary" disabled={true}>Take me there</Button></a>}
           <Button type="primary"
             disabled={
               loading
