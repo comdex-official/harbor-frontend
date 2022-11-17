@@ -22,11 +22,10 @@ const customFees = {
     },
 }
 
-export const transactionForVote = async (proposalId, vote, callback) => {
+export const transactionForVote = async (address,proposalId, vote, callback) => {
 
     const httpUrl = comdex?.rpc;
-    let walletAddress = localStorage.getItem("ac");
-    walletAddress = decode(walletAddress);
+    let walletAddress = address;
     const handleMsg = {
         "vote":
         {

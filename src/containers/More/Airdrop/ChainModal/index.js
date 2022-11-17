@@ -193,7 +193,7 @@ const ChainModal = ({
           <Col>
             <label>Check Eligibility</label>
             <div className="d-flex">
-              <Input onChange={(e) => setUserAddress(e.target.value)} value={userAddress} placeholder={`Entre Your ${currentChain?.chainName} Wallet Address`} /> <Button type="primary" className="btn-filled" loading={loading} onClick={() => checkChainAddressEligibility(userAddress)}>Check</Button>
+              <Input onChange={(e) => setUserAddress(e.target.value)} value={userAddress} placeholder={`Enter Your ${currentChain?.chainName} Wallet Address`} /> <Button type="primary" className="btn-filled" loading={loading} onClick={() => checkChainAddressEligibility(userAddress)}>Check</Button>
             </div>
           </Col>
         </Row>
@@ -201,7 +201,7 @@ const ChainModal = ({
           <Col>
             <label>Magic Transaction</label>
             <div className="d-flex">
-              <Input placeholder={`Entre Your Comdex Wallet Address`} onChange={(e) => setuserComdexAddress(e.target.value)} />
+              <Input placeholder={`Enter Your Comdex Wallet Address`} onChange={(e) => setuserComdexAddress(e.target.value)} />
               <Button type="primary" className="btn-filled"
                 loading={txLogin}
                 // disabled={
