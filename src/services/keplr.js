@@ -50,6 +50,7 @@ export const getChainConfig = (chain = comdex) => {
       coinMinimalDenom: chain?.coinMinimalDenom,
       coinDecimals: chain?.coinDecimals,
     },
+    walletUrlForStaking: chain?.walletUrlForStaking,
     bip44: {
       coinType: chain?.coinType,
     },
