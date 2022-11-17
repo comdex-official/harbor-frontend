@@ -446,7 +446,7 @@ const Airdrop = ({
                 </ul>
                 <div className="text-center mt-auto allChain-mission-btn-container" >
                   <Button type="primary" disabled={true}  >Check Eligibility</Button>
-                  <Button type="primary" className="btn-filled mission-btn" onClick={() => handleClaimAll()}>Complete Mission</Button>
+                  <Button type="primary" className="btn-filled mission-btn" onClick={() => handleClaimAll()} disabled={true}>Complete Mission</Button>
                 </div>
               </div>
             </Col>
