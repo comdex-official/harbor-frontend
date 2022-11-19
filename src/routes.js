@@ -29,10 +29,6 @@ const routes = [
     element: <Assets />,
   },
   {
-    path: "/mint",
-    element: <BorrowTab />,
-  },
-  {
     path: "/stableMint",
     element: <StableMint />,
   },
@@ -40,24 +36,12 @@ const routes = [
     path: "/stableMint/:pathVaultId",
     element: <StableMintVault />,
   },
-  // {
-  //   path: "more/stableMint",
-  //   element: <StableMint />,
-  // },
-  // {
-  //   path: "/more/stableMint/:pathVaultId",
-  //   element: <StableMintVault />,
-  // },
-  {
-    path: "mint/vault/:pathVaultId",
-    element: <Vault />,
-  },
   {
     path: "/earn",
     element: <Earn />,
   },
   {
-    path: "/auctions",
+    path: "/more/auctions",
     element: <Auctions />,
   },
   {
@@ -72,14 +56,6 @@ const routes = [
     path: "/more/govern/govern-details/:proposalId",
     element: <GovernDetails />,
   },
-  // {
-  //   path: "/more/airdrop",
-  //   element: <Airdrop />,
-  // },
-  // {
-  //   path: "/more/airdrop/complete-mission/:chainId",
-  //   element: <CompleteMission />,
-  // },
   {
     path: "/more/vesting",
     element: <Vesting />,

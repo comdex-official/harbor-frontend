@@ -224,6 +224,8 @@ const variables = {
     tooltip_market_cap: "Market Cap = Current Price * Circulating Supply",
     tooltip_total_value_locked:
       "Total value locked of assets being used as collateral (including Stablemint assets)",
+    tooltip_total_value_minted:
+      "Total CMST minted from collateral asset (including Stablemint assets)",
 
     //My Positions
     tooltip_earn_current_balance: "Current balance of Composite deposited in Locker",

@@ -123,6 +123,7 @@ const Withdraw = ({
       );
 
       setBalanceRefresh(refreshBalance + 1);
+      setAmount()
       setIsModalOpen(false);
     });
   };

@@ -2,7 +2,7 @@ import * as PropTypes from "prop-types";
 import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { Tabs } from "antd";
+import { Button, Tabs } from "antd";
 import CustomInput from "../../components/CustomInput";
 import { useDispatch } from "react-redux";
 import {
@@ -19,6 +19,7 @@ import Deposit from "./Deposit/index";
 import Withdraw from "./Withdraw/index";
 import PricePool from "./vaultDetail/details";
 import './index.scss'
+import { Link } from "react-router-dom";
 
 const StableMintVault = ({
     lang,
@@ -139,7 +140,7 @@ const StableMintVault = ({
     return (
         <>
             <div className="app-content-wrapper details-wrapper">
-                <Row className="earn-main-container stableMint-main-container">
+                <Row className="earn-main-container stableMint-main-container stableMint-tab-main-container">
                     <Col>
                         <Tabs
                             type="card"
@@ -155,7 +156,20 @@ const StableMintVault = ({
                             <PricePool />
                         </div>
                     </Col>
+
+                    <Row>
+                        <div className="stableMint-back-button-container">
+
+                            <Link to="/stableMint">
+                                <Button className="back-btn" type="primary">
+                                    Back
+                                </Button>
+                            </Link>
+                        </div>
+
+                    </Row>
                 </Row>
+
             </div>
         </>
     );

@@ -13,11 +13,12 @@ import Date from "./Date";
 
 import "./index.scss";
 import NoDataIcon from "../../components/common/NoDataIcon";
+import { HALF_DEFAULT_PAGE_SIZE } from "../../constants/common";
 
 const History = ({ address, setTransactionHistory, history }) => {
   const [inProgress, setInProgress] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(HALF_DEFAULT_PAGE_SIZE);
 
   useEffect(() => {
     getTransactions(address, pageNumber, pageSize);

@@ -1,6 +1,11 @@
 @import "../../../../assets/scss/custom.scss";
 
 .composite-card {
+  .card-header {
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
   &.govern-card2 {
     padding: 26px;
     &:last-child {

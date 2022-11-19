@@ -8,6 +8,7 @@ import { setOwnerVaultInfo } from '../../../../../actions/locker';
 import { setOwnerCurrentCollateral } from "../../../../../actions/mint";
 import { SvgIcon } from "../../../../../components/common";
 import Snack from "../../../../../components/common/Snack";
+import TooltipIcon from "../../../../../components/TooltipIcon";
 import { cmst, comdex } from "../../../../../config/network";
 import { DEFAULT_FEE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../../constants/common";
 import { signAndBroadcastTransaction } from "../../../../../services/helper";
@@ -136,11 +137,15 @@ const PricePool = ({ setOwnerCurrentCollateral,
 
   const data = [
     {
-      title: "Collateral Ratio",
+      title: <>
+        Collateral Ratio <TooltipIcon text="Current collateral ration of vault" />
+      </>,
       counts: `${ownerCurrrentCollateral}%`,
     },
     {
-      title: "Collateral Deposited",
+      title: <>
+        Collateral Deposited <TooltipIcon text="Total amount of collateral locked" />
+      </>,
       counts: (
         <div className="collateral-deposit-main-box">
           <div className="collateral-deposit-up-box">
@@ -160,7 +165,9 @@ const PricePool = ({ setOwnerCurrentCollateral,
       ),
     },
     {
-      title: "Stability Fee Due",
+      title: <>
+        Stability Fee Due <TooltipIcon text="Current Interest Rate on Borrowed Amount" />
+      </>,
       counts: (
         <>
           {amountConversionWithComma(ownerVaultInfo?.interestAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)}
@@ -192,7 +199,9 @@ const PricePool = ({ setOwnerCurrentCollateral,
       ),
     },
     {
-      title: "Withdrawn",
+      title: <>
+        Withdrawn <TooltipIcon text="Total amount of Composite Debt Owed" />
+      </>,
       counts: (
         <div>
           {commaSeparator(Number(withdrawn || 0).toFixed(comdex?.coinDecimals))}

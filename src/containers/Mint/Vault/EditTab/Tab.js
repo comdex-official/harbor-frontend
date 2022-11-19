@@ -703,7 +703,7 @@ const Edit = ({
                 {/* Liquidation Container  */}
                 <div className="slider-input-box-container mt-2">
                   <div className="title">
-                    <div className="title">Expected liquidation price</div>
+                    <div className="title">Expected liquidation price <TooltipIcon text="The price of deposited asset at which the vault will be liquidated" /> </div>
                   </div>
                   <div className="input-box-container">
                     <div className="liquidation-price">

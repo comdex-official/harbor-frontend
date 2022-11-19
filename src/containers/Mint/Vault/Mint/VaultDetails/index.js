@@ -7,6 +7,7 @@ import { queryOwnerVaults, queryOwnerVaultsInfo } from '../../../../../services/
 import { setOwnerVaultId, setOwnerVaultInfo } from '../../../../../actions/locker';
 import moment from 'moment';
 import { decimalConversion } from '../../../../../utils/number';
+import TooltipIcon from '../../../../../components/TooltipIcon';
 
 
 const VaultDetails = ({
@@ -73,23 +74,23 @@ const VaultDetails = ({
         </div>
         <div className="card-assets-container">
           <div className="assets-row">
-            <div className="asset-name">Vault ID</div>
+            <div className="asset-name">Vault ID <TooltipIcon text='Unique Vault ID created per vault address and vault type' /></div>
             <div className="asset-value">{ownerVaultId || "-"}</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Stability Fee </div>
+            <div className="asset-name">Stability Fee <TooltipIcon text='Current Interest Rate on Borrowed Amount' /></div>
             <div className="asset-value">{(decimalConversion(selectedExtentedPairVaultListData?.stabilityFee) * 100 || 0).toFixed(DOLLAR_DECIMALS)}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Drawdown Fee</div>
+            <div className="asset-name">Drawdown Fee <TooltipIcon text='Opening Fee charged is a one time value deducted per withdrawal. The value fee collected is added to the collector module' /></div>
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.drawDownFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">  Min. Collateralization Ratio</div>
+            <div className="asset-name">  Min. Collateralization Ratio <TooltipIcon text='Minimum collateral ratio at which composite should be minted' /></div>
             <div className="asset-value">{Number(decimalConversion(selectedExtentedPairVaultListData?.minCr) * 100).toFixed(2) || "0"}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Vault Opening Date</div>
+            <div className="asset-name">Vault Opening Date <TooltipIcon text='The date the Vault was opened' /></div>
             <div className="asset-value">{ownerVaultId ? dateFormater(ownerVaultInfo?.createdAt) : "-"}</div>
           </div>
         </div>

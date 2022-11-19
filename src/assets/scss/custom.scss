@@ -411,10 +411,11 @@ button {
   }
 }
 
+
 .comdex-tabs {
   .ant-tabs-nav {
     margin-bottom: 10px;
-
+        padding: 0 15px ;
     &:before {
       display: none;
     }
@@ -684,13 +685,13 @@ button {
 }
 
 .ant-table {
-  &.ant-table-empty{
+  &.ant-table-empty {
     tr {
-      td{
+      td {
         border-radius: 15px !important;
       }
     }
-    .ant-table-content{
+    .ant-table-content {
       overflow: hidden !important;
     }
   }
@@ -1750,9 +1751,9 @@ button {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: rgba(#232231, 0.8); 
+  background: rgba(#232231, 0.8);
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #665aa6;
@@ -1761,5 +1762,5 @@ button {
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(#665aa6, 0.8); 
+  background: rgba(#665aa6, 0.8);
 }
