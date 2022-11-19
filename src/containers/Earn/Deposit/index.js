@@ -379,7 +379,8 @@ const Deposit = ({
                 type="primary"
                 className="btn-filled"
                 disabled={
-                  !Number(inAmount) ||
+                  inProgress
+                  || !Number(inAmount) ||
                   inputValidationError?.message
                 }
                 onClick={() => {

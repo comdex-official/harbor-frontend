@@ -493,7 +493,7 @@ const Mint = ({
               <div className="label-right">
                 Available
                 <span className="ml-1">
-                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)}
+                  {amountConversionWithComma(collateralAssetBalance, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)} {" "}
                   {denomToSymbol(pair && pair?.denomIn)}
                 </span>
                 <div className="maxhalf">

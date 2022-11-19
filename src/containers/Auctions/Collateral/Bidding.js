@@ -7,13 +7,13 @@ import moment from "moment";
 import { comdex } from "../../../config/network";
 import { queryDutchBiddingList } from "../../../services/auction";
 import { useEffect, useState } from "react";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../../constants/common";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, HALF_DEFAULT_PAGE_SIZE } from "../../../constants/common";
 import NoDataIcon from "../../../components/common/NoDataIcon";
 
 export const Bidding = ({ address, refreshBalance, assetMap }) => {
 
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(HALF_DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [biddingList, setBiddingList] = useState("");
   const [biddingsTotalCount, setBiddingsTotalCounts] = useState(0);

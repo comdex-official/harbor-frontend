@@ -57,16 +57,21 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
                   ? "active_tab"
                   : item.active === route
                     ? "active_tab"
-                    : "")
+                    : "") +
+                (item.path === "mint" ? "disable-side-links" : "")
               }
               value={item.value}
               onClick={() => {
-                navigate("/" + item.path);
-                onClick();
+                if (item.path === "mint") {
+                  return;
+                } else {
+                  navigate("/" + item.path);
+                  onClick();
+                }
               }}
               {...a11yProps(0)}
             >
-              <div className="tab-inner">
+              <div className="tab-inner ">
                 <SvgIcon name={item.value} />
                 {variables[lang][item.langKey]}
               </div>

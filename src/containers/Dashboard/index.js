@@ -7,12 +7,12 @@ import { connect } from "react-redux";
 import { Col, Row } from "../../components/common";
 import TooltipIcon from "../../components/TooltipIcon";
 import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
-import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
+import { DOLLAR_DECIMALS, PRODUCT_ID, ZERO_DOLLAR_DECIMALS } from "../../constants/common";
 import {
   fetchProposalUpData,
   totalveHarborSupply
 } from "../../services/contractsRead";
-import { queryAppTVL, queryTotalTokenMinted } from "../../services/vault/query";
+import { queryAppTVL, queryPairsLockedAndMintedStatistic, queryTotalTokenMinted } from "../../services/vault/query";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import { commaSeparator, marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
@@ -27,6 +27,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
   const [harborCurrentSypply, setHarborCurrentSupply] = useState(0);
   const [cmstCurrentSupply, setCmstCurrentSupply] = useState();
   const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
+  const [allCMSTMintedStatistic, setAllCMSTMintedStatistic] = useState([])
+  const [uniqueCMSTMintedData, setUniqueCMSTMintedData] = useState();
+  const [totalMintedCMST, setTotalMintedCMST] = useState();
 
   useEffect(() => {
     if (markets) {
@@ -84,6 +87,37 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     });
   };
 
+  const fetchQueryPairsLockedAndMintedStatistic = () => {
+    queryPairsLockedAndMintedStatistic((error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      result?.pairStatisticData?.map((item) => {
+        setAllCMSTMintedStatistic(oldArray => [...oldArray, { "name": item?.assetInDenom, "amount": Number(amountConversion(item?.mintedAmount), comdex?.coinDecimals) }])
+      })
+    });
+  };
+
+  const calculateUniqueCMSTMintedData = () => {
+    let myMap = {};
+    let total = 0;
+
+    for (let i = 0; i < allCMSTMintedStatistic?.length; i++) {
+      if (myMap[allCMSTMintedStatistic[i]?.name]) {
+        myMap[allCMSTMintedStatistic[i]?.name] += allCMSTMintedStatistic[i]?.amount;
+        total += Number(allCMSTMintedStatistic[i]?.amount);
+      }
+      else {
+        myMap[allCMSTMintedStatistic[i]?.name] = allCMSTMintedStatistic[i]?.amount;
+        total += Number(allCMSTMintedStatistic[i]?.amount);
+      }
+    }
+    setTotalMintedCMST(Number(total).toFixed(comdex?.coinDecimals))
+
+    setUniqueCMSTMintedData(myMap)
+  }
+
   const fetchAllProposalUpData = (productId) => {
     fetchProposalUpData(productId)
       .then((res) => {
@@ -110,10 +144,13 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
       amount =
         Number(totalDollarValue) -
         (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
-          Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0));
+          Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
+          Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
+
+        );
     }
 
-    return `$${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}
+    return `$${commaSeparator(Number(amount || 0).toFixed(ZERO_DOLLAR_DECIMALS))}
 `;
   };
 
@@ -123,13 +160,20 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     amount = Number(amount).toFixed(DOLLAR_DECIMALS);
     setHarborCirculatingSypply(amount);
   };
+
   useEffect(() => {
     calculatedCmstCurrentSupply();
   }, [cmstCurrentSupply]);
 
   useEffect(() => {
     fetchTotalveHarborSupply();
+    fetchQueryPairsLockedAndMintedStatistic()
   }, []);
+
+  useEffect(() => {
+    calculateUniqueCMSTMintedData()
+  }, [allCMSTMintedStatistic])
+
 
   useEffect(() => {
     if (harborSupply) {
@@ -143,6 +187,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     }
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
+
   const calculatedCmstCurrentSupply = () => {
     let totalMintedAmount = 0;
     cmstCurrentSupply &&
@@ -152,6 +197,74 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
       });
     setCalculatedCMSTSupply(totalMintedAmount);
   };
+
+  const MintedCMSTOptions = {
+    chart: {
+      type: "pie",
+      backgroundColor: null,
+      height: 210,
+      margin: 5,
+    },
+    credits: {
+      enabled: false,
+    },
+    title: {
+      text: null,
+    },
+    plotOptions: {
+      pie: {
+        showInLegend: false,
+        size: "110%",
+        innerSize: "82%",
+        borderWidth: 0,
+        className: "totalvalue-chart",
+        dataLabels: {
+          enabled: false,
+          distance: -14,
+          style: {
+            fontsize: 50,
+          },
+        },
+      },
+    },
+    series: [
+      {
+        states: {
+          hover: {
+            enabled: false,
+          },
+        },
+        name: "",
+        data: [
+          {
+            name: "ATOM",
+            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]),
+            color: "#665AA6",
+          },
+          {
+            name: "CMDX",
+            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"]),
+            color: "#BFA9D7",
+          },
+          {
+            name: "AXL-USDC",
+            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]),
+            color: "#8e78a5",
+          },
+          {
+            name: "Others",
+            y: Number(totalMintedCMST || 0) -
+              (Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0) +
+                Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
+                Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
+              ),
+            color: isDarkMode ? "#373549" : "#E0E0E0",
+          },
+        ],
+      },
+    ],
+  };
+
   const Options = {
     chart: {
       type: "pie",
@@ -203,6 +316,11 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             color: "#BFA9D7",
           },
           {
+            name: "AXL-USDC",
+            y: Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0),
+            color: "#8e78a5",
+          },
+          {
             name: "Others",
             y:
               Number(totalDollarValue || 0) -
@@ -217,156 +335,8 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     ],
   };
 
-  const PriceChart = {
-    chart: {
-      type: "spline",
-      backgroundColor: null,
-      height: 130,
-      marginBottom: 30,
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text: "",
-    },
-    yAxis: {
-      gridLineWidth: 0,
-      title: {
-        enabled: false,
-      },
-      labels: {
-        enabled: true,
-        style: {
-          color: "#FFCEFF",
-        },
-      },
-      categories: ["0.95", "1.00", "1.05", "2.00"],
-    },
-    xAxis: {
-      lineColor: false,
-      labels: {
-        style: {
-          fontSize: 10,
-          color: "#FFCEFF",
-          fontWeight: 300,
-        },
-      },
-      gridLineWidth: 1,
-      gridLineColor: isDarkMode ? "#6C597B" : "#FFCEFF",
-      categories: [
-        "APR",
-        "MAY",
-        "JUN",
-        "JUL",
-        "AUG",
-        "SEP",
-        "OCT",
-        "NOV",
-        "DEC",
-        "JAN",
-        "FEB",
-        "MAR",
-        "APR",
-        "MAY",
-        "JUN",
-      ],
-    },
-    series: [
-      {
-        showInLegend: false,
-        lineWidth: 2,
-        lineColor: "#665aa6",
-        marker: false,
-        data: [0.9, 0.9, 1.01, 1, 1, 1, 1, 1, 1.01, 1, 1, 1, 0.9, 1.05, 1],
-      },
-    ],
-  };
-  const HarborPrice = {
-    chart: {
-      type: "spline",
-      backgroundColor: null,
-      height: 130,
-      marginBottom: 30,
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text: "",
-    },
-    yAxis: {
-      gridLineWidth: 0,
-      title: {
-        enabled: false,
-      },
-      labels: {
-        enabled: true,
-        style: {
-          color: "#FFCEFF",
-        },
-      },
-      categories: ["0.01", "0.10"],
-    },
-    xAxis: {
-      lineColor: false,
-      labels: {
-        style: {
-          fontSize: 10,
-          color: "#FFCEFF",
-          fontWeight: 300,
-        },
-      },
-      gridLineWidth: 1,
-      gridLineColor: isDarkMode ? "#6C597B" : "#FFCEFF",
-      categories: [
-        "APR",
-        "MAY",
-        "JUN",
-        "JUL",
-        "AUG",
-        "SEP",
-        "OCT",
-        "NOV",
-        "DEC",
-        "JAN",
-        "FEB",
-        "MAR",
-        "APR",
-        "MAY",
-        "JUN",
-      ],
-    },
-    series: [
-      {
-        showInLegend: false,
-        lineWidth: 2,
-        lineColor: "#665aa6",
-        marker: false,
-        data: [
-          0.01, 0.03, 0.02, 0.04, 0.03, 0.05, 0.08, 0.06, 0.09, 0.07, 0.04,
-          0.08, 0.1, 0.07, 0.05,
-        ],
-      },
-    ],
-  };
-  const harborMarketCap = () => {
-    let supply = Number(amountConversion(harborCurrentSypply, DOLLAR_DECIMALS));
-    let price = Number(getPrice(harbor?.coinMinimalDenom)).toFixed(DOLLAR_DECIMALS);
-    let marketCap = supply * price;
-    marketCap = Number(marketCap).toFixed(DOLLAR_DECIMALS);
-    marketCap = commaSeparator(marketCap);
-    return marketCap || 0;
-  };
-  const cmstMarketCap = () => {
-    let supply = Number(
-      amountConversion(calculatedCMSTSupply, DOLLAR_DECIMALS)
-    );
-    let price = Number(marketPrice(markets, cmst?.coinMinimalDenom, assetMap[cmst?.coinMinimalDenom]?.id));
-    let marketCap = supply * price;
-    marketCap = commaSeparator(marketCap);
-    return marketCap || 0;
-  };
+
+
   return (
     <div className="app-content-wrapper dashboard-app-content-wrapper">
       <Row>
@@ -386,7 +356,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                 <h2>
                   $
                   {commaSeparator(
-                    Number(totalDollarValue || 0).toFixed(DOLLAR_DECIMALS)
+                    Number(totalDollarValue || 0).toFixed(ZERO_DOLLAR_DECIMALS)
                   )}
                 </h2>
               </div>
@@ -395,7 +365,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                   <HighchartsReact highcharts={Highcharts} options={Options} />
                 </div>
                 <div className="totalvalues-right">
-                  <div className="dashboard-statics mb-5">
+                  <div className="dashboard-statics mb-4">
                     <p>ATOM</p>
                     <h3>
                       $
@@ -403,18 +373,29 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                         Number(
                           totalValueLocked?.get(ibcDenoms?.uatom)
                             ?.dollarValue || 0
-                        ).toFixed(DOLLAR_DECIMALS)
+                        ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
                   </div>
-                  <div className="dashboard-statics mb-5 total-dashboard-stats">
+                  <div className="dashboard-statics mb-4 total-dashboard-stats">
                     <p>CMDX</p>
                     <h3>
                       $
                       {commaSeparator(
                         Number(
                           totalValueLocked?.get("ucmdx")?.dollarValue || 0
-                        ).toFixed(DOLLAR_DECIMALS)
+                        ).toFixed(ZERO_DOLLAR_DECIMALS)
+                      )}
+                    </h3>
+                  </div>
+                  <div className="dashboard-statics mb-4 total-dashboard-stats total-dashboard-stats-2 ">
+                    <p>AXL-USDC</p>
+                    <h3>
+                      $
+                      {commaSeparator(
+                        Number(
+                          totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0
+                        ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
                   </div>
@@ -426,82 +407,65 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
               </div>
             </div>
           </div>
-          <div className="dashboard-upper-right  ">
-            <div className="composite-card dashboardupper-chart earn-deposite-card ">
-              <div className="dashboardupperchart-head">
-                <div className="col1">
-                  <small>CMST Price</small>
-                  <h4>
-                    ${marketPrice(markets, cmst?.coinMinimalDenom, assetMap[cmst?.coinMinimalDenom]?.id)}{" "}
-                    <span>0.00%</span>
-                  </h4>
-                </div>
-                <div className="col2">
-                  <small>
-                    Circulating Supply{" "}
-                    <TooltipIcon
-                      text={variables[lang].tooltip_circulating_supply_CMST}
-                    />
-                  </small>
-                  <p>
-                    {calculatedCMSTSupply
-                      ? amountConversionWithComma(
-                        calculatedCMSTSupply,
-                        DOLLAR_DECIMALS
-                      )
-                      : "00.00"}
-                    <span> CMST</span>
-                  </p>
-                </div>
-                <div className="col3">
-                  <small>
-                    Market Cap{" "}
-                    <TooltipIcon text={variables[lang].tooltip_market_cap} />
-                  </small>
-                  <p>${calculatedCMSTSupply ? cmstMarketCap() : "0.00"}</p>
-                </div>
-              </div>
-              <div className="right-chart">
-                <HighchartsReact highcharts={Highcharts} options={PriceChart} />
-              </div>
-            </div>
-            <div className="composite-card ">
-              <div className="composite-card dashboardupper-chart earn-deposite-card ">
-                <div className="dashboardupperchart-head">
-                  <div className="col1">
-                    <small>HARBOR Price</small>
-                    <h4>
-                      ${Number(harborPrice).toFixed(DOLLAR_DECIMALS)}
-                      <span> 2.41%</span>
-                    </h4>
-                  </div>
-                  <div className="col2">
-                    <small>
-                      Circulating Supply{" "}
-                      <TooltipIcon
-                        text={variables[lang].tooltip_circulating_supply_HARBOR}
-                      />
-                    </small>
-                    <p>
-                      {harborCirculatingSupply
-                        ? commaSeparator(harborCirculatingSupply)
-                        : "00.00"}
-                      <span> HARBOR</span>
-                    </p>
-                  </div>
-                  <div className="col3">
-                    <small>
-                      Market Cap{" "}
-                      <TooltipIcon text={variables[lang].tooltip_market_cap} />
-                    </small>
-                    <p>${harborCurrentSypply ? harborMarketCap() : "0.00"}</p>
-                  </div>
-                </div>
-                <div className="right-chart">
-                  <HighchartsReact
-                    highcharts={Highcharts}
-                    options={HarborPrice}
+
+          <div className="dashboard-upper-left dashboard-upper-right">
+            <div
+              className="composite-card  earn-deposite-card dashboard-chart-container"
+              style={{ height: "97%" }}
+            >
+              <div className="dashboard-statics">
+                <p className="total-value">
+                  Total CMST Minted{" "}
+                  <TooltipIcon
+                    text={variables[lang].tooltip_total_value_minted}
                   />
+                </p>
+                <h2>
+
+                  {commaSeparator(
+                    Number(totalMintedCMST || 0).toFixed(ZERO_DOLLAR_DECIMALS)
+                  )} CMST
+                </h2>
+              </div>
+              <div className="totalvalues">
+                <div className="totalvalues-chart">
+                  <HighchartsReact highcharts={Highcharts} options={MintedCMSTOptions} />
+                </div>
+                <div className="totalvalues-right">
+                  <div className="dashboard-statics mb-4">
+                    <p>ATOM</p>
+                    <h3>
+                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                    </h3>
+                  </div>
+                  <div className="dashboard-statics mb-4 total-dashboard-stats">
+                    <p>CMDX</p>
+                    <h3>
+                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                    </h3>
+                  </div>
+
+                  <div className="dashboard-statics mb-4 total-dashboard-stats-2">
+                    <p>AXL-USDC</p>
+                    <h3>
+                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                    </h3>
+                  </div>
+
+                  <div className="dashboard-statics mb-0 others-dashboard-stats">
+                    <p>Others</p>
+                    <h3>{
+                      commaSeparator(
+                        Number(Number(totalMintedCMST || 0) -
+                          (
+                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0) +
+                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
+                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
+                          )).toFixed(ZERO_DOLLAR_DECIMALS)
+                      )
+                    } CMST
+                    </h3>
+                  </div>
                 </div>
               </div>
             </div>
