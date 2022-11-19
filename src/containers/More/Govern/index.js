@@ -8,7 +8,7 @@ import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import NoDataIcon from "../../../components/common/NoDataIcon";
 import NoData from "../../../components/NoData";
-import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
+import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, HALF_DEFAULT_PAGE_SIZE, PRODUCT_ID } from '../../../constants/common';
 import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
 import { amountConversionWithComma } from "../../../utils/coin";
 import "./index.scss";
@@ -34,7 +34,7 @@ const Govern = ({
   const [currentActivePage, setCurrentActivePage] = useState(1)
   const [loading, setLoading] = useState();
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(HALF_DEFAULT_PAGE_SIZE);
   const [inProgress, setInprogress] = useState(false)
 
   const fetchAllProposal = (pageNumber, productId, limit, status) => {
@@ -202,7 +202,7 @@ const Govern = ({
 
       <Row className="mt-3">
         <Col>
-          <div className="comdex-card govern-card earn-deposite-card ">
+          <div className="comdex-card govern-card earn-deposite-card " style={{ padding: "5px 25px 35px 25px" }}>
             <div className="governcard-head ">
               <a href="https://forum.comdex.one/" target="_blank" rel="noreferrer"><Button type="primary" className="btn-filled">Forum</Button></a>
               <Select defaultValue="Filter" className="select-primary ml-2" onChange={(e) => filterAllProposal(e)} suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />} style={{ width: 120 }} notFoundContent={<NoDataIcon />}>
@@ -255,7 +255,7 @@ const Govern = ({
                   }
                 </>
 
-              ) : <NoData text="Sorry, no proposal found" />
+              ) : <div className="mt-3"><NoDataIcon /></div>
 
               }
 

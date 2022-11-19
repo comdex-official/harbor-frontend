@@ -138,6 +138,7 @@ const Deposit = ({
       );
 
       setBalanceRefresh(refreshBalance + 1);
+      setAmount()
       setIsModalOpen(false);
     });
   };

@@ -368,3 +368,24 @@ export const queryStableBalanceUserPosition = (
             });
     });
 };
+
+export const queryPairsLockedAndMintedStatistic = (
+    callback
+) => {
+    getQueryService((error, queryService) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+        queryService
+            .QueryPairsLockedAndMintedStatisticByApp({
+                appId: Long.fromNumber(PRODUCT_ID),
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message);
+            });
+    });
+};
