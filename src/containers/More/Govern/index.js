@@ -8,7 +8,7 @@ import { setAllProposal, setProposalUpData } from "../../../actions/govern";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import NoDataIcon from "../../../components/common/NoDataIcon";
 import NoData from "../../../components/NoData";
-import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
+import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, HALF_DEFAULT_PAGE_SIZE, PRODUCT_ID } from '../../../constants/common';
 import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
 import { amountConversionWithComma } from "../../../utils/coin";
 import "./index.scss";
@@ -34,7 +34,7 @@ const Govern = ({
   const [currentActivePage, setCurrentActivePage] = useState(1)
   const [loading, setLoading] = useState();
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(HALF_DEFAULT_PAGE_SIZE);
   const [inProgress, setInprogress] = useState(false)
 
   const fetchAllProposal = (pageNumber, productId, limit, status) => {
