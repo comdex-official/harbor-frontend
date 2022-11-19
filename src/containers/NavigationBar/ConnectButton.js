@@ -157,7 +157,6 @@ const ConnectButton = ({
         message.error(error);
         return;
       }
-      console.log(result, "result");
       if (result) {
         return setHarborPrice(result?.price)
       }

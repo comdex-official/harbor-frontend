@@ -68,7 +68,7 @@ export const fetchRestPrices = (callback) => {
   };
 
   fetch(`${API_URL}/api/v2/cswap/tokens/HARBOR`, requestOptions)
-    .then(response => response.json())
+    .then(response => response?.json())
     .then(result => callback(null, result?.data))
     .catch(error => callback(error?.message));
 };
