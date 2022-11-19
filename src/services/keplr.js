@@ -1,9 +1,9 @@
-import { cmst, comdex, harbor } from "../config/network";
 import {
-  ChainStore,
-  getKeplrFromWindow,
   AccountSetBase,
+  ChainStore,
+  getKeplrFromWindow
 } from "@keplr-wallet/stores";
+import { cmst, comdex, harbor } from "../config/network";
 
 export const contractAddress = process.env.REACT_APP_GOVERNANCE_CONTRACT;
 export const lockingContractAddress = process.env.REACT_APP_LOCKING_CONTRACT;
@@ -50,6 +50,7 @@ export const getChainConfig = (chain = comdex) => {
       coinMinimalDenom: chain?.coinMinimalDenom,
       coinDecimals: chain?.coinDecimals,
     },
+    walletUrlForStaking: chain?.walletUrlForStaking,
     bip44: {
       coinType: chain?.coinType,
     },
@@ -67,14 +68,15 @@ export const getChainConfig = (chain = comdex) => {
         coinDenom: chain?.coinDenom,
         coinMinimalDenom: chain?.coinMinimalDenom,
         coinDecimals: chain?.coinDecimals,
+        coinGeckoId: chain?.coinGeckoId,
+        gasPriceStep: {
+          low: 0.01,
+          average: 0.025,
+          high: 0.04,
+        },
       },
     ],
     coinType: chain?.coinType,
-    gasPriceStep: {
-      low: 0.01,
-      average: 0.025,
-      high: 0.04,
-    },
   };
 };
 
@@ -87,7 +89,9 @@ export const initializeChain = (callback) => {
       if (window.keplr.experimentalSuggestChain) {
         try {
           await window.keplr.experimentalSuggestChain(getChainConfig());
-          const offlineSigner = await window.getOfflineSignerAuto(comdex?.chainId);
+          const offlineSigner = await window.getOfflineSignerAuto(
+            comdex?.chainId
+          );
           const accounts = await offlineSigner.getAccounts();
 
           callback(null, accounts[0]);
@@ -110,8 +114,12 @@ export const magicInitializeChain = (networkChain, callback) => {
     } else {
       if (window.keplr.experimentalSuggestChain) {
         try {
-          await window.keplr.experimentalSuggestChain(getChainConfig(networkChain));
-          const offlineSigner = await window.getOfflineSignerAuto(networkChain?.chainId);
+          await window.keplr.experimentalSuggestChain(
+            getChainConfig(networkChain)
+          );
+          const offlineSigner = await window.getOfflineSignerAuto(
+            networkChain?.chainId
+          );
           const accounts = await offlineSigner.getAccounts();
 
           callback(null, accounts[0]);
@@ -124,7 +132,7 @@ export const magicInitializeChain = (networkChain, callback) => {
       }
     }
   })();
-}
+};
 
 export const initializeIBCChain = (config, callback) => {
   (async () => {
@@ -136,7 +144,9 @@ export const initializeIBCChain = (config, callback) => {
       if (window.keplr.experimentalSuggestChain) {
         try {
           await window.keplr.experimentalSuggestChain(config);
-          const offlineSigner = await window.getOfflineSignerAuto(config?.chainId);
+          const offlineSigner = await window.getOfflineSignerAuto(
+            config?.chainId
+          );
           const accounts = await offlineSigner.getAccounts();
           callback(null, accounts[0]);
         } catch (error) {
@@ -156,8 +166,8 @@ export const fetchKeplrAccountName = async () => {
   const accountSetBase = new AccountSetBase(
     {
       // No need
-      addEventListener: () => { },
-      removeEventListener: () => { },
+      addEventListener: () => {},
+      removeEventListener: () => {},
     },
     chainStore,
     comdex?.chainId,
