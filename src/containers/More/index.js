@@ -439,11 +439,10 @@ const More = ({
                     header={null}
                     open={isModalVisible}
                     width={550}
-                    closable={false}
+                    closable={true}
                     onOk={handleOk}
                     loading={loading}
                     onCancel={handleCancel}
-                    closeIcon={null}
                   >
                     <div className="palcebid-modal-inner rewards-modal-main-container">
                       <Row>
@@ -501,11 +500,10 @@ const More = ({
             header={null}
             open={isRebasingModalVisible}
             width={600}
-            closable={false}
+            closable={true}
             onOk={handleRebasingOk}
             loading={loading}
             onCancel={handleRebasingCancel}
-            closeIcon={null}
           >
             <div className="palcebid-modal-inner rewards-modal-main-container">
               <Row>
