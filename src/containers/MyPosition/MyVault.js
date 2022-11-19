@@ -43,7 +43,10 @@ const MyVault = ({ address }) => {
 
   const columns = [
     {
-      title: "Vault Type",
+      title: <>
+        Vault Type    <TooltipIcon text="Type of vault" />
+
+      </>,
       dataIndex: "vault",
       key: "vault",
       width: 180,
@@ -63,7 +66,7 @@ const MyVault = ({ address }) => {
       title: (
         <>
           Stability Fee{" "}
-          <TooltipIcon text="Current annual interest rate of Vault" />
+          <TooltipIcon text="Stability fee is the interest charged annually ( compounded per block) for current vault" />
         </>
       ),
       dataIndex: "apy",

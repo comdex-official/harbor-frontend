@@ -59,6 +59,11 @@
       padding-left: 0;
       margin: 10px 0;
     }
+    .dashboard-chart-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
     .dashboardupper-chart {
       padding: 7.4px 25px;
       margin-bottom: 15px;
@@ -269,6 +274,12 @@
   border-left: 5px solid #bfa9d7;
   .dark-mode & {
     border-left: 5px solid #bfa9d7;
+  }
+}
+.total-dashboard-stats-2 {
+  border-left: 5px solid #8e78a5;
+  .dark-mode & {
+    border-left: 5px solid #8e78a5;
   }
 }
 .others-dashboard-stats {

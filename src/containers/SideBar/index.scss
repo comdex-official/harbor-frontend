@@ -239,6 +239,9 @@
                 }
               }
             }
+            &.disable-side-links {
+              cursor: not-allowed;
+            }
 
             &.active_tab {
               color: #1b1b1b;
