@@ -133,7 +133,7 @@ const Earn = ({
           </Col>
 
           <Col>
-            <div className="earn-deposite-card calculator-main-container">
+            <div className={lockerDefaultSelectTab === "2" ? "earn-deposite-card calculator-main-container calculator-withdraw-height" : "earn-deposite-card calculator-main-container" }>
               <div className="calculator-title">Calculator</div>
               <div className="calculator-container">
                 <div className="content-container">
