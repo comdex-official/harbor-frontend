@@ -455,7 +455,7 @@ const Vote = ({
           <Col>
             <div className="vote-text-main-container mt-3">
               <div className="vote-text-container">
-                {currentProposalAllData ? "Votes are due by" + calculteVotingTime() : "Voting for epoc proposal not active "}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
+                {currentProposalAllData ? "Votes are due by" + calculteVotingTime() : "Voting for epoch proposal not active "}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
               </div>
             </div>
           </Col>

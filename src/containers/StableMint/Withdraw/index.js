@@ -364,12 +364,12 @@ const Deposit = ({
                                                         <div className="svg-icon">
                                                             <div className="svg-icon-inner">
                                                                 <SvgIcon
-                                                                    name={iconNameFromDenom(pair?.denomOut)}
+                                                                    name={iconNameFromDenom(pair?.denomIn)}
                                                                 />
                                                                 <span
                                                                     style={{ textTransform: "uppercase" }}
                                                                 >
-                                                                    {denomToSymbol(pair?.denomOut)}
+                                                                    {denomToSymbol(pair?.denomIn)}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -417,11 +417,11 @@ const Deposit = ({
                             </div>
                         </Row>
                         <Row>
-                            <div className="title"> {denomToSymbol(pair?.denomIn)}  to be withdrawn </div>
+                            <div className="title"> CMST to be Burnt</div>
                             <div className="value">
                                 {calcutlateCMSTToBeBurned(inAmount, drawDownFee)}
                                 {" "}
-                                {denomToSymbol(pair?.denomIn)}
+                                {denomToSymbol(pair?.denomOut)}
                             </div>
                         </Row>
                     </div>
