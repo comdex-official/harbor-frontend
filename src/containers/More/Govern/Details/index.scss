@@ -30,6 +30,11 @@
       @media only screen and (max-width: 550px) {
         flex-direction: column;
       }
+      .totalvalue-chart {
+        .highcharts-empty-series {
+          fill: #c0c0c0;
+        }
+      }
       .govern-dlt-chart {
         width: 40%;
       }
