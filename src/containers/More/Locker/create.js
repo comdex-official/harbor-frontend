@@ -217,9 +217,6 @@ const Create = ({
                         <div className="voting-title">Your voting power will be:</div>
                         <div className="value-main-container">
                             <div className="harbor-value">{veHarbor} veHARBOR</div>
-                            <div className="harbor-locked-value">
-
-                            </div>
                         </div>
                     </div>
                     <div className="assets-poolSelect-btn">

@@ -58,7 +58,7 @@ const GovernDetails = ({
     if (currentProposalId) {
       fetchSpecificProposal(currentProposalId)
     }
-  }, [voteCount])
+  }, [currentProposalId, voteCount])
 
   useEffect(() => {
     if (currentProposalId && address) {
@@ -91,10 +91,10 @@ const GovernDetails = ({
     let abstain = Number(value?.abstain);
     let totalValue = yes + no + abstain + veto;
 
-    yes = Number((yes / totalValue) * 100).toFixed(2)
-    no = Number((no / totalValue) * 100).toFixed(2)
-    veto = Number((veto / totalValue) * 100).toFixed(2)
-    abstain = Number((abstain / totalValue) * 100).toFixed(2)
+    yes = Number(((yes / totalValue) * 100) || 0).toFixed(2)
+    no = Number(((no / totalValue) * 100) || 0).toFixed(2)
+    veto = Number(((veto / totalValue) * 100) || 0).toFixed(2)
+    abstain = Number(((abstain / totalValue) * 100) || 0).toFixed(2)
     setGetVotes({
       ...getVotes,
       yes: yes,
@@ -171,6 +171,7 @@ const GovernDetails = ({
         size: "120%",
         innerSize: "75%",
         borderWidth: 0,
+        className: "totalvalue-chart",
         dataLabels: {
           enabled: false,
           distance: -14,
