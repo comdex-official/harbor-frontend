@@ -237,18 +237,18 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
         name: "",
         data: [
           {
+            name: "AXL-USDC",
+            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]),
+            color: "#665AA6",
+          },
+          {
             name: "ATOM",
             y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]),
-            color: "#665AA6",
+            color: "#BFA9D7",
           },
           {
             name: "CMDX",
             y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"]),
-            color: "#BFA9D7",
-          },
-          {
-            name: "AXL-USDC",
-            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]),
             color: "#8e78a5",
           },
           {
@@ -304,20 +304,20 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
         name: "",
         data: [
           {
+            name: "AXL-USDC",
+            y: Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0),
+            color: "#665AA6",
+          },
+          {
             name: "ATOM",
             y: Number(
               totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0
             ),
-            color: "#665AA6",
+            color: "#BFA9D7",
           },
           {
             name: "CMDX",
             y: Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0),
-            color: "#BFA9D7",
-          },
-          {
-            name: "AXL-USDC",
-            y: Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0),
             color: "#8e78a5",
           },
           {
@@ -365,7 +365,19 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                   <HighchartsReact highcharts={Highcharts} options={Options} />
                 </div>
                 <div className="totalvalues-right">
-                  <div className="dashboard-statics mb-4">
+                  <div className="dashboard-statics mb-4  ">
+                    <p>AXL-USDC</p>
+                    <h3>
+                      $
+                      {commaSeparator(
+                        Number(
+                          totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0
+                        ).toFixed(ZERO_DOLLAR_DECIMALS)
+                      )}
+                    </h3>
+                  </div>
+
+                  <div className="dashboard-statics mb-4 total-dashboard-stats">
                     <p>ATOM</p>
                     <h3>
                       $
@@ -377,24 +389,13 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                       )}
                     </h3>
                   </div>
-                  <div className="dashboard-statics mb-4 total-dashboard-stats">
+                  <div className="dashboard-statics mb-4 total-dashboard-stats-2">
                     <p>CMDX</p>
                     <h3>
                       $
                       {commaSeparator(
                         Number(
                           totalValueLocked?.get("ucmdx")?.dollarValue || 0
-                        ).toFixed(ZERO_DOLLAR_DECIMALS)
-                      )}
-                    </h3>
-                  </div>
-                  <div className="dashboard-statics mb-4 total-dashboard-stats total-dashboard-stats-2 ">
-                    <p>AXL-USDC</p>
-                    <h3>
-                      $
-                      {commaSeparator(
-                        Number(
-                          totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
@@ -432,23 +433,24 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                   <HighchartsReact highcharts={Highcharts} options={MintedCMSTOptions} />
                 </div>
                 <div className="totalvalues-right">
-                  <div className="dashboard-statics mb-4">
+
+                  <div className="dashboard-statics mb-4 ">
+                    <p>AXL-USDC</p>
+                    <h3>
+                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                    </h3>
+                  </div>
+
+                  <div className="dashboard-statics mb-4 total-dashboard-stats">
                     <p>ATOM</p>
                     <h3>
                       {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
-                  <div className="dashboard-statics mb-4 total-dashboard-stats">
+                  <div className="dashboard-statics mb-4 total-dashboard-stats-2">
                     <p>CMDX</p>
                     <h3>
                       {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
-                    </h3>
-                  </div>
-
-                  <div className="dashboard-statics mb-4 total-dashboard-stats-2">
-                    <p>AXL-USDC</p>
-                    <h3>
-                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
 

@@ -140,7 +140,6 @@ const Create = ({
         }
     }
 
-    // calculateDateValue()
 
     // UseEffect calls 
     useEffect(() => {
@@ -182,7 +181,7 @@ const Create = ({
                         </div>
                     </div>
 
-                    <div className="date-main-container mt-4">
+                    <div className="date-main-container mt-3">
                         <div className="amount-available-main-container">
                             <div className="amount-container">Date <TooltipIcon text="Expected unlock date for locked HARBOR" /></div>
                         </div>
@@ -197,7 +196,7 @@ const Create = ({
                         </div>
                     </div>
 
-                    <div className="date-main-container mt-4">
+                    <div className="date-main-container mt-3">
                         <div className="amount-available-main-container">
                             <div className="amount-container">Expires</div>
                         </div>
@@ -214,7 +213,7 @@ const Create = ({
                     </div>
 
 
-                    <div className="voting-main-container mt-4 ml-1">
+                    <div className="voting-main-container mt-3 ml-1">
                         <div className="voting-title">Your voting power will be:</div>
                         <div className="value-main-container">
                             <div className="harbor-value">{veHarbor} veHARBOR</div>

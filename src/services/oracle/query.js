@@ -58,12 +58,21 @@ export const queryMarketList = (
 };
 
 export const fetchRestPrices = (callback) => {
-  axios
-    .get(`${API_URL}/cswap/prices`)
-    .then((result) => {
-      callback(null, result?.data);
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch(`${API_URL}/api/v2/cswap/tokens/HARBOR`, requestOptions)
+    .then((response) => {
+      if (response?.status === 200) {
+        return response?.json();
+      }
     })
-    .catch((error) => {
-      callback(error?.message);
-    });
+    .then(result => callback(null, result?.data))
+    .catch(error => callback(error?.message));
 };
