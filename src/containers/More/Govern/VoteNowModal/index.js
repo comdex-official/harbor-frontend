@@ -32,7 +32,7 @@ const VoteNowModal = ({
     setLoading(true)
     if (address) {
       if (userVote) {
-        transactionForVote(address,currentProposalId, userVote, (error, result) => {
+        transactionForVote(address, currentProposalId, userVote, (error, result) => {
           if (error) {
             message.error(error?.rawLog || "Transaction Failed")
             setLoading(false)
@@ -67,7 +67,7 @@ const VoteNowModal = ({
   return (
     <>
       <div>
-        <Button type="primary" className="btn-filled mb-n4" onClick={showModal} loading={loading} disabled={currentProposal?.status !== "open"} >Vote Now</Button>
+        <Button type="primary" className="btn-filled mb-n4" onClick={showModal} disabled={currentProposal?.status !== "open"} >Vote Now</Button>
       </div>
       <Modal
         centered={true}
@@ -104,7 +104,7 @@ const VoteNowModal = ({
               <Button type="primary" className="px-5 mr-3" size="large" onClick={handleCancel} disabled={loading}>
                 Cancel
               </Button>
-              <Button type="primary" className="btn-filled px-5" size="large" onClick={handleOk} loading={loading}  >
+              <Button type="primary" className="btn-filled px-5" size="large" onClick={handleOk} loading={loading} disabled={loading} >
                 Confirm
               </Button>
             </Col>
