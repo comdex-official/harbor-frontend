@@ -18,6 +18,8 @@ body {
   font-weight: 300;
   background: $body-background-light !important;
   height: auto !important;
+  margin: 0;
+  padding: 0;
   &.dark-mode {
     background: $primary-gradient !important;
     color: $white;
@@ -1763,4 +1765,18 @@ button {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(#665aa6, 0.8);
+}
+
+.dropconnect-overlay{
+  padding: 0;
+  background: none !important;
+  .ant-dropdown-menu{
+    padding: 0;
+    background: none !important;
+    .ant-dropdown-menu-item{
+      padding: 0;
+      cursor: default;
+      background: none !important;
+    }
+  }
 }
