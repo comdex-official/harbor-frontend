@@ -154,7 +154,7 @@ const Deposit = ({
   return (
     <>
       <Button type="primary btn-filled" size="small" onClick={showModal} className="asset-ibc-btn-container">
-        {variables[lang].deposit} <span className="asset-ibc-btn"> 	&#62;</span>
+        {variables[lang].deposit} <SvgIcon name='chevron-right' viewbox='0 0 13.503 23.616' />
       </Button>
       <Modal
         className="asstedepositw-modal"
