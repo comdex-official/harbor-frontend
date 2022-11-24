@@ -1,6 +1,5 @@
 import { Button, message } from "antd";
 import Long from "long";
-// import "./index.scss";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -11,7 +10,6 @@ import { ValidateInputNumber } from "../../../config/_validation";
 import {
     amountConversion,
     amountConversionWithComma,
-    denomConversion,
     getAmount,
     getDenomBalance,
 } from "../../../utils/coin";
@@ -21,24 +19,15 @@ import { setAssets, setPair } from "../../../actions/asset";
 import {
     setWhiteListedAssets,
     setAllWhiteListedAssets,
-    setIsLockerExist,
     setOwnerVaultInfo,
     setCollectorData,
     setExtendedPairVaultListData,
     setSelectedExtentedPairvault
 } from "../../../actions/locker";
-import { queryAssets, queryPair, queryPairVault } from "../../../services/asset/query";
+import { queryPair, queryPairVault } from "../../../services/asset/query";
 import {
-    DEFAULT_FEE,
-    DEFAULT_PAGE_NUMBER,
-    DEFAULT_PAGE_SIZE,
-    DOLLAR_DECIMALS,
     PRODUCT_ID,
 } from "../../../constants/common";
-import {
-    queryLockerWhiteListedAssetByProductId,
-    queryUserLockerByProductAssetId,
-} from "../../../services/locker/query";
 import Snack from "../../../components/common/Snack";
 import { signAndBroadcastTransaction } from "../../../services/helper";
 import { defaultFee } from "../../../services/transaction";
@@ -53,7 +42,6 @@ import {
     setAmountIn,
 } from "../../../actions/asset";
 import { useParams } from "react-router";
-import AssetList from '../../../config/ibc_assets.json'
 import { comdex } from "../../../config/network";
 import CustomSkelton from "../../../components/CustomSkelton";
 
@@ -62,17 +50,8 @@ const Deposit = ({
     lang,
     balances,
     address,
-    setAssets,
-    assets,
     setAmountIn,
-    setAmountOut,
-    outAmount,
     refreshBalance,
-    setWhiteListedAssets,
-    whiteListedAsset,
-    ownerLockerInfo,
-    setOwnerVaultInfo,
-    setCollectorData,
     pair,
     setPair,
     assetMap
@@ -82,14 +61,12 @@ const Deposit = ({
     // New 
     const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
     const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.toNumber();
-    const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomOut));
     const drawDownFee = decimalConversion(selectedExtentedPairVaultListData[0]?.drawDownFee) * 100 || "0"
 
 
 
     const dispatch = useDispatch();
     const inAmount = useSelector((state) => state.asset.inAmount);
-    const isLockerExist = useSelector((state) => state.locker.isLockerExist);
     const psmLockedAndMintedData = useSelector((state) => state.stableMint.lockAndMintedData);
 
 
@@ -97,25 +74,13 @@ const Deposit = ({
     const [inProgress, setInProgress] = useState(false);
     const [loading, setLoading] = useState(false);
     const [inputValidationError, setInputValidationError] = useState();
-    const [collectorInfo, setCollectorInfo] = useState();
-    const [validationError, setValidationError] = useState();
     const [currentExtentedVaultdata, setCurrentExtentedVaultdata] = useState();
-    const [mintType, setMintType] = useState("Borrow CMST");
-    const [pairDenomIn, setPairDenomIn] = useState("");
-    const [pairDenomOut, setPairDenomOut] = useState("")
-    const [editType, setEditType] = useState("Mint")
-    const [lockAndMintedData, setLockAndMintedData] = useState()
-    const [upperBoxValue, setUpperBoxValue] = useState("Locked")
-    const [bottomBoxValue, setBottomBoxValue] = useState("Minted")
-    const [lockedAmount, setLockedAmount] = useState(0);
-    const [mintedAmount, setMintedAmount] = useState(0);
 
-    const whiteListedAssetData = [];
+
+
     const resetValues = () => {
         dispatch(setAmountIn(0));
     };
-
-
 
     // new 
 
@@ -155,15 +120,6 @@ const Deposit = ({
 
     // end 
 
-
-    const getAssetDenom = () => {
-        assets?.map((item) => {
-            if (item.id.toNumber() === whiteListedAsset[0]?.toNumber()) {
-                whiteListedAssetData.push(item);
-            }
-        });
-    };
-
     const handleFirstInputChange = (value) => {
         value = toDecimals(value).toString().trim();
         setInputValidationError(
@@ -176,99 +132,11 @@ const Deposit = ({
         dispatch(setAmountIn(value));
     };
 
-    const showInDollarValue = () => {
-        const total = inAmount;
-
-        return `≈ $${Number(total && isFinite(total) ? total : 0).toFixed(
-            DOLLAR_DECIMALS
-        )}`;
-    };
-
     useEffect(() => {
         resetValues();
-        fetchAssets(
-            (DEFAULT_PAGE_NUMBER - 1) * (DEFAULT_PAGE_SIZE * 2),
-            (DEFAULT_PAGE_SIZE * 2),
-            true,
-            false
-        );
-        fetchWhiteListedAssetByid(PRODUCT_ID);
     }, [address]);
 
-    useEffect(() => {
-        fetchCollectorStats();
-    }, [whiteListedAsset]);
-
-    useEffect(() => {
-        fetchOwnerLockerExistByAssetId(PRODUCT_ID, whiteListedAssetId, address);
-    }, [whiteListedAsset, refreshBalance])
-
-
-    const fetchAssets = (offset, limit, countTotal, reverse) => {
-        setInProgress(true);
-        setLoading(true);
-        queryAssets(offset, limit, countTotal, reverse, (error, data) => {
-            setInProgress(false);
-            setLoading(false);
-            if (error) {
-                message.error(error);
-                return;
-            }
-            setAssets(data.assets, data.pagination);
-        });
-    };
-
-    const fetchWhiteListedAssetByid = (productId) => {
-        setInProgress(true);
-        setLoading(true);
-        queryLockerWhiteListedAssetByProductId(productId, (error, data) => {
-            if (error) {
-                message.error(error);
-                return;
-            }
-            setWhiteListedAssets(data?.assetIds);
-            setLoading(false);
-        });
-    };
-
-    const fetchOwnerLockerExistByAssetId = (productId, assetId, address) => {
-        queryUserLockerByProductAssetId(
-            productId,
-            assetId,
-            address,
-            (error, data) => {
-                if (error) {
-                    message.error(error);
-                    return;
-                }
-                let lockerExist = data?.lockerInfo?.lockerId?.toNumber();
-                setOwnerVaultInfo(data?.lockerInfo);
-                if (lockerExist) {
-                    dispatch(setIsLockerExist(true));
-                } else {
-                    dispatch(setIsLockerExist(false));
-                }
-            }
-        );
-    };
-
-    const fetchCollectorStats = () => {
-        queryCollectorInformation((error, result) => {
-            if (error) {
-                message.error(error);
-                return;
-            }
-            setCollectorData(result?.collectorLookup[0])
-            setCollectorInfo(result?.collectorLookup[0]);
-        });
-    };
-
-    getAssetDenom();
-
-    const AvailableAssetBalance =
-        getDenomBalance(balances, pair?.denomOut) || 0;
-    const whiteListedAssetId = whiteListedAsset[0]?.toNumber();
-    const lockerId = ownerLockerInfo?.lockerId;
+    const AvailableAssetBalance = getDenomBalance(balances, pair?.denomOut) || 0;
 
     const handleInputMax = () => {
         if (Number(AvailableAssetBalance)) {

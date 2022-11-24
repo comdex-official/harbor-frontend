@@ -158,7 +158,11 @@ const ConnectButton = ({
         return;
       }
       if (result) {
-        return setHarborPrice(result?.price)
+        if (isNaN(result?.price)) {
+          return setHarborPrice(0)
+        } else {
+          return setHarborPrice(result?.price)
+        }
       }
       else {
         return setHarborPrice(0)
