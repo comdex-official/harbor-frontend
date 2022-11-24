@@ -324,10 +324,11 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             name: "Others",
             y:
               Number(totalDollarValue || 0) -
-              (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
-                Number(
-                  totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0
-                )),
+              (
+                Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
+                Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
+                Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
+              ),
             color: isDarkMode ? "#373549" : "#E0E0E0",
           },
         ],
