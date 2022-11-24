@@ -43,8 +43,6 @@ const StableMint = ({
 
     const [loading, setLoading] = useState(true);
     const [vaultDebt, setVaultDebt] = useState([])
-    const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
-    const [pageSize, setPageSize] = useState(6);
     const [activePage, setActivePage] = useState(DEFAULT_PAGE_NUMBER)
     const [totalExtendedPair, setTotalExtendedPair] = useState({})
     const [stableMintExtendedPairIdData, setStableMintExtendedPairIdData] = useState();
@@ -226,11 +224,7 @@ const StableMint = ({
                 {stableMintExtenedPairVaultList?.length > 0 ? <div >
                     <Pagination
                         defaultCurrent={activePage}
-                        // onChange={handlePageChange}
-                        // total={totalExtendedPair &&
-                        //     totalExtendedPair}
                         pagination={{ defaultPageSize: 6 }}
-                    // pageSize={pageSize}
                     />
                 </div> : ""}
             </div >
