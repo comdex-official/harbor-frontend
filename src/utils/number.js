@@ -54,7 +54,7 @@ export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPri
     }
   }
 
-  else if (marketsMap?.cswapApiPrice[denom]?.price) {
+  else if (!isNaN(marketsMap?.cswapApiPrice)) {
     if (!isNaN(marketsMap?.cswapApiPrice[denom]?.price)) {
       return marketsMap?.cswapApiPrice[denom]?.price
     }

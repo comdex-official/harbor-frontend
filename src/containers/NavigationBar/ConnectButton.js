@@ -150,7 +150,9 @@ const ConnectButton = ({
       if (error) {
         return;
       }
-      setCoingekoPrice(result && result)
+      if(result){
+        setCoingekoPrice(result)
+      }
     });
   };
 
