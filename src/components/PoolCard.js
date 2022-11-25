@@ -105,7 +105,7 @@ PoolCard.propTypes = {
 
 const stateToProps = (state) => {
   return {
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     assetMap: state.asset.map,
   };
 };

@@ -1,7 +1,7 @@
 import { QueryClientImpl } from "comdex-codec/build/comdex/market/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
-import { API_URL } from "../../constants/url";
+import { API_URL, COINGECKO_API_URL } from "../../constants/url";
 import axios from "axios";
 
 let myClient = null;
@@ -67,7 +67,7 @@ export const fetchRestPrices = (callback) => {
     redirect: 'follow'
   };
 
-  fetch(`${API_URL}/api/v2/cswap/tokens/HARBOR`, requestOptions)
+  fetch(`${API_URL}/api/v2/cswap/tokens/all`, requestOptions)
     .then((response) => {
       if (response?.status === 200) {
         return response?.json();
@@ -75,4 +75,15 @@ export const fetchRestPrices = (callback) => {
     })
     .then(result => callback(null, result?.data))
     .catch(error => callback(error?.message));
+};
+
+export const fetchCoingeckoPrices = (callback) => {
+  axios
+    .get(COINGECKO_API_URL)
+    .then((result) => {
+      callback(null, result?.data);
+    })
+    .catch((error) => {
+      callback(error?.message);
+    });
 };

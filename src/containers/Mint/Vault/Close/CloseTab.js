@@ -245,7 +245,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     vault: state.account.vault,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     refreshBalance: state.account.refreshBalance,
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,

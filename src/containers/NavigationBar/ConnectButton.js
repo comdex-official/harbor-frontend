@@ -13,14 +13,14 @@ import {
   showAccountConnectModal
 } from "../../actions/account";
 import { setAssetList } from "../../actions/asset";
-import { setMarkets } from "../../actions/oracle";
+import { setMarkets, setCoingekoPrice, setCswapApiPrice } from "../../actions/oracle";
 import { setHarborPrice } from "../../actions/liquidity";
 import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
 import { queryAssets } from "../../services/asset/query";
 import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { fetchRestPrices, queryMarketList } from "../../services/oracle/query";
+import { fetchCoingeckoPrices, fetchRestPrices, queryMarketList } from "../../services/oracle/query";
 import { marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
 import DisConnectModal from "../DisConnectModal";
@@ -42,7 +42,9 @@ const ConnectButton = ({
   balances,
   assetMap,
   setHarborPrice,
-  harborPrice
+  harborPrice,
+  setCoingekoPrice,
+  setCswapApiPrice,
 }) => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -59,7 +61,6 @@ const ConnectButton = ({
   }, [address, refreshBalance]);
 
   useEffect(() => {
-    fetchMarkets();
     fetchAssets(
       (DEFAULT_PAGE_NUMBER - 1) * (DEFAULT_PAGE_SIZE * 2),
       DEFAULT_PAGE_SIZE * 2,
@@ -67,6 +68,12 @@ const ConnectButton = ({
       false
     );
   }, []);
+
+  useEffect(() => {
+    fetchMarkets();
+    fetchCoingeckoPrice()
+    fetchPrices();
+  }, [refreshBalance]);
 
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
@@ -122,9 +129,7 @@ const ConnectButton = ({
     }
   }, [address, refreshBalance, markets]);
 
-  useEffect(() => {
-    fetchPrices();
-  }, [markets, assetMap]);
+
 
   useEffect(() => {
     calculateAssetBalance(balances);
@@ -137,6 +142,17 @@ const ConnectButton = ({
       }
 
       setMarkets(result.timeWeightedAverage, result.pagination);
+    });
+  };
+
+  const fetchCoingeckoPrice = () => {
+    fetchCoingeckoPrices((error, result) => {
+      if (error) {
+        return;
+      }
+      if(result){
+        setCoingekoPrice(result)
+      }
     });
   };
 
@@ -157,11 +173,13 @@ const ConnectButton = ({
         message.error(error);
         return;
       }
+      setCswapApiPrice(result)
+      let harborPriceList = result?.filter((item) => item.denom === "uharbor");
       if (result) {
-        if (isNaN(result?.price)) {
+        if (isNaN(harborPriceList[0]?.price)) {
           return setHarborPrice(0)
         } else {
-          return setHarborPrice(result?.price)
+          return setHarborPrice(harborPriceList[0]?.price)
         }
       }
       else {
@@ -236,7 +254,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     show: state.account.showModal,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     refreshBalance: state.account.refreshBalance,
     poolBalances: state.liquidity.poolBalances,
     harborPrice: state.liquidity.harborPrice,
@@ -255,6 +273,8 @@ const actionsToProps = {
   setMarkets,
   setAccountName,
   setHarborPrice,
+  setCoingekoPrice,
+  setCswapApiPrice,
 };
 
 export default connect(stateToProps, actionsToProps)(ConnectButton);

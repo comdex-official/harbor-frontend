@@ -78,6 +78,27 @@ export const denomToSymbol = (key) => {
       return "";
   }
 };
+export const denomToCoingeckoTokenId = (key) => {
+  switch (key) {
+    case "uatom":
+    case ibcDenoms["uatom"]:
+      return "cosmos";
+    case "uosmo":
+    case ibcDenoms["uosmo"]:
+      return "osmosis";
+    case "ucmdx":
+      return "comdex";
+    case "uusdc":
+    case ibcDenoms["uusdc"]:
+      return "axlusdc";
+    case "weth-wei":
+    case "uweth":
+    case ibcDenoms["weth-wei"]:
+      return "axlweth";
+    default:
+      return "";
+  }
+};
 
 export const minimalDenomToDenom = (key) => {
   switch (key) {

@@ -1,5 +1,7 @@
 import { Decimal } from "@cosmjs/math";
+import { ibcDenoms } from "../config/network";
 import { DOLLAR_DECIMALS } from "../constants/common";
+import { denomToCoingeckoTokenId } from "./string";
 
 export const formatNumber = (number) => {
   if (number >= 1000 && number < 1000000) {
@@ -31,15 +33,31 @@ export const truncateToDecimals = (num, dec = 2) => {
   return Math.trunc(num * calcDec) / calcDec;
 };
 
-export const marketPrice = (marketsMap, denom, assetId) => {
-  const value = marketsMap[assetId];
-
+export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPrice) => {
+  const value = marketsMap?.map[assetId]
   if (denom === "ucmst") {
     return 1;
   }
 
-  if (value && value?.twa) {
+  if (denom === ibcDenoms["uusdc"]) {
+    return 1;
+  }
+
+  if (value && value?.twa && value?.isPriceActive) {
     return value?.twa?.toNumber() / 1000000;
+  }
+
+  else if (marketsMap?.coingekoPrice) {
+    let price = marketsMap?.coingekoPrice[denomToCoingeckoTokenId(denom)]
+    if (price) {
+      return price?.usd;
+    }
+  }
+
+  else if (!isNaN(marketsMap?.cswapApiPrice)) {
+    if (!isNaN(marketsMap?.cswapApiPrice[denom]?.price)) {
+      return marketsMap?.cswapApiPrice[denom]?.price
+    }
   }
 
   return 0;
