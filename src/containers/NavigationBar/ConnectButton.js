@@ -13,14 +13,14 @@ import {
   showAccountConnectModal
 } from "../../actions/account";
 import { setAssetList } from "../../actions/asset";
-import { setMarkets } from "../../actions/oracle";
+import { setMarkets, setCoingekoPrice, setCswapApiPrice } from "../../actions/oracle";
 import { setHarborPrice } from "../../actions/liquidity";
 import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
 import { queryAssets } from "../../services/asset/query";
 import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { fetchRestPrices, queryMarketList } from "../../services/oracle/query";
+import { fetchCoingeckoPrices, fetchRestPrices, queryMarketList } from "../../services/oracle/query";
 import { marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
 import DisConnectModal from "../DisConnectModal";
@@ -42,7 +42,9 @@ const ConnectButton = ({
   balances,
   assetMap,
   setHarborPrice,
-  harborPrice
+  harborPrice,
+  setCoingekoPrice,
+  setCswapApiPrice,
 }) => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -66,6 +68,7 @@ const ConnectButton = ({
       true,
       false
     );
+    fetchCoingeckoPrice()
   }, []);
 
   const getPrice = (denom) => {
@@ -140,6 +143,15 @@ const ConnectButton = ({
     });
   };
 
+  const fetchCoingeckoPrice = () => {
+    fetchCoingeckoPrices((error, result) => {
+      if (error) {
+        return;
+      }
+      setCoingekoPrice(result && result)
+    });
+  };
+
   const fetchAssets = (offset, limit, countTotal, reverse) => {
     queryAssets(offset, limit, countTotal, reverse, (error, data) => {
       if (error) {
@@ -157,11 +169,13 @@ const ConnectButton = ({
         message.error(error);
         return;
       }
+      setCswapApiPrice(result)
+      let harborPriceList = result?.filter((item) => item.denom === "uharbor");
       if (result) {
-        if (isNaN(result?.price)) {
+        if (isNaN(harborPriceList[0]?.price)) {
           return setHarborPrice(0)
         } else {
-          return setHarborPrice(result?.price)
+          return setHarborPrice(harborPriceList[0]?.price)
         }
       }
       else {
@@ -255,6 +269,8 @@ const actionsToProps = {
   setMarkets,
   setAccountName,
   setHarborPrice,
+  setCoingekoPrice,
+  setCswapApiPrice,
 };
 
 export default connect(stateToProps, actionsToProps)(ConnectButton);

@@ -23,7 +23,7 @@ import Deposit from "./Deposit";
 import "./index.scss";
 import Withdraw from "./Withdraw";
 
-const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap, harborPrice }) => {
+const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap, harborPrice, coingekoPrice, cswapApiPrice }) => {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false)
@@ -150,11 +150,13 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
     },
   ];
 
+  console.log(cswapApiPrice, "ccccccccccc");
+  console.log(coingekoPrice, "ggggggggggggg");
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
       return harborPrice;
     }
-    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
+    return marketPrice(markets, denom, assetMap[denom]?.id, coingekoPrice, cswapApiPrice) || 0;
   };
 
   let ibcBalances = AssetList?.tokens.map((token) => {
@@ -340,6 +342,9 @@ Assets.propTypes = {
     })
   ),
   markets: PropTypes.object,
+  coingekoPrice: PropTypes.object,
+  cswapApiPrice: PropTypes.array,
+
 };
 
 const stateToProps = (state) => {
@@ -348,6 +353,8 @@ const stateToProps = (state) => {
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
     markets: state.oracle.market.map,
+    coingekoPrice: state.oracle.coingekoPrice,
+    cswapApiPrice: state.oracle.cswapApiPrice,
     refreshBalance: state.account.refreshBalance,
     assetMap: state.asset.map,
     harborPrice: state.liquidity.harborPrice,
