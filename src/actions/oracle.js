@@ -6,7 +6,6 @@ export const setMarkets = (list, pagination) => {
     return map;
   }, {});
 
-
   return {
     type: MARKET_LIST_SET,
     map,
@@ -21,9 +20,13 @@ export const setCoingekoPrice = (value) => {
   };
 };
 
-export const setCswapApiPrice = (value) => {
+export const setCswapApiPrice = (list) => {
+  const priceMap = list?.reduce((map, obj) => {
+    map[obj?.denom] = obj;
+    return map;
+  }, {});
   return {
     type: SET_CSWAP_API_PRICE,
-    value,
+    priceMap,
   };
 };

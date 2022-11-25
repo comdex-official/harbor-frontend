@@ -61,15 +61,19 @@ const ConnectButton = ({
   }, [address, refreshBalance]);
 
   useEffect(() => {
-    fetchMarkets();
     fetchAssets(
       (DEFAULT_PAGE_NUMBER - 1) * (DEFAULT_PAGE_SIZE * 2),
       DEFAULT_PAGE_SIZE * 2,
       true,
       false
     );
-    fetchCoingeckoPrice()
   }, []);
+
+  useEffect(() => {
+    fetchMarkets();
+    fetchCoingeckoPrice()
+    fetchPrices();
+  }, [refreshBalance]);
 
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
@@ -125,9 +129,7 @@ const ConnectButton = ({
     }
   }, [address, refreshBalance, markets]);
 
-  useEffect(() => {
-    fetchPrices();
-  }, [markets, assetMap]);
+
 
   useEffect(() => {
     calculateAssetBalance(balances);
@@ -250,7 +252,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     show: state.account.showModal,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     refreshBalance: state.account.refreshBalance,
     poolBalances: state.liquidity.poolBalances,
     harborPrice: state.liquidity.harborPrice,

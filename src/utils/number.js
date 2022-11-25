@@ -1,4 +1,5 @@
 import { Decimal } from "@cosmjs/math";
+import { ibcDenoms } from "../config/network";
 import { DOLLAR_DECIMALS } from "../constants/common";
 import { denomToCoingeckoTokenId } from "./string";
 
@@ -33,7 +34,7 @@ export const truncateToDecimals = (num, dec = 2) => {
 };
 
 export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPrice) => {
-  const value = marketsMap[assetId];
+  const value = marketsMap?.map[assetId]
   if (denom === "ucmst") {
     return 1;
   }
@@ -45,16 +46,17 @@ export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPri
   if (value && value?.twa && value?.isPriceActive) {
     return value?.twa?.toNumber() / 1000000;
   }
-  else if (coinGeckoPrice) {
-    let price = coinGeckoPrice[denomToCoingeckoTokenId(denom)]
+
+  else if (marketsMap?.coingekoPrice) {
+    let price = marketsMap?.coingekoPrice[denomToCoingeckoTokenId(denom)]
     if (price) {
       return price?.usd;
     }
   }
-  else if (cswapPrice?.length > 0) {
-    let priceList = cswapPrice?.filter((item) => item?.denom === denom);
-    if (!isNaN(priceList[0]?.price)) {
-      return priceList[0]?.price
+
+  else if (marketsMap?.cswapApiPrice[denom]?.price) {
+    if (!isNaN(marketsMap?.cswapApiPrice[denom]?.price)) {
+      return marketsMap?.cswapApiPrice[denom]?.price
     }
   }
 

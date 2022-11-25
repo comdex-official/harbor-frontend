@@ -2,9 +2,9 @@ import * as PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { setVault } from "../../../actions/account";
 import {
-    setAmountIn,
-    setAmountOut, setAssetIn,
-    setAssetOut, setCollateralRatio, setPair
+  setAmountIn,
+  setAmountOut, setAssetIn,
+  setAssetOut, setCollateralRatio, setPair
 } from "../../../actions/asset";
 import { setComplete } from "../../../actions/swap";
 import BorrowTab from "./Tab";
@@ -87,7 +87,7 @@ const stateToProps = (state) => {
     pairs: state.asset.pairs,
     inAmount: state.asset.inAmount,
     outAmount: state.asset.outAmount,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     collateralRatio: state.asset.collateralRatio,
     balances: state.account.balances.list,
     vaults: state.account.vaults.list,

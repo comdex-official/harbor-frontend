@@ -786,7 +786,7 @@ const stateToProps = (state) => {
     pair: state.asset.pair,
     pairs: state.asset.pairs,
     refreshBalance: state.account.refreshBalance,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,
     ownerVaultInfo: state.locker.ownerVaultInfo,
