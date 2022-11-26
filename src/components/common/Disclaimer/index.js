@@ -13,9 +13,6 @@ const TermsModal = () => {
     setIsModalOpen(false);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
   return (
     <>
       <Modal
@@ -27,7 +24,6 @@ const TermsModal = () => {
         centered
         open={isModalOpen}
         onOk={handleOk}
-        onCancel={handleCancel}
       >
         <div className="pdf-view">
           <h4 className="mb-0 text-center">Harbor Terms of Use</h4>
