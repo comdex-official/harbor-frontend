@@ -16,9 +16,10 @@ const TermsModal = () => {
   return (
     <>
       <Modal
-        title="Terms and Conditions"
+        title="Terms of Use"
         className="terms-modal"
         closeIcon={false}
+        closable={false}
         footer={false}
         width={800}
         centered
@@ -1281,7 +1282,7 @@ const TermsModal = () => {
               setIsChecked((value) => !value);
             }}
           >
-            Accept Terms Conditions
+            Accept Terms of Use
           </Checkbox>
         </div>
         <div className="text-center pt-3">
