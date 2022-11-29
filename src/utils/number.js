@@ -47,18 +47,6 @@ export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPri
     return value?.twa?.toNumber() / 1000000;
   }
 
-  else if (marketsMap?.coingekoPrice) {
-    let price = marketsMap?.coingekoPrice[denomToCoingeckoTokenId(denom)]
-    if (price) {
-      return price?.usd;
-    }
-  }
-
-  else if (!isNaN(marketsMap?.cswapApiPrice)) {
-    if (!isNaN(marketsMap?.cswapApiPrice[denom]?.price)) {
-      return marketsMap?.cswapApiPrice[denom]?.price
-    }
-  }
 
   return 0;
 };
