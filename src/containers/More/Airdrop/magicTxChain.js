@@ -1,7 +1,6 @@
 import AGORIC_ICON from '../../../assets/images/icons/AGORIC.png';
 import CRONOS_ICON from '../../../assets/images/icons/CRONOS.png';
 import EVMOS_ICON from '../../../assets/images/icons/EVMOS.png';
-import MNTL_ICON from '../../../assets/images/icons/MNTL.png';
 import XPRT_ICON from '../../../assets/images/icons/XPRT.png';
 import INJECTIVE_ICON from '../../../assets/images/icons/INJECTIVE.png';
 import LUNA2_ICON from '../../../assets/images/icons/LUNA2.png';
@@ -49,5 +48,12 @@ export const maginTxChain = [
         networkname: "secret",
         icon: SCRT_ICON,
         magicTxAdd: "secret1k8243674hy30hlq9729sv90xf9xkrkfal4ms6c"
+    },
+    {
+        chainId: 7,
+        chainName: "XPRT",
+        networkname: "persistence",
+        icon: XPRT_ICON,
+        magicTxAdd: "persistence1asmp93td4m865zvkpuy48u05yxcjtwkv9u47x4"
     },
 ]

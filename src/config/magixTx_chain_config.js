@@ -9,7 +9,7 @@ export const chainNetworks = {
         coinMinimalDenom: "ubld",
         coinDecimals: 6,
         prefix: "agoric",
-        coinType: 118,
+        coinType: 564,
     },
     injective: {
         chainId: "injective-1",
@@ -21,7 +21,7 @@ export const chainNetworks = {
         coinMinimalDenom: "inj",
         coinDecimals: 18,
         prefix: "inj",
-        coinType: 118,
+        coinType: 60,
     },
     luna2: {
         chainId: "phoenix-1",
@@ -33,7 +33,7 @@ export const chainNetworks = {
         coinMinimalDenom: "uluna",
         coinDecimals: 6,
         prefix: "terra",
-        coinType: 118,
+        coinType: 330,
     },
     cronos: {
         chainId: "cronosmainnet_25-1",
@@ -45,7 +45,7 @@ export const chainNetworks = {
         coinMinimalDenom: "basecro",
         coinDecimals: 18,
         prefix: "crc",
-        coinType: 118,
+        coinType: 60,
     },
     evmos: {
         chainId: "evmos_9001-2",
@@ -57,7 +57,7 @@ export const chainNetworks = {
         coinMinimalDenom: "aevmos",
         coinDecimals: 18,
         prefix: "evmos",
-        coinType: 118,
+        coinType: 60,
     },
     secret: {
         chainId: "secret-4",
@@ -69,6 +69,18 @@ export const chainNetworks = {
         coinMinimalDenom: "uscrt",
         coinDecimals: 6,
         prefix: "secret",
-        coinType: 118,
+        coinType: 529,
+    },
+    persistence: {
+        chainId: "core-1",
+        chainName: "Persistence",
+        rpc: "https://persistence-rpc.polkachu.com",
+        rest: "https://persistence-api.polkachu.com",
+        explorerUrlToTx: "https://www.mintscan.io/persistence/txs/{txHash}",
+        coinDenom: "XPRT",
+        coinMinimalDenom: "uxprt",
+        coinDecimals: 6,
+        prefix: "persistence",
+        coinType: 750,
     },
 };
