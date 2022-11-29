@@ -128,8 +128,9 @@
         list-style-type: none;
         padding-left: 0;
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(8, 1fr);
         grid-gap: 1.5rem;
+        place-items: flex-end;
         li {
           text-align: center;
           grid-column: span 3;
@@ -280,6 +281,9 @@
           }
           &.pool-group-width{
             width: 33%;
+          }
+          &.pool-group-width-2 {
+            width: 26%;
           }
         }
       }
