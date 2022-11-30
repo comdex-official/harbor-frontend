@@ -197,8 +197,8 @@ $HARBOR   $CMST`
   }, [address])
 
   useEffect(() => {
-    fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
-  }, [isEligibilityModalOpen, address])
+    fetchCheckEligibility(userComdexAddress, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
+  }, [isEligibilityModalOpen, address, userComdexAddress])
 
 
   // const time = new Date(counterEndTime);
