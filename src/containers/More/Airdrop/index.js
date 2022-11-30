@@ -1,8 +1,8 @@
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from "../../../components/common";
+import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import { Button, message } from "antd";
+import { Button, message, Modal } from "antd";
 import Highcharts from "highcharts";
 import highchartsMore from "highcharts/highcharts-more";
 import solidGauge from "highcharts/modules/solid-gauge";
@@ -49,6 +49,8 @@ import { MyTimer } from "../../../components/TimerForAirdrop";
 import { setuserEligibilityData } from "../../../actions/airdrop";
 import { DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../constants/common";
 import { useNavigate } from 'react-router-dom';
+import Lottie from 'react-lottie';
+import celebrationAnimation from '../../../assets/lottefiles/74680-confetti.json'
 
 
 highchartsMore(Highcharts);
@@ -72,6 +74,33 @@ const Airdrop = ({
   const [totalClaimedveHarbor, setTotalClaimedveHarbor] = useState(0);
   const [claimAllEligibility, setClaimAllEligibility] = useState(false)
   const [totalEligibleToken, setTotalEligibletoken] = useState(0)
+  const [isOpen, setIsOpen] = useState(false);
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: celebrationAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
+
+  const shareText =
+    `
+Hi Guys! %0A
+I am eligible for the $HARBOR airdrop by @Harbor_Protocol🤩 %0A %0A
+
+You may also check your eligibility for the airdrop via👇
+https://app.harborprotocol.one/more/airdrop  %0A%0A
+
+Harbor Protocol is the Interchain Stablecoin Protocol built on the @ComdexOfficial chain. %0A %0A
+
+$HARBOR   $CMST`
+
 
   // Query 
   const fetchTimeLeftToClaim = () => {
@@ -125,8 +154,8 @@ const Airdrop = ({
       }
     }
     else {
-      message.success("Wow You are Eligible! 🤩")
-      fetchCheckTotalEligibility(address)
+      fetchCheckTotalEligibility(address);
+      setIsOpen(true);
     }
   }
 
@@ -153,7 +182,8 @@ const Airdrop = ({
 
 
 
-  const time = new Date(counterEndTime);
+  // const time = new Date(counterEndTime);
+  const time = new Date("12/05/2022 19:30:00");
   time.setSeconds(time.getSeconds());
 
 
@@ -240,7 +270,7 @@ const Airdrop = ({
                 </div>
               } */}
               <div style={{ display: "flex" }}>
-                <div> Airdrop Claim to Begin Soon </div>
+                <div> <MyTimer expiryTimestamp={time} text={"Airdrop Claim to Begin in"} /></div>
               </div>
             </div>
           </div>
@@ -265,7 +295,7 @@ const Airdrop = ({
             </Col>
             <Col xl="4" lg="6">
               <div className="airdrop-upper-card airdrop-upper-card2">
-                <h3>Airdrop for Chains with Magic Txn <TooltipIcon text="Users need to perform the Magic Txn for every individual chain listed below to recieve there airdrop which will get distributed to their Comdex address." /></h3>
+                <h3>Airdrop for Chains with Magic Txn <TooltipIcon text="Users need to perform the Magic Txn for every individual chain listed below to receive there airdrop which will get distributed to their Comdex address." /></h3>
                 <ul>
                   {maginTxChain?.map((item) => {
                     return (
@@ -277,7 +307,7 @@ const Airdrop = ({
                   })}
                 </ul>
                 <div className="text-center mt-auto">
-                  <Button type="primary" className="different-chain-eligibility">Click on different chains to check eligibility</Button>
+                  <Button type="primary" className="different-chain-eligibility">Click on different chains to check eligibility and complete missions</Button>
                 </div>
               </div>
             </Col>
@@ -465,8 +495,48 @@ const Airdrop = ({
                   </li>
                 </ul>
                 <div className="text-center mt-auto allChain-mission-btn-container" >
-                  <Button type="primary" onClick={() => handleClaimAll()}  >Check Eligibility</Button>
+                  <Button type="primary" onClick={() => handleClaimAll()} loading={loading} disabled={loading}  >Check Eligibility</Button>
                   <Button type="primary" className="btn-filled mission-btn" disabled={true}>Complete Mission</Button>
+                </div>
+                <div className="eligibility-modal-container">
+                  <Modal
+                    centered={true}
+                    className="disclaimer-modal"
+                    footer={null}
+                    header={null}
+                    open={isOpen}
+                    closable={true}
+                    width={700}
+                    isHidecloseButton={true}
+                    onCancel={handleCancel}
+                    closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
+                    maskStyle={{ background: "rgba(0, 0, 0, 0.6)" }}
+                  >
+                    <div className="eligiblity-inner-modal-title">
+                      <h2>Congrats! You are Eligible for <br />  <b>{amountConversionWithComma(((totalEligibleToken / TOTAL_ACTIVITY) || 0), 2)} $HARBOR</b>  & <b>{amountConversionWithComma(((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0), 2)} $veHARBOR</b> </h2>
+
+                      <div className="description-text">
+                        <p>
+                          <Lottie
+                            options={defaultOptions}
+                            height={100}
+                            width={200}
+                          />
+                        </p>
+                      </div>
+                      <p>Share with your friends</p>
+                      <div className="text-center mt-4">
+                      </div>
+                      <div className="d-flex agree-btn">
+                        <div className="share-btn-main-container">
+                          <div className="twitter-btn-container airdrop-share-btn">
+                            <a href={`https://twitter.com/intent/tweet?original_referer&ref_src=twsrc%5Etfw%7Ctwcamp%5Ebuttonembed%7Ctwterm%5Eshare%7Ctwgr%5E&text=${shareText}`} target="_blank"> <SvgIcon name="twitter" viewbox="0 0 22 25" /></a>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </Modal>
                 </div>
               </div>
             </Col>
@@ -474,7 +544,7 @@ const Airdrop = ({
           <Row className="airdrop-bottom">
             <Col lg="4">
               <div className="airdrop-bottom-card airdrop-bottom-card1">
-                <h2>Your Airdrop Details <TooltipIcon text="Total Harbor ( Magic Txn + Non Magic Txn chains + LP Pools; Harbor from Magic Txn chains will add here only after completion of magic Txn by sending Comdex address in Memo)" /></h2>
+                <h2>Your Airdrop Details <TooltipIcon text="Total Harbor ( Magic Txn + Non Magic Txn chains + LP Pools; Harbor from Magic Txn chains will add here only after completion of magic Txn)" /></h2>
                 <div className="airdrop-statics">
                   <p className="total-value">$Harbor Airdrop <TooltipIcon text="User’s Total $Harbor airdrop across all chains and pools" /></p>
                   <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
