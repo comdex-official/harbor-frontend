@@ -25,6 +25,8 @@ import {
   setAccountAddress,
   setAccountName,
 } from "../../../../actions/account";
+import Lottie from 'react-lottie';
+import celebrationAnimation from '../../../../assets/lottefiles/74680-confetti.json'
 
 const ChainModal = ({
   currentChain,
@@ -43,6 +45,28 @@ const ChainModal = ({
   const [userCurrentChainAddress, setUserCurrentChainAddress] = useState("")
   const [txLogin, setTxLogin] = useState(false);
   const [disableTxBtn, setDisableTxBtn] = useState(true)
+  const [isOpen, setIsOpen] = useState(false);
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: celebrationAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
+  const shareText =
+    `
+Hi Guys! %0A
+I am eligible for the $HARBOR airdrop by @Harbor_Protocol🤩 %0A %0A
+
+You may also check your eligibility for the airdrop via👇
+https://app.harborprotocol.one/more/airdrop  %0A%0A
+
+Harbor Protocol is the Interchain Stablecoin Protocol built on the @ComdexOfficial chain. %0A %0A
+
+$HARBOR   $CMST`
 
   // Query 
   const fetchCheckEligibility = (address, chainId) => {
@@ -50,7 +74,8 @@ const ChainModal = ({
     checkEligibility(address, chainId).then((res) => {
       if (res) {
         setDisableTxBtn(false)
-        message.success("Wow You are Eligible! 🤩")
+        setIsModalVisible(false)
+        setIsOpen(true)
       }
       else {
         message.error("Sorry you are not Eligible! 🙁")
@@ -92,6 +117,11 @@ const ChainModal = ({
     setuserEligibilityData(0)
     setIsModalVisible(false);
   };
+
+  const handleElegibleModalCancel = () => {
+    setIsOpen(false);
+  };
+
 
   const checkChainAddressEligibility = (userAddress) => {
     fetchCheckEligibility(userAddress, currentChain?.chainId)
@@ -223,6 +253,47 @@ const ChainModal = ({
         </Row>
 
       </Modal>
+
+      <div className="eligibility-modal-container">
+        <Modal
+          centered={true}
+          className="disclaimer-modal"
+          footer={null}
+          header={null}
+          open={isOpen}
+          closable={true}
+          width={700}
+          isHidecloseButton={true}
+          onCancel={handleElegibleModalCancel}
+          closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
+          maskStyle={{ background: "rgba(0, 0, 0, 0.6)" }}
+        >
+          <div className="eligiblity-inner-modal-title">
+            <h2>Congrats! You are Eligible for <br />  <b>{amountConversionWithComma(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY || 0)} $HARBOR</b>  & <b>{amountConversionWithComma((Number(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)} $veHARBOR</b> </h2>
+
+            <div className="description-text">
+              <p>
+                <Lottie
+                  options={defaultOptions}
+                  height={100}
+                  width={200}
+                />
+              </p>
+            </div>
+            <p>Share with your friends</p>
+            <div className="text-center mt-4">
+            </div>
+            <div className="d-flex agree-btn">
+              <div className="share-btn-main-container">
+                <div className="twitter-btn-container airdrop-share-btn">
+                  <a href={`https://twitter.com/intent/tweet?original_referer&ref_src=twsrc%5Etfw%7Ctwcamp%5Ebuttonembed%7Ctwterm%5Eshare%7Ctwgr%5E&text=${shareText}`} target="_blank"> <SvgIcon name="twitter" viewbox="0 0 22 25" /></a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </Modal>
+      </div>
     </>
   );
 };
