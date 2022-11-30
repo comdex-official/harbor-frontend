@@ -340,6 +340,7 @@ Assets.propTypes = {
     })
   ),
   markets: PropTypes.object,
+
 };
 
 const stateToProps = (state) => {
@@ -347,7 +348,7 @@ const stateToProps = (state) => {
     lang: state.language,
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     refreshBalance: state.account.refreshBalance,
     assetMap: state.asset.map,
     harborPrice: state.liquidity.harborPrice,
