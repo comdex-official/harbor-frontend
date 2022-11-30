@@ -2,7 +2,7 @@ import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from 'react';
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import { Button, message, Modal } from "antd";
+import { Button, Input, message, Modal } from "antd";
 import Highcharts from "highcharts";
 import highchartsMore from "highcharts/highcharts-more";
 import solidGauge from "highcharts/modules/solid-gauge";
@@ -46,7 +46,7 @@ import { amountConversion, amountConversionWithComma } from "../../../utils/coin
 import { formatNumber } from "../../../utils/number";
 import { maginTxChain } from "./magicTxChain";
 import { MyTimer } from "../../../components/TimerForAirdrop";
-import { setuserEligibilityData } from "../../../actions/airdrop";
+import { setuserEligibilityData, setuserComdexEligibilityData } from "../../../actions/airdrop";
 import { DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../constants/common";
 import { useNavigate } from 'react-router-dom';
 import Lottie from 'react-lottie';
@@ -62,7 +62,8 @@ const Airdrop = ({
   refreshBalance,
   userEligibilityData,
   setuserEligibilityData,
-
+  userComdexEligibilityData,
+  setuserComdexEligibilityData,
 }) => {
   const navigate = useNavigate();
 
@@ -75,6 +76,8 @@ const Airdrop = ({
   const [claimAllEligibility, setClaimAllEligibility] = useState(false)
   const [totalEligibleToken, setTotalEligibletoken] = useState(0)
   const [isOpen, setIsOpen] = useState(false);
+  const [isEligibilityModalOpen, setIsEligibilityModalOpen] = useState(false);
+  const [userComdexAddress, setUserComdexAddress] = useState(address);
 
   const defaultOptions = {
     loop: true,
@@ -87,6 +90,11 @@ const Airdrop = ({
 
   const handleCancel = () => {
     setIsOpen(false);
+  };
+
+  const handleEligiblityModalCancel = () => {
+    setTotalEligibletoken(0)
+    setIsEligibilityModalOpen(false);
   };
 
   const shareText =
@@ -115,6 +123,7 @@ $HARBOR   $CMST`
     setLoading(true)
     checkEligibility(address, chainId).then((res) => {
       setClaimAllEligibility(res)
+      setuserComdexEligibilityData(res)
       setLoading(false)
     }).catch((error) => {
       setLoading(false)
@@ -145,17 +154,26 @@ $HARBOR   $CMST`
   }
 
   const handleClaimAll = () => {
-    fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
-    if (!claimAllEligibility) {
-      if (address) {
-        message.error("Sorry you are not Eligible! 🙁")
-      } else {
-        message.error("Please connect  wallet!")
-      }
+    if (address) {
+      setIsEligibilityModalOpen(true)
+    } else {
+      message.error("Please connect wallet!")
     }
-    else {
-      fetchCheckTotalEligibility(address);
-      setIsOpen(true);
+  }
+
+  const handleCheckComdexEligibility = () => {
+    if (address) {
+      fetchCheckEligibility(userComdexAddress, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
+      if (userComdexEligibilityData) {
+        fetchCheckTotalEligibility(userComdexAddress);
+        setIsEligibilityModalOpen(false)
+        setIsOpen(true);
+      }
+      else {
+        message.error("Sorry you are not Eligible! 🙁")
+      }
+    } else {
+      message.error("Please connect  wallet!")
     }
   }
 
@@ -171,15 +189,16 @@ $HARBOR   $CMST`
     fetchTimeLeftToClaim()
     fetchTotalStatsOFClaimedData()
     setClaimAllEligibility(false)
-    fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
   }, [address])
-
 
   useEffect(() => {
     setTotalEligibletoken(0)
+    setUserComdexAddress(address)
   }, [address])
 
-
+  useEffect(() => {
+    fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
+  }, [isEligibilityModalOpen, address])
 
 
   // const time = new Date(counterEndTime);
@@ -495,9 +514,41 @@ $HARBOR   $CMST`
                   </li>
                 </ul>
                 <div className="text-center mt-auto allChain-mission-btn-container" >
-                  <Button type="primary" onClick={() => handleClaimAll()} loading={loading} disabled={loading}  >Check Eligibility</Button>
+                  <Button type="primary" onClick={() => handleClaimAll()} disabled={loading}  >Check Eligibility</Button>
                   <Button type="primary" className="btn-filled mission-btn" disabled={true}>Complete Mission</Button>
                 </div>
+                <div className="eligibility-modal-container-check">
+                  <Modal
+                    centered={true}
+                    className="disclaimer-modal eligibility-modal-container-check-container"
+                    footer={null}
+                    header={null}
+                    open={isEligibilityModalOpen}
+                    closable={true}
+                    width={700}
+                    isHidecloseButton={true}
+                    onCancel={handleEligiblityModalCancel}
+                    closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
+                    maskStyle={{ background: "rgba(0, 0, 0, 0.6)" }}
+                  >
+                    <div className="eligiblity-check-modal-inner-box">
+                      <h2>Enter your Comdex Wallet address </h2>
+
+
+                      <Row className="mb-4">
+                        <Col>
+                          <div className="d-flex eligibility-check-midal-input-box">
+                            <Input placeholder={`Enter Your Comdex Wallet Address`} className="input-box" value={userComdexAddress} onChange={(e) => setUserComdexAddress(e.target.value)} /> <Button type="primary" className="btn-filled eligibility-check-midal-input-button" loading={loading} disabled={loading || !userComdexAddress} onClick={() => handleCheckComdexEligibility()}>Check</Button>
+                          </div>
+                        </Col>
+                      </Row>
+
+                    </div>
+                  </Modal>
+                </div>
+
+
+
                 <div className="eligibility-modal-container">
                   <Modal
                     centered={true}
@@ -538,6 +589,7 @@ $HARBOR   $CMST`
                     </div>
                   </Modal>
                 </div>
+
               </div>
             </Col>
           </Row>
@@ -577,7 +629,6 @@ Airdrop.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   refreshBalance: PropTypes.number.isRequired,
-  userEligibilityData: PropTypes.object.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -586,11 +637,13 @@ const stateToProps = (state) => {
     address: state.account.address,
     refreshBalance: state.account.refreshBalance,
     userEligibilityData: state.airdrop.userEligibilityData,
+    userComdexEligibilityData: state.airdrop.userComdexEligibilityData,
   };
 };
 
 const actionsToProps = {
   setuserEligibilityData,
+  setuserComdexEligibilityData,
 };
 
 export default connect(stateToProps, actionsToProps)(Airdrop);
