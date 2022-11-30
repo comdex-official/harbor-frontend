@@ -288,7 +288,7 @@ $HARBOR   $CMST`
                   <h2>{amountConversionWithComma(0)} <sub className="text-uppercase">harbor</sub></h2>
                 </div>
                 <div className="airdrop-statics mb-0">
-                  <p className="total-value">Total Claimed veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
+                  <p className="total-value">Total Claimed veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 4 months" /></p>
                   <h2>{amountConversionWithComma(totalClaimedveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </div>
@@ -337,7 +337,7 @@ $HARBOR   $CMST`
                         <img src={AXELAR_ICON} alt="" />
                       </div>
                     </div>
-                    <p>AKL</p>
+                    <p>AXL</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -550,7 +550,7 @@ $HARBOR   $CMST`
                   <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
                 </div>
                 <div className="airdrop-statics mb-0">
-                  <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 1 year once he completes the missions" /></p>
+                  <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 4 months once he completes the missions" /></p>
                   <h2>{amountConversionWithComma((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </div>
