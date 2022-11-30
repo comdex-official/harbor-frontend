@@ -474,7 +474,7 @@ const Airdrop = ({
           <Row className="airdrop-bottom">
             <Col lg="4">
               <div className="airdrop-bottom-card airdrop-bottom-card1">
-                <h2>Your Airdrop Details <TooltipIcon text="Total Harbor ( Magic Txn + Non Magic Txn chains + LP Pools; Harbor from Magic Txn chains will add here only after completion of magic Txn by sending Comdex address across Memo)" /></h2>
+                <h2>Your Airdrop Details <TooltipIcon text="Total Harbor ( Magic Txn + Non Magic Txn chains + LP Pools; Harbor from Magic Txn chains will add here only after completion of magic Txn by sending Comdex address in Memo)" /></h2>
                 <div className="airdrop-statics">
                   <p className="total-value">$Harbor Airdrop <TooltipIcon text="User’s Total $Harbor airdrop across all chains and pools" /></p>
                   <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
