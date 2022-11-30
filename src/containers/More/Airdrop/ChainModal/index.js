@@ -50,10 +50,10 @@ const ChainModal = ({
     checkEligibility(address, chainId).then((res) => {
       if (res) {
         setDisableTxBtn(false)
-        message.success("Wow You are Eligible!")
+        message.success("Wow You are Eligible! 🤩")
       }
       else {
-        message.error("Sorry, Not Eligible ")
+        message.error("Sorry you are not Eligible! 🙁")
       }
       setuserEligibilityData(res)
 
@@ -67,33 +67,21 @@ const ChainModal = ({
 
 
   const showModal = () => {
+    if (address) {
+      magicInitializeChain(chainNetworks[currentChain?.networkname], (error, account) => {
+        if (error) {
+          console.log(error, "error");
+          message.error(error);
+          return;
+        }
+        setUserCurrentChainAddress(account?.address)
+      });
 
-    initializeChain((error, account) => {
+      setIsModalVisible(true);
+    } else {
+      message.error("Please connect  wallet!")
+    }
 
-      if (error) {
-        message.error(error);
-        return;
-      }
-
-      setAccountAddress(account.address);
-      fetchKeplrAccountName().then((name) => {
-        setAccountName(name);
-      })
-
-      localStorage.setItem("ac", encode(account.address));
-      localStorage.setItem("loginType", "keplr")
-    });
-
-    magicInitializeChain(chainNetworks[currentChain?.networkname], (error, account) => {
-      if (error) {
-        console.log(error, "error");
-        message.error(error);
-        return;
-      }
-      setUserCurrentChainAddress(account?.address)
-    });
-
-    setIsModalVisible(true);
   };
 
   const handleOk = () => {
@@ -158,7 +146,7 @@ const ChainModal = ({
 
   return (
     <>
-      <Button className="icons" onClick={showModal} disabled={true} >
+      <Button className="icons" onClick={showModal} >
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>
@@ -184,7 +172,8 @@ const ChainModal = ({
               <span>{currentChain?.chainName}</span>
             </div>
             <div className="mission-complete-btn">
-              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" disabled={!userEligibilityData} className="">Complete Mission</Button></Link>
+              {/* <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" disabled={!userEligibilityData} className="">Complete Mission</Button></Link> */}
+              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" disabled={true} className="">Complete Mission</Button></Link>
             </div>
           </div>
         }
@@ -201,7 +190,7 @@ const ChainModal = ({
           <Col>
             <label>Magic Transaction</label>
             <div className="d-flex">
-              <Input placeholder={`Enter Your Comdex Wallet Address`} onChange={(e) => setuserComdexAddress(e.target.value)} />
+              <Input placeholder={`Enter Your Comdex Wallet Address`} disabled={true} onChange={(e) => setuserComdexAddress(e.target.value)} />
               <Button type="primary" className="btn-filled"
                 loading={txLogin}
                 // disabled={
@@ -209,6 +198,7 @@ const ChainModal = ({
                 //   || disableTxBtn
                 //   || txLogin
                 // }
+                disabled={true}
                 onClick={() => handleClickMagicTx()} >
                 Transaction
               </Button>

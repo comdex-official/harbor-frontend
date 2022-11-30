@@ -492,7 +492,7 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     isDarkMode: state.theme.theme.darkThemeEnabled,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     assetMap: state.asset.map,
     harborPrice: state.liquidity.harborPrice,
   };

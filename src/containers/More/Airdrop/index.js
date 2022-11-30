@@ -117,14 +117,17 @@ const Airdrop = ({
 
   const handleClaimAll = () => {
     fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
-    navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)
-    // if (!claimAllEligibility) {
-    //   message.error("Sorry you are not Eligible! 🙁")
-    // }
-    // else {
-    //   message.success("Wow You are Eligible! 🤩")
-    //   navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)
-    // }
+    if (!claimAllEligibility) {
+      if (address) {
+        message.error("Sorry you are not Eligible! 🙁")
+      } else {
+        message.error("Please connect  wallet!")
+      }
+    }
+    else {
+      message.success("Wow You are Eligible! 🤩")
+      fetchCheckTotalEligibility(address)
+    }
   }
 
   useEffect(() => {
@@ -138,9 +141,16 @@ const Airdrop = ({
   useEffect(() => {
     fetchTimeLeftToClaim()
     fetchTotalStatsOFClaimedData()
+    setClaimAllEligibility(false)
     fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
-    fetchCheckTotalEligibility(address)
   }, [address])
+
+
+  useEffect(() => {
+    setTotalEligibletoken(0)
+  }, [address])
+
+
 
 
   const time = new Date(counterEndTime);
@@ -237,14 +247,15 @@ const Airdrop = ({
           <Row className="airdrop-upper pt-2">
             <Col xl="4" lg="12">
               <div className="airdrop-upper-card airdrop-upper-card1">
-                <h2>Airdrop Details</h2>
+                <h2>Airdrop Details </h2>
                 <div className="total-airdrop">
                   <p>Total Airdrop</p>
                   <HighchartsReact highcharts={Highcharts} options={options} />
                 </div>
                 <div className="airdrop-statics mt-n4">
                   <p className="total-value">Total Claimed $Harbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
-                  <h2>{amountConversionWithComma(totalClaimedHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2>
+                  {/* <h2>{amountConversionWithComma(totalClaimedHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2> */}
+                  <h2>{amountConversionWithComma(0)} <sub className="text-uppercase">harbor</sub></h2>
                 </div>
                 <div className="airdrop-statics mb-0">
                   <p className="total-value">Total Claimed veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
@@ -280,7 +291,7 @@ const Airdrop = ({
                         <img src={AKASH_ICON} alt="" />
                       </div>
                     </div>
-                    <p>AKASH</p>
+                    <p>AKT</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -296,7 +307,7 @@ const Airdrop = ({
                         <img src={AXELAR_ICON} alt="" />
                       </div>
                     </div>
-                    <p>AXELAR</p>
+                    <p>AKL</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -304,7 +315,7 @@ const Airdrop = ({
                         <img src={COMDEX_ICON} alt="" />
                       </div>
                     </div>
-                    <p>COMDEX</p>
+                    <p>CMDX</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -312,7 +323,7 @@ const Airdrop = ({
                         <img src={CRESENT_ICON} alt="" />
                       </div>
                     </div>
-                    <p>CRESENT</p>
+                    <p>CRE</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -352,7 +363,7 @@ const Airdrop = ({
                         <img src={SIFCHAIN_ICON} alt="" />
                       </div>
                     </div>
-                    <p>SIFCHAIN</p>
+                    <p>ROWAN</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -360,7 +371,7 @@ const Airdrop = ({
                         <img src={STARGAZE_ICON} alt="" />
                       </div>
                     </div>
-                    <p>STARGAZE</p>
+                    <p>STARS</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -376,7 +387,7 @@ const Airdrop = ({
                         <img src={KUJIRA_ICON} alt="" />
                       </div>
                     </div>
-                    <p>KUJIRA</p>
+                    <p>KUJI</p>
                   </li>
 
                   <li>
@@ -397,7 +408,16 @@ const Airdrop = ({
                     <p>KAVA</p>
                   </li>
 
-                  <li className="group-li pool-group-width">
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={MNTL_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>MNTL</p>
+                  </li>
+
+                  <li className="group-li pool-group-width pool-group-width-2">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -413,7 +433,7 @@ const Airdrop = ({
                     <p>LP POOL 600</p>
                   </li>
 
-                  <li className="group-li-40 pool-group-width">
+                  <li className="group-li-40 pool-group-width pool-group-width-2">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -428,7 +448,7 @@ const Airdrop = ({
                     </div>
                     <p>LP POOL 601</p>
                   </li>
-                  <li className="group-li-40 pool-group-width">
+                  <li className="group-li-40 pool-group-width  pool-group-width-2">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -445,8 +465,8 @@ const Airdrop = ({
                   </li>
                 </ul>
                 <div className="text-center mt-auto allChain-mission-btn-container" >
-                  <Button type="primary" disabled={true}  >Check Eligibility</Button>
-                  <Button type="primary" className="btn-filled mission-btn" onClick={() => handleClaimAll()} disabled={true}>Complete Mission</Button>
+                  <Button type="primary" onClick={() => handleClaimAll()}  >Check Eligibility</Button>
+                  <Button type="primary" className="btn-filled mission-btn" disabled={true}>Complete Mission</Button>
                 </div>
               </div>
             </Col>
@@ -454,7 +474,7 @@ const Airdrop = ({
           <Row className="airdrop-bottom">
             <Col lg="4">
               <div className="airdrop-bottom-card airdrop-bottom-card1">
-                <h2>Your Airdrop Details</h2>
+                <h2>Your Airdrop Details <TooltipIcon text="Total Harbor ( Magic Txn + Non Magic Txn chains + LP Pools; Harbor from Magic Txn chains will add here only after completion of magic Txn by sending Comdex address in Memo)" /></h2>
                 <div className="airdrop-statics">
                   <p className="total-value">$Harbor Airdrop <TooltipIcon text="User’s Total $Harbor airdrop across all chains and pools" /></p>
                   <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>

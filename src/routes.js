@@ -64,6 +64,10 @@ const routes = [
     path: "/more/vote",
     element: <Vote />,
   },
+  {
+    path: "/more/airdrop",
+    element: <Airdrop />,
+  },
 ];
 
 export default routes;
