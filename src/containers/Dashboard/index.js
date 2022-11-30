@@ -35,8 +35,6 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     if (markets) {
       fetchTVL();
     }
-    fetchTotalTokenMinted(PRODUCT_ID);
-    fetchAllProposalUpData(PRODUCT_ID);
   }, [markets, assetMap]);
 
   const fetchTVL = () => {
@@ -161,12 +159,8 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     setHarborCirculatingSypply(amount);
   };
 
-  useEffect(() => {
-    calculatedCmstCurrentSupply();
-  }, [cmstCurrentSupply]);
 
   useEffect(() => {
-    fetchTotalveHarborSupply();
     fetchQueryPairsLockedAndMintedStatistic()
   }, []);
 
@@ -175,11 +169,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
   }, [allCMSTMintedStatistic])
 
 
-  useEffect(() => {
-    if (harborSupply) {
-      calculateHarborSypply();
-    }
-  }, [harborSupply, harborCurrentSypply]);
+
 
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
