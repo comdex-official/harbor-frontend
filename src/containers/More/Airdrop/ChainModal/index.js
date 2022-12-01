@@ -92,6 +92,7 @@ $HARBOR   $CMST`
 
 
   const showModal = () => {
+    setuserEligibilityData(0)
     if (address) {
       magicInitializeChain(chainNetworks[currentChain?.networkname], (error, account) => {
         if (error) {
@@ -302,7 +303,6 @@ ChainModal.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   refreshBalance: PropTypes.number.isRequired,
-  userEligibilityData: PropTypes.object.isRequired,
   setAccountAddress: PropTypes.func.isRequired,
   setAccountName: PropTypes.func.isRequired,
 };
