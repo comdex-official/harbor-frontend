@@ -44,6 +44,12 @@ export const claimveHarbor = async (address, chainId) => {
     return await config;
 }
 
+export const unClaimHarbor = async (address, chainId) => {
+    const client = await CosmWasmClient.connect(configin.rpcEndpoint);
+    const config = await client.queryContractSmart(airdropContractAddress, { "un_claimed_harbor": { "address": address, "chain_id": chainId } });
+    return await config;
+}
+
 export const unClaimveHarbor = async (address, chainId) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
     const config = await client.queryContractSmart(airdropContractAddress, { "un_claimed_ve_harbor": { "address": address, "chain_id": chainId } });
