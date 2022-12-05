@@ -4,7 +4,8 @@ export const missions = [
         name: "liquid",
         title: "Liquid Harbor directly sent to the wallet",
         icon: "liquid-icon",
-        viewBox: "0 0 23.958 40.012"
+        viewBox: "0 0 23.958 40.012",
+        disable: true,
     },
     {
         id: 2,
@@ -13,6 +14,7 @@ export const missions = [
         icon: "mint-icon",
         viewBox: "0 0 30 30",
         path: "/mint",
+        disable: true,
     },
     {
         id: 3,
@@ -21,6 +23,7 @@ export const missions = [
         icon: "vote-icon",
         viewBox: "0 0 30 32.46",
         path: "/more/govern",
+        disable: true,
     },
     {
         id: 4,
@@ -29,13 +32,15 @@ export const missions = [
         icon: "lend-icon",
         viewBox: "0 0 30.023 32.127",
         path: process.env.REACT_APP_COMMODO_WEBSITE_URL + "/lend",
+        disable: true,
     },
     {
         id: 5,
         name: "liquidity",
-        title: "LP on Master pool on dex ATOM/CMDX",
+        title: "LP  on cSwap dex in the  ATOM/CMDX Pool and Farm your LP Tokens",
         icon: "masterpool-icon",
         viewBox: "0 0 32 32",
         path: process.env.REACT_APP_CSWAP_WEBSITE_URL + "/farm",
+        disable: false,
     },
 ]
