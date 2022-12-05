@@ -12,6 +12,7 @@ import "./index.scss";
 
 import PlanePic from '../../../assets/images/plane-img.svg';
 import MissonCardBg from '../../../assets/images/card-bg.jpg';
+import MissonCardBgLight from '../../../assets/images/BANNER AIRDROP.svg';
 import CRONOS_ICON from '../../../assets/images/icons/CRONOS.png';
 import EVMOS_ICON from '../../../assets/images/icons/EVMOS.png';
 import MNTL_ICON from '../../../assets/images/icons/MNTL.png';
@@ -51,6 +52,7 @@ import { DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTI
 import { useNavigate } from 'react-router-dom';
 import Lottie from 'react-lottie';
 import celebrationAnimation from '../../../assets/lottefiles/74680-confetti.json'
+import { eligibilityCheckTracker } from "../../../services/airdropEligiblityTracker";
 
 
 highchartsMore(Highcharts);
@@ -59,6 +61,7 @@ solidGauge(Highcharts);
 const Airdrop = ({
   lang,
   address,
+  isDarkMode,
   refreshBalance,
   userEligibilityData,
   setuserEligibilityData,
@@ -93,7 +96,6 @@ const Airdrop = ({
   };
 
   const handleEligiblityModalCancel = () => {
-    setTotalEligibletoken(0)
     setIsEligibilityModalOpen(false);
   };
 
@@ -164,6 +166,12 @@ $HARBOR   $CMST`
   const handleCheckComdexEligibility = () => {
     if (address) {
       fetchCheckEligibility(userComdexAddress, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
+      eligibilityCheckTracker(DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, userComdexAddress, (error, result) => {
+        if (error) {
+          console.log(error, "Eligibility Request");
+          return;
+        }
+      })
       if (userComdexEligibilityData) {
         fetchCheckTotalEligibility(userComdexAddress);
         setIsEligibilityModalOpen(false)
@@ -192,13 +200,16 @@ $HARBOR   $CMST`
   }, [address])
 
   useEffect(() => {
-    setTotalEligibletoken(0)
     setUserComdexAddress(address)
   }, [address])
 
   useEffect(() => {
     fetchCheckEligibility(userComdexAddress, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
-  }, [isEligibilityModalOpen, address, userComdexAddress])
+  }, [isEligibilityModalOpen, userComdexAddress])
+
+  useEffect(() => {
+    fetchCheckTotalEligibility(address);
+  }, [address, userComdexAddress])
 
 
   // const time = new Date(counterEndTime);
@@ -303,11 +314,10 @@ $HARBOR   $CMST`
                 </div>
                 <div className="airdrop-statics mt-n4">
                   <p className="total-value">Total Claimed $Harbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
-                  {/* <h2>{amountConversionWithComma(totalClaimedHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2> */}
-                  <h2>{amountConversionWithComma(0)} <sub className="text-uppercase">harbor</sub></h2>
+                  <h2>{amountConversionWithComma(totalClaimedHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2>
                 </div>
                 <div className="airdrop-statics mb-0">
-                  <p className="total-value">Total Claimed veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 4 months" /></p>
+                  <p className="total-value">Total Claimed $veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 4 months" /></p>
                   <h2>{amountConversionWithComma(totalClaimedveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </div>
@@ -320,7 +330,7 @@ $HARBOR   $CMST`
                     return (
                       <li key={item?.chainId}>
                         <ChainModal currentChain={item} />
-                        <p>{item?.chainName}</p>
+                        <p>{item?.chainName} </p>
                       </li>
                     )
                   })}
@@ -515,7 +525,7 @@ $HARBOR   $CMST`
                 </ul>
                 <div className="text-center mt-auto allChain-mission-btn-container" >
                   <Button type="primary" onClick={() => handleClaimAll()} disabled={loading}  >Check Eligibility</Button>
-                  <Button type="primary" className="btn-filled mission-btn" disabled={true}>Complete Mission</Button>
+                  <Button type="primary" className="btn-filled mission-btn" onClick={() => navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)}>Complete Mission</Button>
                 </div>
                 <div className="eligibility-modal-container-check">
                   <Modal
@@ -564,7 +574,7 @@ $HARBOR   $CMST`
                     maskStyle={{ background: "rgba(0, 0, 0, 0.6)" }}
                   >
                     <div className="eligiblity-inner-modal-title">
-                      <h2>Congrats! You are Eligible for <br />  <b>{amountConversionWithComma(((totalEligibleToken / TOTAL_ACTIVITY) || 0), 2)} $HARBOR</b>  & <b>{amountConversionWithComma(((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0), 2)} $veHARBOR</b> </h2>
+                      <h2>Congrats! You are Eligible for <br />  <b>{amountConversionWithComma(((userComdexEligibilityData?.claimable_amount / TOTAL_ACTIVITY) || 0), 2)} $HARBOR</b>  & <b>{amountConversionWithComma(((Number(userComdexEligibilityData?.claimable_amount / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0), 2)} $veHARBOR</b> </h2>
 
                       <div className="description-text">
                         <p>
@@ -628,6 +638,7 @@ $HARBOR   $CMST`
 Airdrop.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  isDarkMode: PropTypes.bool.isRequired,
   refreshBalance: PropTypes.number.isRequired,
 };
 
@@ -635,6 +646,7 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    isDarkMode: state.theme.theme.darkThemeEnabled,
     refreshBalance: state.account.refreshBalance,
     userEligibilityData: state.airdrop.userEligibilityData,
     userComdexEligibilityData: state.airdrop.userComdexEligibilityData,
