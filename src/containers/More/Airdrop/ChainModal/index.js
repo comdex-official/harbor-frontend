@@ -4,7 +4,7 @@ import { SvgIcon, Row, Col } from "../../../../components/common";
 import { connect } from "react-redux";
 import { Button, Modal, Input, message } from "antd";
 import "./index.scss";
-
+import { useNavigate } from "react-router";
 import AGORIC_ICON from '../../../../assets/images/icons/AGORIC.png';
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { checkEligibility, unclaimHarbor } from "../../../../services/airdropContractRead";
@@ -20,6 +20,7 @@ import { maginTxChain } from '../magicTxChain'
 import { Fee, MsgSendTokens, signAndBroadcastMagicTransaction, signAndBroadcastTransaction } from "../../../../services/helper";
 import Snack from "../../../../components/common/Snack";
 import variables from "../../../../utils/variables";
+import { Tooltip } from 'antd';
 import { encode } from "js-base64";
 import {
   setAccountAddress,
@@ -27,6 +28,7 @@ import {
 } from "../../../../actions/account";
 import Lottie from 'react-lottie';
 import celebrationAnimation from '../../../../assets/lottefiles/74680-confetti.json'
+import { airdropEligibleUserPostRew, eligibilityCheckTracker } from "../../../../services/airdropEligiblityTracker";
 
 const ChainModal = ({
   currentChain,
@@ -38,6 +40,8 @@ const ChainModal = ({
   setAccountAddress,
   setAccountName,
 }) => {
+  const navigate = useNavigate();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false)
   const [userAddress, setUserAddress] = useState("");
@@ -89,8 +93,6 @@ $HARBOR   $CMST`
     })
   }
 
-
-
   const showModal = () => {
     setuserEligibilityData(0)
     if (address) {
@@ -102,6 +104,16 @@ $HARBOR   $CMST`
         }
         setUserCurrentChainAddress(account?.address)
       });
+
+
+      checkEligibility(address, currentChain?.chainId).then((res) => {
+        if (res) {
+          message.success("Magic Transaction already completed! 👍")
+          navigate(`./complete-mission/${currentChain?.chainId}`)
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
 
       setIsModalVisible(true);
     } else {
@@ -123,11 +135,15 @@ $HARBOR   $CMST`
     setIsOpen(false);
   };
 
-
   const checkChainAddressEligibility = (userAddress) => {
+    eligibilityCheckTracker(currentChain?.chainId, userAddress, (error, result) => {
+      if (error) {
+        console.log(error, "Eligibility Request");
+        return;
+      }
+    })
     fetchCheckEligibility(userAddress, currentChain?.chainId)
   }
-
 
   const handleClickMagicTx = () => {
     setTxLogin(true);
@@ -137,7 +153,6 @@ $HARBOR   $CMST`
       chainNetworks[currentChain?.networkname],
       1
     );
-
     signAndBroadcastMagicTransaction(
       {
         message: msg,
@@ -148,11 +163,16 @@ $HARBOR   $CMST`
       chainNetworks[currentChain?.networkname],
       (error, result) => {
         if (error) {
-          console.log(error);
+          message.error(error)
           setTxLogin(false);
+          return;
         }
         if (result && !result?.code) {
-          console.log(result);
+          airdropEligibleUserPostRew(result?.transactionHash, currentChain?.chainId, (error, result) => {
+            if (error) {
+              console.log(error, "Post Error");
+            }
+          })
           message.success(
             <Snack
               message={variables[lang].tx_success}
@@ -161,7 +181,7 @@ $HARBOR   $CMST`
             />
           )
         } else {
-          message.error("Transaction failed")
+          message.error(result?.rawLog || "Transaction failed")
           console.log(result?.rawLog);
         }
         setTxLogin(false);
@@ -174,14 +194,31 @@ $HARBOR   $CMST`
     setUserAddress(userCurrentChainAddress)
   }, [address, userCurrentChainAddress])
 
+  useEffect(() => {
+    setuserComdexAddress(address)
+  }, [address])
+
+  useEffect(() => {
+    if (isModalVisible) {
+      checkEligibility(userAddress, currentChain?.chainId).then((res) => {
+        if (res) {
+          setDisableTxBtn(false)
+        }
+      }).catch((error) => {
+      })
+    }
+
+  }, [userAddress])
+
 
   return (
     <>
-      <Button className="icons" onClick={showModal} >
+      <Button className="icons" onClick={showModal}>
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>
       </Button>
+
       <Modal
         className="claimrewards-modal"
         centered={true}
@@ -203,8 +240,7 @@ $HARBOR   $CMST`
               <span>{currentChain?.chainName}</span>
             </div>
             <div className="mission-complete-btn">
-              {/* <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" disabled={!userEligibilityData} className="">Complete Mission</Button></Link> */}
-              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" disabled={true} className="">Complete Mission</Button></Link>
+              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" className="">Complete Mission</Button></Link>
             </div>
           </div>
         }
@@ -217,39 +253,43 @@ $HARBOR   $CMST`
             </div>
           </Col>
         </Row>
-        <Row>
+
+        {
+          currentChain?.chainId != 4 && currentChain?.chainId != 5 && currentChain?.chainId != 8 && (
+            <Row>
+              <Col>
+                <label>Magic Transaction</label>
+                <div className="d-flex">
+                  <Input placeholder={`Enter Your Comdex Wallet Address`} value={userComdexAddress} onChange={(e) => setuserComdexAddress(e.target.value)} />
+                  <Button type="primary" className="btn-filled"
+                    loading={txLogin}
+                    disabled={
+                      disableTxBtn ||
+                      txLogin
+                    }
+                    onClick={() => handleClickMagicTx()} >
+                    Transaction
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          )
+        }
+
+
+        <Row className="mt-4">
           <Col>
-            <label>Magic Transaction</label>
-            <div className="d-flex">
-              <Input placeholder={`Enter Your Comdex Wallet Address`} disabled={true} onChange={(e) => setuserComdexAddress(e.target.value)} />
-              <Button type="primary" className="btn-filled"
-                loading={txLogin}
-                // disabled={
-                //   !userEligibilityData
-                //   || disableTxBtn
-                //   || txLogin
-                // }
-                disabled={true}
-                onClick={() => handleClickMagicTx()} >
-                Transaction
-              </Button>
+            <label style={{ width: "100%" }}>
+              <div className="hr-line">
+                <div className="line-1"></div>
+                <div className="text">OR</div>
+                <div className="line-2"></div>
+              </div>
+            </label>
+            <div className="address-text-container">
+              <div className="address"> <span className="lable">Magic Txn Address : </span> <span className="admin-address"> {currentChain?.magicTxAdd}</span>  <span className="modal-address-copy-icon">{<Copy text={currentChain?.magicTxAdd} />}</span></div>
             </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="bottom-text">
-            <p>
-              Harbor Claim <TooltipIcon text="This will get added into Your Harbor Airdrop Balance" />
-              <SvgIcon className="check-green" name="check-circle" viewbox="0 0 15 15" />
-            </p>
-            <h2>{amountConversionWithComma(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY || 0)}<sub>HARBOR</sub></h2>
-          </Col>
-          <Col className="bottom-text">
-            <p>
-              veHarbor Claim <TooltipIcon text="This will get added into Your veHarbor Airdrop Balance" />
-              <SvgIcon className="check-green" name="check-circle" viewbox="0 0 15 15" />
-            </p>
-            <h2>{amountConversionWithComma((Number(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)} <sub>veHARBOR</sub></h2>
+            <div className="error-text"><SvgIcon name="info" viewbox="0 0 16.25 16.25" /> Send a minimal amount (e.g 0.000001) to the above address. Users need to input their Comdex address in MEMO. Magic Txn settlement can take upto 2-3 Hrs. </div>
           </Col>
         </Row>
 

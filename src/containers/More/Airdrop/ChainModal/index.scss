@@ -121,11 +121,24 @@
         display: flex;
         font-weight: 500;
         letter-spacing: 0.5px;
-        font-size: 16px;
+        font-size: 15px;
         color: $secondary-color;
+        align-items: center;
+        .admin-address {
+          margin-left: 10px;
+          font-size: 14px;
+        }
         .modal-address-copy-icon {
           margin-left: 10px;
           margin-top: 2px;
+          .icon {
+            font-size: 13px;
+          }
+        }
+        .lable {
+          .dark-mode & {
+            color: white;
+          }
         }
       }
       .text {
@@ -162,6 +175,26 @@
           font-weight: 600;
         }
       }
+    }
+  }
+  .hr-line {
+    color: #585873;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    .line-1 {
+      height: 2px;
+      width: 17.7rem;
+      background-color: #585873;
+    }
+    .text {
+      margin: 0 5px;
+    }
+    .line-2 {
+      height: 2px;
+      width: 17.7rem;
+      background-color: #585873;
     }
   }
 }
