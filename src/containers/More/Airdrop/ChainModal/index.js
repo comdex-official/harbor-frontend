@@ -168,11 +168,6 @@ $HARBOR   $CMST`
           return;
         }
         if (result && !result?.code) {
-          airdropEligibleUserPostRew(result?.transactionHash, currentChain?.chainId, (error, result) => {
-            if (error) {
-              console.log(error, "Post Error");
-            }
-          })
           message.success(
             <Snack
               message={variables[lang].tx_success}
@@ -288,8 +283,9 @@ $HARBOR   $CMST`
             </label>
             <div className="address-text-container">
               <div className="address"> <span className="lable">Magic Txn Address : </span> <span className="admin-address"> {currentChain?.magicTxAdd}</span>  <span className="modal-address-copy-icon">{<Copy text={currentChain?.magicTxAdd} />}</span></div>
+              <div className="address"> <span className="lable">Amount to be Sent : </span> <span className="admin-address"> {currentChain?.coinDecimal}</span>  <span className="modal-address-copy-icon">{<Copy text={currentChain?.coinDecimal} />}</span></div>
             </div>
-            <div className="error-text"><SvgIcon name="info" viewbox="0 0 16.25 16.25" /> Send a minimal amount (e.g 0.000001) to the above address. Users need to input their Comdex address in MEMO. Magic Txn settlement can take upto 2-3 Hrs. </div>
+            <div className="error-text"><SvgIcon name="info" viewbox="0 0 16.25 16.25" /> Copy the above shown  amount  and send it to the above address. Users need to input their Comdex address in MEMO. Magic Txn settlement can take upto 2-3 Hrs. </div>
           </Col>
         </Row>
 

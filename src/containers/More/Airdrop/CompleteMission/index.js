@@ -410,12 +410,13 @@ const CompleteMission = ({
               <Button type="primary" className="btn-filled "
                 loading={loadingClaimAll}
                 style={{ width: "118px" }}
-                disabled={
-                  loading
-                  || !userEligibilityData
-                  || checkClaimAllBtnDisable
-                  || loadingClaimAll
-                }
+                // disabled={
+                //   loading
+                //   || !userEligibilityData
+                //   || checkClaimAllBtnDisable
+                //   || loadingClaimAll
+                // }
+                disabled={true}
                 onClick={() => claimAllActivityMission(address, Number(chainId))}>
                 Claim All
               </Button>
