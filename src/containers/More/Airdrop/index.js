@@ -48,7 +48,7 @@ import { formatNumber } from "../../../utils/number";
 import { maginTxChain } from "./magicTxChain";
 import { MyTimer } from "../../../components/TimerForAirdrop";
 import { setuserEligibilityData, setuserComdexEligibilityData } from "../../../actions/airdrop";
-import { DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../constants/common";
+import { DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, DOLLAR_DECIMALS, TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../constants/common";
 import { useNavigate } from 'react-router-dom';
 import Lottie from 'react-lottie';
 import celebrationAnimation from '../../../assets/lottefiles/74680-confetti.json'
@@ -81,6 +81,7 @@ const Airdrop = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isEligibilityModalOpen, setIsEligibilityModalOpen] = useState(false);
   const [userComdexAddress, setUserComdexAddress] = useState(address);
+  const [calculatedSupplyPercentage, setCalculatedSupplyPercentage] = useState(0)
 
   const defaultOptions = {
     loop: true,
@@ -212,8 +213,7 @@ $HARBOR   $CMST`
   }, [address, userComdexAddress])
 
 
-  // const time = new Date(counterEndTime);
-  const time = new Date("12/05/2022 19:30:00");
+  const time = new Date(counterEndTime);
   time.setSeconds(time.getSeconds());
 
 
@@ -293,15 +293,12 @@ $HARBOR   $CMST`
         <Col>
           <div className="time-left-head">
             <div className="left-text">
-              {/* {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Airdrop Claim to Begin"} />
+              {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Time Left to Claim Airdrop "} />
                 :
                 <div style={{ display: "flex" }}>
                   <div> Time Left to Claim Airdrop </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
                 </div>
-              } */}
-              <div style={{ display: "flex" }}>
-                <div> <MyTimer expiryTimestamp={time} text={"Airdrop Claim to Begin in"} /></div>
-              </div>
+              }
             </div>
           </div>
           <Row className="airdrop-upper pt-2">
