@@ -189,8 +189,9 @@ const Withdraw = ({ lang, chain, address, balances, handleRefresh }) => {
 
                 if (result?.balance?.amount !== resultBalance?.amount) {
                   handleRefresh();
-                  message.success("IBC Transfer Complete");
                   resetValues();
+
+                  message.success("IBC Transfer Complete");
                   clearInterval(fetchTime);
                 }
               }
