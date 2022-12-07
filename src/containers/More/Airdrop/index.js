@@ -216,6 +216,13 @@ $HARBOR   $CMST`
   const time = new Date(counterEndTime);
   time.setSeconds(time.getSeconds());
 
+  const calculatedDistributedHarbor = () => {
+    let claimedharbor = Number(amountConversion(totalClaimedHarbor || 0));
+    let claimedVeHarbor = Number(amountConversion(totalClaimedveHarbor || 0));
+    let totalSupply = Number(amountConversion(totalAllocation || 0));
+    let calculatePercentage = ((claimedharbor + claimedVeHarbor) / totalSupply) * 100;
+    return calculatePercentage || 0;
+  }
 
   const options = {
     chart: {
@@ -269,7 +276,7 @@ $HARBOR   $CMST`
           {
             color: "#DED0E7",
             radius: "100%",
-            y: 80
+            y: calculatedDistributedHarbor()
           }
         ],
         dataLabels: {
@@ -282,6 +289,12 @@ $HARBOR   $CMST`
     ]
   };
 
+
+  useEffect(() => {
+    calculatedDistributedHarbor()
+  }, [totalClaimedHarbor, totalClaimedveHarbor, totalAllocation])
+
+
   return (
     <div className="app-content-wrapper">
       <Row className="text-right">
@@ -293,10 +306,10 @@ $HARBOR   $CMST`
         <Col>
           <div className="time-left-head">
             <div className="left-text">
-              {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Time Left to Claim Airdrop "} />
+              {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Time Left to Claim Airdrop: "} />
                 :
                 <div style={{ display: "flex" }}>
-                  <div> Time Left to Claim Airdrop </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
+                  <div> Time Left to Claim Airdrop:&nbsp; </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
                 </div>
               }
             </div>
