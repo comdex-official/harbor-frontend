@@ -1,7 +1,6 @@
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { buildQuery } from "@cosmjs/tendermint-rpc/build/tendermint34/requests";
 import { comdex } from "../config/network";
-
 import { DEFAULT_FEE } from "../constants/common";
 
 export const getTypeURL = (key) => {
@@ -20,7 +19,7 @@ export const getTypeURL = (key) => {
       return "/comdex.vault.v1beta1.MsgDepositAndDrawRequest";
 
     default:
-      return ""
+      return "";
   }
 };
 
@@ -62,7 +61,6 @@ export const abbreviateMessage = (msg) => {
     .replace("Msg", "");
 };
 
-
 export const defaultFee = () => {
   return {
     amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
@@ -83,7 +81,7 @@ const txSearchParams = (recipientAddress, pageNumber, pageSize, type) => {
 };
 
 export const fetchTxHistory = (address, pageNumber, pageSize, callback) => {
-  Tendermint34Client.connect(comdex.rpc)
+  Tendermint34Client.connect(comdex?.rpc)
     .then((tendermintClient) => {
       tendermintClient
         .txSearch(
@@ -106,4 +104,21 @@ export const getTransactionTimeFromHeight = async (height) => {
   const block = await tmClient.block(height);
 
   return block?.block?.header?.time;
+};
+
+export const fetchTxHash = (hash, callback) => {
+  Tendermint34Client.connect(comdex?.rpc)
+    .then((tendermintClient) => {
+      tendermintClient
+        .tx({ hash })
+        .then((res) => {
+          callback(null, res);
+        })
+        .catch((error) => {
+          callback(error && error.message);
+        });
+    })
+    .catch((error) => {
+      callback(error && error.message);
+    });
 };

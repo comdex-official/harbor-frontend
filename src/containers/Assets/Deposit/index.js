@@ -1,32 +1,28 @@
-import "./index.scss";
+import { Button, Form, message, Modal, Spin } from "antd";
 import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../../components/common";
-import { connect } from "react-redux";
 import React, { useState } from "react";
-import { Button, Form, Modal, message, Spin } from "antd";
-import { aminoSignIBCTx } from "../../../services/helper";
-import { initializeIBCChain } from "../../../services/keplr";
-import { amountConversion, getAmount } from "../../../utils/coin";
-import variables from "../../../utils/variables";
-import { denomConversion } from "../../../utils/coin";
-import { queryBalance } from "../../../services/bank/query";
-import { toDecimals, truncateString } from "../../../utils/string";
+import { connect } from "react-redux";
 import { fetchProofHeight } from "../../../actions/asset";
+import { Col, Row, SvgIcon } from "../../../components/common";
+import Snack from "../../../components/common/Snack";
 import CustomInput from "../../../components/CustomInput";
-import { setBalanceRefresh } from "../../../actions/account";
 import { comdex } from "../../../config/network";
 import { ValidateInputNumber } from "../../../config/_validation";
 import { DEFAULT_FEE } from "../../../constants/common";
-import Snack from "../../../components/common/Snack";
-import { BiRightArrowAlt } from 'react-icons/bi';
+import { queryBalance } from "../../../services/bank/query";
+import { aminoSignIBCTx } from "../../../services/helper";
+import { initializeIBCChain } from "../../../services/keplr";
+import { fetchTxHash } from "../../../services/transaction";
+import {
+  amountConversion,
+  denomConversion,
+  getAmount
+} from "../../../utils/coin";
+import { toDecimals, truncateString } from "../../../utils/string";
+import variables from "../../../utils/variables";
+import "./index.scss";
 
-const Deposit = ({
-  lang,
-  chain,
-  address,
-  refreshBalance,
-  setBalanceRefresh,
-}) => {
+const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sourceAddress, setSourceAddress] = useState("");
   const [inProgress, setInProgress] = useState(false);
@@ -117,7 +113,7 @@ const Deposit = ({
           message.error(
             <Snack
               message={variables[lang].tx_failed}
-              explorerUrlToTx={chain.chainInfo.explorerUrlToTx}
+              explorerUrlToTx={chain?.explorerUrlToTx}
               hash={result?.transactionHash}
             />
           );
@@ -125,22 +121,105 @@ const Deposit = ({
           message.error(error);
         }
 
+        setInProgress(false);
+        setIsModalOpen(false);
 
         return;
       }
 
-      message.success(
-        <Snack
-          message={variables[lang].tx_success}
-          explorerUrlToTx={chain.chainInfo.explorerUrlToTx}
-          hash={result?.transactionHash}
-        />
-      );
+      if (result?.transactionHash) {
+        message.loading(
+          "Transaction Broadcasting, Waiting for transaction to be included in the block"
+        );
 
-      setBalanceRefresh(refreshBalance + 1);
-      setAmount()
-      setIsModalOpen(false);
+        handleHash(result?.transactionHash);
+      }
     });
+  };
+
+  const handleHash = (txhash) => {
+    let counter = 0;
+
+    const time = setInterval(() => {
+      fetchTxHash(txhash, (hashResult) => {
+        if (hashResult) {
+          if (hashResult?.code !== undefined && hashResult?.code !== 0) {
+            message.error("the error", hashResult?.raw_log);
+            message.error(
+              <Snack
+                message={hashResult?.raw_log}
+                explorerUrlToTx={chain?.explorerUrlToTx}
+                hash={hashResult?.hash}
+              />
+            );
+
+            setInProgress(false);
+            setIsModalOpen(false);
+
+            clearInterval(time);
+
+            return;
+          }
+        }
+
+        counter++;
+        if (counter === 3) {
+          if (
+            hashResult &&
+            hashResult.code !== undefined &&
+            hashResult.code !== 0
+          ) {
+            message.error(
+              <Snack
+                message={hashResult?.raw_log}
+                explorerUrlToTx={chain?.explorerUrlToTx}
+                hash={hashResult?.hash}
+              />
+            );
+
+            setInProgress(false);
+            setIsModalOpen(false);
+            clearInterval(time);
+
+            return;
+          }
+
+          message.success(
+            <Snack
+              message={"Transaction Successful. Token Transfer in progress."}
+              explorerUrlToTx={chain?.explorerUrlToTx}
+              hash={txhash}
+            />
+          );
+
+          setInProgress(false);
+          setIsModalOpen(false);
+          clearInterval(time);
+
+          const fetchTime = setInterval(() => {
+            queryBalance(
+              comdex?.rpc,
+              address,
+              chain?.ibcDenomHash,
+              (error, result) => {
+                if (error) return;
+
+                let resultBalance =
+                  balances?.length &&
+                  chain?.ibcDenomHash &&
+                  balances.find((val) => val.denom === chain?.ibcDenomHash);
+
+                if (result?.balance?.amount !== resultBalance?.amount) {
+                  handleRefresh();
+                  message.success("IBC Transfer Complete");
+                  clearInterval(fetchTime);
+                }
+              }
+            );
+          }, 5000);
+        }
+      });
+    }, 5000);
   };
 
   const handleOk = () => {
@@ -153,8 +232,13 @@ const Deposit = ({
 
   return (
     <>
-      <Button type="primary btn-filled" size="small" onClick={showModal} className="asset-ibc-btn-container">
-        {variables[lang].deposit} <span className="asset-ibc-btn"> 	&#62;</span>
+      <Button
+        type="primary btn-filled"
+        size="small"
+        onClick={showModal}
+        className="asset-ibc-btn-container"
+      >
+        {variables[lang].deposit} <span className="asset-ibc-btn"> &#62;</span>
       </Button>
       <Modal
         className="asstedepositw-modal"
@@ -212,8 +296,8 @@ const Deposit = ({
                           setAmount(
                             availableBalance?.amount > DEFAULT_FEE
                               ? amountConversion(
-                                availableBalance?.amount - DEFAULT_FEE
-                              )
+                                  availableBalance?.amount - DEFAULT_FEE
+                                )
                               : amountConversion(availableBalance?.amount)
                           );
                         }}
@@ -239,7 +323,10 @@ const Deposit = ({
                 loading={inProgress}
                 type="primary"
                 disabled={
-                  inProgress || balanceInProgress || !Number(amount) || validationError?.message
+                  inProgress ||
+                  balanceInProgress ||
+                  !Number(amount) ||
+                  validationError?.message
                 }
                 className="btn-filled modal-btn"
                 onClick={signIBCTx}
@@ -256,7 +343,7 @@ const Deposit = ({
 
 Deposit.propTypes = {
   lang: PropTypes.string.isRequired,
-  refreshBalance: PropTypes.number.isRequired,
+  handleRefresh: PropTypes.func.isRequired,
   address: PropTypes.string,
   chain: PropTypes.any,
 };
@@ -265,13 +352,7 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
-    refreshBalance: state.account.refreshBalance,
   };
 };
 
-const actionsToProps = {
-  setBalanceRefresh,
-};
-
-export default connect(stateToProps, actionsToProps)(Deposit);
-
+export default connect(stateToProps)(Deposit);
