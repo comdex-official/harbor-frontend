@@ -213,6 +213,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
                 if (result?.balance?.amount !== resultBalance?.amount) {
                   handleRefresh();
                   message.success("IBC Transfer Complete");
+                  resetValues();
                   clearInterval(fetchTime);
                 }
               }
