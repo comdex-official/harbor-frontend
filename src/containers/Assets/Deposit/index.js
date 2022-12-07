@@ -121,8 +121,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
           message.error(error);
         }
 
-        setInProgress(false);
-        setIsModalOpen(false);
+        resetValues();
 
         return;
       }
@@ -135,6 +134,12 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
         handleHash(result?.transactionHash);
       }
     });
+  };
+
+  const resetValues = () => {
+    setInProgress(false);
+    setIsModalOpen(false);
+    setAmount();
   };
 
   const handleHash = (txhash) => {
@@ -153,9 +158,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
               />
             );
 
-            setInProgress(false);
-            setIsModalOpen(false);
-
+            resetValues();
             clearInterval(time);
 
             return;
@@ -177,8 +180,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
               />
             );
 
-            setInProgress(false);
-            setIsModalOpen(false);
+            resetValues();
             clearInterval(time);
 
             return;
@@ -192,8 +194,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
             />
           );
 
-          setInProgress(false);
-          setIsModalOpen(false);
+          resetValues();
           clearInterval(time);
 
           const fetchTime = setInterval(() => {
