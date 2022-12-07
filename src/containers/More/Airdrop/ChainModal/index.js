@@ -220,7 +220,7 @@ $HARBOR   $CMST`
         closable={false}
         footer={null}
         open={isModalVisible}
-        width={683}
+        width={685}
         onCancel={handleCancel}
         onOk={handleOk}
         closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
@@ -285,7 +285,7 @@ $HARBOR   $CMST`
               <div className="address"> <span className="lable">Magic Txn Address : </span> <span className="admin-address"> {currentChain?.magicTxAdd}</span>  <span className="modal-address-copy-icon">{<Copy text={currentChain?.magicTxAdd} />}</span></div>
               <div className="address"> <span className="lable">Amount to be Sent : </span> <span className="admin-address"> {currentChain?.coinDecimal}</span>  <span className="modal-address-copy-icon">{<Copy text={currentChain?.coinDecimal} />}</span></div>
             </div>
-            <div className="error-text"><SvgIcon name="info" viewbox="0 0 16.25 16.25" /> Copy the above shown  amount  and send it to the above address. Users need to input their Comdex address in MEMO. Magic Txn settlement can take upto 2-3 Hrs. </div>
+            <div className="error-text"><SvgIcon name="info" viewbox="0 0 16.25 16.25" /> Copy the above shown  amount  and send it to the above address. Users need to input their Comdex address in MEMO. Magic Txn settlement can take upto 10-12 Hrs. </div>
           </Col>
         </Row>
 
