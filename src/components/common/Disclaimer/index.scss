@@ -24,6 +24,7 @@
         text-align: justify;
         font-size: 14.5px;
         margin-bottom: 0;
+        margin: 1rem 0;
         .dark-mode & {
           color: $white;
         }
@@ -77,5 +78,13 @@
   }
   .text-center {
     font-weight: 700;
+  }
+  .border-box {
+    border: 1px solid $white;
+    padding: 0 10px;
+    font-weight: 500;
+    p {
+      color: $error-color !important;
+    }
   }
 }

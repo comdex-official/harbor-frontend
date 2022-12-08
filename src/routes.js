@@ -68,6 +68,10 @@ const routes = [
     path: "/more/airdrop",
     element: <Airdrop />,
   },
+  {
+    path: "/more/airdrop/complete-mission/:chainId",
+    element: <CompleteMission />,
+  },
 ];
 
 export default routes;

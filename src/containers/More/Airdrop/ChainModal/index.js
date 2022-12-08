@@ -4,7 +4,7 @@ import { SvgIcon, Row, Col } from "../../../../components/common";
 import { connect } from "react-redux";
 import { Button, Modal, Input, message } from "antd";
 import "./index.scss";
-
+import { useNavigate } from "react-router";
 import AGORIC_ICON from '../../../../assets/images/icons/AGORIC.png';
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { checkEligibility, unclaimHarbor } from "../../../../services/airdropContractRead";
@@ -20,11 +20,15 @@ import { maginTxChain } from '../magicTxChain'
 import { Fee, MsgSendTokens, signAndBroadcastMagicTransaction, signAndBroadcastTransaction } from "../../../../services/helper";
 import Snack from "../../../../components/common/Snack";
 import variables from "../../../../utils/variables";
+import { Tooltip } from 'antd';
 import { encode } from "js-base64";
 import {
   setAccountAddress,
   setAccountName,
 } from "../../../../actions/account";
+import Lottie from 'react-lottie';
+import celebrationAnimation from '../../../../assets/lottefiles/74680-confetti.json'
+import { airdropEligibleUserPostRew, eligibilityCheckTracker } from "../../../../services/airdropEligiblityTracker";
 
 const ChainModal = ({
   currentChain,
@@ -36,6 +40,8 @@ const ChainModal = ({
   setAccountAddress,
   setAccountName,
 }) => {
+  const navigate = useNavigate();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false)
   const [userAddress, setUserAddress] = useState("");
@@ -43,6 +49,28 @@ const ChainModal = ({
   const [userCurrentChainAddress, setUserCurrentChainAddress] = useState("")
   const [txLogin, setTxLogin] = useState(false);
   const [disableTxBtn, setDisableTxBtn] = useState(true)
+  const [isOpen, setIsOpen] = useState(false);
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: celebrationAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
+  const shareText =
+    `
+Hi Guys! %0A
+I am eligible for the $HARBOR airdrop by @Harbor_Protocol🤩 %0A %0A
+
+You may also check your eligibility for the airdrop via👇
+https://app.harborprotocol.one/more/airdrop  %0A%0A
+
+Harbor Protocol is the Interchain Stablecoin Protocol built on the @ComdexOfficial chain. %0A %0A
+
+$HARBOR   $CMST`
 
   // Query 
   const fetchCheckEligibility = (address, chainId) => {
@@ -50,7 +78,8 @@ const ChainModal = ({
     checkEligibility(address, chainId).then((res) => {
       if (res) {
         setDisableTxBtn(false)
-        message.success("Wow You are Eligible! 🤩")
+        setIsModalVisible(false)
+        setIsOpen(true)
       }
       else {
         message.error("Sorry you are not Eligible! 🙁")
@@ -64,9 +93,8 @@ const ChainModal = ({
     })
   }
 
-
-
   const showModal = () => {
+    setuserEligibilityData(0)
     if (address) {
       magicInitializeChain(chainNetworks[currentChain?.networkname], (error, account) => {
         if (error) {
@@ -76,6 +104,16 @@ const ChainModal = ({
         }
         setUserCurrentChainAddress(account?.address)
       });
+
+
+      checkEligibility(address, currentChain?.chainId).then((res) => {
+        if (res) {
+          message.success("Magic Transaction already completed! 👍")
+          navigate(`./complete-mission/${currentChain?.chainId}`)
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
 
       setIsModalVisible(true);
     } else {
@@ -93,10 +131,19 @@ const ChainModal = ({
     setIsModalVisible(false);
   };
 
+  const handleElegibleModalCancel = () => {
+    setIsOpen(false);
+  };
+
   const checkChainAddressEligibility = (userAddress) => {
+    eligibilityCheckTracker(currentChain?.chainId, userAddress, (error, result) => {
+      if (error) {
+        console.log(error, "Eligibility Request");
+        return;
+      }
+    })
     fetchCheckEligibility(userAddress, currentChain?.chainId)
   }
-
 
   const handleClickMagicTx = () => {
     setTxLogin(true);
@@ -106,7 +153,6 @@ const ChainModal = ({
       chainNetworks[currentChain?.networkname],
       1
     );
-
     signAndBroadcastMagicTransaction(
       {
         message: msg,
@@ -117,11 +163,11 @@ const ChainModal = ({
       chainNetworks[currentChain?.networkname],
       (error, result) => {
         if (error) {
-          console.log(error);
+          message.error(error)
           setTxLogin(false);
+          return;
         }
         if (result && !result?.code) {
-          console.log(result);
           message.success(
             <Snack
               message={variables[lang].tx_success}
@@ -130,7 +176,7 @@ const ChainModal = ({
             />
           )
         } else {
-          message.error("Transaction failed")
+          message.error(result?.rawLog || "Transaction failed")
           console.log(result?.rawLog);
         }
         setTxLogin(false);
@@ -143,21 +189,38 @@ const ChainModal = ({
     setUserAddress(userCurrentChainAddress)
   }, [address, userCurrentChainAddress])
 
+  useEffect(() => {
+    setuserComdexAddress(address)
+  }, [address])
+
+  useEffect(() => {
+    if (isModalVisible) {
+      checkEligibility(userAddress, currentChain?.chainId).then((res) => {
+        if (res) {
+          setDisableTxBtn(false)
+        }
+      }).catch((error) => {
+      })
+    }
+
+  }, [userAddress])
+
 
   return (
     <>
-      <Button className="icons" onClick={showModal} >
+      <Button className="icons" onClick={showModal}>
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>
       </Button>
+
       <Modal
         className="claimrewards-modal"
         centered={true}
         closable={false}
         footer={null}
         open={isModalVisible}
-        width={683}
+        width={685}
         onCancel={handleCancel}
         onOk={handleOk}
         closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
@@ -172,8 +235,7 @@ const ChainModal = ({
               <span>{currentChain?.chainName}</span>
             </div>
             <div className="mission-complete-btn">
-              {/* <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" disabled={!userEligibilityData} className="">Complete Mission</Button></Link> */}
-              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" disabled={true} className="">Complete Mission</Button></Link>
+              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" className="">Complete Mission</Button></Link>
             </div>
           </div>
         }
@@ -186,43 +248,89 @@ const ChainModal = ({
             </div>
           </Col>
         </Row>
-        <Row>
+
+        {
+          currentChain?.chainId != 4 && currentChain?.chainId != 5 && currentChain?.chainId != 8 && (
+            <Row>
+              <Col>
+                <label>Magic Transaction</label>
+                <div className="d-flex">
+                  <Input placeholder={`Enter Your Comdex Wallet Address`} value={userComdexAddress} onChange={(e) => setuserComdexAddress(e.target.value)} />
+                  <Button type="primary" className="btn-filled"
+                    loading={txLogin}
+                    disabled={
+                      disableTxBtn ||
+                      txLogin
+                    }
+                    onClick={() => handleClickMagicTx()} >
+                    Transaction
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          )
+        }
+
+
+        <Row className="mt-4">
           <Col>
-            <label>Magic Transaction</label>
-            <div className="d-flex">
-              <Input placeholder={`Enter Your Comdex Wallet Address`} disabled={true} onChange={(e) => setuserComdexAddress(e.target.value)} />
-              <Button type="primary" className="btn-filled"
-                loading={txLogin}
-                // disabled={
-                //   !userEligibilityData
-                //   || disableTxBtn
-                //   || txLogin
-                // }
-                disabled={true}
-                onClick={() => handleClickMagicTx()} >
-                Transaction
-              </Button>
+            <label style={{ width: "100%" }}>
+              <div className="hr-line">
+                <div className="line-1"></div>
+                <div className="text">OR</div>
+                <div className="line-2"></div>
+              </div>
+            </label>
+            <div className="address-text-container">
+              <div className="address"> <span className="lable">Magic Txn Address : </span> <span className="admin-address"> {currentChain?.magicTxAdd}</span>  <span className="modal-address-copy-icon">{<Copy text={currentChain?.magicTxAdd} />}</span></div>
+              <div className="address"> <span className="lable">Amount to be Sent : </span> <span className="admin-address"> {currentChain?.coinDecimal}</span>  <span className="modal-address-copy-icon">{<Copy text={currentChain?.coinDecimal} />}</span></div>
             </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="bottom-text">
-            <p>
-              Harbor Claim <TooltipIcon text="This will get added into Your Harbor Airdrop Balance" />
-              <SvgIcon className="check-green" name="check-circle" viewbox="0 0 15 15" />
-            </p>
-            <h2>{amountConversionWithComma(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY || 0)}<sub>HARBOR</sub></h2>
-          </Col>
-          <Col className="bottom-text">
-            <p>
-              veHarbor Claim <TooltipIcon text="This will get added into Your veHarbor Airdrop Balance" />
-              <SvgIcon className="check-green" name="check-circle" viewbox="0 0 15 15" />
-            </p>
-            <h2>{amountConversionWithComma((Number(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)} <sub>veHARBOR</sub></h2>
+            <div className="error-text"><SvgIcon name="info" viewbox="0 0 16.25 16.25" /> Copy the above shown  amount  and send it to the above address. Users need to input their Comdex address in MEMO. Magic Txn settlement can take upto 10-12 Hrs. </div>
           </Col>
         </Row>
 
       </Modal>
+
+      <div className="eligibility-modal-container">
+        <Modal
+          centered={true}
+          className="disclaimer-modal"
+          footer={null}
+          header={null}
+          open={isOpen}
+          closable={true}
+          width={700}
+          isHidecloseButton={true}
+          onCancel={handleElegibleModalCancel}
+          closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
+          maskStyle={{ background: "rgba(0, 0, 0, 0.6)" }}
+        >
+          <div className="eligiblity-inner-modal-title">
+            <h2>Congrats! You are Eligible for <br />  <b>{amountConversionWithComma(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY || 0)} $HARBOR</b>  & <b>{amountConversionWithComma((Number(userEligibilityData?.claimable_amount / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)} $veHARBOR</b> </h2>
+
+            <div className="description-text">
+              <p>
+                <Lottie
+                  options={defaultOptions}
+                  height={100}
+                  width={200}
+                />
+              </p>
+            </div>
+            <p>Share with your friends</p>
+            <div className="text-center mt-4">
+            </div>
+            <div className="d-flex agree-btn">
+              <div className="share-btn-main-container">
+                <div className="twitter-btn-container airdrop-share-btn">
+                  <a href={`https://twitter.com/intent/tweet?original_referer&ref_src=twsrc%5Etfw%7Ctwcamp%5Ebuttonembed%7Ctwterm%5Eshare%7Ctwgr%5E&text=${shareText}`} target="_blank"> <SvgIcon name="twitter" viewbox="0 0 22 25" /></a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </Modal>
+      </div>
     </>
   );
 };
@@ -231,7 +339,6 @@ ChainModal.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   refreshBalance: PropTypes.number.isRequired,
-  userEligibilityData: PropTypes.object.isRequired,
   setAccountAddress: PropTypes.func.isRequired,
   setAccountName: PropTypes.func.isRequired,
 };

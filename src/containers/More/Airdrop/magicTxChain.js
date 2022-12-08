@@ -12,48 +12,55 @@ export const maginTxChain = [
         chainName: "BLD",
         networkname: "agoric",
         icon: AGORIC_ICON,
-        magicTxAdd: "agoric1natwpg0qwm0xtz8kymsz453wrspvcqv3r7me5u"
+        magicTxAdd: "agoric1pcjmd4pp5t4sjvhkz92m5th2vk5w99dgnme840",
+        coinDecimal: "0.000001"
     },
     {
         chainId: 3,
         chainName: "CRO",
         networkname: "cronos",
         icon: CRONOS_ICON,
-        magicTxAdd: "crc1asmp93td4m865zvkpuy48u05yxcjtwkvuwfm60"
+        magicTxAdd: "cro1kjzc3p7p67p7chh2pc7hxkvm0hhmnexsw9djvk",
+        coinDecimal: "0.00000001"
     },
     {
         chainId: 4,
         chainName: "EVMOS",
         networkname: "evmos",
         icon: EVMOS_ICON,
-        magicTxAdd: "evmos18gnk7zkj3k7tdf8dwfst6uvnspvhu0y0dnu5kq"
+        magicTxAdd: "evmos1njte06atyns5wtqyapfzcc0m3cpsk5d7h800wc",
+        coinDecimal: "0.000000000000000001"
     },
     {
         chainId: 5,
         chainName: "INJ",
         networkname: "injective",
         icon: INJECTIVE_ICON,
-        magicTxAdd: "inj1asmp93td4m865zvkpuy48u05yxcjtwkvpeyf6f"
+        magicTxAdd: "inj1njte06atyns5wtqyapfzcc0m3cpsk5d7l0f9xg",
+        coinDecimal: "0.000000000000000001"
     },
     {
         chainId: 8,
         chainName: "LUNA",
         networkname: "luna2",
         icon: LUNA2_ICON,
-        magicTxAdd: "terra1asmp93td4m865zvkpuy48u05yxcjtwkvd5fd23"
+        magicTxAdd: "terra10gu8t09uplerxtpd22x8s9zuve7e2a5ew0mj7g",
+        coinDecimal: "0.000001"
     },
     {
         chainId: 6,
         chainName: "SCRT",
         networkname: "secret",
         icon: SCRT_ICON,
-        magicTxAdd: "secret1k8243674hy30hlq9729sv90xf9xkrkfal4ms6c"
+        magicTxAdd: "secret15uwtpll9evv7xmcmgxszleuuhdvnvm7d39tk6a",
+        coinDecimal: "0.000001"
     },
     {
         chainId: 7,
         chainName: "XPRT",
         networkname: "persistence",
         icon: XPRT_ICON,
-        magicTxAdd: "persistence1asmp93td4m865zvkpuy48u05yxcjtwkv9u47x4"
+        magicTxAdd: "persistence127gn02ey4aep77zhm6sgf7p4wq00hpxlajn4mw",
+        coinDecimal: "0.000001"
     },
 ]

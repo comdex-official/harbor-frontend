@@ -6,7 +6,7 @@ import "./index.scss";
 import TooltipIcon from "../../../../components/TooltipIcon";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
-import { airdropMissionBorrow, airdropMissionLiquidity, airdropMissionMint, airdropMissionVote, checkEligibility, claimHarbor, claimveHarbor, timeLeftToClaim, unClaimveHarbor } from "../../../../services/airdropContractRead";
+import { airdropMissionBorrow, airdropMissionLiquidity, airdropMissionMint, airdropMissionVote, checkEligibility, claimHarbor, claimveHarbor, timeLeftToClaim, unClaimHarbor, unClaimveHarbor } from "../../../../services/airdropContractRead";
 import { useEffect } from "react";
 import { useState } from "react";
 import { amountConversionWithComma } from "../../../../utils/coin";
@@ -41,12 +41,14 @@ const CompleteMission = ({
   const [totalTimeLeft, setTotalTimeLeft] = useState(0);
   const [counterEndTime, setCounterEndTime] = useState(0);
   const [userClaimHarbor, setUserClaimHarbor] = useState(0);
+  const [userUnClaimHarbor, setUserUnClaimHarbor] = useState(0);
   const [userClaimveHarbor, setUserClaimveHarbor] = useState(0);
   const [userUnClaimveHarbor, setUserUnClaimveHarbor] = useState(0);
   const [loadingClaimAll, setLoadingClaimAll] = useState(false);
   const [checkClaimAllBtnDisable, setCheckAllBtnDisable] = useState(true);
   const [updateAllQuery, setUpdateAllQuery] = useState(0);
   const [airdropMission, setAirdropMission] = useState({
+    liquid: true,
     mint: false,
     vote: false,
     lend: false,
@@ -84,6 +86,14 @@ const CompleteMission = ({
   const fetchClaimveHarbor = (address, chainId) => {
     claimveHarbor(address, chainId).then((res) => {
       setUserClaimveHarbor(res)
+    }).catch((error) => {
+      console.log(error);
+    })
+  }
+
+  const fetchUnClaimHarbor = (address, chainId) => {
+    unClaimHarbor(address, chainId).then((res) => {
+      setUserUnClaimHarbor(res)
     }).catch((error) => {
       console.log(error);
     })
@@ -140,7 +150,6 @@ const CompleteMission = ({
     setCheckAllBtnDisable(disable);
     return disable;
   }
-
 
   const checkCalculateCompletedMissionStape = () => {
     let MissionClaimeArray = userEligibilityData?.claimed;
@@ -239,6 +248,7 @@ const CompleteMission = ({
       fetchClaimHarbor(address, Number(chainId))
       fetchClaimveHarbor(address, Number(chainId))
       fetchUnClaimveHarbor(address, Number(chainId))
+      fetchUnClaimHarbor(address, Number(chainId))
     }
   }, [address, chainId, updateAllQuery])
 
@@ -286,7 +296,7 @@ const CompleteMission = ({
       align: "right",
       render: (item, index) =>
         <>
-          {item?.path && <a href={item?.path} target="_blank"> <Button className="ml-3" type="primary" disabled={true}>Take me there</Button></a>}
+          {item?.path && <a href={item?.path} target="_blank"> <Button className="ml-3" type="primary" disabled={item?.disable}>Take me there</Button></a>}
           <Button type="primary"
             disabled={
               loading
@@ -347,22 +357,29 @@ const CompleteMission = ({
             <Row>
               <Col md='6'>
                 <div className="airdrop-statics">
-                  <p className="total-value">Claimed Harbor Airdrop <TooltipIcon text="Airdrop  which has been claimed across all chains and liquidity pools" /></p>
+                  <p className="total-value">Claimed Harbor  <TooltipIcon text="Harbor Airdrop  which has been claimed" /></p>
                   <h2>{amountConversionWithComma(userClaimHarbor || 0)} <br /> <sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </Col>
               <Col md='6'>
                 <div className="airdrop-statics">
-                  <p className="total-value">Unclaimed veHarbor Airdrop <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
-                  <h2>{amountConversionWithComma(userUnClaimveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
+                  <p className="total-value">Unclaimed Harbor  <TooltipIcon text="Unclaimed Harbor Tokens" /></p>
+                  <h2>{amountConversionWithComma(userUnClaimHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </Col>
               <Col md='6'>
                 <div className="airdrop-statics">
-                  <p className="total-value">Claimed veHarbor Airdrop <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
+                  <p className="total-value">Claimed veHarbor  <TooltipIcon text="veHarbor that can be claimed  after  4 months upon completion of task" /></p>
                   <h2>{amountConversionWithComma(userClaimveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </Col>
+              <Col md='6'>
+                <div className="airdrop-statics">
+                  <p className="total-value">Unclaimed veHarbor  <TooltipIcon text="Unclaimed  veHarbor will be claimable after completing the Missions" /></p>
+                  <h2>{amountConversionWithComma(userUnClaimveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
+                </div>
+              </Col>
+
             </Row>
           </div>
         </Col>
@@ -393,12 +410,13 @@ const CompleteMission = ({
               <Button type="primary" className="btn-filled "
                 loading={loadingClaimAll}
                 style={{ width: "118px" }}
-                disabled={
-                  loading
-                  || !userEligibilityData
-                  || checkClaimAllBtnDisable
-                  || loadingClaimAll
-                }
+                // disabled={
+                //   loading
+                //   || !userEligibilityData
+                //   || checkClaimAllBtnDisable
+                //   || loadingClaimAll
+                // }
+                disabled={true}
                 onClick={() => claimAllActivityMission(address, Number(chainId))}>
                 Claim All
               </Button>
