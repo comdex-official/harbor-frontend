@@ -23,11 +23,6 @@ const Disclaimer = () => {
         <div className="disclaimerinner">
           <h2>Disclaimer</h2>
           <div className="description-text">
-            {/* <p>
-              Harbor Protocol is a fully decentralised Interchain Stablecoin Protocol on Comdex.
-              <br />
-              By accessing and/or using Harbor, User  agree to these <a href="https://terms.comdex.one/Comdex_Harbor_Terms_and_Conditions.pdf" target="_blank">Terms and Conditions </a> on behalf of yourself and any entity you represent, and you represent and warrant that you have the right and authority to do so.
-            </p> */}
 
             <p>
               Your access and/or use of (a) the website located at https://harborprotocol.one (being the Website referred to in the Terms (as defined below); (b) the Harbor Smart Contracts; and (c) the Comdex Chain on which the Harbor Smart Contracts are deployed, including related trademarks, and other intellectual property, whether such access and/or use is via (i) the Website or (ii) command line, locally installed programs, Software Development Kits, software code and blockchain and smart contract explorers shall be subject to Terms of Use of Harbor (the “Terms”) (accessible at <a href="https://terms.comdex.one/Comdex_Harbor_Terms_and_Conditions.pdf" target="_blank">Terms of Use of Harbor </a>  ) and in particular, to the various disclaimers and liability limitation set out in the section of the Terms entitled “Disclaimers and Limitation of Liability”.
