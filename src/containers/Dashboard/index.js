@@ -141,7 +141,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     if (totalDollarValue) {
       amount =
         Number(totalDollarValue) -
-        (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
+        (Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0) +
           Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
           Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
 
@@ -237,14 +237,14 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             color: "#BFA9D7",
           },
           {
-            name: "CMDX",
-            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"]),
+            name: "OSMO",
+            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]),
             color: "#8e78a5",
           },
           {
             name: "Others",
             y: Number(totalMintedCMST || 0) -
-              (Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0) +
+              (Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
                 Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
                 Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
               ),
@@ -306,8 +306,8 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             color: "#BFA9D7",
           },
           {
-            name: "CMDX",
-            y: Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0),
+            name: "OSMO",
+            y: Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0),
             color: "#8e78a5",
           },
           {
@@ -315,7 +315,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             y:
               Number(totalDollarValue || 0) -
               (
-                Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
+                Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0) +
                 Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
                 Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
               ),
@@ -381,12 +381,12 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     </h3>
                   </div>
                   <div className="dashboard-statics mb-4 total-dashboard-stats-2">
-                    <p>CMDX</p>
+                    <p>OSMO</p>
                     <h3>
                       $
                       {commaSeparator(
                         Number(
-                          totalValueLocked?.get("ucmdx")?.dollarValue || 0
+                          totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
@@ -439,9 +439,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     </h3>
                   </div>
                   <div className="dashboard-statics mb-4 total-dashboard-stats-2">
-                    <p>CMDX</p>
+                    <p>OSMO</p>
                     <h3>
-                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
 
@@ -451,7 +451,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                       commaSeparator(
                         Number(Number(totalMintedCMST || 0) -
                           (
-                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0) +
+                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
                             Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
                             Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
                           )).toFixed(ZERO_DOLLAR_DECIMALS)
