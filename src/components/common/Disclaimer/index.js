@@ -22,7 +22,7 @@ const Disclaimer = () => {
       >
         <div className="disclaimerinner">
           <h2>Disclaimer</h2>
-          <div className="description-text">
+          <div className="disclaimer-description-text">
 
             <p>
               Your access and/or use of (a) the website located at https://harborprotocol.one (being the Website referred to in the Terms (as defined below); (b) the Harbor Smart Contracts; and (c) the Comdex Chain on which the Harbor Smart Contracts are deployed, including related trademarks, and other intellectual property, whether such access and/or use is via (i) the Website or (ii) command line, locally installed programs, Software Development Kits, software code and blockchain and smart contract explorers shall be subject to Terms of Use of Harbor (the “Terms”) (accessible at <a href="https://terms.comdex.one/Comdex_Harbor_Terms_and_Conditions.pdf" target="_blank">Terms of Use of Harbor </a>  ) and in particular, to the various disclaimers and liability limitation set out in the section of the Terms entitled “Disclaimers and Limitation of Liability”.
@@ -63,7 +63,7 @@ const Disclaimer = () => {
                 setIsChecked((value) => !value);
               }}
             >
-              I have read and understood the Terms and Conditions and wish to proceed.
+              I have read and understood the Terms of Use and wish to proceed.
             </Checkbox>
           </div>
           <div className="d-flex agree-btn">
