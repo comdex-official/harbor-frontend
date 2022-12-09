@@ -235,7 +235,7 @@ $HARBOR   $CMST`
               <span>{currentChain?.chainName}</span>
             </div>
             <div className="mission-complete-btn">
-              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" className="">Complete Mission</Button></Link>
+              <Link to={`./complete-mission/${currentChain?.chainId}`}><Button type="primary" size="small" className="btn-filled">Complete Mission</Button></Link>
             </div>
           </div>
         }

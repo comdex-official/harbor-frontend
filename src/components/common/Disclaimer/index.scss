@@ -5,7 +5,7 @@
     padding: 35px !important;
     .ant-modal-body {
       padding: 0;
-      .description-text {
+      .disclaimer-description-text {
         background: rgba($secondary-color, 0.6);
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         border-radius: 20px;
@@ -21,7 +21,7 @@
           color: $white;
         }
       }
-      p {
+      .disclaimer-description-text p {
         font-weight: 400;
         text-align: justify;
         font-size: 14.5px;
