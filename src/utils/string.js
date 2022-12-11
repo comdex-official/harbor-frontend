@@ -22,6 +22,8 @@ export const ibcDenomToDenom = (key) => {
       return "USDC";
     case ibcDenoms["weth-wei"]:
       return "WETH";
+    case ibcDenoms["ujuno"]:
+      return "ujuno";
     default:
       return "";
   }
@@ -31,11 +33,14 @@ export const ibcDenomToDenom = (key) => {
 export const symbolToDenom = (key) => {
   switch (key) {
     case "atom":
-    case ibcDenoms["atom"]:
+    case ibcDenoms["uatom"]:
       return "uatom";
     case "osmo":
-    case ibcDenoms["osmo"]:
+    case ibcDenoms["uosmo"]:
       return "uosmo";
+    case "juno":
+    case ibcDenoms["ujuno"]:
+      return "ujuno";
     case "usdc":
     case ibcDenoms["uusdc"]:
       return "uusdc";
@@ -70,6 +75,9 @@ export const denomToSymbol = (key) => {
     case "uusdc":
     case ibcDenoms["uusdc"]:
       return "USDC";
+    case "ujuno":
+    case ibcDenoms["ujuno"]:
+      return "JUNO";
     case "weth-wei":
     case "uweth":
     case ibcDenoms["weth-wei"]:
@@ -113,6 +121,9 @@ export const minimalDenomToDenom = (key) => {
     case "uosmo":
     case ibcDenoms["uosmo"]:
       return "osmo";
+    case "ujuno":
+    case ibcDenoms["ujuno"]:
+      return "juno";
     case "ucmdx":
       return "cmdx";
     default:
@@ -139,6 +150,9 @@ export const iconNameFromDenom = (key) => {
     case "uusdc":
     case ibcDenoms["uusdc"]:
       return "usdc-icon";
+    case "ujuno":
+    case ibcDenoms["ujuno"]:
+      return "juno-icon";
     case "weth-wei":
     case "uweth":
     case ibcDenoms["weth-wei"]:
