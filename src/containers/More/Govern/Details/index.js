@@ -11,7 +11,7 @@ import { useParams } from "react-router";
 import { checkUserVote, fetchSpecificProposalData } from "../../../../services/contractsRead";
 import { useEffect } from "react";
 import { setCurrentProposal, setUserVote } from "../../../../actions/govern";
-import { truncateString } from "../../../../utils/string";
+import { stringTagParser, truncateString } from "../../../../utils/string";
 import Copy from "../../../../components/Copy";
 import { useState } from "react";
 import moment from "moment";
@@ -281,7 +281,7 @@ const GovernDetails = ({
             <Row>
               <Col>
                 <h2>{currentProposal?.title || "---"}</h2>
-                <p>{currentProposal?.description || "----"} </p>
+                <p>{stringTagParser(currentProposal?.description || " ") || "----"} </p>
               </Col>
             </Row>
           </div>

@@ -11,6 +11,7 @@ import NoData from "../../../components/NoData";
 import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, HALF_DEFAULT_PAGE_SIZE, PRODUCT_ID } from '../../../constants/common';
 import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
 import { amountConversionWithComma } from "../../../utils/coin";
+import { stringTagParser } from "../../../utils/string";
 import "./index.scss";
 
 const { Option } = Select;
@@ -158,6 +159,7 @@ const Govern = ({
       return;
     }
   }
+
   if (loading) {
     return <Spin />;
   }
@@ -225,7 +227,7 @@ const Govern = ({
                             <div className="left-section">
                               <h3>#{item?.id}</h3>
                               <h3>{item?.title}</h3>
-                              <p>{item?.description} </p>
+                              <p>{stringTagParser(item?.description.substring(0, 100) || " ") + "......"} </p>
                             </div>
                             <div className="right-section">
                               <Row>
