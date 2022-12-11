@@ -261,3 +261,15 @@ export const unixToGMTTime = (time) => {
   timestamp = timestamp.format("DD/MMMM/YYYY")
   return timestamp;
 }
+
+export const stringTagParser = input => {
+  const lines = input.split('\n')
+  const output = []
+  lines.forEach((d, i) => {
+    if (i > 0) {
+      output.push(<br />)
+    }
+    output.push(d)
+  })
+  return output
+}
