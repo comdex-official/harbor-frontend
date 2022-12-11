@@ -125,7 +125,6 @@ const Govern = ({
     duration = moment.duration(data, "seconds");
     duration = `${duration.days()} Days ${duration.hours()} Hours`
     return duration;
-
   }
 
   const calculateDurationPercentage = (startTime, duration) => {
