@@ -309,7 +309,7 @@ $HARBOR   $CMST`
               {counterEndTime ? <MyTimer expiryTimestamp={time} text={"AIRDROP ENDS IN: "} />
                 :
                 <div style={{ display: "flex" }}>
-                  <div> <b>AIRDROP ENDS IN:</b> &nbsp; </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
+                  <div> <b>AIRDROP ENDS IN:</b> &nbsp;  </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
                 </div>
               }
             </div>
