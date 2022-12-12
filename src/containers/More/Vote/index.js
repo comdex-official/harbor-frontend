@@ -98,7 +98,7 @@ const Vote = ({
     let startDate = currentProposalAllData?.voting_start_time;
     startDate = unixToUTCTime(startDate);
     if (startDate === "Invalid date") {
-      return "Loading... "
+      return ""
     }
     return startDate;
   }
