@@ -1,4 +1,5 @@
-import { Button, List, Pagination, Progress, Select, Spin } from "antd";
+import { Button, List, Pagination, Select, Spin } from "antd";
+import { Progress } from '@mantine/core';
 import moment from "moment";
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -73,7 +74,7 @@ const Govern = ({
   const unixToGMTTime = (time) => {
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
-    timestamp = timestamp.format("DD/MMMM/YYYY")
+    timestamp = timestamp.format("DD/MM/YYYY hh:mm:ss")
     return timestamp;
   }
 
@@ -143,6 +144,14 @@ const Govern = ({
     percentage = Math.abs(percentage)
     return percentage;
   }
+
+  const parsedVotingStatustext = (text) => {
+    if (text === "open") {
+      return "voting Period"
+    }
+    return text;
+  }
+
   const navigate = useNavigate();
 
   const filterAllProposal = (value) => {
@@ -156,6 +165,33 @@ const Govern = ({
       setCurrentActivePage(1)
       fetchAllProposal((pageNumber - 1) * pageSize, PRODUCT_ID, pageSize, value)
       return;
+    }
+  }
+
+  const calculateYesVote = (proposalData, voteOf) => {
+    let value = proposalData?.votes;
+    let yes = Number(value?.yes);
+    let no = Number(value?.no);
+    let veto = Number(value?.veto);
+    let abstain = Number(value?.abstain);
+    let totalValue = yes + no + abstain + veto;
+
+    yes = Number(((yes / totalValue) * 100) || 0).toFixed(2)
+    no = Number(((no / totalValue) * 100) || 0).toFixed(2)
+    veto = Number(((veto / totalValue) * 100) || 0).toFixed(2)
+    abstain = Number(((abstain / totalValue) * 100) || 0).toFixed(2)
+
+    if (voteOf === "yes") {
+      return Number(yes);
+    }
+    else if (voteOf === "no") {
+      return Number(no)
+    }
+    else if (voteOf === "veto") {
+      return Number(veto);
+    }
+    else if (voteOf === "abstain") {
+      return Number(abstain);
     }
   }
 
@@ -224,28 +260,82 @@ const Govern = ({
                         <React.Fragment key={item?.id}>
                           <div className="governlist-row" onClick={() => navigate(`./govern-details/${item?.id}`)} >
                             <div className="left-section">
-                              <h3>#{item?.id}</h3>
+
+                              <div className="proposal-status-container">
+                                <div className="proposal-id">
+                                  <h3>#{item?.id || "-"}</h3>
+                                </div>
+                                <div className="proposal-status-container">
+                                  <div className={item?.status === "open" ? "proposal-status open-color"
+                                    : item?.status === "passed" || item?.status === "executed" ? "proposal-status passed-color"
+                                      : item?.status === "rejected" ? "proposal-status reject-color"
+                                        : item?.status === "pending" ? "proposal-status pending-color" : "proposal-status"
+
+                                  }> {item ? parsedVotingStatustext(item?.status) : "-" || "-"}</div>
+                                </div>
+                              </div>
                               <h3>{item?.title}</h3>
                               <p>{stringTagParser(item?.description.substring(0, 100) || " ") + "......"} </p>
                             </div>
                             <div className="right-section">
                               <Row>
                                 <Col sm="6">
-                                  <label>Vote Starts :</label>
+                                  <label>Voting Starts :</label>
                                   <p>{unixToGMTTime(item?.start_time) || "--/--/--"}</p>
                                 </Col>
                                 <Col sm="6">
                                   <label>Voting Ends :</label>
                                   <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"}</p>
                                 </Col>
-                                <Col sm="6">
-                                  <label>Duration : </label>
-                                  <p>{getDuration(item?.duration?.time)}</p>
-                                </Col>
+                                <div className="user-vote-box-container">
+                                  <div className="user-vote-box">
+
+                                    <div className="single-vote-container">
+                                      <div className="boder yes-border"></div>
+                                      <div className="text-container">
+                                        <div className="title">Yes</div>
+                                        <div className="vote">{calculateYesVote(item, "yes")}%</div>
+                                      </div>
+                                    </div>
+                                    <div className="single-vote-container">
+                                      <div className="boder no-border"></div>
+                                      <div className="text-container">
+                                        <div className="title">No</div>
+                                        <div className="vote">{calculateYesVote(item, "no")}%</div>
+                                      </div>
+                                    </div>
+                                    <div className="single-vote-container">
+                                      <div className="boder veto-border"></div>
+                                      <div className="text-container">
+                                        <div className="title">No With Veto</div>
+                                        <div className="vote">{calculateYesVote(item, "veto")}%</div>
+                                      </div>
+                                    </div>
+                                    <div className="single-vote-container">
+                                      <div className="boder abstain-border"></div>
+                                      <div className="text-container">
+                                        <div className="title">Abstain</div>
+                                        <div className="vote">{calculateYesVote(item, "abstain")}%</div>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                </div>
                               </Row>
-                              <Row>
+                              <Row className="mt-3">
                                 <Col>
-                                  <Progress percent={calculateDurationPercentage(item?.start_time, item?.duration?.time)} size="small" />
+                                  <Progress
+                                    className="vote-progress-bar"
+                                    radius="xl"
+                                    size={10}
+                                    sections={[
+                                      { value: calculateYesVote(item, "yes"), color: '#03d707c4', tooltip: 'Yes' + " " + calculateYesVote(item, "yes") + "%" },
+                                      { value: calculateYesVote(item, "no"), color: '#FF6767', tooltip: 'No' + " " + calculateYesVote(item, "no") + "%", },
+                                      { value: calculateYesVote(item, "veto"), color: '#c0c0c0', tooltip: 'No With Veto' + " " + calculateYesVote(item, "veto") + "%" },
+                                      { value: calculateYesVote(item, "abstain"), color: '#b699ca', tooltip: 'Abstain' + " " + calculateYesVote(item, "abstain") + "%" },
+                                    ]}
+                                  />
+
                                 </Col>
                               </Row>
                             </div>
