@@ -449,13 +449,15 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     <p>Others</p>
                     <h3>{
                       commaSeparator(
-                        Number(Number(totalMintedCMST || 0) -
-                          (
-                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
-                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
-                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
-                          )).toFixed(ZERO_DOLLAR_DECIMALS)
-                      )
+                        Math.max(
+                          Number(Number(totalMintedCMST || 0) -
+                            (
+                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
+                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
+                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
+                            )).toFixed(ZERO_DOLLAR_DECIMALS)
+                          , 0))
+
                     } CMST
                     </h3>
                   </div>
