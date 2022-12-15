@@ -34,17 +34,26 @@
       }
       .open-color {
         border: 1px solid #00b0ff;
-        background-color: #19385a;
+        background-color: #cbe7fb;
+        .dark-mode & {
+          background-color: #19385a;
+        }
       }
 
       .reject-color {
+        background-color: #f6d9d9;
         border: 1px solid #8e353c;
-        background-color: #422234;
+        .dark-mode & {
+          background-color: #422234;
+        }
       }
 
       .passed-color {
+        background-color: #cce7de;
         border: 1px solid #02865b;
-        background-color: #19323a;
+        .dark-mode & {
+          background-color: #19323a;
+        }
       }
 
       .pending-color {
@@ -242,10 +251,14 @@
   display: flex;
   .total-veHARBOR {
     border: 1px solid white;
+    border-color: $secondary-color;
     border-radius: 20px;
     padding: 5px 20px;
     width: max-content;
     text-align: left;
+    .dark-mode & {
+      border-color: $white;
+    }
     @media only screen and (max-width: 470px) {
       width: auto;
     }
