@@ -70,7 +70,7 @@ const VaultDetails = ({
     <>
       <div className="composite-card farm-content-card earn-deposite-card ">
         <div className="card-head">
-          <div className="head-left">Vault Details</div>
+          <div className="head-left">Vault : {selectedExtentedPairVaultListData?.pairName}</div>
         </div>
         <div className="card-assets-container">
           <div className="assets-row">
@@ -82,7 +82,7 @@ const VaultDetails = ({
             <div className="asset-value">{(decimalConversion(selectedExtentedPairVaultListData?.stabilityFee) * 100 || 0).toFixed(DOLLAR_DECIMALS)}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Drawdown Fee <TooltipIcon text='Opening Fee charged is a one time value deducted per withdrawal. The value fee collected is added to the collector module' /></div>
+            <div className="asset-name">Drawdown Fee <TooltipIcon text='Drawdown Fee charged is a one time value deducted per withdrawal. The value fee collected is added to the collector module' /></div>
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.drawDownFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
