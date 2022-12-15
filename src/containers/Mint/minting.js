@@ -176,6 +176,27 @@ const Minting = ({ address }) => {
                               {amountConversionWithComma(item?.debtFloor, DOLLAR_DECIMALS)} CMST
                             </div>
                           </div>
+
+                          <div className="contenet-container">
+                            <div className="name">
+                              Drawdown Fee <TooltipIcon text="Drawdown Fee charged is a one time value deducted per withdrawal. The value fee collected is added to the collector module" />
+                            </div>
+                            <div className="value">
+                              {" "}
+                              {(decimalConversion(item?.drawDownFee) * 100).toFixed(2)} %
+                            </div>
+                          </div>
+
+                          <div className="contenet-container">
+                            <div className="name">
+                              Closing Fee <TooltipIcon text="Fee charge on closing the vault" />
+                            </div>
+                            <div className="value">
+                              {" "}
+                              {(decimalConversion(item?.closingFee) * 100).toFixed(2)} %
+                            </div>
+                          </div>
+
                           <div className="contenet-container">
                             <div className="name">
                               Debt Ceiling <TooltipIcon text="Maximum Composite that can be withdrawn per vault type" />
