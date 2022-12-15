@@ -40,7 +40,7 @@ const VaultDetails = ({
 
 
   const dateFormater = (value) => {
-    let date = moment(value).format("DD/MM/YYYY");
+    let date = moment(value).format("DD-MM-YYYY");
     return date;
 
   }

@@ -136,7 +136,7 @@ const GovernDetails = ({
     // *Removing miliSec from unix time 
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
-    timestamp = timestamp.format("DD/MM/YYYY hh:mm:ss")
+    timestamp = timestamp.format("DD-MM-YYYY hh:mm:ss")
     return timestamp;
   }
   const votingStartTime = unixToGMTTime(currentProposal?.start_time);
