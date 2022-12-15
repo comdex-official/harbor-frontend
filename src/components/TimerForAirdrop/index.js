@@ -9,7 +9,7 @@ export function MyTimer({ expiryTimestamp, text }) {
     } = useTimer({ expiryTimestamp });
     return (
         <div >
-            {text} <b>{days}</b> <span>D</span> <b>{hours}</b> <span>H</span> <b>{minutes}</b> <span>M</span> <b>{seconds}</b> <span>S</span>
+            <b>{text} </b><b>{days}</b> <span>D</span> <b>{hours}</b> <span>H</span> <b>{minutes}</b> <span>M</span> <b>{seconds}</b> <span>S</span>
         </div>
     );
 }
