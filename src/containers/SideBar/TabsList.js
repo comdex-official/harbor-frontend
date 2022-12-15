@@ -49,11 +49,19 @@ export const tabsList = [
     index: 5,
   },
   {
+    name: "auction",
+    value: "auction-icon",
+    langKey: "auction",
+    path: "auctions",
+    active: "auctions",
+    index: 6,
+  },
+  {
     name: "more",
     value: "more",
     langKey: "more",
     path: "more",
     active: "more",
-    index: 6,
+    index: 7,
   },
 ];

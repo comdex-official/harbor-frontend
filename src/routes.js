@@ -49,7 +49,7 @@ const routes = [
     element: <Earn />,
   },
   {
-    path: "/more/auctions",
+    path: "/auctions",
     element: <Auctions />,
   },
   {
