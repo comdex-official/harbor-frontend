@@ -47,7 +47,7 @@ const Minting = ({ address }) => {
   };
 
   useEffect(() => {
-    fetchExtendexPairList((pageNumber - 1) * pageSize, pageSize, true, false, PRODUCT_ID)
+    fetchExtendexPairList(PRODUCT_ID)
   }, [address])
 
   useEffect(() => {
@@ -57,9 +57,9 @@ const Minting = ({ address }) => {
 
   }, [address, extenedPairVaultList])
 
-  const fetchExtendexPairList = (offset, limit, countTotal, reverse, productId) => {
+  const fetchExtendexPairList = (productId, offset, limit, countTotal, reverse) => {
     setLoading(true);
-    queryExtendedPairVaultById(offset, limit, countTotal, reverse, productId, (error, data) => {
+    queryExtendedPairVaultById(productId, offset, limit, countTotal, reverse, (error, data) => {
       setLoading(false);
       if (error) {
         message.error(error);
@@ -217,15 +217,6 @@ const Minting = ({ address }) => {
 
 
       </div>
-      {extenedPairVaultList?.length > 0 ? <div >
-        <Pagination
-          defaultCurrent={activePage}
-          onChange={handlePageChange}
-          total={totalExtendedPair &&
-            totalExtendedPair}
-          pageSize={pageSize}
-        />
-      </div> : ""}
     </div >
   );
 };
