@@ -74,7 +74,7 @@ const Govern = ({
   const unixToGMTTime = (time) => {
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
-    timestamp = timestamp.format("DD/MM/YYYY hh:mm:ss")
+    timestamp = timestamp.format("DD-MM-YYYY hh:mm:ss")
     return timestamp;
   }
 
