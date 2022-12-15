@@ -14,7 +14,7 @@ export const missions = [
         icon: "mint-icon",
         viewBox: "0 0 30 30",
         path: "/mint",
-        disable: true,
+        disable: false,
     },
     {
         id: 3,
