@@ -2,7 +2,7 @@ import { amountConversion } from "../utils/coin";
 
 export const ValidateInputNumber = (value, max, key, debtFloor, errorMsg) => {
   if (value > 0 && value < debtFloor) {
-    return new Error("Input should be grater than min. borrow amt.");
+    return new Error("Input should be greater than min. borrow amt. i.e. $100");
   }
 
   if (value < 0) {

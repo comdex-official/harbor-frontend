@@ -142,6 +142,7 @@ const Mint = ({
     );
     setAmountOut(dataAmount);
   }
+
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
     setValidationError(
