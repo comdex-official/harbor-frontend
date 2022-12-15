@@ -29,6 +29,14 @@ const routes = [
     element: <Assets />,
   },
   {
+    path: "/mint",
+    element: <BorrowTab />,
+  },
+  {
+    path: "mint/vault/:pathVaultId",
+    element: <Vault />,
+  },
+  {
     path: "/stableMint",
     element: <StableMint />,
   },

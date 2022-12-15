@@ -57,17 +57,12 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
                   ? "active_tab"
                   : item.active === route
                     ? "active_tab"
-                    : "") +
-                (item.path === "mint" ? "disable-side-links" : "")
+                    : "")
               }
               value={item.value}
               onClick={() => {
-                if (item.path === "mint") {
-                  return;
-                } else {
-                  navigate("/" + item.path);
-                  onClick();
-                }
+                navigate("/" + item.path);
+                onClick();
               }}
               {...a11yProps(0)}
             >

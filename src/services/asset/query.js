@@ -104,11 +104,12 @@ export const queryPair = (pairId, callback) => {
 
 
 export const queryExtendedPairVaultById = (
+  productId,
   offset,
   limit,
   countTotal,
   reverse,
-  productId,
+
   callback) => {
   getQueryService((error, queryService) => {
     if (error) {
