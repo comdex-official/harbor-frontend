@@ -16,7 +16,8 @@ const VoteNowModal = ({
   address,
   currentProposal,
   voteCount,
-  setVoteCount
+  setVoteCount,
+  votingPower
 }) => {
   const { proposalId } = useParams();
   let currentProposalId = Number(proposalId);
@@ -64,10 +65,11 @@ const VoteNowModal = ({
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   return (
     <>
       <div>
-        <Button type="primary" className="btn-filled mb-n4" onClick={showModal} disabled={currentProposal?.status !== "open"} >Vote Now</Button>
+        <Button type="primary" className="btn-filled mb-n4" onClick={showModal} disabled={currentProposal?.status !== "open" || votingPower === "0.000000"} >Vote Now</Button>
       </div>
       <Modal
         centered={true}

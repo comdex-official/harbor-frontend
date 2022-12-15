@@ -1,6 +1,58 @@
 @import "../../../../assets/scss/custom.scss";
 
+.govern-row-gap {
+  row-gap: 30px;
+}
+.inside-govern-voting-counter {
+  span {
+    font-size: 1rem;
+  }
+}
+
 .composite-card {
+  .inner-voting-status-main-container {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0 20px;
+    .proposal-id {
+      h3 {
+      }
+    }
+    .proposal-status-container {
+      .proposal-status {
+        padding: 3px 20px;
+        border-radius: 15px;
+        text-transform: capitalize;
+        font-weight: 500;
+        line-height: 1.2;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+        width: 9rem;
+        text-align: center;
+      }
+      .open-color {
+        border: 1px solid #00b0ff;
+        background-color: #19385a;
+      }
+
+      .reject-color {
+        border: 1px solid #8e353c;
+        background-color: #422234;
+      }
+
+      .passed-color {
+        border: 1px solid #02865b;
+        background-color: #19323a;
+      }
+
+      .pending-color {
+        border: 1px solid yellow;
+        background-color: rgba(255, 255, 0, 0.295);
+      }
+    }
+  }
   .card-header {
     font-weight: 600;
     font-size: 20px;
@@ -26,49 +78,55 @@
     }
 
     .govern-dlt-card {
-      display: flex;
+      display: grid;
+      margin-top: 2rem;
       @media only screen and (max-width: 550px) {
         flex-direction: column;
-      }
-      .totalvalue-chart {
-        .highcharts-empty-series {
-          fill: #c0c0c0;
-        }
       }
       .govern-dlt-chart {
         width: 40%;
       }
 
-      .govern-dlt-right {
-        width: 60%;
+      .ant-list {
+        .ant-row {
+          flex-flow: row nowrap;
+          justify-content: space-between;
+        }
+        .ant-list-item {
+          margin: 5px 0;
+          color: $text-color-dark2;
+          border-left: 4px solid $secondary-color;
+          padding-left: 15px;
+          .dark-mode & {
+            color: $white;
+          }
 
-        .ant-list {
-          .ant-list-item {
-            margin: 5px 0;
-            color: $text-color-dark2;
-            border-left: 2px solid $secondary-color;
-            padding-left: 15px;
+          p {
+            margin-bottom: 0;
+            font-size: $font-size-base;
+          }
+
+          h3 {
+            margin-bottom: 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1;
+            margin-top: 8px;
 
             .dark-mode & {
               color: $white;
             }
+          }
+        }
+      }
 
-            p {
-              margin-bottom: 0;
-              font-size: $font-size-base;
-            }
-
-            h3 {
-              margin-bottom: 0;
-              font-size: 1.5rem;
-              font-weight: 600;
-              line-height: 1;
-              margin-top: 8px;
-
-              .dark-mode & {
-                color: $white;
-              }
-            }
+      .govern-dlt-right {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        .totalvalue-chart {
+          .highcharts-empty-series {
+            fill: #c0c0c0;
           }
         }
 
@@ -106,25 +164,25 @@
 
             &:nth-child(1) {
               .icon {
-                fill: #665aa6;
+                fill: #03d707c4;
               }
             }
 
             &:nth-child(2) {
               .icon {
-                fill: #bfa9d7;
+                fill: #ff6767;
               }
             }
 
             &:nth-child(3) {
               .icon {
-                fill: #e7ddf1;
+                fill: #c0c0c0;
               }
             }
 
             &:nth-child(4) {
               .icon {
-                fill: #81808f;
+                fill: #b699ca;
               }
             }
           }
@@ -133,11 +191,26 @@
     }
     .govern-status-btn {
       cursor: auto;
+      padding: 0;
+      width: 6rem;
+      overflow: hidden;
+      border: none !important;
       &:hover {
-        background: $secondary-color !important;
       }
       &:focus {
-        background: $secondary-color !important;
+      }
+      .dot {
+        width: 100%;
+        height: 100%;
+      }
+      .reject-color {
+        background-color: $error-color;
+      }
+      .voting-color {
+        background-color: $warning-color;
+      }
+      .passed-color {
+        background-color: $success-color;
       }
     }
     .user-vote-container {
@@ -150,6 +223,34 @@
         font-size: 15px;
         text-transform: capitalize;
       }
+      .yes {
+        color: #03d707c4;
+      }
+      .no {
+        color: #ff6767;
+      }
+      .veto {
+        color: #c0c0c0;
+      }
+      .abstain {
+        color: #b699ca;
+      }
+    }
+  }
+}
+.govern-voting-power-container {
+  display: flex;
+  .total-veHARBOR {
+    border: 1px solid white;
+    border-radius: 20px;
+    padding: 5px 20px;
+    width: max-content;
+    text-align: left;
+    @media only screen and (max-width: 470px) {
+      width: auto;
+    }
+    span {
+      font-weight: 600;
     }
   }
 }
