@@ -26,6 +26,8 @@ export const ibcDenomToDenom = (key) => {
       return "ujuno";
     case ibcDenoms["wbtc-satoshi"]:
       return "wbtc-satoshi";
+    case ibcDenoms["stuatom"]:
+      return "stuatom";
     default:
       return "";
   }
@@ -49,8 +51,12 @@ export const symbolToDenom = (key) => {
     case "weth":
     case ibcDenoms["weth-wei"]:
       return "weth-wei";
+    case "wbtc-satoshi" || "wbtc":
     case ibcDenoms["wbtc-satoshi"]:
-      return "wbtc";
+      return "wbtc-satoshi";
+    case "stuatom":
+    case ibcDenoms["stuatom"]:
+      return "stuatom";
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -86,8 +92,12 @@ export const denomToSymbol = (key) => {
     case "uweth":
     case ibcDenoms["weth-wei"]:
       return "WETH";
+    case "wbtc-satoshi":
     case ibcDenoms["wbtc-satoshi"]:
       return "WBTC";
+    case "stuatom":
+    case ibcDenoms["stuatom"]:
+      return "stATOM";
     default:
       return "";
   }
@@ -166,6 +176,9 @@ export const iconNameFromDenom = (key) => {
     case "wbtc-satoshi":
     case ibcDenoms["wbtc-satoshi"]:
       return "wbtc-icon";
+    case "stuatom":
+    case ibcDenoms["stuatom"]:
+      return "statom-icon";
     default:
       return "";
   }

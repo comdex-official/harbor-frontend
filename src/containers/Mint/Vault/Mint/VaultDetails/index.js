@@ -86,6 +86,10 @@ const VaultDetails = ({
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.drawDownFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
+            <div className="asset-name">Closing Fee <TooltipIcon text="Fee charged on closing the vault" /></div>
+            <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.closingFee) * 100 || "0"}%</div>
+          </div>
+          <div className="assets-row">
             <div className="asset-name">  Min. Collateralization Ratio <TooltipIcon text='Minimum collateral ratio at which composite should be minted' /></div>
             <div className="asset-value">{Number(decimalConversion(selectedExtentedPairVaultListData?.minCr) * 100).toFixed(2) || "0"}%</div>
           </div>

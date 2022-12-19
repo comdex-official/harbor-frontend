@@ -189,7 +189,7 @@ const Minting = ({ address }) => {
 
                           <div className="contenet-container">
                             <div className="name">
-                              Closing Fee <TooltipIcon text="Fee charge on closing the vault" />
+                              Closing Fee <TooltipIcon text="Fee charged on closing the vault" />
                             </div>
                             <div className="value">
                               {" "}
