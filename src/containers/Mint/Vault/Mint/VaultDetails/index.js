@@ -86,7 +86,7 @@ const VaultDetails = ({
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.drawDownFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
-            <div className="asset-name">Closing Fee <TooltipIcon text="Fee charge on closing the vault" /></div>
+            <div className="asset-name">Closing Fee <TooltipIcon text="Fee charged on closing the vault" /></div>
             <div className="asset-value">{decimalConversion(selectedExtentedPairVaultListData?.closingFee) * 100 || "0"}%</div>
           </div>
           <div className="assets-row">
