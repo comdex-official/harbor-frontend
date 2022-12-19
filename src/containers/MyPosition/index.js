@@ -21,16 +21,16 @@ import "./index.scss";
 
 
 const MyPositions = ({ address, balances }) => {
-  const [earnTab, setEarnTab] = useState(true);
-  const [vaultTab, setVaultTab] = useState(false);
+  const [earnTab, setEarnTab] = useState(false);
+  const [vaultTab, setVaultTab] = useState(true);
   const [historyTab, setHistoryTab] = useState(false);
   const [lockerInfo, setLockerInfo] = useState();
   const [vaultsInfo, setVaultsInfo] = useState();
   const [collectorInfo, setCollectorInfo] = useState();
 
   const tabsItem = [
-    { label: "Locker", key: "1", children: <MyEarn /> },
-    { label: "Vaults", key: "2", children: <Borrow /> },
+    { label: "Vaults", key: "1", children: <Borrow /> },
+    { label: "Locker", key: "2", children: <MyEarn /> },
     { label: "History", key: "3", children: <History /> },
   ]
 
@@ -82,14 +82,14 @@ const MyPositions = ({ address, balances }) => {
   const callback = (key) => {
     if (key === "1") {
       setHistoryTab(false);
-      setVaultTab(false);
-      setEarnTab(true);
+      setVaultTab(true);
+      setEarnTab(false);
       return;
     }
     if (key === "2") {
       setHistoryTab(false);
-      setEarnTab(false);
-      setVaultTab(true);
+      setVaultTab(false);
+      setEarnTab(true);
       return;
     }
     if (key === "3") {

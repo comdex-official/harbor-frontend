@@ -29,12 +29,12 @@ import {
 } from "../../../utils/coin";
 import moment from "moment";
 import { iconNameFromDenom } from "../../../utils/string";
-import { commaSeparator, decimalConversion } from "../../../utils/number";
+import { commaSeparator, decimalConversion, marketPrice } from "../../../utils/number";
 import TooltipIcon from "../../../components/TooltipIcon";
 import { comdex } from "../../../config/network";
 import NoDataIcon from "../../../components/common/NoDataIcon";
 
-const CollateralAuctions = ({ updateBtnLoading, setPairs, auctions, setAuctions, refreshBalance, address, assetMap, auctionsPageSize, auctionsPageNumber, setAuctionsPageSize, setAuctionsPageNumber }) => {
+const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, setAuctions, refreshBalance, address, assetMap, auctionsPageSize, auctionsPageNumber, setAuctionsPageSize, setAuctionsPageNumber }) => {
   const dispatch = useDispatch()
   const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
@@ -148,6 +148,16 @@ const CollateralAuctions = ({ updateBtnLoading, setPairs, auctions, setAuctions,
     {
       title: (
         <>
+          Oracle Price
+        </>
+      ),
+      dataIndex: "oracle_price",
+      key: "oracle_price",
+      width: 120,
+    },
+    {
+      title: (
+        <>
           Current Auction Price <TooltipIcon text="Current price of auction asset" />
         </>
       ),
@@ -229,6 +239,7 @@ const CollateralAuctions = ({ updateBtnLoading, setPairs, auctions, setAuctions,
                   item?.outflowTokenCurrentAmount?.amount, comdex?.coinDecimals, assetMap[item?.outflowTokenCurrentAmount?.denom]?.decimals
                 )} {denomConversion(item?.outflowTokenCurrentAmount?.denom)}
             </div>,
+          oracle_price: "$" + commaSeparator(Number(marketPrice(markets, item?.outflowTokenCurrentAmount?.denom, assetMap[item?.outflowTokenCurrentAmount?.denom]?.id) || 0).toFixed(DOLLAR_DECIMALS)),
           current_price: item,
           action: item,
         };
@@ -292,6 +303,7 @@ CollateralAuctions.propTypes = {
   refreshBalance: PropTypes.number.isRequired,
   auctionsPageSize: PropTypes.number.isRequired,
   auctionsPageNumber: PropTypes.number.isRequired,
+  markets: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -303,6 +315,7 @@ const stateToProps = (state) => {
     auctionsPageNumber: state.auction.auctionsPageNumber,
     assetMap: state.asset.map,
     refreshBalance: state.account.refreshBalance,
+    markets: state.oracle.market,
   };
 };
 

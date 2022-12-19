@@ -22,7 +22,7 @@ import CustomInput from "../../../../components/CustomInput";
 import Long from "long";
 import { DOLLAR_DECIMALS, PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
-import { commaSeparator, decimalConversion } from "../../../../utils/number";
+import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
 import Timer from "../../../../components/Timer";
 import { querySingleDutchAuction } from "../../../../services/auction";
 
@@ -33,6 +33,7 @@ const PlaceBidModal = ({
   params,
   assetMap,
   refreshBalance,
+  markets,
 }) => {
   const dispatch = useDispatch();
 
@@ -197,6 +198,19 @@ const PlaceBidModal = ({
 
           <Row>
             <Col sm="6">
+              <p>Oracle Price</p>
+            </Col>
+            <Col sm="6" className="text-right">
+              <label> $
+                {
+                  commaSeparator(Number(marketPrice(markets, newCurrentAuction?.outflowTokenCurrentAmount?.denom, assetMap[newCurrentAuction?.outflowTokenCurrentAmount?.denom]?.id) || 0).toFixed(4))
+                }
+              </label>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm="6">
               <p>Opening Auction Price</p>
             </Col>
             <Col sm="6" className="text-right">
@@ -351,6 +365,7 @@ PlaceBidModal.propTypes = {
   discount: PropTypes.shape({
     low: PropTypes.number,
   }),
+  markets: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -361,6 +376,7 @@ const stateToProps = (state) => {
     balances: state.account.balances.list,
     assetMap: state.asset.map,
     refreshBalance: state.account.refreshBalance,
+    markets: state.oracle.market,
   };
 };
 
