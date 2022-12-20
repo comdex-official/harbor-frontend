@@ -142,6 +142,7 @@ const Mint = ({
     );
     setAmountOut(dataAmount);
   }
+
   const handleAmountInChange = (value) => {
     let debtFloor = Number(selectedExtentedPairVaultListData[0]?.debtFloor);
     setValidationError(
@@ -744,7 +745,7 @@ const stateToProps = (state) => {
     pairs: state.asset.pairs,
     inAmount: state.asset.inAmount,
     outAmount: state.asset.outAmount,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     collateralRatio: state.asset.collateralRatio,
     balances: state.account.balances.list,
     vaults: state.account.vaults.list,

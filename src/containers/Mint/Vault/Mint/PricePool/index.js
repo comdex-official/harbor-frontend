@@ -286,7 +286,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     ownerVaultInfo: state.locker.ownerVaultInfo,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     pair: state.asset.pair,
     ownerVaultId: state.locker.ownerVaultId,
     ownerCurrrentCollateral: state.mint.ownerCurrrentCollateral,

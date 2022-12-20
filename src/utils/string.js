@@ -22,6 +22,12 @@ export const ibcDenomToDenom = (key) => {
       return "USDC";
     case ibcDenoms["weth-wei"]:
       return "WETH";
+    case ibcDenoms["ujuno"]:
+      return "ujuno";
+    case ibcDenoms["wbtc-satoshi"]:
+      return "wbtc-satoshi";
+    case ibcDenoms["stuatom"]:
+      return "stuatom";
     default:
       return "";
   }
@@ -31,17 +37,26 @@ export const ibcDenomToDenom = (key) => {
 export const symbolToDenom = (key) => {
   switch (key) {
     case "atom":
-    case ibcDenoms["atom"]:
+    case ibcDenoms["uatom"]:
       return "uatom";
     case "osmo":
-    case ibcDenoms["osmo"]:
+    case ibcDenoms["uosmo"]:
       return "uosmo";
+    case "juno":
+    case ibcDenoms["ujuno"]:
+      return "ujuno";
     case "usdc":
     case ibcDenoms["uusdc"]:
       return "uusdc";
     case "weth":
     case ibcDenoms["weth-wei"]:
       return "weth-wei";
+    case "wbtc-satoshi" || "wbtc":
+    case ibcDenoms["wbtc-satoshi"]:
+      return "wbtc-satoshi";
+    case "stuatom":
+    case ibcDenoms["stuatom"]:
+      return "stuatom";
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -70,10 +85,40 @@ export const denomToSymbol = (key) => {
     case "uusdc":
     case ibcDenoms["uusdc"]:
       return "USDC";
+    case "ujuno":
+    case ibcDenoms["ujuno"]:
+      return "JUNO";
     case "weth-wei":
     case "uweth":
     case ibcDenoms["weth-wei"]:
       return "WETH";
+    case "wbtc-satoshi":
+    case ibcDenoms["wbtc-satoshi"]:
+      return "WBTC";
+    case "stuatom":
+    case ibcDenoms["stuatom"]:
+      return "stATOM";
+    default:
+      return "";
+  }
+};
+export const denomToCoingeckoTokenId = (key) => {
+  switch (key) {
+    case "uatom":
+    case ibcDenoms["uatom"]:
+      return "cosmos";
+    case "uosmo":
+    case ibcDenoms["uosmo"]:
+      return "osmosis";
+    case "ucmdx":
+      return "comdex";
+    case "uusdc":
+    case ibcDenoms["uusdc"]:
+      return "axlusdc";
+    case "weth-wei":
+    case "uweth":
+    case ibcDenoms["weth-wei"]:
+      return "axlweth";
     default:
       return "";
   }
@@ -92,6 +137,9 @@ export const minimalDenomToDenom = (key) => {
     case "uosmo":
     case ibcDenoms["uosmo"]:
       return "osmo";
+    case "ujuno":
+    case ibcDenoms["ujuno"]:
+      return "juno";
     case "ucmdx":
       return "cmdx";
     default:
@@ -118,10 +166,19 @@ export const iconNameFromDenom = (key) => {
     case "uusdc":
     case ibcDenoms["uusdc"]:
       return "usdc-icon";
+    case "ujuno":
+    case ibcDenoms["ujuno"]:
+      return "juno-icon";
     case "weth-wei":
     case "uweth":
     case ibcDenoms["weth-wei"]:
       return "weth-icon";
+    case "wbtc-satoshi":
+    case ibcDenoms["wbtc-satoshi"]:
+      return "wbtc-icon";
+    case "stuatom":
+    case ibcDenoms["stuatom"]:
+      return "statom-icon";
     default:
       return "";
   }
@@ -225,4 +282,16 @@ export const unixToGMTTime = (time) => {
   var timestamp = moment.unix(newTime);
   timestamp = timestamp.format("DD/MMMM/YYYY")
   return timestamp;
+}
+
+export const stringTagParser = input => {
+  const lines = input.split('\n')
+  const output = []
+  lines.forEach((d, i) => {
+    if (i > 0) {
+      output.push(<br />)
+    }
+    output.push(d)
+  })
+  return output
 }

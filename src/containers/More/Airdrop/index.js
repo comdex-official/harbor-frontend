@@ -1,8 +1,8 @@
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from "../../../components/common";
+import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import { Button, message } from "antd";
+import { Button, Input, message, Modal } from "antd";
 import Highcharts from "highcharts";
 import highchartsMore from "highcharts/highcharts-more";
 import solidGauge from "highcharts/modules/solid-gauge";
@@ -12,6 +12,7 @@ import "./index.scss";
 
 import PlanePic from '../../../assets/images/plane-img.svg';
 import MissonCardBg from '../../../assets/images/card-bg.jpg';
+import MissonCardBgLight from '../../../assets/images/BANNER AIRDROP.svg';
 import CRONOS_ICON from '../../../assets/images/icons/CRONOS.png';
 import EVMOS_ICON from '../../../assets/images/icons/EVMOS.png';
 import MNTL_ICON from '../../../assets/images/icons/MNTL.png';
@@ -46,9 +47,12 @@ import { amountConversion, amountConversionWithComma } from "../../../utils/coin
 import { formatNumber } from "../../../utils/number";
 import { maginTxChain } from "./magicTxChain";
 import { MyTimer } from "../../../components/TimerForAirdrop";
-import { setuserEligibilityData } from "../../../actions/airdrop";
-import { DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../constants/common";
+import { setuserEligibilityData, setuserComdexEligibilityData } from "../../../actions/airdrop";
+import { DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, DOLLAR_DECIMALS, TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../constants/common";
 import { useNavigate } from 'react-router-dom';
+import Lottie from 'react-lottie';
+import celebrationAnimation from '../../../assets/lottefiles/74680-confetti.json'
+import { eligibilityCheckTracker } from "../../../services/airdropEligiblityTracker";
 
 
 highchartsMore(Highcharts);
@@ -57,10 +61,12 @@ solidGauge(Highcharts);
 const Airdrop = ({
   lang,
   address,
+  isDarkMode,
   refreshBalance,
   userEligibilityData,
   setuserEligibilityData,
-
+  userComdexEligibilityData,
+  setuserComdexEligibilityData,
 }) => {
   const navigate = useNavigate();
 
@@ -72,6 +78,40 @@ const Airdrop = ({
   const [totalClaimedveHarbor, setTotalClaimedveHarbor] = useState(0);
   const [claimAllEligibility, setClaimAllEligibility] = useState(false)
   const [totalEligibleToken, setTotalEligibletoken] = useState(0)
+  const [isOpen, setIsOpen] = useState(false);
+  const [isEligibilityModalOpen, setIsEligibilityModalOpen] = useState(false);
+  const [userComdexAddress, setUserComdexAddress] = useState(address);
+  const [calculatedSupplyPercentage, setCalculatedSupplyPercentage] = useState(0)
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: celebrationAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice"
+    }
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
+
+  const handleEligiblityModalCancel = () => {
+    setIsEligibilityModalOpen(false);
+  };
+
+  const shareText =
+    `
+Hi Guys! %0A
+I am eligible for the $HARBOR airdrop by @Harbor_Protocol🤩 %0A %0A
+
+You may also check your eligibility for the airdrop via👇
+https://app.harborprotocol.one/more/airdrop  %0A%0A
+
+Harbor Protocol is the Interchain Stablecoin Protocol built on the @ComdexOfficial chain. %0A %0A
+
+$HARBOR   $CMST`
+
 
   // Query 
   const fetchTimeLeftToClaim = () => {
@@ -86,6 +126,7 @@ const Airdrop = ({
     setLoading(true)
     checkEligibility(address, chainId).then((res) => {
       setClaimAllEligibility(res)
+      setuserComdexEligibilityData(res)
       setLoading(false)
     }).catch((error) => {
       setLoading(false)
@@ -116,15 +157,33 @@ const Airdrop = ({
   }
 
   const handleClaimAll = () => {
-    fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
-    navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)
-    // if (!claimAllEligibility) {
-    //   message.error("Sorry you are not Eligible! 🙁")
-    // }
-    // else {
-    //   message.success("Wow You are Eligible! 🤩")
-    //   navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)
-    // }
+    if (address) {
+      setIsEligibilityModalOpen(true)
+    } else {
+      message.error("Please connect wallet!")
+    }
+  }
+
+  const handleCheckComdexEligibility = () => {
+    if (address) {
+      fetchCheckEligibility(userComdexAddress, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
+      eligibilityCheckTracker(DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP, userComdexAddress, (error, result) => {
+        if (error) {
+          console.log(error, "Eligibility Request");
+          return;
+        }
+      })
+      if (userComdexEligibilityData) {
+        fetchCheckTotalEligibility(userComdexAddress);
+        setIsEligibilityModalOpen(false)
+        setIsOpen(true);
+      }
+      else {
+        message.error("Sorry you are not Eligible! 🙁")
+      }
+    } else {
+      message.error("Please connect  wallet!")
+    }
   }
 
   useEffect(() => {
@@ -138,14 +197,32 @@ const Airdrop = ({
   useEffect(() => {
     fetchTimeLeftToClaim()
     fetchTotalStatsOFClaimedData()
-    fetchCheckEligibility(address, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP)
-    fetchCheckTotalEligibility(address)
+    setClaimAllEligibility(false)
   }, [address])
+
+  useEffect(() => {
+    setUserComdexAddress(address)
+  }, [address])
+
+  useEffect(() => {
+    fetchCheckEligibility(userComdexAddress, DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP);
+  }, [isEligibilityModalOpen, userComdexAddress])
+
+  useEffect(() => {
+    fetchCheckTotalEligibility(address);
+  }, [address, userComdexAddress])
 
 
   const time = new Date(counterEndTime);
   time.setSeconds(time.getSeconds());
 
+  const calculatedDistributedHarbor = () => {
+    let claimedharbor = Number(amountConversion(totalClaimedHarbor || 0));
+    let claimedVeHarbor = Number(amountConversion(totalClaimedveHarbor || 0));
+    let totalSupply = Number(amountConversion(totalAllocation || 0));
+    let calculatePercentage = ((claimedharbor + claimedVeHarbor) / totalSupply) * 100;
+    return calculatePercentage || 0;
+  }
 
   const options = {
     chart: {
@@ -199,7 +276,7 @@ const Airdrop = ({
           {
             color: "#DED0E7",
             radius: "100%",
-            y: 80
+            y: calculatedDistributedHarbor()
           }
         ],
         dataLabels: {
@@ -212,6 +289,12 @@ const Airdrop = ({
     ]
   };
 
+
+  useEffect(() => {
+    calculatedDistributedHarbor()
+  }, [totalClaimedHarbor, totalClaimedveHarbor, totalAllocation])
+
+
   return (
     <div className="app-content-wrapper">
       <Row className="text-right">
@@ -223,21 +306,18 @@ const Airdrop = ({
         <Col>
           <div className="time-left-head">
             <div className="left-text">
-              {/* {counterEndTime ? <MyTimer expiryTimestamp={time} text={"Airdrop Claim to Begin"} />
+              {counterEndTime ? <MyTimer expiryTimestamp={time} text={"AIRDROP ENDS IN: "} />
                 :
                 <div style={{ display: "flex" }}>
-                  <div> Time Left to Claim Airdrop </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
+                  <div> <b>AIRDROP ENDS IN:</b> &nbsp;  </div> <div> <b> 0 </b> <span> D </span> <b>0</b> <span> H </span> <b>0</b> <span> M </span> <b>0</b> <span> S </span> </div>
                 </div>
-              } */}
-              <div style={{ display: "flex" }}>
-                <div> Airdrop Claim to Begin Soon </div>
-              </div>
+              }
             </div>
           </div>
           <Row className="airdrop-upper pt-2">
             <Col xl="4" lg="12">
               <div className="airdrop-upper-card airdrop-upper-card1">
-                <h2>Airdrop Details</h2>
+                <h2>Airdrop Details </h2>
                 <div className="total-airdrop">
                   <p>Total Airdrop</p>
                   <HighchartsReact highcharts={Highcharts} options={options} />
@@ -247,26 +327,26 @@ const Airdrop = ({
                   <h2>{amountConversionWithComma(totalClaimedHarbor || 0)} <sub className="text-uppercase">harbor</sub></h2>
                 </div>
                 <div className="airdrop-statics mb-0">
-                  <p className="total-value">Total Claimed veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 1 year" /></p>
+                  <p className="total-value">Total Claimed $veHarbor <TooltipIcon text="$veHarbor claimed across all chains and liquidity pools after completing the missions with a locking period of 4 months" /></p>
                   <h2>{amountConversionWithComma(totalClaimedveHarbor || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </div>
             </Col>
             <Col xl="4" lg="6">
               <div className="airdrop-upper-card airdrop-upper-card2">
-                <h3>Airdrop for Chains with Magic Txn <TooltipIcon text="Users need to perform the Magic Txn for every individual chain listed below to recieve there airdrop which will get distributed to their Comdex address." /></h3>
+                <h3>Airdrop for Chains with Magic Txn <TooltipIcon text="Users need to perform the Magic Txn for every individual chain listed below to receive there airdrop which will get distributed to their Comdex address." /></h3>
                 <ul>
                   {maginTxChain?.map((item) => {
                     return (
                       <li key={item?.chainId}>
                         <ChainModal currentChain={item} />
-                        <p>{item?.chainName}</p>
+                        <p>{item?.chainName} </p>
                       </li>
                     )
                   })}
                 </ul>
                 <div className="text-center mt-auto">
-                  <Button type="primary" className="different-chain-eligibility">Click on different chains to check eligibility</Button>
+                  <Button type="primary" className="different-chain-eligibility">Click on different chains to check eligibility and complete missions</Button>
                 </div>
               </div>
             </Col>
@@ -280,7 +360,7 @@ const Airdrop = ({
                         <img src={AKASH_ICON} alt="" />
                       </div>
                     </div>
-                    <p>AKASH</p>
+                    <p>AKT</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -296,7 +376,7 @@ const Airdrop = ({
                         <img src={AXELAR_ICON} alt="" />
                       </div>
                     </div>
-                    <p>AXELAR</p>
+                    <p>AXL</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -304,7 +384,7 @@ const Airdrop = ({
                         <img src={COMDEX_ICON} alt="" />
                       </div>
                     </div>
-                    <p>COMDEX</p>
+                    <p>CMDX</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -312,7 +392,7 @@ const Airdrop = ({
                         <img src={CRESENT_ICON} alt="" />
                       </div>
                     </div>
-                    <p>CRESENT</p>
+                    <p>CRE</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -352,7 +432,7 @@ const Airdrop = ({
                         <img src={SIFCHAIN_ICON} alt="" />
                       </div>
                     </div>
-                    <p>SIFCHAIN</p>
+                    <p>ROWAN</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -360,7 +440,7 @@ const Airdrop = ({
                         <img src={STARGAZE_ICON} alt="" />
                       </div>
                     </div>
-                    <p>STARGAZE</p>
+                    <p>STARS</p>
                   </li>
                   <li>
                     <div className="icons">
@@ -376,7 +456,7 @@ const Airdrop = ({
                         <img src={KUJIRA_ICON} alt="" />
                       </div>
                     </div>
-                    <p>KUJIRA</p>
+                    <p>KUJI</p>
                   </li>
 
                   <li>
@@ -397,7 +477,16 @@ const Airdrop = ({
                     <p>KAVA</p>
                   </li>
 
-                  <li className="group-li pool-group-width">
+                  <li>
+                    <div className="icons">
+                      <div className="icon-inner">
+                        <img src={MNTL_ICON} alt="" />
+                      </div>
+                    </div>
+                    <p>MNTL</p>
+                  </li>
+
+                  <li className="group-li pool-group-width pool-group-width-2">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -413,7 +502,7 @@ const Airdrop = ({
                     <p>LP POOL 600</p>
                   </li>
 
-                  <li className="group-li-40 pool-group-width">
+                  <li className="group-li-40 pool-group-width pool-group-width-2">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -428,7 +517,7 @@ const Airdrop = ({
                     </div>
                     <p>LP POOL 601</p>
                   </li>
-                  <li className="group-li-40 pool-group-width">
+                  <li className="group-li-40 pool-group-width  pool-group-width-2">
                     <div className="icon-group">
                       <div className="icons">
                         <div className="icon-inner">
@@ -445,22 +534,95 @@ const Airdrop = ({
                   </li>
                 </ul>
                 <div className="text-center mt-auto allChain-mission-btn-container" >
-                  <Button type="primary" disabled={true}  >Check Eligibility</Button>
-                  <Button type="primary" className="btn-filled mission-btn" onClick={() => handleClaimAll()} disabled={true}>Complete Mission</Button>
+                  <Button type="primary" onClick={() => handleClaimAll()} disabled={loading}  >Check Eligibility</Button>
+                  <Button type="primary" className="btn-filled mission-btn" onClick={() => navigate(`./complete-mission/${DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP}`)}>Complete Mission</Button>
                 </div>
+                <div className="eligibility-modal-container-check">
+                  <Modal
+                    centered={true}
+                    className="disclaimer-modal eligibility-modal-container-check-container"
+                    footer={null}
+                    header={null}
+                    open={isEligibilityModalOpen}
+                    closable={true}
+                    width={700}
+                    isHidecloseButton={true}
+                    onCancel={handleEligiblityModalCancel}
+                    closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
+                    maskStyle={{ background: "rgba(0, 0, 0, 0.6)" }}
+                  >
+                    <div className="eligiblity-check-modal-inner-box">
+                      <h2>Enter your Comdex Wallet address </h2>
+
+
+                      <Row className="mb-4">
+                        <Col>
+                          <div className="d-flex eligibility-check-midal-input-box">
+                            <Input placeholder={`Enter Your Comdex Wallet Address`} className="input-box" value={userComdexAddress} onChange={(e) => setUserComdexAddress(e.target.value)} /> <Button type="primary" className="btn-filled eligibility-check-midal-input-button" loading={loading} disabled={loading || !userComdexAddress} onClick={() => handleCheckComdexEligibility()}>Check</Button>
+                          </div>
+                        </Col>
+                      </Row>
+
+                    </div>
+                  </Modal>
+                </div>
+
+
+
+                <div className="eligibility-modal-container">
+                  <Modal
+                    centered={true}
+                    className="disclaimer-modal"
+                    footer={null}
+                    header={null}
+                    open={isOpen}
+                    closable={true}
+                    width={700}
+                    isHidecloseButton={true}
+                    onCancel={handleCancel}
+                    closeIcon={<SvgIcon name="close" viewbox="0 0 19 19" />}
+                    maskStyle={{ background: "rgba(0, 0, 0, 0.6)" }}
+                  >
+                    <div className="eligiblity-inner-modal-title">
+                      <h2>Congrats! You are Eligible for <br />  <b>{amountConversionWithComma(((userComdexEligibilityData?.claimable_amount / TOTAL_ACTIVITY) || 0), 2)} $HARBOR</b>  & <b>{amountConversionWithComma(((Number(userComdexEligibilityData?.claimable_amount / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0), 2)} $veHARBOR</b> </h2>
+
+                      <div className="description-text">
+                        <p>
+                          <Lottie
+                            options={defaultOptions}
+                            height={100}
+                            width={200}
+                          />
+                        </p>
+                      </div>
+                      <p>Share with your friends</p>
+                      <div className="text-center mt-4">
+                      </div>
+                      <div className="d-flex agree-btn">
+                        <div className="share-btn-main-container">
+                          <div className="twitter-btn-container airdrop-share-btn">
+                            <a href={`https://twitter.com/intent/tweet?original_referer&ref_src=twsrc%5Etfw%7Ctwcamp%5Ebuttonembed%7Ctwterm%5Eshare%7Ctwgr%5E&text=${shareText}`} target="_blank"> <SvgIcon name="twitter" viewbox="0 0 22 25" /></a>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </Modal>
+                </div>
+
               </div>
             </Col>
           </Row>
           <Row className="airdrop-bottom">
             <Col lg="4">
               <div className="airdrop-bottom-card airdrop-bottom-card1">
-                <h2>Your Airdrop Details</h2>
+                <h2>Your Airdrop Details <TooltipIcon text="Total Harbor ( Magic Txn + Non Magic Txn chains + LP Pools; Harbor from Magic Txn chains will add here only after completion of magic Txn)" /></h2>
                 <div className="airdrop-statics">
                   <p className="total-value">$Harbor Airdrop <TooltipIcon text="User’s Total $Harbor airdrop across all chains and pools" /></p>
                   <h2>{amountConversionWithComma(totalEligibleToken / TOTAL_ACTIVITY || 0)} <sub className="text-uppercase">harbor</sub></h2>
                 </div>
                 <div className="airdrop-statics mb-0">
-                  <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 1 year once he completes the missions" /></p>
+                  <p className="total-value">$veHarbor Airdrop <TooltipIcon text="User’s Total amount of $veharbor having a locking period of 4 months once he completes the missions" /></p>
                   <h2>{amountConversionWithComma((Number(totalEligibleToken / TOTAL_ACTIVITY) * Number(TOTAL_VEHARBOR_ACTIVITY)) || 0)} <sub>ve</sub><sub className="text-uppercase">harbor</sub></h2>
                 </div>
               </div>
@@ -486,21 +648,24 @@ const Airdrop = ({
 Airdrop.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  isDarkMode: PropTypes.bool.isRequired,
   refreshBalance: PropTypes.number.isRequired,
-  userEligibilityData: PropTypes.object.isRequired,
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    isDarkMode: state.theme.theme.darkThemeEnabled,
     refreshBalance: state.account.refreshBalance,
     userEligibilityData: state.airdrop.userEligibilityData,
+    userComdexEligibilityData: state.airdrop.userComdexEligibilityData,
   };
 };
 
 const actionsToProps = {
   setuserEligibilityData,
+  setuserComdexEligibilityData,
 };
 
 export default connect(stateToProps, actionsToProps)(Airdrop);

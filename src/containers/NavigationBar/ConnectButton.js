@@ -13,19 +13,21 @@ import {
   showAccountConnectModal
 } from "../../actions/account";
 import { setAssetList } from "../../actions/asset";
-import { setMarkets } from "../../actions/oracle";
+import { setMarkets, setCoingekoPrice, setCswapApiPrice } from "../../actions/oracle";
 import { setHarborPrice } from "../../actions/liquidity";
 import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
 import { queryAssets } from "../../services/asset/query";
 import { queryAllBalances } from "../../services/bank/query";
 import { fetchKeplrAccountName } from "../../services/keplr";
-import { fetchRestPrices, queryMarketList } from "../../services/oracle/query";
+import { fetchCoingeckoPrices, fetchRestPrices, queryMarketList } from "../../services/oracle/query";
 import { marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
 import DisConnectModal from "../DisConnectModal";
 import ConnectModal from "../Modal";
 import { amountConversion } from "../../utils/coin";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+import websocket from 'websocket';
 
 const ConnectButton = ({
   setAccountAddress,
@@ -42,9 +44,145 @@ const ConnectButton = ({
   balances,
   assetMap,
   setHarborPrice,
-  harborPrice
+  harborPrice,
+  setCoingekoPrice,
+  setCswapApiPrice,
 }) => {
   const dispatch = useDispatch();
+
+  const client = new websocket.w3cwebsocket('wss://rpc.comdex.one:443/websocket');
+
+  const subscription = {
+    "jsonrpc": "2.0",
+    "method": "subscribe",
+    "id": "0",
+    "params": {
+      "query": `coin_spent.spender='${address}'`
+    },
+  };
+
+  const subscription2 = {
+    "jsonrpc": "2.0",
+    "method": "subscribe",
+    "id": "0",
+    "params": {
+      "query": `coin_received.receiver='${address}'`
+    }
+  };
+
+  useEffect(() => {
+    if (address) {
+
+      const ws = new WebSocket(
+        "wss://testnet2rpc.comdex.one/websocket"
+      );
+      const ws1 = new WebSocket(
+        "wss://testnet2rpc.comdex.one/websocket"
+      );
+
+      ws.onopen = () => {
+        console.log("Connection Established! 0");
+        ws.send(JSON.stringify(subscription));
+      };
+      ws1.onopen = () => {
+        console.log("Connection Established! 1");
+        ws1.send(JSON.stringify(subscription2));
+      };
+
+      ws.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        console.log(response, "ws - 0");
+        if (response?.result?.events) {
+          dispatch({
+            type: "BALANCE_REFRESH_SET",
+            value: refreshBalance + 1,
+          });
+        }
+      };
+
+      ws1.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        console.log(response, "ws - 1");
+        if (response?.result?.events) {
+          dispatch({
+            type: "BALANCE_REFRESH_SET",
+            value: refreshBalance + 1,
+          });
+        }
+      };
+
+      ws.onclose = () => {
+        console.log("Connection Closed! 0");
+      };
+      ws1.onclose = () => {
+        console.log("Connection Closed! 1");
+      };
+
+      ws.onerror = (error) => {
+        console.log(error, "WS Error");
+      };
+      ws1.onerror = (error) => {
+        console.log(error, "WS 1 Error");
+      };
+
+      // return () => {
+      //   ws.close();
+      //   ws1.close();
+      // };
+    }
+  }, [address]);
+
+
+  // useEffect(() => {
+  //   if (address) {
+  //     console.log("Web socket func");
+
+  //     client.onopen = () => {
+  //       console.log('WebSocket Client Connected');
+  //     };
+
+
+  //     try {
+  //       client.onopen = () => {
+  //         const msg1 = {
+
+  //           "jsonrpc": "2.0",
+  //           "method": "subscribe",
+  //           "id": "0",
+  //           "params": {
+  //             "query": `coin_spent.spender='${address}'`
+  //           },
+
+  //         }
+
+  //         const msg2 = {
+  //           "jsonrpc": "2.0",
+  //           "method": "subscribe",
+  //           "id": "0",
+  //           "params": {
+  //             "query": `coin_received.receiver='${address}'`
+  //           }
+  //         };
+  //         client.send(JSON.stringify(msg1));
+  //         client.send(JSON.stringify(msg2));
+  //       };
+
+  //     } catch (error) {
+
+  //       console.log(error, "eror white send");
+  //     }
+  //     client.onerror = (error) => {
+  //       console.log(error, "WS Error");
+  //     };
+  //     client.onmessage = (message) => {
+  //       console.log(message?.data, "message");
+  //     };
+
+  //   }
+
+  // }, [address])
+
+
   useEffect(() => {
     const savedAddress = localStorage.getItem("ac");
     const userAddress = savedAddress ? decode(savedAddress) : address;
@@ -59,7 +197,6 @@ const ConnectButton = ({
   }, [address, refreshBalance]);
 
   useEffect(() => {
-    fetchMarkets();
     fetchAssets(
       (DEFAULT_PAGE_NUMBER - 1) * (DEFAULT_PAGE_SIZE * 2),
       DEFAULT_PAGE_SIZE * 2,
@@ -67,6 +204,12 @@ const ConnectButton = ({
       false
     );
   }, []);
+
+  useEffect(() => {
+    fetchMarkets();
+    fetchCoingeckoPrice()
+    fetchPrices();
+  }, [refreshBalance]);
 
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
@@ -122,9 +265,7 @@ const ConnectButton = ({
     }
   }, [address, refreshBalance, markets]);
 
-  useEffect(() => {
-    fetchPrices();
-  }, [markets, assetMap]);
+
 
   useEffect(() => {
     calculateAssetBalance(balances);
@@ -137,6 +278,17 @@ const ConnectButton = ({
       }
 
       setMarkets(result.timeWeightedAverage, result.pagination);
+    });
+  };
+
+  const fetchCoingeckoPrice = () => {
+    fetchCoingeckoPrices((error, result) => {
+      if (error) {
+        return;
+      }
+      if (result) {
+        setCoingekoPrice(result)
+      }
     });
   };
 
@@ -157,8 +309,14 @@ const ConnectButton = ({
         message.error(error);
         return;
       }
+      setCswapApiPrice(result)
+      let harborPriceList = result?.filter((item) => item.denom === "uharbor");
       if (result) {
-        return setHarborPrice(result?.price)
+        if (isNaN(harborPriceList[0]?.price)) {
+          return setHarborPrice(0)
+        } else {
+          return setHarborPrice(harborPriceList[0]?.price)
+        }
       }
       else {
         return setHarborPrice(0)
@@ -235,7 +393,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     show: state.account.showModal,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     refreshBalance: state.account.refreshBalance,
     poolBalances: state.liquidity.poolBalances,
     harborPrice: state.liquidity.harborPrice,
@@ -254,6 +412,8 @@ const actionsToProps = {
   setMarkets,
   setAccountName,
   setHarborPrice,
+  setCoingekoPrice,
+  setCswapApiPrice,
 };
 
 export default connect(stateToProps, actionsToProps)(ConnectButton);

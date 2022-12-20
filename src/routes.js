@@ -29,6 +29,14 @@ const routes = [
     element: <Assets />,
   },
   {
+    path: "/mint",
+    element: <BorrowTab />,
+  },
+  {
+    path: "mint/vault/:pathVaultId",
+    element: <Vault />,
+  },
+  {
     path: "/stableMint",
     element: <StableMint />,
   },
@@ -41,7 +49,7 @@ const routes = [
     element: <Earn />,
   },
   {
-    path: "/more/auctions",
+    path: "/auctions",
     element: <Auctions />,
   },
   {
@@ -63,6 +71,14 @@ const routes = [
   {
     path: "/more/vote",
     element: <Vote />,
+  },
+  {
+    path: "/more/airdrop",
+    element: <Airdrop />,
+  },
+  {
+    path: "/more/airdrop/complete-mission/:chainId",
+    element: <CompleteMission />,
   },
 ];
 

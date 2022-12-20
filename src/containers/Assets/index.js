@@ -12,9 +12,8 @@ import { DOLLAR_DECIMALS } from "../../constants/common";
 import { getChainConfig } from "../../services/keplr";
 import {
   amountConversion,
-  amountConversionWithComma,
   commaSeparatorWithRounding,
-  denomConversion
+  denomConversion,
 } from "../../utils/coin";
 import { commaSeparator, marketPrice } from "../../utils/number";
 import { iconNameFromDenom } from "../../utils/string";
@@ -23,10 +22,18 @@ import Deposit from "./Deposit";
 import "./index.scss";
 import Withdraw from "./Withdraw";
 
-const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMap, harborPrice }) => {
+const Assets = ({
+  lang,
+  assetBalance,
+  balances,
+  markets,
+  refreshBalance,
+  assetMap,
+  harborPrice,
+}) => {
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const handleBalanceRefresh = () => {
     setLoading(true);
@@ -112,7 +119,11 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
               </a>
             </Button>
           ) : (
-            <Deposit chain={value} />
+            <Deposit
+              chain={value}
+              balances={balances}
+              handleRefresh={handleBalanceRefresh}
+            />
           );
         }
       },
@@ -143,7 +154,11 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
               </a>
             </Button>
           ) : (
-            <Withdraw chain={value} />
+            <Withdraw
+              chain={value}
+              balances={balances}
+              handleRefresh={handleBalanceRefresh}
+            />
           );
         }
       },
@@ -167,10 +182,10 @@ const Assets = ({ lang, assetBalance, balances, markets, refreshBalance, assetMa
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-            ibcBalance.amount,
-            comdex?.coinDecimals,
-            assetMap[ibcBalance?.denom]?.decimals
-          )
+              ibcBalance.amount,
+              comdex?.coinDecimals,
+              assetMap[ibcBalance?.denom]?.decimals
+            )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },
@@ -347,7 +362,7 @@ const stateToProps = (state) => {
     lang: state.language,
     assetBalance: state.account.balances.asset,
     balances: state.account.balances.list,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     refreshBalance: state.account.refreshBalance,
     assetMap: state.asset.map,
     harborPrice: state.liquidity.harborPrice,

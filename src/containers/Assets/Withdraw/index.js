@@ -1,33 +1,23 @@
-import "./index.scss";
-import * as PropTypes from "prop-types";
-import { Col, Row, SvgIcon } from "../../../components/common";
-import { connect } from "react-redux";
-import React, { useState } from "react";
 import { Button, Form, message, Modal } from "antd";
-import variables from "../../../utils/variables";
-import { getChainConfig, initializeIBCChain } from "../../../services/keplr";
-import {
-  amountConversion,
-  denomConversion,
-  getAmount,
-} from "../../../utils/coin";
-import { defaultFee } from "../../../services/transaction";
-import { aminoSignIBCTx } from "../../../services/helper";
-import { toDecimals, truncateString } from "../../../utils/string";
+import * as PropTypes from "prop-types";
+import React, { useState } from "react";
+import { connect } from "react-redux";
 import { fetchProofHeight } from "../../../actions/asset";
-import CustomInput from "../../../components/CustomInput";
-import { setBalanceRefresh } from "../../../actions/account";
-import { ValidateInputNumber } from "../../../config/_validation";
+import { Col, Row, SvgIcon } from "../../../components/common";
 import Snack from "../../../components/common/Snack";
+import CustomInput from "../../../components/CustomInput";
 import { comdex } from "../../../config/network";
+import { ValidateInputNumber } from "../../../config/_validation";
+import { queryBalance } from "../../../services/bank/query";
+import { aminoSignIBCTx } from "../../../services/helper";
+import { getChainConfig, initializeIBCChain } from "../../../services/keplr";
+import { defaultFee, fetchTxHash } from "../../../services/transaction";
+import { denomConversion, getAmount } from "../../../utils/coin";
+import { toDecimals, truncateString } from "../../../utils/string";
+import variables from "../../../utils/variables";
+import "./index.scss";
 
-const Withdraw = ({
-  lang,
-  chain,
-  address,
-  refreshBalance,
-  setBalanceRefresh,
-}) => {
+const Withdraw = ({ lang, chain, address, balances, handleRefresh }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [destinationAddress, setDestinationAddress] = useState("");
   const [inProgress, setInProgress] = useState(false);
@@ -39,9 +29,7 @@ const Withdraw = ({
     value = toDecimals(value).toString().trim();
 
     setAmount(value);
-    setValidationError(
-      ValidateInputNumber(value, chain?.balance?.amount)
-    );
+    setValidationError(ValidateInputNumber(value, chain?.balance?.amount));
   };
 
   const showModal = () => {
@@ -97,8 +85,6 @@ const Withdraw = ({
     };
 
     aminoSignIBCTx(getChainConfig(), data, (error, result) => {
-      setInProgress(false);
-
       if (error) {
         if (result?.transactionHash) {
           message.error(
@@ -111,21 +97,109 @@ const Withdraw = ({
         } else {
           message.error(error);
         }
+
+        resetValues();
         return;
       }
 
-      message.success(
-        <Snack
-          message={variables[lang].tx_success}
-          explorerUrlToTx={comdex?.explorerUrlToTx}
-          hash={result?.transactionHash}
-        />
-      );
+      if (result?.transactionHash) {
+        message.loading(
+          "Transaction Broadcasting, Waiting for transaction to be included in the block"
+        );
 
-      setBalanceRefresh(refreshBalance + 1);
-      setAmount()
-      setIsModalOpen(false);
+        handleHash(result?.transactionHash);
+      }
     });
+  };
+
+  const resetValues = () => {
+    setInProgress(false);
+    setIsModalOpen(false);
+    setAmount();
+  };
+
+  const handleHash = (txhash) => {
+    let counter = 0;
+
+    const time = setInterval(() => {
+      fetchTxHash(txhash, (hashResult) => {
+        if (hashResult) {
+          if (hashResult?.code !== undefined && hashResult?.code !== 0) {
+            message.error("the error", hashResult?.raw_log);
+            message.error(
+              <Snack
+                message={hashResult?.raw_log}
+                explorerUrlToTx={comdex?.explorerUrlToTx}
+                hash={hashResult?.hash}
+              />
+            );
+
+            resetValues();
+
+            clearInterval(time);
+
+            return;
+          }
+        }
+
+        counter++;
+        if (counter === 3) {
+          if (
+            hashResult &&
+            hashResult.code !== undefined &&
+            hashResult.code !== 0
+          ) {
+            message.error(
+              <Snack
+                message={hashResult?.raw_log}
+                explorerUrlToTx={comdex?.explorerUrlToTx}
+                hash={hashResult?.hash}
+              />
+            );
+
+            resetValues();
+            clearInterval(time);
+
+            return;
+          }
+
+          message.success(
+            <Snack
+              message={"Transaction Successful. Token Transfer in progress."}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={txhash}
+            />
+          );
+
+          resetValues();
+          clearInterval(time);
+
+          const fetchTime = setInterval(() => {
+            queryBalance(
+              comdex?.rpc,
+              address,
+              chain?.ibcDenomHash,
+              (error, result) => {
+                if (error) return;
+
+                let resultBalance =
+                  balances?.length &&
+                  chain?.ibcDenomHash &&
+                  balances.find((val) => val.denom === chain?.ibcDenomHash);
+
+                if (result?.balance?.amount !== resultBalance?.amount) {
+                  handleRefresh();
+                  resetValues();
+
+                  message.success("IBC Transfer Complete");
+                  clearInterval(fetchTime);
+                }
+              }
+            );
+          }, 5000);
+        }
+      });
+    }, 5000);
   };
 
   const handleOk = () => {
@@ -138,8 +212,13 @@ const Withdraw = ({
 
   return (
     <>
-      <Button type="primary btn-filled" size="small" onClick={showModal} className="asset-ibc-btn-container">
-        {variables[lang].withdraw} <SvgIcon name='chevron-right' viewbox='0 0 13.503 23.616' />
+      <Button
+        type="primary btn-filled"
+        size="small"
+        onClick={showModal}
+        className="asset-ibc-btn-container"
+      >
+        {variables[lang].withdraw} <span className="asset-ibc-btn"> &#62;</span>
       </Button>
       <Modal
         className="asstedepositw-modal"
@@ -194,7 +273,10 @@ const Withdraw = ({
                   </Button>
                 </span>
               </div>
-              <Form.Item label="Amount to Withdraw" className="assets-input-box">
+              <Form.Item
+                label="Amount to Withdraw"
+                className="assets-input-box"
+              >
                 <CustomInput
                   value={amount}
                   onChange={(event) => onChange(event.target.value)}
@@ -226,7 +308,6 @@ const Withdraw = ({
 
 Withdraw.propTypes = {
   lang: PropTypes.string.isRequired,
-  refreshBalance: PropTypes.number.isRequired,
   address: PropTypes.string,
   chain: PropTypes.any,
 };
@@ -235,12 +316,7 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
-    refreshBalance: state.account.refreshBalance,
   };
 };
 
-const actionsToProps = {
-  setBalanceRefresh,
-};
-
-export default connect(stateToProps, actionsToProps)(Withdraw);
+export default connect(stateToProps)(Withdraw);

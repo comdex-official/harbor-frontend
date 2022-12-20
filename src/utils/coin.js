@@ -1,4 +1,4 @@
-import { comdex } from "../config/network";
+import { comdex, ibcDenoms } from "../config/network";
 import { commaSeparator, getExponent } from "./number";
 import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
 
@@ -52,6 +52,14 @@ export const denomConversion = (denom) => {
   if (denom === "weth-wei") {
     return "WETH";
   }
+  if (denom === "wbtc-satoshi" || denom === ibcDenoms["wbtc-satoshi"]) {
+    return "WBTC";
+  }
+
+  if (denom === "stuatom" || denom === ibcDenoms["stuatom"]) {
+    return "stATOM";
+  }
+
   if (denom && denom.substr(0, 1) === "u") {
     if (
       denom &&

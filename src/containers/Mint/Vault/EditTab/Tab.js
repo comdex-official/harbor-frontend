@@ -112,6 +112,7 @@ const Edit = ({
       setNewCollateralRatio(0)
     }
   }, [address, ownerVaultId]);
+
   useEffect(() => {
     if (ownerVaultInfo?.id) {
       if (ownerVaultId) {
@@ -306,12 +307,12 @@ const Edit = ({
   const withdrawableCollateral = () => {
     let depositedAsset = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
     let minCr = minCrRatio / 100;
-    // let safeMinCr = (minCrRatio / 100) + 1;
     let borrowedCMST = Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals));
+    let closingFeePercent = decimalConversion(selectedExtentedPairVaultListData[0]?.closingFee);
     let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
+    let closingFee = borrowedCMST * closingFeePercent;
     let collateralAssetPrice = collateralPrice;
-    let withdrawableAmount = depositedAsset - ((minCr * (borrowedCMST + intrest)) / collateralAssetPrice)
-    // let withdrawableAmount = depositedAsset - ((safeMinCr * (borrowedCMST + intrest)) / collateralAssetPrice)
+    let withdrawableAmount = depositedAsset - ((minCr * (borrowedCMST + intrest + closingFee)) / collateralAssetPrice)
     withdrawableAmount = truncateToDecimals(withdrawableAmount, 6)
     if (withdrawableAmount < 0) {
       withdrawableAmount = "0";
@@ -322,11 +323,13 @@ const Edit = ({
   const availableToBorrow = () => {
     let collateralLocked = Number(amountConversion(ownerVaultInfo?.amountIn, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
     let collateralAssetPrice = collateralPrice;
+    let closingFeePercent = decimalConversion(selectedExtentedPairVaultListData[0]?.closingFee);
     let minCr = minCrRatio / 100;
     // let safeMinCr = (minCrRatio / 100) + 1;
     let mintedCMST = Number(amountConversion(ownerVaultInfo?.amountOut, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals));
+    let closingFee = mintedCMST * closingFeePercent;
     let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
-    let calculatedAmount = ((collateralLocked * collateralAssetPrice) / minCr) - (mintedCMST + intrest);
+    let calculatedAmount = ((collateralLocked * collateralAssetPrice) / minCr) - (mintedCMST + intrest + closingFee);
     calculatedAmount = truncateToDecimals(calculatedAmount, 6)
     if (calculatedAmount < 0) {
       calculatedAmount = "0";
@@ -377,6 +380,8 @@ const Edit = ({
 
   const handleSliderChange = (value, type = editType) => {
     const newRatio = value / 100; // converting value to ratio
+    let closingFeePercent = decimalConversion(selectedExtentedPairVaultListData[0]?.closingFee);
+    let intrest = interestAccumulated + ((10 / 100) * interestAccumulated)
     if (type === "deposit") {
       let newInput = ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * Number(debtPrice) * Number(newRatio)) / collateralPrice) - Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals))
       newInput = Math.max(newInput, 0).toFixed(comdex?.coinDecimals)
@@ -394,7 +399,9 @@ const Edit = ({
         )
       );
     } else if (type === "withdraw") {
-      let newInput = Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) - ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * Number(debtPrice) * Number(newRatio)) / collateralPrice)
+      let closingFee = Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * closingFeePercent;
+      // formula= currentCollateral -((currentDebt * debtPrice * newRatio)/collateralPrice)
+      let newInput = Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) - (((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) + intrest + closingFee) * Number(debtPrice) * Number(newRatio)) / collateralPrice)
 
       newInput = Math.max(newInput, 0).toFixed(comdex?.coinDecimals)
       setNewCollateralRatio(value);
@@ -422,7 +429,8 @@ const Edit = ({
         Number(getAmount(newInput)),
         Number(getAmount(getMaxRepay()))));
     } else {
-      let newInput = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) * Number(collateralPrice)) / (Number(debtPrice) * Number(newRatio))) - Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals))
+      let closingFee = Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) * closingFeePercent
+      let newInput = ((Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals)) * Number(collateralPrice)) / (Number(debtPrice) * Number(newRatio))) - (Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) + intrest + closingFee)
 
       newInput = Math.max(newInput, 0).toFixed(comdex?.coinDecimals)
       setNewCollateralRatio(value);
@@ -786,7 +794,7 @@ const stateToProps = (state) => {
     pair: state.asset.pair,
     pairs: state.asset.pairs,
     refreshBalance: state.account.refreshBalance,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     balances: state.account.balances.list,
     ownerVaultId: state.locker.ownerVaultId,
     ownerVaultInfo: state.locker.ownerVaultInfo,

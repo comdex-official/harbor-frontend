@@ -11,11 +11,16 @@ import { useParams } from "react-router";
 import { checkUserVote, fetchSpecificProposalData } from "../../../../services/contractsRead";
 import { useEffect } from "react";
 import { setCurrentProposal, setUserVote } from "../../../../actions/govern";
-import { truncateString } from "../../../../utils/string";
+import { stringTagParser, truncateString } from "../../../../utils/string";
 import Copy from "../../../../components/Copy";
 import { useState } from "react";
 import moment from "moment";
 import { formatNumber } from "../../../../utils/number";
+import { amountConversion, amountConversionWithComma } from "../../../../utils/coin";
+import { DOLLAR_DECIMALS } from "../../../../constants/common";
+import { totalVTokens } from "../../../../services/voteContractsRead";
+import { MyTimer } from "../../../../components/TimerForAirdrop";
+import TooltipIcon from "../../../../components/TooltipIcon";
 
 const GovernDetails = ({
   lang,
@@ -35,6 +40,8 @@ const GovernDetails = ({
     veto: 0,
     abstain: 0
   });
+  const [totalVoteVotingPower, setVoteTotalVotingPower] = useState(0);
+
 
 
   const fetchSpecificProposal = (proposalId) => {
@@ -53,6 +60,13 @@ const GovernDetails = ({
     })
   }
 
+  const fetchTotalVTokens = (address, height) => {
+    totalVTokens(address, height).then((res) => {
+      setVoteTotalVotingPower(res)
+    }).catch((error) => {
+      console.log(error);
+    })
+  }
 
   useEffect(() => {
     if (currentProposalId) {
@@ -63,6 +77,9 @@ const GovernDetails = ({
   useEffect(() => {
     if (currentProposalId && address) {
       fetchUserVote(currentProposalId, address)
+      if (currentProposal?.start_height) {
+        fetchTotalVTokens(address, currentProposal?.start_height)
+      }
     }
   }, [address, currentProposal])
 
@@ -83,6 +100,17 @@ const GovernDetails = ({
     totalValue = formatNumber(totalValue)
     return totalValue;
   }
+
+  const calculateQuorem = () => {
+    let value = currentProposal;
+    let totalWeight = value?.total_weight;
+    let quoremWeight = value?.threshold?.threshold_quorum?.quorum;
+    let quorem = Number(totalWeight) * Number(quoremWeight);
+    quorem = formatNumber(amountConversion(quorem, DOLLAR_DECIMALS))
+    return quorem;
+
+  }
+
   const calculateVotes = () => {
     let value = currentProposal?.votes;
     let yes = Number(value?.yes);
@@ -108,12 +136,15 @@ const GovernDetails = ({
     // *Removing miliSec from unix time 
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
-    timestamp = timestamp.format("DD/MM/YYYY hh:mm:ss")
+    timestamp = timestamp.format("DD-MM-YYYY hh:mm:ss")
     return timestamp;
   }
   const votingStartTime = unixToGMTTime(currentProposal?.start_time);
   const votingEndTime = unixToGMTTime(currentProposal?.expires?.at_time);
   const duration = moment.duration(currentProposal?.duration?.time, 'seconds');
+
+  let time = currentProposal?.expires?.at_time;
+  time = (time / 1000000);
 
 
 
@@ -127,8 +158,8 @@ const GovernDetails = ({
       counts: votingEndTime !== "Invalid date" ? votingEndTime : "--/--/-- 00:00:00"
     },
     {
-      title: "Duration",
-      counts: votingEndTime !== "Invalid date" ? `${duration.days()} Days ${duration.hours()} Hours` : "--/--/-- 00:00:00"
+      title: "Voting Ends In",
+      counts: time !== "Invalid date" ? <MyTimer expiryTimestamp={time} /> : "--/--/-- 00:00:00"
     },
     {
       title: "Proposer",
@@ -136,12 +167,18 @@ const GovernDetails = ({
 
     }
   ];
+
   const dataVote = [
     {
       title: "Total Vote",
       counts: currentProposal ? `${(calculateTotalValue() || "0") + " " + "veHARBOR"}` : 0,
+    },
+    {
+      title: "Quorum" + " " + "(" + (Number(currentProposal?.threshold?.threshold_quorum?.quorum || 0) * 100) + "%" + ")",
+      counts: currentProposal ? `${(calculateQuorem() || "0") + " " + "veHARBOR"}` : 0,
     }
   ];
+
   const Options = {
     chart: {
       type: "pie",
@@ -193,22 +230,22 @@ const GovernDetails = ({
           {
             name: "Yes",
             y: Number(getVotes?.yes || 0),
-            color: "#665AA6",
+            color: "#03d707c4",
           },
           {
             name: "No",
             y: Number(getVotes?.no || 0),
-            color: "#BFA9D7",
+            color: "#FF6767",
           },
           {
             name: "No With Veto",
             y: Number(getVotes?.veto || 0),
-            color: "#E7DDF1",
+            color: "#C0C0C0",
           },
           {
             name: "Abstain",
             y: Number(getVotes?.abstain || 0),
-            color: "#81808F",
+            color: "#B699CA",
           },
         ],
       },
@@ -224,12 +261,27 @@ const GovernDetails = ({
     }
   }
 
+  const parsedVotingStatustext = (text) => {
+    if (text === "open") {
+      return "voting Period"
+    }
+    return text;
+  }
+
   if (loading) {
     return <div className="spinner"><Spin /></div>
   }
   return (
     <div className="app-content-wrapper">
       <Row>
+        <Col className="text-right mb-3">
+          <div className="govern-voting-power-container">
+            <div className="total-veHARBOR">
+              My Voting Power : <span className='fill-box'><span>{amountConversionWithComma(totalVoteVotingPower) || 0}</span> veHARBOR </span> <TooltipIcon text="Voting power will be calculated before the start of the voting period of this proposal" />
+            </div>
+          </div>
+        </Col>
+
         <Col className="text-right mb-3">
           <Link to="/more/govern"><Button className="back-btn" type="primary">Back</Button></Link>
         </Col>
@@ -267,21 +319,26 @@ const GovernDetails = ({
       </Row>
 
 
-      <Row>
+      <Row className="govern-row-gap">
         <Col md="6">
           <div className="composite-card govern-card2 earn-deposite-card h-100">
-            <Row>
-              <Col>
+            <Row className="inner-voting-status-main-container">
+              <div className="proposal-id">
                 <h3>#{currentProposal?.id || "-"}</h3>
-              </Col>
-              <Col className="text-right">
-                <Button type="primary" className="btn-filled govern-status-btn">{currentProposal?.status || "-"}</Button>
-              </Col>
+              </div>
+              <div className="proposal-status-container">
+                <div className={currentProposal?.status === "open" ? "proposal-status open-color"
+                  : currentProposal?.status === "passed" || currentProposal?.status === "executed" ? "proposal-status passed-color"
+                    : currentProposal?.status === "rejected" ? "proposal-status reject-color"
+                      : currentProposal?.status === "pending" ? "proposal-status pending-color" : "proposal-status"
+
+                }> {currentProposal ? parsedVotingStatustext(currentProposal?.status) : "-" || "-"}</div>
+              </div>
             </Row>
             <Row>
               <Col>
                 <h2>{currentProposal?.title || "---"}</h2>
-                <p>{currentProposal?.description || "----"} </p>
+                <p>{stringTagParser(currentProposal?.description || " ") || "----"} </p>
               </Col>
             </Row>
           </div>
@@ -292,37 +349,40 @@ const GovernDetails = ({
               {address && userVote !== null ?
                 <Col className="text-right">
                   <div className="user-vote-container">
-                    {userVote && <div>Your Vote : <span className="vote_msg"> {getUserVote(userVote?.vote)} </span>  </div>}
-                    <VoteNowModal />
+                    {userVote && <div>Your Vote : <span className={userVote?.vote === "yes" ? "vote_msg yes"
+                      : userVote?.vote === "no" ? "vote_msg no"
+                        : userVote?.vote === "veto" ? "vote_msg veto"
+                          : userVote?.vote === "abstain" ? "vote_msg abstain" : "vote_msg"}
+
+                    > {getUserVote(userVote?.vote)} </span>  </div>}
+                    <VoteNowModal votingPower={amountConversionWithComma(totalVoteVotingPower) || 0} />
                   </div>
                 </Col> :
                 <Col className="text-right">
-                  <VoteNowModal />
+                  <VoteNowModal votingPower={amountConversionWithComma(totalVoteVotingPower) || 0} />
                 </Col>
               }
             </Row>
             <Row>
               <Col>
                 <div className="govern-dlt-card">
-                  <div className="govern-dlt-chart">
-                    <HighchartsReact highcharts={Highcharts} options={Options} />
-                  </div>
+
+                  <List
+                    grid={{
+                      gutter: 16,
+                      xs: 1,
+                    }}
+                    dataSource={dataVote}
+                    renderItem={item => (
+                      <List.Item>
+                        <div>
+                          <p>{item.title}</p>
+                          <h3>{item.counts}</h3>
+                        </div>
+                      </List.Item>
+                    )}
+                  />
                   <div className="govern-dlt-right">
-                    <List
-                      grid={{
-                        gutter: 16,
-                        xs: 1,
-                      }}
-                      dataSource={dataVote}
-                      renderItem={item => (
-                        <List.Item>
-                          <div>
-                            <p>{item.title}</p>
-                            <h3>{item.counts}</h3>
-                          </div>
-                        </List.Item>
-                      )}
-                    />
                     <ul className="vote-lists">
                       <li>
                         <SvgIcon name="rectangle" viewbox="0 0 34 34" />
@@ -353,6 +413,9 @@ const GovernDetails = ({
                         </div>
                       </li>
                     </ul>
+                    <div className="govern-dlt-chart">
+                      <HighchartsReact highcharts={Highcharts} options={Options} />
+                    </div>
                   </div>
                 </div>
               </Col>

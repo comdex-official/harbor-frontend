@@ -270,7 +270,7 @@ const stateToProps = (state) => {
         address: state.account.address,
         refreshBalance: state.account.refreshBalance,
         balances: state.account.balances.list,
-        markets: state.oracle.market.map,
+        markets: state.oracle.market,
         vestingRadioInput: state.vesting.vestingRadioInput,
     };
 };

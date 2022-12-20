@@ -3,14 +3,14 @@
 .time-left-head {
   border: 1px solid #c5b2db;
   border-radius: 30px;
-  max-width: 420px;
+  max-width: 480px;
   padding: 6px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.1rem;
   margin: -4rem auto 2rem auto;
-  @media screen and (max-width:991px) {
+  @media screen and (max-width: 991px) {
     margin: 1rem auto 1rem auto;
   }
   .left-text {
@@ -30,8 +30,8 @@
   // display: grid;
   // grid-template-columns: repeat(3, 1fr);
   // grid-gap: 1rem;
-  .col-xl-4{
-    @media screen and (max-width:1200px) {
+  .col-xl-4 {
+    @media screen and (max-width: 1200px) {
       padding-bottom: 20px;
     }
   }
@@ -118,7 +118,7 @@
       flex-direction: column;
       h3 {
         font-size: 1.05rem;
-        margin-bottom: 1.2rem;
+        margin-bottom: 1.9rem;
         font-weight: 600;
         .dark-mode & {
           color: $white;
@@ -128,8 +128,9 @@
         list-style-type: none;
         padding-left: 0;
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(8, 1fr);
         grid-gap: 1.5rem;
+        place-items: flex-end;
         li {
           text-align: center;
           grid-column: span 3;
@@ -278,8 +279,11 @@
               }
             }
           }
-          &.pool-group-width{
+          &.pool-group-width {
             width: 33%;
+          }
+          &.pool-group-width-2 {
+            width: 26%;
           }
         }
       }
@@ -291,7 +295,7 @@
         max-width: 400px;
         height: 42px;
         margin: 1rem auto auto auto;
-        @media screen and (max-width:1500px) {
+        @media screen and (max-width: 1500px) {
           padding: 0 5px;
           font-size: 13px;
         }
@@ -436,15 +440,89 @@
 .allChain-mission-btn-container {
   display: flex;
   column-gap: 10px;
-  @media screen and (max-width:480px) {
+  @media screen and (max-width: 480px) {
     display: block;
   }
   .mission-btn {
     background-color: $secondary-color !important;
   }
-  .ant-btn{
-    @media screen and (max-width:480px) {
+  .ant-btn {
+    @media screen and (max-width: 480px) {
       width: 100%;
+    }
+  }
+}
+
+.eligiblity-inner-modal-title {
+  h2 {
+    text-align: center;
+    .dark-mode & {
+      color: white;
+    }
+  }
+  p {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-top: 20px;
+    .dark-mode & {
+      color: white;
+    }
+  }
+}
+
+.share-btn-main-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  column-gap: 1rem;
+  .airdrop-share-btn {
+    background-color: $secondary-color;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & a {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+.eligibility-modal-container-check-container {
+  .ant-modal-content {
+    padding: 30px 30px 10px 30px !important;
+  }
+}
+
+.eligiblity-check-modal-inner-box {
+  h2 {
+    .dark-mode & {
+      color: white;
+    }
+  }
+  .eligibility-check-midal-input-box {
+    .input-box {
+      height: 55px;
+      border-radius: 8px;
+      .dark-mode & {
+        border-color: #41344f;
+        background: #41344f;
+        color: #fff;
+      }
+    }
+    .eligibility-check-midal-input-button {
+      height: 55px;
+      margin-left: 15px;
+      padding: 0 2rem;
+      border-radius: 55px;
+      min-width: 150px;
+      font-weight: 500;
+      font-size: 15px;
     }
   }
 }

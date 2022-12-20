@@ -607,6 +607,32 @@ export const customAminoTypes = {
       };
     },
   },
+
+  "/cosmos.bank.v1beta1.MsgSend": {
+    aminoType: "cosmos-sdk/MsgSend",
+    toAmino: ({
+      fromAddress,
+      toAddress,
+      amount,
+    }) => {
+      return {
+        from_address: fromAddress,
+        to_address: toAddress,
+        amount,
+      };
+    },
+    fromAmino: ({
+      from_address,
+      to_address,
+      amount,
+    }) => {
+      return {
+        fromAddress: from_address,
+        toAddress: to_address,
+        amount,
+      };
+    },
+  },
 };
 
 

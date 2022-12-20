@@ -16,6 +16,7 @@ const getCurrencies = (chain) => {
         coinDenom: chain?.coinDenom,
         coinMinimalDenom: chain?.coinMinimalDenom,
         coinDecimals: chain?.coinDecimals,
+        coinGeckoId: chain?.coinGeckoId,
       },
       {
         coinDenom: cmst?.coinDenom,
@@ -34,10 +35,23 @@ const getCurrencies = (chain) => {
         coinDenom: chain?.coinDenom,
         coinMinimalDenom: chain?.coinMinimalDenom,
         coinDecimals: chain?.coinDecimals,
+        coinGeckoId: chain?.coinGeckoId,
       },
     ];
   }
 };
+
+
+const getFeatures = (chain) => {
+  if (chain?.coinDenom === "INJ") {
+    return ([
+      "ibc-transfer",
+      "ibc-go",
+      "eth-address-gen",
+      "eth-key-sign"
+    ])
+  }
+}
 
 export const getChainConfig = (chain = comdex) => {
   return {
@@ -49,6 +63,7 @@ export const getChainConfig = (chain = comdex) => {
       coinDenom: chain?.coinDenom,
       coinMinimalDenom: chain?.coinMinimalDenom,
       coinDecimals: chain?.coinDecimals,
+      coinGeckoId: chain?.coinGeckoId,
     },
     walletUrlForStaking: chain?.walletUrlForStaking,
     bip44: {
@@ -76,6 +91,7 @@ export const getChainConfig = (chain = comdex) => {
         },
       },
     ],
+    features: getFeatures(chain),
     coinType: chain?.coinType,
   };
 };

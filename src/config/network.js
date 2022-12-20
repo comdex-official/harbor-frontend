@@ -5,6 +5,7 @@ export const comdex = {
   rest: process.env.REACT_APP_REST,
   explorerUrlToTx: process.env.REACT_APP_EXPLORER_URL_TO_TX,
   walletUrlForStaking: process.env.REACT_APP_COMDEX_STAKING_URL,
+  coinGeckoId:"comdex",
   coinDenom: "CMDX",
   coinMinimalDenom: "ucmdx",
   coinDecimals: 6,
@@ -28,6 +29,9 @@ export const ibcDenoms = {
   uosmo: process.env.REACT_APP_OSMO_IBC_DENOM,
   uusdc: process.env.REACT_APP_USDC_IBC_DENOM,
   "weth-wei": process.env.REACT_APP_WETH_IBC_DENOM,
+  ujuno: process.env.REACT_APP_JUNO_IBC_DENOM,
+  "wbtc-satoshi": process.env.REACT_APP_WBTC_IBC_DENOM,
+  stuatom: process.env.REACT_APP_STATOM_IBC_DENOM,
 };
 
 export const tokenCoinGeckoIds = ["cosmos", "terra-luna", "ki", "comdex", "kava", "sentinel", "osmosis", "juno-network", "akash-network",

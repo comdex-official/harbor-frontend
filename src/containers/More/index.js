@@ -317,32 +317,8 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("./airdrop")}
-                    disabled={true}
                   >
                     Airdrop
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Col>
-
-        {/* Airdrop  */}
-        <Col lg="6" md="6" sm="12" className="mb-3">
-          <div className="more-card">
-            <div className="more-card-inner">
-              <div className="morecard-left">
-                <h2>Auction</h2>
-                <p>
-                  Participate in auctions to get discounted collateral.
-                </p>
-                <div className="button-container">
-                  <Button
-                    type="primary"
-                    className="btn-filled"
-                    onClick={() => handleRouteChange("./auctions")}
-                  >
-                    Auction
                   </Button>
                 </div>
               </div>

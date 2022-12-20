@@ -7,10 +7,9 @@ const Banner = ({ lang }) => {
     <div className="dashboard-banner earn-deposite-card">
       <div className="banner-left">
         <h2>
-          Try out <span>STABLE MINT</span>  now! <br />
-          Other features are coming soon…
+          Borrow <span>Composite</span>  by depositing <br /> your IBC assets
         </h2>
-        <Link to='/stableMint'>
+        <Link to='/mint'>
           <Button type="primary " className=" btn-filled ">
             Take me there!
           </Button>

@@ -35,8 +35,6 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     if (markets) {
       fetchTVL();
     }
-    fetchTotalTokenMinted(PRODUCT_ID);
-    fetchAllProposalUpData(PRODUCT_ID);
   }, [markets, assetMap]);
 
   const fetchTVL = () => {
@@ -143,7 +141,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     if (totalDollarValue) {
       amount =
         Number(totalDollarValue) -
-        (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
+        (Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0) +
           Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
           Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
 
@@ -161,12 +159,8 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     setHarborCirculatingSypply(amount);
   };
 
-  useEffect(() => {
-    calculatedCmstCurrentSupply();
-  }, [cmstCurrentSupply]);
 
   useEffect(() => {
-    fetchTotalveHarborSupply();
     fetchQueryPairsLockedAndMintedStatistic()
   }, []);
 
@@ -175,11 +169,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
   }, [allCMSTMintedStatistic])
 
 
-  useEffect(() => {
-    if (harborSupply) {
-      calculateHarborSypply();
-    }
-  }, [harborSupply, harborCurrentSypply]);
+
 
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
@@ -247,14 +237,14 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             color: "#BFA9D7",
           },
           {
-            name: "CMDX",
-            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"]),
+            name: "OSMO",
+            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]),
             color: "#8e78a5",
           },
           {
             name: "Others",
             y: Number(totalMintedCMST || 0) -
-              (Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0) +
+              (Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
                 Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
                 Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
               ),
@@ -316,18 +306,19 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             color: "#BFA9D7",
           },
           {
-            name: "CMDX",
-            y: Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0),
+            name: "OSMO",
+            y: Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0),
             color: "#8e78a5",
           },
           {
             name: "Others",
             y:
               Number(totalDollarValue || 0) -
-              (Number(totalValueLocked?.get("ucmdx")?.dollarValue || 0) +
-                Number(
-                  totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0
-                )),
+              (
+                Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0) +
+                Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
+                Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
+              ),
             color: isDarkMode ? "#373549" : "#E0E0E0",
           },
         ],
@@ -390,12 +381,12 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     </h3>
                   </div>
                   <div className="dashboard-statics mb-4 total-dashboard-stats-2">
-                    <p>CMDX</p>
+                    <p>OSMO</p>
                     <h3>
                       $
                       {commaSeparator(
                         Number(
-                          totalValueLocked?.get("ucmdx")?.dollarValue || 0
+                          totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
@@ -448,9 +439,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     </h3>
                   </div>
                   <div className="dashboard-statics mb-4 total-dashboard-stats-2">
-                    <p>CMDX</p>
+                    <p>OSMO</p>
                     <h3>
-                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
 
@@ -458,13 +449,15 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     <p>Others</p>
                     <h3>{
                       commaSeparator(
-                        Number(Number(totalMintedCMST || 0) -
-                          (
-                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData["ucmdx"] || 0) +
-                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
-                            Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
-                          )).toFixed(ZERO_DOLLAR_DECIMALS)
-                      )
+                        Math.max(
+                          Number(Number(totalMintedCMST || 0) -
+                            (
+                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
+                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
+                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
+                            )).toFixed(ZERO_DOLLAR_DECIMALS)
+                          , 0))
+
                     } CMST
                     </h3>
                   </div>
@@ -491,7 +484,7 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     isDarkMode: state.theme.theme.darkThemeEnabled,
-    markets: state.oracle.market.map,
+    markets: state.oracle.market,
     assetMap: state.asset.map,
     harborPrice: state.liquidity.harborPrice,
   };

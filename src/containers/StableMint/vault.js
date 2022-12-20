@@ -3,7 +3,6 @@ import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { Button, Tabs } from "antd";
-import CustomInput from "../../components/CustomInput";
 import { useDispatch } from "react-redux";
 import {
     setPair, setAssetIn,
@@ -25,27 +24,10 @@ const StableMintVault = ({
     lang,
     address,
     setAmountIn,
-    setAmountOut,
-    inAmount,
-    outAmount,
-    pair,
-    setPair,
-    balances,
-    markets,
-    refreshBalance,
-    collectorData,
     lockerDefaultSelectTab,
     setLockerDefaultSelectTab
 }) => {
     const dispatch = useDispatch();
-    const [principal, setPrincipal] = useState();
-    const [years, setYears] = useState(1);
-    const [months, setMonths] = useState(0);
-    const [days, setDays] = useState(0);
-    const [interestRate, setInterestRate] = useState(0);
-    const [totalROI, setTotalROI] = useState();
-
-    const isLockerExist = useSelector((state) => state.locker.isLockerExist);
 
     const tabItems =
         [
@@ -53,85 +35,11 @@ const StableMintVault = ({
             { label: "Withdraw", key: "2", children: <Withdraw /> },
         ]
 
-    const onChangePrincipal = (value) => {
-        value = toDecimals(value).toString().trim();
-        setPrincipal(value);
-        checkCalculation(value);
-    };
-
-    const checkCalculation = (
-        principal,
-        yearsInput = years,
-        monthsInput = months,
-        daysInput = days
-    ) => {
-        // eslint-disable-next-line no-mixed-operators
-        if (principal && interestRate && yearsInput || monthsInput || daysInput) {
-            setTotalROI(
-                calculateROI(
-                    principal,
-                    interestRate,
-                    yearsInput,
-                    monthsInput,
-                    daysInput
-                )
-            );
-        }
-        else {
-            setTotalROI(
-                calculateROI(
-                    0,
-                    0,
-                    0,
-                    0,
-                    0
-                )
-            );
-        }
-    };
-
-    const onChangeYears = (value) => {
-        value = toDecimals(value).toString().trim();
-        if (Number(value) <= 10) {
-            setYears(value);
-            checkCalculation(principal, value);
-        }
-    };
-
-    const onChangeMonths = (value) => {
-        value = toDecimals(value).toString().trim();
-
-        if (Number(value) <= 12) {
-            setMonths(value);
-            checkCalculation(principal, years, value);
-        }
-    };
-
-    const onChangeDays = (value) => {
-        value = toDecimals(value).toString().trim();
-        if (Number(value) <= 30) {
-            setDays(value);
-            checkCalculation(principal, years, months, value);
-        }
-    };
-
     const callback = (key) => {
         dispatch(setAmountIn(0));
         setLockerDefaultSelectTab(key)
     };
 
-    const getIntrestRate = () => {
-        let interest = collectorData && collectorData[0]?.lockerSavingRate
-            ? Number(
-                decimalConversion(collectorData && collectorData[0]?.lockerSavingRate) * 100
-            ).toFixed(DOLLAR_DECIMALS)
-            : Number().toFixed(DOLLAR_DECIMALS)
-        setInterestRate(interest)
-        return interest;
-    }
-    useEffect(() => {
-        getIntrestRate()
-    }, [collectorData])
 
     useEffect(() => {
         setLockerDefaultSelectTab("1")
