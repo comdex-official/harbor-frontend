@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import { Table } from "antd";
+import { Table, Tabs } from "antd";
 import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
@@ -22,14 +22,30 @@ import { iconNameFromDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma, denomConversion } from "../../../utils/coin";
 import moment from "moment";
 import NoDataIcon from "../../../components/common/NoDataIcon";
+import InActiveBidding from "./inActiveBidding";
+import TooltipIcon from "../../../components/TooltipIcon";
 
 const SurplusAuctions = ({ setPairs, address }) => {
+
+  const { TabPane } = Tabs;
+
+  const tabItems =
+    [
+      { label: "Active", key: "1", children: <Bidding address={address} /> },
+      { label: "Completed", key: "2", children: <InActiveBidding address={address} /> }
+    ]
+
+  const [activeKey, setActiveKey] = useState("1");
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
   const [auctions, setAuctions] = useState();
   const [biddings, setBiddings] = useState();
+
+  const callback = (key) => {
+    setActiveKey(key);
+  };
 
   useEffect(() => {
     fetchData();
@@ -38,7 +54,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
 
   const fetchData = () => {
     fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
-    fetchBiddings(address);
+    // fetchBiddings(address);
   };
 
   const queryParams = () => {
@@ -84,31 +100,40 @@ const SurplusAuctions = ({ setPairs, address }) => {
     );
   };
 
-  const fetchBiddings = (address) => {
-    setInProgress(true);
-    querySurplusBiddingList(address, (error, result) => {
-      setInProgress(false);
+  // const fetchBiddings = (address) => {
+  //   setInProgress(true);
+  //   querySurplusBiddingList(address, (error, result) => {
+  //     setInProgress(false);
 
-      if (error) {
-        message.error(error);
-        return;
-      }
+  //     if (error) {
+  //       message.error(error);
+  //       return;
+  //     }
 
-      if (result?.biddings?.length > 0) {
-        setBiddings(result && result.biddings);
-      }
-    });
-  };
+  //     if (result?.biddings?.length > 0) {
+  //       setBiddings(result && result.biddings);
+  //     }
+  //   });
+  // };
 
   const columns = [
     {
-      title: "Auctioned Asset",
+      title: (
+        <>
+          Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
+        </>
+      ),
       dataIndex: "auctioned_asset",
       key: "auctioned_asset",
       width: 150,
     },
     {
-      title: "Bidding Asset",
+      title: (
+        <>
+          Bidding Asset{" "}
+          <TooltipIcon text="Asset used to buy the auctioned asset" />
+        </>
+      ),
       dataIndex: "bridge_asset",
       key: "bridge_asset",
       width: 150,
@@ -120,14 +145,22 @@ const SurplusAuctions = ({ setPairs, address }) => {
       width: 200,
     },
     {
-      title: "End Time",
+      title: (
+        <>
+          End Time <TooltipIcon text="Auction closing time" />
+        </>
+      ),
       dataIndex: "end_time",
       key: "end_time",
       width: 200,
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
-      title: "Top Bid",
+      title: (
+        <>
+          Top Bid <TooltipIcon text="Current  bid" />
+        </>
+      ),
       dataIndex: "min_bid",
       key: "min_bid",
       width: 150,
@@ -238,7 +271,17 @@ const SurplusAuctions = ({ setPairs, address }) => {
           <div className="more-bottom">
             <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
-              <Bidding biddingList={biddings} />
+              {/* <Bidding biddingList={biddings} /> */}
+              <Row>
+                <Col>
+                  <Tabs
+                    className="commodo-tabs mt-2"
+                    onChange={callback}
+                    activeKey={activeKey}
+                    items={tabItems}
+                  />
+                </Col>
+              </Row>
             </div>
           </div>
         </Col>

@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect } from "react-redux";
-import { Table } from "antd";
+import { Table, Tabs } from "antd";
 import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
@@ -26,14 +26,28 @@ import {
 import moment from "moment";
 import TooltipIcon from "../../../components/TooltipIcon";
 import NoDataIcon from "../../../components/common/NoDataIcon";
+import { InActiveBidding } from "./inactiveBidding";
 
 const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
+  const { TabPane } = Tabs;
+
+  const tabItems =
+    [
+      { label: "Active", key: "1", children: <Bidding address={address} /> },
+      { label: "Completed", key: "2", children: <InActiveBidding address={address} /> }
+    ]
+
+  const [activeKey, setActiveKey] = useState("1");
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
   const [auctions, setAuctions] = useState();
   const [biddings, setBiddings] = useState();
+
+  const callback = (key) => {
+    setActiveKey(key);
+  };
 
   useEffect(() => {
     queryParams();
@@ -160,6 +174,8 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
     },
   ];
 
+  console.log(auctions?.auctions, "auctions.auctions");
+
   const tableData =
     auctions && auctions?.auctions.length > 0
       ? auctions.auctions.map((item, index) => {
@@ -171,10 +187,10 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
               <div className="assets-withicon display-center">
                 <div className="assets-icon">
                   <SvgIcon
-                    name={iconNameFromDenom(item?.expectedUserToken?.denom)}
+                    name={iconNameFromDenom(item?.auctionedToken?.denom)}
                   />
                 </div>
-                {denomConversion(item?.expectedUserToken?.denom)}
+                {denomConversion(item?.auctionedToken?.denom)}
               </div>
             </>
           ),
@@ -183,10 +199,10 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
               <div className="assets-withicon">
                 <div className="assets-icon">
                   <SvgIcon
-                    name={iconNameFromDenom(item?.auctionedToken?.denom)}
+                    name={iconNameFromDenom(item?.expectedUserToken?.denom)}
                   />
                 </div>
-                {denomConversion(item?.auctionedToken?.denom)}
+                {denomConversion(item?.expectedUserToken?.denom)}
               </div>
             </>
           ),
@@ -198,7 +214,7 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
                     name={iconNameFromDenom(item?.expectedUserToken?.denom)}
                   />
                 </div>
-                {amountConversionWithComma(item?.expectedUserToken?.amount)}
+                {amountConversionWithComma(item?.expectedUserToken?.amount)} {" "}
                 {denomConversion(item?.expectedUserToken?.denom)}
               </div>
             </>
@@ -231,7 +247,16 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
           <div className="more-bottom mt-3">
             <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
-              <Bidding address={address} />
+              <Row>
+                <Col>
+                  <Tabs
+                    className="commodo-tabs mt-2"
+                    onChange={callback}
+                    activeKey={activeKey}
+                    items={tabItems}
+                  />
+                </Col>
+              </Row>
             </div>
           </div>
         </Col>
