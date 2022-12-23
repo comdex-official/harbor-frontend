@@ -9,3 +9,4 @@ export const TOTAL_VEHARBOR_ACTIVITY = 4;
 export const DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP = 1;
 export const PRODUCT_ID = Number(process.env.REACT_APP_HARBOR_APP_ID);
 export const CSWAP_APP_ID = Number(process.env.REACT_APP_CSWAP_APP_ID); // for testnet appId is 1, and for devnet appId is 2
+export const HOSTED_ON_TEXT = process.env.REACT_APP_HOSTED_ON_TEXT;
