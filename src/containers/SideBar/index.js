@@ -9,6 +9,9 @@ import Tabs from "./Tabs";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useNavigate } from "react-router";
 import { connect } from "react-redux";
+import LightLogo from '../../assets/images/Harborfull_santa2.svg';
+import DarkLogo from '../../assets/images/Harborfull_santa1.svg';
+
 
 const { Sider } = Layout;
 
@@ -69,11 +72,13 @@ const SideBar = ({ lang, isDarkMode }) => {
                 })
               }
             >
-              {isDarkMode ? (
+              {/* {isDarkMode ? (
                 <SvgIcon name="harbor-logo" />
               ) : (
                 <SvgIcon name="harbor-logo-light" />
-              )}
+              )} */}
+              <img className="blue" src={DarkLogo} alt="Logo" />
+              <img className="white" src={LightLogo} alt="Logo" />
             </div>
             <Scrollbars>
               <div className="side_bar_inner">

@@ -47,6 +47,54 @@ const ConnectButton = ({
   setCswapApiPrice,
 }) => {
   const dispatch = useDispatch();
+
+  const subscription = {
+    "jsonrpc": "2.0",
+    "method": "subscribe",
+    "id": "0",
+    "params": {
+      "query": `coin_spent.spender='${address}'`
+    },
+  };
+
+  const subscription2 = {
+    "jsonrpc": "2.0",
+    "method": "subscribe",
+    "id": "0",
+    "params": {
+      "query": `coin_received.receiver='${address}'`
+    }
+  };
+
+  useEffect(() => {
+    if (address) {
+      let ws = new WebSocket(`${process.env.REACT_APP_WEBSOCKET_API_URL}`);
+
+      ws.onopen = () => {
+        ws.send(JSON.stringify(subscription));
+        ws.send(JSON.stringify(subscription2));
+      };
+
+      ws.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        if (response?.result?.events) {
+          const savedAddress = localStorage.getItem("ac");
+          const userAddress = savedAddress ? decode(savedAddress) : address;
+          fetchBalances(userAddress);
+        }
+      };
+
+      ws.onclose = () => {
+        console.log("Connection Closed! 0");
+      };
+
+      ws.onerror = (error) => {
+        console.log(error, "WS Error");
+      };
+    }
+  }, [address]);
+
+
   useEffect(() => {
     const savedAddress = localStorage.getItem("ac");
     const userAddress = savedAddress ? decode(savedAddress) : address;
@@ -150,7 +198,7 @@ const ConnectButton = ({
       if (error) {
         return;
       }
-      if(result){
+      if (result) {
         setCoingekoPrice(result)
       }
     });
