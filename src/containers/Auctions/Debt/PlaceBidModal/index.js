@@ -23,6 +23,7 @@ import "./index.scss";
 import moment from "moment";
 import Timer from "../../../../components/Timer";
 import { querySingleDebtAuction } from "../../../../services/auction";
+import TooltipIcon from "../../../../components/TooltipIcon";
 
 const PlaceBidModal = ({
   lang,
@@ -175,19 +176,17 @@ const PlaceBidModal = ({
           </Row>
           <Row>
             <Col sm="6">
-              <p>Bid Expiration Time </p>
+              <p>Bid Expiration In </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {moment(newCurrentAuction && newCurrentAuction.bidEndTime).format(
-                  "MMM DD, YYYY HH:mm"
-                )}
+                <Timer expiryTimestamp={newCurrentAuction && newCurrentAuction.bidEndTime} />
               </label>
             </Col>
           </Row>
           <Row>
             <Col sm="6">
-              <p>User payable amount </p>
+              <p>Lot Size <TooltipIcon text="The quantiy of CMST a user will pay" /> </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
@@ -226,7 +225,7 @@ const PlaceBidModal = ({
           </Row>
           <Row>
             <Col sm="6">
-              <p>Your Bid</p>
+              <p>Your Bid <TooltipIcon text="Your bid in Harbor tokens should be lesser than the number in Top bid" /></p>
             </Col>
             <Col sm="6" className="text-right">
               <CustomInput

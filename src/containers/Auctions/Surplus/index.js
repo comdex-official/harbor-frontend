@@ -139,7 +139,11 @@ const SurplusAuctions = ({ setPairs, address }) => {
       width: 150,
     },
     {
-      title: "Quantity",
+      title: (
+        <>
+          Quantity <TooltipIcon text="Amount of asset in auction" />
+        </>
+      ),
       dataIndex: "quantity",
       key: "quantity",
       width: 200,

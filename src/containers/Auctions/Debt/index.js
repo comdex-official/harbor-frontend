@@ -115,7 +115,10 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
       width: 150,
     },
     {
-      title: "Quantity",
+      title: (
+        <>
+          Quantity <TooltipIcon text="Amount of bidding asset in auction" />
+        </>),
       dataIndex: "quantity",
       key: "quantity",
       width: 200,

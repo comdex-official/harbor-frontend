@@ -83,17 +83,44 @@
   font-size: 12px !important;
 }
 .bid-btn-placed {
-  background: $warning-color !important;
-  border: 2px solid $warning-color !important;
+  border: 1px solid yellow !important;
+  background-color: rgba(255, 255, 0, 0.315) !important;
   border-radius: $base-border-radius;
+  color: $text-color-dark2 !important;
+  .dark-mode & {
+    border: 1px solid yellow !important;
+    background-color: rgba(255, 255, 0, 0.295) !important;
+    color: white !important;
+  }
 }
 .bid-btn-success {
-  background: $success-color !important;
-  border: 2px solid $success-color !important;
+  background-color: #cce7de !important;
+  border: 1px solid #02865b !important;
+  color: $text-color-dark2 !important;
+  .dark-mode & {
+    background-color: #19323a !important;
+    color: white !important;
+  }
 }
 .bid-btn-rejected {
-  background:  $red !important;
-    border: 2px solid $red !important;
+  background-color: #f6d9d9 !important;
+  border: 1px solid #8e353c !important;
+  color: $text-color-dark2 !important;
+  .dark-mode & {
+    background-color: #422234 !important;
+    color: white !important;
+  }
+}
+.bid-btn-completed {
+  // background: $primary-color !important;
+  // border: 2px solid $primary-color !important;
+  border: 1px solid #00b0ff !important;
+  background-color: #cbe7fb !important;
+  color: $text-color-dark2 !important;
+  .dark-mode & {
+    background-color: #19385a !important;
+    color: white !important;
+  }
 }
 .auction-extra-tabs {
   .ant-tabs-nav {

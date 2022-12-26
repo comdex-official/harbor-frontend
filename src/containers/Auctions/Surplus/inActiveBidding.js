@@ -56,6 +56,14 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
             true
         );
     };
+    const auctionStatusConverter = (status) => {
+        if (status === "inactive") {
+            return "Completed"
+        } else {
+            return status;
+        }
+    }
+
 
     const columnsBidding = [
         {
@@ -152,11 +160,11 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
                             item?.auctionStatus === "active"
                                 ? "biddin-btn bid-btn-success"
                                 : item?.auctionStatus === "inactive"
-                                    ? "biddin-btn bid-btn-rejected"
+                                    ? "biddin-btn bid-btn-completed"
                                     : ""
                         }
                     >
-                        {item?.auctionStatus}
+                        {auctionStatusConverter(item?.auctionStatus)}
                     </Button>
                 ),
                 action: (
@@ -183,6 +191,7 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
             className="custom-table more-table liquidation-table   bidding-bottom-table"
             dataSource={tableBiddingData}
             columns={columnsBidding}
+            loading={inProgress}
             onChange={(event) => handleChange(event)}
             scroll={{ x: "100%" }}
             pagination={{

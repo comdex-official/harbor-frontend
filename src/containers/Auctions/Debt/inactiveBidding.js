@@ -42,6 +42,13 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
         fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true, true);
     }, [address, refreshBalance])
 
+    const auctionStatusConverter = (status) => {
+        if (status === "inactive") {
+            return "Completed"
+        } else {
+            return status;
+        }
+    }
 
 
     const columnsBidding = [
@@ -85,7 +92,7 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
             dataIndex: "auctionStatus",
             key: "auctionStatus",
             align: "center",
-               width: 150,
+            width: 150,
         },
         {
             title: (
@@ -96,7 +103,7 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
             dataIndex: "action",
             key: "action",
             align: "right",
-               width: 150,
+            width: 150,
         },
     ];
 
@@ -107,7 +114,7 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
         biddingList.map((item, index) => {
             return {
                 key: index,
-                outflowToken: (
+                inflowToken: (
                     <>
                         <div className="assets-withicon">
                             <div className="assets-icon">
@@ -120,7 +127,7 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
                         </div>
                     </>
                 ),
-                inflowToken: (
+                outflowToken: (
                     <>
                         <div className="assets-withicon">
                             <div className="assets-icon">
@@ -141,11 +148,11 @@ export const InActiveBidding = ({ lang, address, refreshBalance }) => {
                             item?.auctionStatus === "active"
                                 ? "biddin-btn bid-btn-success"
                                 : item?.auctionStatus === "inactive"
-                                    ? "biddin-btn bid-btn-rejected"
+                                    ? "biddin-btn bid-btn-completed"
                                     : ""
                         }
                     >
-                        {item?.auctionStatus}
+                        {auctionStatusConverter(item?.auctionStatus)}
                     </Button>
                 ),
                 action: (

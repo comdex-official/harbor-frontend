@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Button, Modal, message } from "antd";
 import { Row, Col } from "../../../../components/common";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { comdex } from "../../../../config/network";
 import variables from "../../../../utils/variables";
@@ -22,6 +22,7 @@ import { PRODUCT_ID } from "../../../../constants/common";
 import "./index.scss";
 import moment from "moment";
 import Timer from "../../../../components/Timer";
+import TooltipIcon from "../../../../components/TooltipIcon";
 
 const PlaceBidModal = ({
   lang,
@@ -30,7 +31,9 @@ const PlaceBidModal = ({
   refreshData,
   params,
   balances,
+  refreshBalance,
 }) => {
+  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bidAmount, setBidAmount] = useState();
   const [inProgress, setInProgress] = useState(false);
@@ -82,7 +85,7 @@ const PlaceBidModal = ({
           message.info(result?.rawLog);
           return;
         }
-
+        setBidAmount()
         refreshData();
         message.success(
           <Snack
@@ -91,6 +94,10 @@ const PlaceBidModal = ({
             hash={result?.transactionHash}
           />
         );
+        dispatch({
+          type: "BALANCE_REFRESH_SET",
+          value: refreshBalance + 1,
+        });
       }
     );
   };
@@ -138,19 +145,17 @@ const PlaceBidModal = ({
           </Row>
           <Row>
             <Col sm="6">
-              <p>Bid Expiration Time </p>
+              <p>Bid Expiration In </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
-                {moment(auction && auction.bidEndTime).format(
-                  "MMM DD, YYYY HH:mm"
-                )}
+                <Timer expiryTimestamp={auction && auction.bidEndTime} />
               </label>
             </Col>
           </Row>
           <Row>
             <Col sm="6">
-              <p>Lot Size </p>
+              <p>Lot Size <TooltipIcon text="The quantiy of CMST a user will receive" /> </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
@@ -172,7 +177,7 @@ const PlaceBidModal = ({
           </Row>
           <Row>
             <Col sm="6">
-              <p>Top Bid </p>
+              <p>Top Bid <TooltipIcon text="Your bid in Harbor tokens should be greater than the number in Top bid" /> </p>
             </Col>
             <Col sm="6" className="text-right">
               <label>
@@ -199,12 +204,12 @@ const PlaceBidModal = ({
             <Col sm="6" className="text-right">
               <label>
                 {(
-                  Number(auction?.sellToken?.amount) /
-                  Number(auction?.bid?.amount)
+                  Number(auction?.bid?.amount) /
+                  Number(auction?.sellToken?.amount)
                 ).toFixed(comdex.coinDecimals)}{" "}
                 {`${denomConversion(
-                  auction?.sellToken?.denom
-                )} / ${denomConversion(auction?.bid?.denom)}`}
+                  auction?.bid?.denom
+                )} / ${denomConversion(auction?.sellToken?.denom)}`}
               </label>
             </Col>
           </Row>
@@ -227,6 +232,7 @@ const PlaceBidModal = ({
     </>
   );
 };
+
 
 PlaceBidModal.propTypes = {
   refreshData: PropTypes.func.isRequired,
@@ -257,6 +263,7 @@ PlaceBidModal.propTypes = {
   discount: PropTypes.shape({
     low: PropTypes.number,
   }),
+  refreshBalance: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -265,6 +272,7 @@ const stateToProps = (state) => {
     bidAmount: state.auction.bidAmount,
     address: state.account.address,
     balances: state.account.balances.list,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 

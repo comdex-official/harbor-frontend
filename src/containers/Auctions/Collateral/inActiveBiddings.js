@@ -42,7 +42,7 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap }) => {
 
     useEffect(() => {
         if (address) {
-            fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true,true);
+            fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true, true);
         }
     }, [address, refreshBalance])
 
@@ -57,6 +57,15 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap }) => {
             true
         );
     };
+
+    const auctionStatusConverter = (status) => {
+        if (status === "inactive") {
+            return "Completed"
+        } else {
+            return status;
+        }
+    }
+
 
     const columnsBidding = [
         {
@@ -151,11 +160,11 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap }) => {
                             item?.auctionStatus === "active"
                                 ? "biddin-btn bid-btn-success"
                                 : item?.auctionStatus === "inactive"
-                                    ? "biddin-btn bid-btn-rejected"
+                                    ? "biddin-btn bid-btn-completed"
                                     : ""
                         }
                     >
-                        {item?.auctionStatus}
+                        {auctionStatusConverter(item?.auctionStatus)}
                     </Button>
                 ),
                 action: (

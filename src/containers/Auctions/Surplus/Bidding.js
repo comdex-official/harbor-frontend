@@ -14,7 +14,7 @@ import { DEFAULT_PAGE_NUMBER, HALF_DEFAULT_PAGE_SIZE } from "../../../constants/
 import { querySurplusBiddingList } from "../../../services/auction";
 import { connect } from "react-redux";
 
-export const Bidding = ({ lang, address, refreshBalance}) => {
+export const Bidding = ({ lang, address, refreshBalance }) => {
 
   const [biddingList, setBiddingList] = useState();
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
@@ -95,7 +95,7 @@ export const Bidding = ({ lang, address, refreshBalance}) => {
       dataIndex: "auctionStatus",
       key: "auctionStatus",
       align: "center",
-         width: 150,
+      width: 150,
     },
     {
       title: (
@@ -106,7 +106,7 @@ export const Bidding = ({ lang, address, refreshBalance}) => {
       dataIndex: "action",
       key: "action",
       align: "right",
-         width: 150,
+      width: 150,
     },
   ];
 
@@ -182,6 +182,7 @@ export const Bidding = ({ lang, address, refreshBalance}) => {
     <Table
       className="custom-table more-table liquidation-table   bidding-bottom-table"
       dataSource={tableBiddingData}
+      loading={inProgress}
       columns={columnsBidding}
       onChange={(event) => handleChange(event)}
       scroll={{ x: "100%" }}

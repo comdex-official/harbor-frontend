@@ -107,7 +107,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
     biddingList.map((item, index) => {
       return {
         key: index,
-        outflowToken: (
+        inflowToken: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
@@ -120,7 +120,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
             </div>
           </>
         ),
-        inflowToken: (
+        outflowToken: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
