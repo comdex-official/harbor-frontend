@@ -7,7 +7,7 @@ import TooltipIcon from "../../../components/TooltipIcon";
 import moment from "moment";
 import { queryDebtBiddingList } from "../../../services/auction";
 import { useEffect, useState } from "react";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, HALF_DEFAULT_PAGE_SIZE,  } from "../../../constants/common";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, HALF_DEFAULT_PAGE_SIZE, } from "../../../constants/common";
 import { connect } from "react-redux";
 import NoDataIcon from "../../../components/common/NoDataIcon";
 
@@ -21,9 +21,9 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
 
 
 
-  const fetchBiddings = (address, offset, limit, isTotal, isReverse) => {
+  const fetchBiddings = (address, offset, limit, isTotal, isReverse, history) => {
     setInProgress(true);
-    queryDebtBiddingList(address, offset, limit, isTotal, isReverse, (error, result) => {
+    queryDebtBiddingList(address, offset, limit, isTotal, isReverse, history, (error, result) => {
       setInProgress(false);
 
       if (error) {
@@ -39,7 +39,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
   };
 
   useEffect(() => {
-    fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true);
+    fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true, false);
   }, [address, refreshBalance])
 
 
@@ -73,7 +73,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
       ),
       dataIndex: "timestamp",
       key: "timestamp",
-      width: 200,
+      width: 260,
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
@@ -85,6 +85,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
       dataIndex: "auctionStatus",
       key: "auctionStatus",
       align: "center",
+      width: 150,
     },
     {
       title: (
@@ -95,6 +96,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
       dataIndex: "action",
       key: "action",
       align: "right",
+      width: 150,
     },
   ];
 
@@ -105,7 +107,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
     biddingList.map((item, index) => {
       return {
         key: index,
-        outflowToken: (
+        inflowToken: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
@@ -118,7 +120,7 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
             </div>
           </>
         ),
-        inflowToken: (
+        outflowToken: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
@@ -172,13 +174,14 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
       (value.current - 1) * value.pageSize,
       value.pageSize,
       true,
-      true
+      true,
+      false
     );
   };
 
   return (
     <Table
-      className="custom-table more-table  bidding-bottom-table"
+      className="custom-table more-table liquidation-table   bidding-bottom-table"
       dataSource={tableBiddingData}
       loading={inProgress}
       columns={columnsBidding}
