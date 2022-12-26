@@ -54,7 +54,6 @@ const SurplusAuctions = ({ setPairs, address }) => {
 
   const fetchData = () => {
     fetchAuctions((pageNumber - 1) * pageSize, pageSize, true, false);
-    // fetchBiddings(address);
   };
 
   const queryParams = () => {
@@ -99,22 +98,6 @@ const SurplusAuctions = ({ setPairs, address }) => {
       }
     );
   };
-
-  // const fetchBiddings = (address) => {
-  //   setInProgress(true);
-  //   querySurplusBiddingList(address, (error, result) => {
-  //     setInProgress(false);
-
-  //     if (error) {
-  //       message.error(error);
-  //       return;
-  //     }
-
-  //     if (result?.biddings?.length > 0) {
-  //       setBiddings(result && result.biddings);
-  //     }
-  //   });
-  // };
 
   const columns = [
     {
