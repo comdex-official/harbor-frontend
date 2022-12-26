@@ -20,9 +20,9 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
 
 
 
-  const fetchBiddings = (address, offset, limit, countTotal, reverse,) => {
+  const fetchBiddings = (address, offset, limit, countTotal, reverse, history) => {
     setInProgress(true);
-    queryDutchBiddingList(address, offset, limit, countTotal, reverse, (error, result) => {
+    queryDutchBiddingList(address, offset, limit, countTotal, reverse, history,(error, result) => {
       setInProgress(false);
 
       if (error) {
@@ -42,7 +42,7 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
 
   useEffect(() => {
     if (address) {
-      fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true);
+      fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true,false);
     }
   }, [address, refreshBalance])
 
@@ -53,7 +53,8 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
       (value.current - 1) * value.pageSize,
       value.pageSize,
       true,
-      true
+      true,
+      false
     );
   };
 
@@ -77,13 +78,13 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
       ),
       dataIndex: "outflowToken",
       key: "outflowToken",
-      width: 200,
+      width: 250,
     },
     {
       title: "Timestamp",
       dataIndex: "timestamp",
       key: "timestamp",
-      width: 200,
+      width: 250,
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
