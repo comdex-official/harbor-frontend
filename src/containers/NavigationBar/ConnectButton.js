@@ -142,7 +142,7 @@ const ConnectButton = ({
       });
     }
 
-  }, [addressFromLocal, address])
+  }, [addressFromLocal])
 
 
 
