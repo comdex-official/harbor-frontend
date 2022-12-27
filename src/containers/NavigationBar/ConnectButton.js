@@ -121,7 +121,7 @@ const ConnectButton = ({
 
   useEffect(() => {
     let addressAlreadyExist = localStorage.getItem("ac");
-    addressAlreadyExist = decode(addressAlreadyExist)
+    addressAlreadyExist = addressAlreadyExist ? decode(addressAlreadyExist) : "";
     setAddressFromLocal(addressAlreadyExist)
   }, [])
 
