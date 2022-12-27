@@ -2,7 +2,7 @@ import { Button, Dropdown, message } from "antd";
 import { decode } from "js-base64";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import {
   setAccountAddress,
@@ -19,13 +19,14 @@ import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
 import { queryAssets } from "../../services/asset/query";
 import { queryAllBalances } from "../../services/bank/query";
-import { fetchKeplrAccountName } from "../../services/keplr";
+import { fetchKeplrAccountName, initializeChain } from "../../services/keplr";
 import { fetchCoingeckoPrices, fetchRestPrices, queryMarketList } from "../../services/oracle/query";
 import { marketPrice } from "../../utils/number";
 import variables from "../../utils/variables";
 import DisConnectModal from "../DisConnectModal";
 import ConnectModal from "../Modal";
 import { amountConversion } from "../../utils/coin";
+import { encode } from "js-base64";
 
 const ConnectButton = ({
   setAccountAddress,
@@ -47,6 +48,7 @@ const ConnectButton = ({
   setCswapApiPrice,
 }) => {
   const dispatch = useDispatch();
+  const [addressFromLocal, setAddressFromLocal] = useState()
 
   const subscription = {
     "jsonrpc": "2.0",
@@ -118,6 +120,33 @@ const ConnectButton = ({
   }, []);
 
   useEffect(() => {
+    let addressAlreadyExist = localStorage.getItem("ac");
+    addressAlreadyExist = decode(addressAlreadyExist)
+    setAddressFromLocal(addressAlreadyExist)
+  }, [])
+
+  useEffect(() => {
+    if (addressFromLocal) {
+
+      initializeChain((error, account) => {
+        if (error) {
+          message.error(error);
+          return;
+        }
+        setAccountAddress(account.address);
+        fetchKeplrAccountName().then((name) => {
+          setAccountName(name);
+        })
+        localStorage.setItem("ac", encode(account.address));
+        localStorage.setItem("loginType", "keplr")
+      });
+    }
+
+  }, [addressFromLocal, address])
+
+
+
+  useEffect(() => {
     fetchMarkets();
     fetchCoingeckoPrice()
     fetchPrices();
@@ -129,6 +158,7 @@ const ConnectButton = ({
     }
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
+
   const calculateAssetBalance = useCallback(
     (balances) => {
       const assetBalances = balances.filter(
@@ -176,8 +206,6 @@ const ConnectButton = ({
       fetchBalances(address);
     }
   }, [address, refreshBalance, markets]);
-
-
 
   useEffect(() => {
     calculateAssetBalance(balances);
@@ -237,6 +265,7 @@ const ConnectButton = ({
   };
 
   const WalletConnectedDropdown = <ConnectModal />;
+
 
   return (
     <>
