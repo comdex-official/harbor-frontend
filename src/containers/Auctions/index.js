@@ -38,7 +38,8 @@ const Auctions = ({
   const tabItems =
     [
       { label: "Collateral", key: "1", children: <Collateral updateBtnLoading={updateBtnLoading} /> },
-      { label: "Debt", key: "2", children: <DebtAuction /> }
+      { label: "Debt", key: "2", children: <DebtAuction /> },
+      { label: "Surplus", key: "3", children: <SurplusAuction /> }
     ]
 
   const callback = (key) => {

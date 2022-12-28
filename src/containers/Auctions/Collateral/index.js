@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { Table } from "antd";
+import { Table, Tabs } from "antd";
 import PlaceBidModal from "./PlaceBidModal";
 import "../index.scss";
 import FilterModal from "../FilterModal/FilterModal";
@@ -33,13 +33,26 @@ import { commaSeparator, decimalConversion, marketPrice } from "../../../utils/n
 import TooltipIcon from "../../../components/TooltipIcon";
 import { comdex } from "../../../config/network";
 import NoDataIcon from "../../../components/common/NoDataIcon";
+import InActiveBidding from "./inActiveBiddings";
 
 const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, setAuctions, refreshBalance, address, assetMap, auctionsPageSize, auctionsPageNumber, setAuctionsPageSize, setAuctionsPageNumber }) => {
   const dispatch = useDispatch()
+  const { TabPane } = Tabs;
   const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
   const [inProgress, setInProgress] = useState(false);
   const [params, setParams] = useState({});
+  const [activeKey, setActiveKey] = useState("1");
+
+  const tabItems =
+    [
+      { label: "Active", key: "1", children: <Bidding address={address} refreshBalance={refreshBalance} assetMap={assetMap} />},
+      { label: "Completed", key: "2", children: <InActiveBidding address={address} refreshBalance={refreshBalance} assetMap={assetMap}  /> }
+    ]
+
+  const callback = (key) => {
+    setActiveKey(key);
+  };
 
 
   useEffect(() => {
@@ -111,7 +124,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
       ),
       dataIndex: "auctioned_asset",
       key: "auctioned_asset",
-      width: 150,
+      width: 180,
     },
     {
       title: (
@@ -122,7 +135,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
       ),
       dataIndex: "bridge_asset",
       key: "bridge_asset",
-      width: 150,
+      width: 160,
     },
     {
       title: (
@@ -163,7 +176,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
       ),
       dataIndex: "current_price",
       key: "current_price",
-      width: 200,
+      width: 160,
       render: (item) => (
         <>
           $
@@ -282,10 +295,19 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
             </div>
           </div>
 
-          <div className="more-bottom mt-3">
-            <h3 className="title">Bidding History</h3>
+          <div className="more-bottom mt-4">
+            <h3 className="title ">Bidding History</h3>
             <div className="more-bottom-card">
-              <Bidding address={address} refreshBalance={refreshBalance} assetMap={assetMap} />
+              <Row>
+                <Col>
+                  <Tabs
+                    className="commodo-tabs mt-2"
+                    onChange={callback}
+                    activeKey={activeKey}
+                    items={tabItems}
+                  />
+                </Col>
+              </Row>
             </div>
           </div>
         </Col>

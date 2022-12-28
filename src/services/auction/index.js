@@ -145,6 +145,7 @@ export const queryDutchBiddingList = (
   limit,
   countTotal,
   reverse,
+  history,
   callback) => {
   getQueryService((error, queryService) => {
     if (error) {
@@ -156,7 +157,7 @@ export const queryDutchBiddingList = (
       .QueryDutchBiddings({
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
-        history: false,
+        history: history,
         pagination: {
           key: "",
           offset: Long.fromNumber(offset),
@@ -230,6 +231,7 @@ export const queryDebtBiddingList = (
   limit,
   countTotal,
   reverse,
+  history,
   callback) => {
   getQueryService((error, queryService) => {
     if (error) {
@@ -248,6 +250,7 @@ export const queryDebtBiddingList = (
           countTotal: countTotal,
           reverse: reverse,
         },
+        history: history,
       })
       .then((result) => {
         callback(null, result);
@@ -295,7 +298,15 @@ export const querySurplusAuctionList = (
 };
 
 
-export const querySurplusBiddingList = (bidder, callback) => {
+export const querySurplusBiddingList = (
+  bidder,
+  offset,
+  limit,
+  countTotal,
+  reverse,
+  history,
+  callback
+) => {
   getQueryService((error, queryService) => {
     if (error) {
       callback(error);
@@ -306,7 +317,14 @@ export const querySurplusBiddingList = (bidder, callback) => {
       .QuerySurplusBiddings({
         bidder,
         appId: Long.fromNumber(PRODUCT_ID),
-        history: false,
+        pagination: {
+          key: "",
+          offset: Long.fromNumber(offset),
+          limit: Long.fromNumber(limit),
+          countTotal: countTotal,
+          reverse: reverse,
+        },
+        history: history,
       })
       .then((result) => {
         callback(null, result);
