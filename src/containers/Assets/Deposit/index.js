@@ -1,6 +1,6 @@
 import { Button, Form, message, Modal, Spin } from "antd";
 import * as PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect, } from "react";
 import { connect } from "react-redux";
 import { fetchProofHeight } from "../../../actions/asset";
 import { Col, Row, SvgIcon } from "../../../components/common";
@@ -41,7 +41,16 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
     );
   };
 
+  useEffect(() => {
+    initialize();
+  }, [address]);
+
   const showModal = () => {
+    initialize()
+    setIsModalOpen(true);
+  };
+
+  const initialize = () => {
     initializeIBCChain(chain.chainInfo, (error, account) => {
       if (error) {
         message.error(error);
@@ -71,8 +80,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
         setProofHeight(data);
       });
     });
-    setIsModalOpen(true);
-  };
+  }
 
   const signIBCTx = () => {
     setInProgress(true);
@@ -299,8 +307,8 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
                           setAmount(
                             availableBalance?.amount > DEFAULT_FEE
                               ? amountConversion(
-                                  availableBalance?.amount - DEFAULT_FEE
-                                )
+                                availableBalance?.amount - DEFAULT_FEE
+                              )
                               : amountConversion(availableBalance?.amount)
                           );
                         }}
