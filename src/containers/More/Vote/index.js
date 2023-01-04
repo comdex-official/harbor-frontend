@@ -3,11 +3,11 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import './index.scss';
 import { connect } from "react-redux";
-import { Button, message, Table } from "antd";
+import { Button, message, Table, Tabs } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
-import { totalVTokens, userProposalAllUpData, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
+import { totalVTokens, userProposalAllUpData, userProposalAllUpPoolData, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
 import { queryAssets, queryPair, queryPairVault } from '../../../services/asset/query';
 import { queryMintedTokenSpecificVaultType, queryOwnerVaults, queryOwnerVaultsInfo, queryUserVaults } from '../../../services/vault/query';
 import { transactionForVotePairProposal } from '../../../services/voteContractsWrites';
@@ -20,6 +20,8 @@ import variables from '../../../utils/variables';
 import { comdex } from '../../../config/network';
 import NoDataIcon from '../../../components/common/NoDataIcon';
 import CustomSkelton from '../../../components/CustomSkelton';
+import Pool from './pool';
+import { queryPoolsList } from '../../../services/pools/query';
 
 const Vote = ({
   lang,
@@ -34,6 +36,7 @@ const Vote = ({
   const [currentProposalAllData, setCurrentProposalAllData] = useState();
   const [disableVoteBtn, setVoteDisableBtn] = useState(true)
   const [allProposalData, setAllProposalData] = useState();
+  const [allProposalPoolData, setAllProposalPoolData] = useState();
   const [btnLoading, setBtnLoading] = useState(0);
   const [pairVaultData, setPairValutData] = useState({})
   const [assetList, setAssetList] = useState();
@@ -139,6 +142,7 @@ const Vote = ({
       }))
     })
   }
+
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
       if (error) {
@@ -186,10 +190,8 @@ const Vote = ({
   const calculateTotalVotes = (value) => {
     let userTotalVotes = 0;
     let calculatePercentage = 0;
-    allProposalData && allProposalData.map((item) => {
-      userTotalVotes = userTotalVotes + Number(amountConversion(item?.total_vote || 0))
-    })
-    calculatePercentage = (Number(value) / userTotalVotes) * 100;
+  
+    calculatePercentage = (Number(value) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
     calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
     return calculatePercentage;
   }
@@ -413,6 +415,143 @@ const Vote = ({
               totalBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS
             ) : Number(0).toFixed(2)} {denomToSymbol("ucmst")}
           </div>,
+        total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div style={{ fontSize: "12px" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
+        bribe: item?.bribe,
+        my_vote: <div>{item?.my_vote ? amountConversion(item?.my_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR</div>,
+        action: <>
+          <Button
+            type="primary"
+            className="btn-filled"
+            size="sm"
+            loading={index === btnLoading ? inProcess : false}
+            onClick={() => handleVote(item?.extended_pair_id, index)}
+            disabled={disableVoteBtn}
+          >
+            Vote
+          </Button>
+        </>,
+      }
+    })
+  const poolColumns = [
+    {
+      title: (
+        <>
+          Vault Pair
+        </>
+      ),
+      dataIndex: "asset",
+      key: "asset",
+      width: 150,
+    },
+    {
+      title: (
+        <>
+          My Borrowed{" "}
+        </>
+      ),
+      dataIndex: "my_borrowed",
+      key: "my_borrowed",
+      width: 150,
+    },
+    {
+      title: (
+        <>
+          Total Borrowed
+        </>
+      ),
+      dataIndex: "total_borrowed",
+      key: "total_borrowed",
+      width: 200,
+    },
+    {
+      title: (
+        <>
+          Total Votes
+        </>
+      ),
+      dataIndex: "total_votes",
+      key: "total_votes",
+      width: 200,
+    },
+
+    {
+      title: (
+        <>
+          External Incentives
+        </>
+      ),
+      dataIndex: "bribe",
+      key: "bribe",
+      width: 200,
+      render: (item) => (
+        <>
+          {item?.length > 0 ?
+            item && item?.map((singleBribe, index) => {
+              return <div className="endtime-badge mt-1" key={index}>{amountConversionWithComma(singleBribe?.amount, DOLLAR_DECIMALS)} {denomToSymbol(singleBribe?.denom)}</div>
+            })
+            : <div className="endtime-badge mt-1" >{"       "}</div>
+
+          }
+
+        </>
+      ),
+    },
+    {
+      title: (
+        <>
+          My Vote
+        </>
+      ),
+      dataIndex: "my_vote",
+      key: "my_vote",
+      align: "center",
+      width: 100,
+    },
+    {
+      title: (
+        <>
+          Action
+        </>
+      ),
+      dataIndex: "action",
+      key: "action",
+      align: "centre",
+      width: 130,
+    },
+  ];
+
+  const poolTableData =
+    allProposalPoolData && allProposalPoolData.map((item, index) => {
+      return {
+        key: index,
+        asset: (
+          <>
+            <div className="assets-withicon">
+              <div className="assets-icon">
+                <SvgIcon
+                  name={iconNameFromDenom(
+                    symbolToDenom(getIconFromPairName(pairVaultData[item?.extended_pair_id]))
+                  )}
+                />
+              </div>
+              {pairVaultData[item?.extended_pair_id]}
+            </div>
+          </>
+        ),
+        my_borrowed: (
+          <>
+            <div className="assets-withicon display-center">
+              {myBorrowed[item?.extended_pair_id] ? amountConversionWithComma(myBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS) : Number(0).toFixed(2)}
+              {" "}{denomToSymbol("ucmst")}
+            </div>
+          </>
+        ),
+        total_borrowed:
+          <div>
+            {totalBorrowed[item?.extended_pair_id] ? amountConversionWithComma(
+              totalBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS
+            ) : Number(0).toFixed(2)} {denomToSymbol("ucmst")}
+          </div>,
         total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
         bribe: item?.bribe,
         my_vote: <div>{item?.my_vote ? amountConversion(item?.my_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR</div>,
@@ -430,6 +569,34 @@ const Vote = ({
         </>,
       }
     })
+
+  const tabsItem = [
+    {
+      label: "Vaults", key: "1", children: (
+        <Row>
+          <Col>
+            <div className="composite-card ">
+              <div className="card-content">
+                <Table
+                  className="custom-table liquidation-table"
+                  dataSource={tableData}
+                  columns={columns}
+                  loading={loading}
+                  pagination={false}
+                  scroll={{ x: "100%" }}
+                  locale={{ emptyText: <NoDataIcon /> }}
+                />
+              </div>
+            </div>
+
+          </Col>
+        </Row>
+      )
+    },
+    {
+      label: "Pools", key: "2", children: <Pool />
+    },
+  ]
 
   return (
     <>
@@ -455,27 +622,20 @@ const Vote = ({
           <Col>
             <div className="vote-text-main-container mt-3">
               <div className="vote-text-container">
-                {currentProposalAllData ? "Votes are due by" + calculteVotingTime() : "Voting for epoch proposal not active "}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
+                {currentProposalAllData ? "Votes are due by " + calculteVotingTime() : "Voting for epoch proposal not active "}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
               </div>
             </div>
           </Col>
         </Row>
+
+
         <Row>
           <Col>
-            <div className="composite-card ">
-              <div className="card-content">
-                <Table
-                  className="custom-table liquidation-table"
-                  dataSource={tableData}
-                  columns={columns}
-                  loading={loading}
-                  pagination={false}
-                  scroll={{ x: "100%" }}
-                  locale={{ emptyText: <NoDataIcon /> }}
-                />
-              </div>
-            </div>
-
+            <Tabs
+              className="comdex-tabs mt-2"
+              defaultActiveKey="1"
+              items={tabsItem}
+            />
           </Col>
         </Row>
       </div>
