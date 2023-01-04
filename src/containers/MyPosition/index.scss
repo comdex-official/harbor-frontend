@@ -109,6 +109,10 @@
               th:last-child {
                 text-align: right !important;
               }
+              td {
+                background: transparent;
+                 border: none;
+              }
             }
           }
 
@@ -426,6 +430,10 @@
             }
             th:last-child {
               text-align: right !important;
+            }
+            td {
+              background: transparent;
+              border: none;
             }
           }
         }
