@@ -30,10 +30,6 @@ const SideBar = ({ lang, isDarkMode }) => {
     }
   };
 
-  const onTabClick = () => {
-    setIsOpen(true);
-  };
-
   return (
     <>
       <Layout
@@ -82,7 +78,7 @@ const SideBar = ({ lang, isDarkMode }) => {
             </div>
             <Scrollbars>
               <div className="side_bar_inner">
-                <Tabs onClick={onTabClick} />
+                <Tabs onClick={toggle} />
               </div>
             </Scrollbars>
             <Footer />

@@ -25,6 +25,7 @@
       margin-bottom: 0;
       font-size: 1.5rem;
       color: $text-color-dark2;
+      margin-top: 0;
       .dark-mode & {
         color: $white;
       }
@@ -174,6 +175,11 @@
     font-size: 18px;
     margin-left: 6px;
     margin-right: 1px;
+  }
+  .icon {
+    fill: $white;
+    width: 6px;
+    margin-left: 6px;
   }
 }
 .total-asset-balance-main-container {
