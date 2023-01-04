@@ -1,29 +1,35 @@
-import { SigningStargateClient } from "@cosmjs/stargate";
+import { LedgerSigner } from "@cosmjs/ledger-amino";
+import {
+  AminoTypes,
+  createProtobufRpcClient,
+  QueryClient,
+  SigningStargateClient
+} from "@cosmjs/stargate";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
+import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
+import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { comdex } from "../config/network";
 import { makeHdPath, trimWhiteSpaces } from "../utils/string";
-import { myRegistry } from "./registry";
-import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
-import { LedgerSigner } from "@cosmjs/ledger-amino";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { QueryClient, createProtobufRpcClient } from "@cosmjs/stargate";
-import { AminoTypes } from "@cosmjs/stargate";
-import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { customAminoTypes } from "./aminoConverter";
-import { MsgSend } from 'cosmjs-types/cosmos/bank/v1beta1/tx'
-
+import { strideAccountParser } from "./parser";
+import { myRegistry } from "./registry";
 
 const aminoTypes = new AminoTypes(customAminoTypes);
 
 function Fee(amount, gas = 250000, network) {
   return {
-    amount: [
-      { amount: String(amount), denom: network?.coinMinimalDenom },
-    ],
+    amount: [{ amount: String(amount), denom: network?.coinMinimalDenom }],
     gas: String(gas),
   };
 }
 
-export const MsgSendTokens = (userAddress, receiverAddress, currentChain, amount) => {
+export const MsgSendTokens = (
+  userAddress,
+  receiverAddress,
+  currentChain,
+  amount
+) => {
   return {
     typeUrl: "/cosmos.bank.v1beta1.MsgSend",
     value: MsgSend.fromPartial({
@@ -33,7 +39,7 @@ export const MsgSendTokens = (userAddress, receiverAddress, currentChain, amount
         {
           denom: currentChain?.coinMinimalDenom,
           amount: String(amount),
-        }
+        },
       ],
     }),
   };
@@ -70,15 +76,35 @@ export const signAndBroadcastTransaction = (transaction, address, callback) => {
   return TransactionWithKeplr(transaction, address, callback);
 };
 
-export const signAndBroadcastMagicTransaction = (transaction, address, currentChain, callback) => {
+export const signAndBroadcastMagicTransaction = (
+  transaction,
+  address,
+  currentChain,
+  callback
+) => {
   if (localStorage.getItem("loginType") === "ledger") {
-    return magicTransactionWithLedger(transaction, address, currentChain, callback);
+    return magicTransactionWithLedger(
+      transaction,
+      address,
+      currentChain,
+      callback
+    );
   }
 
-  return magicTransactionWithKeplr(transaction, address, currentChain, callback);
+  return magicTransactionWithKeplr(
+    transaction,
+    address,
+    currentChain,
+    callback
+  );
 };
 
-export const magicTransactionWithKeplr = async (transaction, address, currentChain, callback) => {
+export const magicTransactionWithKeplr = async (
+  transaction,
+  address,
+  currentChain,
+  callback
+) => {
   const [offlineSigner, accounts] = await KeplrWallet(currentChain?.chainId);
   if (address !== accounts[0].address) {
     const error = "Connected account is not active in Keplr";
@@ -87,7 +113,8 @@ export const magicTransactionWithKeplr = async (transaction, address, currentCha
   }
 
   SigningStargateClient.connectWithSigner(currentChain.rpc, offlineSigner, {
-    registry: myRegistry, aminoTypes: aminoTypes
+    registry: myRegistry,
+    aminoTypes: aminoTypes,
   })
     .then((client) => {
       client
@@ -98,12 +125,11 @@ export const magicTransactionWithKeplr = async (transaction, address, currentCha
           transaction.memo
         )
         .then((result) => {
-
           callback(null, result);
         })
         .catch((error) => {
           callback(error?.message);
-        })
+        });
     })
     .catch((error) => {
       callback(error && error.message);
@@ -118,7 +144,8 @@ export const TransactionWithKeplr = async (transaction, address, callback) => {
   }
 
   SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
-    registry: myRegistry, aminoTypes: aminoTypes
+    registry: myRegistry,
+    aminoTypes: aminoTypes,
   })
     .then((client) => {
       client
@@ -129,12 +156,11 @@ export const TransactionWithKeplr = async (transaction, address, callback) => {
           transaction.memo
         )
         .then((result) => {
-
           callback(null, result);
         })
         .catch((error) => {
           callback(error?.message);
-        })
+        });
     })
     .catch((error) => {
       callback(error && error.message);
@@ -168,7 +194,10 @@ export async function magicTransactionWithLedger(
   currentChain,
   callback
 ) {
-  const [wallet, address] = await LedgerWallet(makeHdPath(), currentChain.prefix);
+  const [wallet, address] = await LedgerWallet(
+    makeHdPath(),
+    currentChain.prefix
+  );
   if (userAddress !== address) {
     const error = "Connected account is not active in Keplr";
     callback(error);
@@ -249,7 +278,10 @@ export const aminoSignIBCTx = (config, transaction, callback) => {
       window.getOfflineSignerOnlyAmino(config.chainId);
     const client = await SigningStargateClient.connectWithSigner(
       config.rpc,
-      offlineSigner
+      offlineSigner,
+      {
+        accountParser: strideAccountParser,
+      }
     );
 
     client
@@ -277,6 +309,4 @@ export const aminoSignIBCTx = (config, transaction, callback) => {
   })();
 };
 
-export {
-  Fee,
-};
+export { Fee };

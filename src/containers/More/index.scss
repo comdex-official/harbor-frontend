@@ -50,12 +50,16 @@
       justify-content: flex-start;
       text-align: center;
       h2 {
+        margin-bottom: 12px;
+        font-weight: 500;
+        font-size: 1.3rem;
         .dark-mode & {
           color: $white;
         }
       }
       p {
         width: 60%;
+        font-size: $font-size-base;
         margin: auto;
         .dark-mode & {
           color: $text-color-label-dark;
