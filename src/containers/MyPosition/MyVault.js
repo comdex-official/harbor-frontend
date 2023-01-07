@@ -84,7 +84,7 @@ const MyVault = ({ address }) => {
       dataIndex: "health",
       key: "health",
       width: 200,
-      align: "right",
+      align: "center",
       render: (ratio) => (
         <>
           <span>{Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
@@ -101,7 +101,11 @@ const MyVault = ({ address }) => {
       ),
     },
     {
-      title: "",
+      title: (
+        <>
+          Action{" "}
+        </>
+      ),
       dataIndex: "action",
       key: "action",
       align: "right",
