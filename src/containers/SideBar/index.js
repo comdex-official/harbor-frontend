@@ -68,13 +68,11 @@ const SideBar = ({ lang, isDarkMode }) => {
                 })
               }
             >
-              {/* {isDarkMode ? (
+              {isDarkMode ? (
                 <SvgIcon name="harbor-logo" />
               ) : (
                 <SvgIcon name="harbor-logo-light" />
-              )} */}
-              <img className="blue" src={DarkLogo} alt="Logo" />
-              <img className="white" src={LightLogo} alt="Logo" />
+              )}
             </div>
             <Scrollbars>
               <div className="side_bar_inner">
