@@ -1,5 +1,4 @@
 import Router from "./Router";
-import Snowfall from 'react-snowfall';
 import NavigationBar from "./containers/NavigationBar";
 import SvgSprite from "./utils/SvgSpriteLoader";
 import svgFile from "./assets/images/svg/svg-sprite.svg";
@@ -17,15 +16,6 @@ const App = () => {
     <>
       <SvgSprite url={svgFile} />
       <div className="main_wrapper">
-        <Snowfall
-          snowflakeCount={70}
-          style={{
-            position: 'fixed',
-            width: '100vw',
-            height: '100vh',
-            zIndex: '999',
-          }}
-        />
         <SideBar />
         <div className="main-container">
           <NavigationBar />
