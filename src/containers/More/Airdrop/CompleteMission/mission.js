@@ -27,12 +27,12 @@ export const missions = [
     },
     {
         id: 4,
-        name: "lend",
+        name: "borrow",
         title: "Lend $CMST on Commodo platform",
         icon: "lend-icon",
         viewBox: "0 0 30.023 32.127",
         path: process.env.REACT_APP_COMMODO_WEBSITE_URL + "/lend",
-        disable: true,
+        disable: false,
     },
     {
         id: 5,
