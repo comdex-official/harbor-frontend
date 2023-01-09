@@ -32,6 +32,7 @@ export const ibcDenoms = {
   ujuno: process.env.REACT_APP_JUNO_IBC_DENOM,
   "wbtc-satoshi": process.env.REACT_APP_WBTC_IBC_DENOM,
   stuatom: process.env.REACT_APP_STATOM_IBC_DENOM,
+  "wmatic-wei": process.env.REACT_APP_WMATIC_IBC_DENOM,
 };
 
 export const tokenCoinGeckoIds = ["cosmos", "terra-luna", "ki", "comdex", "kava", "sentinel", "osmosis", "juno-network", "akash-network",

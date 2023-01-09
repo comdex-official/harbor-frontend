@@ -59,6 +59,9 @@ export const denomConversion = (denom) => {
   if (denom === "stuatom" || denom === ibcDenoms["stuatom"]) {
     return "stATOM";
   }
+  if (denom === "wmatic-wei" || denom === ibcDenoms["wmatic-wei"]) {
+    return "WMATIC";
+  }
 
   if (denom && denom.substr(0, 1) === "u") {
     if (
