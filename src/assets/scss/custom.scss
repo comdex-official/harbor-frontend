@@ -581,6 +581,10 @@ button {
             th:last-child {
               text-align: right !important;
             }
+            td {
+              background: transparent;
+              border: none;
+            }
           }
         }
 
