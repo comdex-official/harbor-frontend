@@ -123,9 +123,10 @@ const StableMint = ({
     }, [address, stableMintExtenedPairVaultList])
 
     useEffect(() => {
-        if (stableMintExtendedPairIdData?.length > 0) {
-            getStableMintExtendexPairValut()
-        }
+        // if (stableMintExtendedPairIdData?.length > 0) {
+        //     getStableMintExtendexPairValut()
+        // }
+        fetchExtendexPairList(1)
     }, [address, stableMintExtendedPairIdData])
 
     useEffect(() => {
