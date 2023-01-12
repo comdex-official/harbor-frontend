@@ -51,7 +51,7 @@ const CompleteMission = ({
     liquid: true,
     mint: false,
     vote: false,
-    lend: false,
+    borrow: false,
     liquidity: false,
   })
 
@@ -133,7 +133,7 @@ const CompleteMission = ({
 
   const fetchAirdropMissionBorrow = (address) => {
     airdropMissionBorrow(address).then((res) => {
-      setAirdropMission((prevState) => ({ ...prevState, ["lend"]: res }))
+      setAirdropMission((prevState) => ({ ...prevState, ["borrow"]: res }))
     }).catch((error) => {
       console.log(error);
     })

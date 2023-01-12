@@ -2,6 +2,23 @@ import { sha256, stringToPath } from "@cosmjs/crypto";
 import moment from "moment";
 import { comdex, ibcDenoms } from "../config/network";
 import { denomConversion } from "./coin";
+import AssetList from "../config/ibc_assets.json";
+
+const getIbcDenomToDenomMap = () => {
+  let myMap = {};
+
+  for (let i = 0; i < AssetList?.tokens?.length; i++) {
+    if (myMap[AssetList?.tokens[i].ibcDenomHash] === undefined) {
+      myMap[AssetList?.tokens[i].ibcDenomHash] =
+        AssetList?.tokens[i]?.coinMinimalDenom;
+    }
+  }
+
+  return myMap;
+};
+
+let ibcDenomToDenomMap = getIbcDenomToDenomMap();
+
 
 const encoding = require("@cosmjs/encoding");
 
@@ -11,52 +28,38 @@ export const decode = (hash) =>
 export const generateHash = (txBytes) =>
   encoding.toHex(sha256(txBytes)).toUpperCase();
 
-export const ibcDenomToDenom = (key) => {
-  switch (key) {
-
-    case ibcDenoms["uatom"]:
-      return "uatom";
-    case ibcDenoms["uosmo"]:
-      return "uosmo";
-    case ibcDenoms["uusdc"]:
-      return "USDC";
-    case ibcDenoms["weth-wei"]:
-      return "WETH";
-    case ibcDenoms["ujuno"]:
-      return "ujuno";
-    case ibcDenoms["wbtc-satoshi"]:
-      return "wbtc-satoshi";
-    case ibcDenoms["stuatom"]:
-      return "stuatom";
-    default:
-      return "";
-  }
-};
+export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
 // For getIcon From extendedPair name 
 export const symbolToDenom = (key) => {
   switch (key) {
     case "atom":
     case ibcDenoms["uatom"]:
-      return "uatom";
+      return ibcDenoms["uatom"];
     case "osmo":
     case ibcDenoms["uosmo"]:
-      return "uosmo";
+      return ibcDenoms["uosmo"];
     case "juno":
     case ibcDenoms["ujuno"]:
-      return "ujuno";
+      return ibcDenoms["ujuno"];
     case "usdc":
     case ibcDenoms["uusdc"]:
-      return "uusdc";
+      return ibcDenoms["uusdc"];
     case "weth":
     case ibcDenoms["weth-wei"]:
-      return "weth-wei";
+      return ibcDenoms["weth-wei"];
     case "wbtc-satoshi" || "wbtc":
     case ibcDenoms["wbtc-satoshi"]:
-      return "wbtc-satoshi";
+      return ibcDenoms["wbtc-satoshi"];
+    case "wmatic-wei" || "wmatic":
+    case ibcDenoms["wmatic-wei"]:
+      return ibcDenoms["wmatic-wei"];
     case "stuatom":
     case ibcDenoms["stuatom"]:
-      return "stuatom";
+      return ibcDenoms["stuatom"];
+    case "dai":
+    case ibcDenoms["dai-wei"]:
+      return ibcDenoms["dai-wei"];
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -69,39 +72,9 @@ export const symbolToDenom = (key) => {
 };
 
 export const denomToSymbol = (key) => {
-  switch (key) {
-    case "uatom":
-    case ibcDenoms["uatom"]:
-      return "ATOM";
-    case "uosmo":
-    case ibcDenoms["uosmo"]:
-      return "OSMO";
-    case "ucmdx":
-      return "CMDX";
-    case "ucmst":
-      return "CMST";
-    case "uharbor":
-      return "HARBOR";
-    case "uusdc":
-    case ibcDenoms["uusdc"]:
-      return "USDC";
-    case "ujuno":
-    case ibcDenoms["ujuno"]:
-      return "JUNO";
-    case "weth-wei":
-    case "uweth":
-    case ibcDenoms["weth-wei"]:
-      return "WETH";
-    case "wbtc-satoshi":
-    case ibcDenoms["wbtc-satoshi"]:
-      return "WBTC";
-    case "stuatom":
-    case ibcDenoms["stuatom"]:
-      return "stATOM";
-    default:
-      return "";
-  }
+  return denomConversion(key);
 };
+
 export const denomToCoingeckoTokenId = (key) => {
   switch (key) {
     case "uatom":
@@ -124,64 +97,25 @@ export const denomToCoingeckoTokenId = (key) => {
   }
 };
 
-export const minimalDenomToDenom = (key) => {
-  switch (key) {
-    case "uatom":
-    case ibcDenoms["uatom"]:
-      return "atom";
-    case "udvpn":
-      return "dvpn";
-    case "uxprt":
-    case ibcDenoms["uxprt"]:
-      return "xprt";
-    case "uosmo":
-    case ibcDenoms["uosmo"]:
-      return "osmo";
-    case "ujuno":
-    case ibcDenoms["ujuno"]:
-      return "juno";
-    case "ucmdx":
-      return "cmdx";
-    default:
-      return "";
-  }
+
+const iconMap = {
+  ucmdx: "comdex-icon",
+  ucmst: "cmst-icon",
+  uharbor: "harbor-icon",
+  // taking coinMinimalDenom to match ibc denom and fetch icon.
+  [ibcDenoms["uatom"]]: "atom-icon",
+  [ibcDenoms["uosmo"]]: "osmosis-icon",
+  [ibcDenoms["uusdc"]]: "usdc-icon",
+  [ibcDenoms["weth-wei"]]: "weth-icon",
+  [ibcDenoms["ujuno"]]: "juno-icon",
+  [ibcDenoms["wbtc-satoshi"]]: "wbtc-icon",
+  [ibcDenoms["stuatom"]]: "statom-icon",
+  [ibcDenoms["wmatic-wei"]]: "wmatic-icon",
+  [ibcDenoms["dai-wei"]]: "dai-icon",
 };
 
 export const iconNameFromDenom = (key) => {
-  switch (key) {
-    case "uatom":
-    case ibcDenoms["uatom"]:
-      return "atom-icon";
-    case "ucmdx":
-      return "comdex-icon";
-    case "uxprt":
-      return "xprt-icon";
-    case "uosmo":
-    case ibcDenoms["uosmo"]:
-      return "osmosis-icon";
-    case "ucmst":
-      return "cmst-icon";
-    case "uharbor":
-      return "harbor-icon";
-    case "uusdc":
-    case ibcDenoms["uusdc"]:
-      return "usdc-icon";
-    case "ujuno":
-    case ibcDenoms["ujuno"]:
-      return "juno-icon";
-    case "weth-wei":
-    case "uweth":
-    case ibcDenoms["weth-wei"]:
-      return "weth-icon";
-    case "wbtc-satoshi":
-    case ibcDenoms["wbtc-satoshi"]:
-      return "wbtc-icon";
-    case "stuatom":
-    case ibcDenoms["stuatom"]:
-      return "statom-icon";
-    default:
-      return "";
-  }
+  return iconMap[key];
 };
 
 export const orderStatusText = (key) => {
