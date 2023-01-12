@@ -167,7 +167,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             title: (
                 <>
                     <div className="d-flex">
-                        Total {pair && pair?.denomIn ? denomToSymbol(pair?.denomIn) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>} locked in Stablemint
+                        Total {pair && pair?.denomIn ? denomToSymbol(pair?.denomIn) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>} Locked In Stablemint
                     </div>
                 </>
             ),
@@ -184,7 +184,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             title: (
                 <>
                     <div className="d-flex">
-                        {pair && pair?.denomOut ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>} ceiling
+                        {pair && pair?.denomOut ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>} Ceiling
                     </div>
                 </>
             ),
@@ -203,7 +203,7 @@ const PricePool = ({ setOwnerCurrentCollateral,
             title: (
                 <>
                     <div className="d-flex">
-                        Total {pair && pair?.denomOut ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>}  minted
+                        Total {pair && pair?.denomOut ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1 mr-1"><CustomSkelton height={15} width={50} /></span>}  Minted
                     </div>
                 </>
             ),
