@@ -9,8 +9,6 @@ import Tabs from "./Tabs";
 import { Scrollbars } from "react-custom-scrollbars";
 import { useNavigate } from "react-router";
 import { connect } from "react-redux";
-import LightLogo from '../../assets/images/Harborfull_santa2.svg';
-import DarkLogo from '../../assets/images/Harborfull_santa1.svg';
 
 
 const { Sider } = Layout;

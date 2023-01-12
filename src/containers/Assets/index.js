@@ -182,10 +182,10 @@ const Assets = ({
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-              ibcBalance.amount,
-              comdex?.coinDecimals,
-              assetMap[ibcBalance?.denom]?.decimals
-            )
+            ibcBalance.amount,
+            comdex?.coinDecimals,
+            assetMap[ibcBalance?.denom]?.decimals
+          )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },
@@ -281,9 +281,9 @@ const Assets = ({
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
-                <SvgIcon name={iconNameFromDenom(item?.coinMinimalDenom)} />
+                <SvgIcon name={iconNameFromDenom(item?.ibcDenomHash)} />
               </div>
-              {denomConversion(item?.coinMinimalDenom)}{" "}
+              {denomConversion(item?.ibcDenomHash)}{" "}
             </div>
           </>
         ),
