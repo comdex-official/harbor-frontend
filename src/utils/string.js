@@ -57,6 +57,9 @@ export const symbolToDenom = (key) => {
     case "stuatom":
     case ibcDenoms["stuatom"]:
       return ibcDenoms["stuatom"];
+    case "dai":
+    case ibcDenoms["dai-wei"]:
+      return ibcDenoms["dai-wei"];
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -108,6 +111,7 @@ const iconMap = {
   [ibcDenoms["wbtc-satoshi"]]: "wbtc-icon",
   [ibcDenoms["stuatom"]]: "statom-icon",
   [ibcDenoms["wmatic-wei"]]: "wmatic-icon",
+  [ibcDenoms["dai-wei"]]: "dai-icon",
 };
 
 export const iconNameFromDenom = (key) => {
