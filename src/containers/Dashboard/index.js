@@ -266,11 +266,6 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                           totalValueLocked?.[ibcDenoms?.uusdc]?.value_locked || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
-                      {/* {commaSeparator(
-                        Number(
-                          totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0
-                        ).toFixed(ZERO_DOLLAR_DECIMALS)
-                      )} */}
                     </h3>
                   </div>
 
