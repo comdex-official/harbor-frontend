@@ -6,15 +6,12 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Col, Row } from "../../components/common";
 import TooltipIcon from "../../components/TooltipIcon";
-import { cmst, comdex, harbor, ibcDenoms } from "../../config/network";
-import { DOLLAR_DECIMALS, PRODUCT_ID, ZERO_DOLLAR_DECIMALS } from "../../constants/common";
-import {
-  fetchProposalUpData,
-  totalveHarborSupply
-} from "../../services/contractsRead";
-import { queryAppTVL, queryPairsLockedAndMintedStatistic, queryTotalTokenMinted } from "../../services/vault/query";
-import { amountConversion, amountConversionWithComma } from "../../utils/coin";
-import { commaSeparator, marketPrice } from "../../utils/number";
+import { comdex, ibcDenoms } from "../../config/network";
+import { ZERO_DOLLAR_DECIMALS } from "../../constants/common";
+import { fetchDashboardDollorTVL } from "../../services/oracle/query";
+import { queryPairsLockedAndMintedStatistic } from "../../services/vault/query";
+import { amountConversion } from "../../utils/coin";
+import { commaSeparator } from "../../utils/number";
 import variables from "../../utils/variables";
 import Banner from "./Banner";
 import "./index.scss";
@@ -22,68 +19,10 @@ import "./index.scss";
 const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
-  const [harborSupply, setHarborSupply] = useState(0);
-  const [harborCirculatingSupply, setHarborCirculatingSypply] = useState(0);
-  const [harborCurrentSypply, setHarborCurrentSupply] = useState(0);
-  const [cmstCurrentSupply, setCmstCurrentSupply] = useState();
-  const [calculatedCMSTSupply, setCalculatedCMSTSupply] = useState(0);
   const [allCMSTMintedStatistic, setAllCMSTMintedStatistic] = useState([])
   const [uniqueCMSTMintedData, setUniqueCMSTMintedData] = useState();
   const [totalMintedCMST, setTotalMintedCMST] = useState();
 
-  useEffect(() => {
-    if (markets) {
-      fetchTVL();
-    }
-  }, [markets, assetMap]);
-
-  const fetchTVL = () => {
-    queryAppTVL(PRODUCT_ID, (error, result) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      if (result?.tvldata && result?.tvldata?.length > 0) {
-        const uniqueVaults = Array.from(
-          result?.tvldata?.reduce(
-            (m, { assetDenom, collateralLockedAmount }) =>
-              m.set(
-                assetDenom,
-                (m.get(assetDenom) || 0) + Number(collateralLockedAmount)
-              ),
-            new Map()
-          ),
-          ([assetDenom, collateralLockedAmount]) => ({
-            assetDenom,
-            collateralLockedAmount,
-          })
-        );
-        let total = 0;
-        const totalValue = new Map(
-          uniqueVaults?.map((item) => {
-            let value =
-              Number(amountConversion(item.collateralLockedAmount, comdex.coinDecimals, assetMap[item?.assetDenom]?.decimals)) *
-              marketPrice(markets, item?.assetDenom, assetMap[item?.assetDenom]?.id);
-            total += value;
-            item.dollarValue = value;
-            return [item.assetDenom, item];
-          })
-        );
-        setTotalValueLocked(totalValue);
-        setTotalDollarValue(total);
-      }
-    });
-  };
-
-  const fetchTotalTokenMinted = () => {
-    queryTotalTokenMinted(PRODUCT_ID, (error, result) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setCmstCurrentSupply(result?.mintedData);
-    });
-  };
 
   const fetchQueryPairsLockedAndMintedStatistic = () => {
     queryPairsLockedAndMintedStatistic((error, result) => {
@@ -116,34 +55,14 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     setUniqueCMSTMintedData(myMap)
   }
 
-  const fetchAllProposalUpData = (productId) => {
-    fetchProposalUpData(productId)
-      .then((res) => {
-        setHarborCurrentSupply(res?.current_supply);
-      })
-      .catch((err) => {
-        message.error(err);
-      });
-  };
-
-  const fetchTotalveHarborSupply = () => {
-    totalveHarborSupply()
-      .then((res) => {
-        setHarborSupply(res?.token);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const calculateTotalValueLockedInDollarForOthers = () => {
     let amount = 0;
     if (totalDollarValue) {
       amount =
         Number(totalDollarValue) -
-        (Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0) +
-          Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
-          Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
+        (Number(totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0) +
+          Number(totalValueLocked?.[ibcDenoms?.uatom]?.value_locked || 0) +
+          Number(totalValueLocked?.[ibcDenoms?.uusdc]?.value_locked || 0)
 
         );
     }
@@ -151,14 +70,6 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     return `$${commaSeparator(Number(amount || 0).toFixed(ZERO_DOLLAR_DECIMALS))}
 `;
   };
-
-  const calculateHarborSypply = () => {
-    let amount =
-      amountConversion(harborCurrentSypply) - amountConversion(harborSupply);
-    amount = Number(amount).toFixed(DOLLAR_DECIMALS);
-    setHarborCirculatingSypply(amount);
-  };
-
 
   useEffect(() => {
     fetchQueryPairsLockedAndMintedStatistic()
@@ -168,25 +79,15 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     calculateUniqueCMSTMintedData()
   }, [allCMSTMintedStatistic])
 
-
-
-
-  const getPrice = (denom) => {
-    if (denom === harbor?.coinMinimalDenom) {
-      return harborPrice;
-    }
-    return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
-  };
-
-  const calculatedCmstCurrentSupply = () => {
-    let totalMintedAmount = 0;
-    cmstCurrentSupply &&
-      cmstCurrentSupply.map((item) => {
-        return (totalMintedAmount =
-          totalMintedAmount + Number(item?.mintedAmount));
-      });
-    setCalculatedCMSTSupply(totalMintedAmount);
-  };
+  useEffect(() => {
+    fetchDashboardDollorTVL((error, result) => {
+      if (error) {
+        console.log(error, "TVL Api Error");
+      }
+      setTotalValueLocked(result?.data?.assets)
+      setTotalDollarValue(result?.data?.total_value_locked)
+    })
+  }, [])
 
   const MintedCMSTOptions = {
     chart: {
@@ -295,19 +196,19 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
         data: [
           {
             name: "AXL-USDC",
-            y: Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0),
+            y: Number(totalValueLocked?.[ibcDenoms?.uusdc]?.value_locked || 0),
             color: "#665AA6",
           },
           {
             name: "ATOM",
             y: Number(
-              totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0
+              totalValueLocked?.[ibcDenoms?.uatom]?.value_locked || 0
             ),
             color: "#BFA9D7",
           },
           {
             name: "OSMO",
-            y: Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0),
+            y: Number(totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0),
             color: "#8e78a5",
           },
           {
@@ -315,9 +216,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             y:
               Number(totalDollarValue || 0) -
               (
-                Number(totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0) +
-                Number(totalValueLocked?.get(ibcDenoms?.uatom)?.dollarValue || 0) +
-                Number(totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0)
+                Number(totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0) +
+                Number(totalValueLocked?.[ibcDenoms?.uatom]?.value_locked || 0) +
+                Number(totalValueLocked?.[ibcDenoms?.uusdc]?.value_locked || 0)
               ),
             color: isDarkMode ? "#373549" : "#E0E0E0",
           },
@@ -362,9 +263,14 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                       $
                       {commaSeparator(
                         Number(
-                          totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0
+                          totalValueLocked?.[ibcDenoms?.uusdc]?.value_locked || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
+                      {/* {commaSeparator(
+                        Number(
+                          totalValueLocked?.get(ibcDenoms?.uusdc)?.dollarValue || 0
+                        ).toFixed(ZERO_DOLLAR_DECIMALS)
+                      )} */}
                     </h3>
                   </div>
 
@@ -374,8 +280,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                       $
                       {commaSeparator(
                         Number(
-                          totalValueLocked?.get(ibcDenoms?.uatom)
-                            ?.dollarValue || 0
+                          totalValueLocked?.[ibcDenoms?.uatom]?.value_locked || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
@@ -386,7 +291,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                       $
                       {commaSeparator(
                         Number(
-                          totalValueLocked?.get(ibcDenoms?.uosmo)?.dollarValue || 0
+                          totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
