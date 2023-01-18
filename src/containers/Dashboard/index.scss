@@ -13,7 +13,7 @@
       width: 100%;
     }
     .composite-card {
-      padding: 32px 5px 30px 30px;
+      padding: 32px 30px 30px 30px;
     }
     .totalvalues {
       display: flex;
@@ -45,7 +45,7 @@
         @media only screen and (max-width: 500px) {
           display: flex;
           width: 100%;
-          justify-content: space-between;
+          // justify-content: space-between;
           flex-wrap: wrap;
         }
       }
@@ -226,6 +226,9 @@
   margin: 0 0 20px;
   color: $text-color-dark2;
   padding: 5px 0 5px 15px;
+  @media only screen and (max-width: 500px) {
+    flex-basis: 50%;
+  }
   .dark-mode & {
     color: $white;
   }
