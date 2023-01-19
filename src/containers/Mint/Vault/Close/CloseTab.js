@@ -16,6 +16,7 @@ import { signAndBroadcastTransaction } from "../../../../services/helper";
 import { defaultFee } from "../../../../services/transaction";
 import { queryOwnerVaults, queryOwnerVaultsInfo } from "../../../../services/vault/query";
 import { amountConversion, getDenomBalance } from "../../../../utils/coin";
+import { decimalConversion } from "../../../../utils/number";
 import { denomToSymbol } from "../../../../utils/string";
 import variables from "../../../../utils/variables";
 import "./index.scss";
@@ -168,6 +169,7 @@ const CloseTab = ({
     );
   };
 
+
   useEffect(() => {
     if (pairId) {
       getAssetDataByPairId(pairId);
@@ -179,11 +181,19 @@ const CloseTab = ({
       <div className="close-tab-content">
         <div className="close-tab-row">
           <div className="text-left">
-            CMST Payable{" "}
-            <TooltipIcon text="CMST to be repaid" />
+            Closing Fee Amount{" "}
           </div>
           <div className="text-right d-flex align-center">
-            {amountConversion(ownerVaultInfo?.amountOut || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1"><CustomSkelton height={20} /></span>}
+            {amountConversion(ownerVaultInfo?.closingFeeAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals) || 0} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1"><CustomSkelton height={20} /></span>}
+          </div>
+        </div>
+        <div className="close-tab-row">
+          <div className="text-left">
+            Total CMST Payable{" "}
+            <TooltipIcon text="Closing fee and Stability fee has been included. Users needs to click on the Fetch interest button to update the amount." />
+          </div>
+          <div className="text-right d-flex align-center">
+            {Number(Number(amountConversion(ownerVaultInfo?.amountOut || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) + Number(amountConversion(ownerVaultInfo?.closingFeeAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals) || 0) + Number(amountConversion(ownerVaultInfo?.interestAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals))).toFixed(comdex.coinDecimals)} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1"><CustomSkelton height={20} /></span>}
           </div>
         </div>
         <div className="close-tab-row">

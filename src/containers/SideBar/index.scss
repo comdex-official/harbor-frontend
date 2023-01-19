@@ -12,7 +12,7 @@
   @media screen and (max-width: 991px) {
     position: absolute;
     top: 0;
-
+    width: 0;
     &.sidebar-open {
       position: fixed;
       top: 0;

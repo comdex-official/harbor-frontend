@@ -98,8 +98,11 @@ const Mint = ({
     let lockedAmountOut = 0;
     let currentAmountIn = Number(inAmount);
     let calculatedAmount = (liquidationRatio * ((mintedCMST + currentAmountOut) / (lockedAmountOut + currentAmountIn)))
-    calculatedAmount = commaSeparator(Number(calculatedAmount || 0).toFixed(DOLLAR_DECIMALS));
-    return calculatedAmount;
+    calculatedAmount = commaSeparator(Number(calculatedAmount || 0).toFixed(DOLLAR_DECIMALS) || 0);
+    if (isNaN(calculatedAmount) || calculatedAmount == "Infinity") {
+      return "-"
+    }
+    return `$${calculatedAmount}`;
   };
 
   const onChange = (value) => {
@@ -413,6 +416,17 @@ const Mint = ({
 
   calculateWithdrawableAmount()
 
+  const calculatedDrawdownAmount = () => {
+    let cmstToBeMint = Number(outAmount);
+    let drawDownFee = (decimalConversion(selectedExtentedPairVaultListData?.[0]?.drawDownFee) * 100).toFixed(DOLLAR_DECIMALS);
+    let calculatedDrawDownAmount = Number((cmstToBeMint * drawDownFee) / 100).toFixed(comdex.coinDecimals);
+    return calculatedDrawDownAmount;
+  }
+
+  useEffect(() => {
+    calculatedDrawdownAmount();
+  }, [outAmount, selectedExtentedPairVaultListData])
+
   useEffect(() => {
     if (ownerVaultId) {
       setEditType("Deposit And Draw")
@@ -617,11 +631,36 @@ const Mint = ({
               {/* Liquidation Container  */}
               <div className="slider-input-box-container mt-2">
                 <div className="title">
-                  <div className="title">Expected liquidation price</div>
+                  <div className="title">Expected Liquidation Price</div>
                 </div>
                 <div className="input-box-container">
                   <div className="liquidation-price">
-                    ${getLiquidationPrice()}
+                    {getLiquidationPrice() || "-"}
+                  </div>
+                </div>
+
+              </div>
+              {/* Calculated Drawdown Container  */}
+              <div className="slider-input-box-container mt-2">
+                <div className="title">
+                  <div className="title">Calculated Drawdown Amount</div>
+                </div>
+                <div className="input-box-container">
+                  <div className="liquidation-price">
+                    {calculatedDrawdownAmount() || 0} CMST
+                  </div>
+                </div>
+
+              </div>
+
+              {/* CMST user Will receive Container  */}
+              <div className="slider-input-box-container mt-2">
+                <div className="title">
+                  <div className="title">CMST User will Receive</div>
+                </div>
+                <div className="input-box-container">
+                  <div className="liquidation-price">
+                    {Number(Number(outAmount) - Number(calculatedDrawdownAmount() || 0)).toFixed(comdex.coinDecimals)} CMST
                   </div>
                 </div>
 
