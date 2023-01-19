@@ -48,3 +48,38 @@
     }
   }
 }
+
+.emission-card {
+  padding: 20px 25px 10px 25px !important;
+  .dark-mode & {
+    background-color: #211d33 !important;
+  }
+  .card-header {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .ant-list {
+    .ant-spin-nested-loading {
+      .ant-spin-container {
+        .ant-row {
+          .ant-col {
+            .ant-list-item {
+              border-left: 4px solid $secondary-color;
+              .emission-card-p {
+                .dark-mode & {
+                  color: white;
+                }
+              }
+              .emission-card-h3 {
+                .dark-mode & {
+                  color: white;
+                  font-weight: 700;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import './index.scss';
 import { connect } from "react-redux";
-import { Button, message, Table, Tabs } from "antd";
+import { Button, List, message, Table, Tabs } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
@@ -47,6 +47,25 @@ const Vote = ({
 
   const [totalVotingPower, setTotalVotingPower] = useState(0);
 
+  const data = [
+    {
+      title: "Voting Starts",
+      counts: "10/01/2023 11: 35: 06"
+    },
+    {
+      title: "Voting Ends",
+      counts: "11/01/2023 11: 35: 06"
+    },
+    {
+      title: "Voting Ends In",
+      counts: "12 D 8 H 07 M 16 S"
+    },
+    {
+      title: "No. of Weeks",
+      counts: "01"
+    },
+  ];
+
   // Query 
   const fetchVotingCurrentProposalId = () => {
     setLoading(true)
@@ -75,6 +94,7 @@ const Vote = ({
     timestamp = moment.utc(timestamp).format("dddd DD-MMMM-YYYY [at] HH:mm:ss [UTC]")
     return timestamp;
   }
+
   const getProposalTimeExpiredOrNot = () => {
     let endTime = currentProposalAllData?.voting_end_time;
     // *Removing miliSec from unix time 
@@ -190,7 +210,7 @@ const Vote = ({
   const calculateTotalVotes = (value) => {
     let userTotalVotes = 0;
     let calculatePercentage = 0;
-  
+
     calculatePercentage = (Number(value) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
     calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
     return calculatePercentage;
@@ -229,6 +249,7 @@ const Vote = ({
       getOwnerVaultInfoByVaultId(vaultId[item])
     })
   }, [vaultId, refreshBalance])
+
   useEffect(() => {
     if (proposalId) {
       fetchProposalAllUpData(address, proposalId);
@@ -432,6 +453,7 @@ const Vote = ({
         </>,
       }
     })
+
   const poolColumns = [
     {
       title: (
@@ -618,12 +640,33 @@ const Vote = ({
             </div>
           </Col>
         </Row>
+
         <Row>
           <Col>
-            <div className="vote-text-main-container mt-3">
-              <div className="vote-text-container">
-                {currentProposalAllData ? "Votes are due by " + calculteVotingTime() : "Voting for epoch proposal not active "}, when the next epoch begins. Your vote will allocate 100% of the veHARBOR voting power. Voters will earn External Incentives no matter when in the epoch they are added.
+            <div className="earn-deposite-card emission-card w-100 mt-3 mb-2">
+              <div className="card-header">
+                PROPOSAL DETAILS <TooltipIcon text="Your vote will allocate 100% of the veHARBOR voting power. Votes can be changed during the voting period. A user's last vote on the vault/pool will be considered. " />
               </div>
+              <List
+                grid={{
+                  gutter: 16,
+                  xs: 1,
+                  sm: 2,
+                  md: 2,
+                  lg: 4,
+                  xl: 4,
+                  xxl: 4,
+                }}
+                dataSource={data}
+                renderItem={item => (
+                  <List.Item >
+                    <div>
+                      <p className='emission-card-p'>{item.title}</p>
+                      <h3 className="claim-drop-amount emission-card-h3">{item.counts}</h3>
+                    </div>
+                  </List.Item>
+                )}
+              />
             </div>
           </Col>
         </Row>
