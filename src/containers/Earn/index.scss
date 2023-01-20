@@ -146,6 +146,17 @@
           border-color: #18305a;
           color: $white;
         }
+        .dark-mode & {
+          color: $white;
+
+          &::-webkit-placeholder {
+            color: $white;
+          }
+
+          &::placeholder {
+            color: $white;
+          }
+        }
       }
     }
   }
@@ -287,6 +298,17 @@
       background: transparent;
       border-color: #18305a;
       color: $white;
+    }
+    .dark-mode & {
+      color: $white;
+
+      &::-webkit-placeholder {
+        color: $white;
+      }
+
+      &::placeholder {
+        color: $white;
+      }
     }
   }
 }

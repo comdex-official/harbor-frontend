@@ -235,7 +235,7 @@
   }
 }
 .calculator-withdraw-height {
-  height: 87% ;
+  height: 87%;
 }
 
 .locker-withdraw {
@@ -358,6 +358,17 @@
               &::-webkit-inner-spin-button {
                 margin: 0;
                 display: none;
+              }
+              .dark-mode & {
+                color: $white;
+
+                &::-webkit-placeholder {
+                  color: $white;
+                }
+
+                &::placeholder {
+                  color: $white;
+                }
               }
             }
             .denom-name {
