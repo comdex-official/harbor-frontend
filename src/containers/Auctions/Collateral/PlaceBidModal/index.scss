@@ -44,6 +44,17 @@
       &::-webkit-inner-spin-button {
         display: none;
       }
+      .dark-mode & {
+        color: $white;
+
+        &::-webkit-placeholder {
+          color: $white;
+        }
+
+        &::placeholder {
+          color: $white;
+        }
+      }
     }
   }
 }
