@@ -10,7 +10,7 @@ import { Col, Row, SvgIcon } from "../../../components/common";
 import NoDataIcon from "../../../components/common/NoDataIcon";
 import NoData from "../../../components/NoData";
 import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, HALF_DEFAULT_PAGE_SIZE, PRODUCT_ID } from '../../../constants/common';
-import { fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
+import { fetchParticipationStats, fetchProposalUpData, totalProposal, totalveHarborSupply } from "../../../services/contractsRead";
 import { amountConversionWithComma } from "../../../utils/coin";
 import { stringTagParser } from "../../../utils/string";
 import "./index.scss";
@@ -35,6 +35,7 @@ const Govern = ({
   const [filterValue, setFilterValue] = useState();
   const [currentActivePage, setCurrentActivePage] = useState(1)
   const [loading, setLoading] = useState();
+  const [participationStats, setParticipationStats] = useState({})
   const [pageNumber, setPageNumber] = useState(DEFAULT_PAGE_NUMBER);
   const [pageSize, setPageSize] = useState(HALF_DEFAULT_PAGE_SIZE);
   const [inProgress, setInprogress] = useState(false)
@@ -61,6 +62,16 @@ const Govern = ({
     })
   }
 
+  const queryParticipationStats = (productId) => {
+    setLoading(true)
+    fetchParticipationStats(productId).then((res) => {
+      setParticipationStats(res)
+      setLoading(false)
+    }).catch((err) => {
+      setLoading(false)
+    })
+  }
+
   const fetchTotalveHarborSupply = () => {
     setLoading(true)
     totalveHarborSupply().then((res) => {
@@ -81,6 +92,7 @@ const Govern = ({
   useEffect(() => {
     fetchAllProposal((pageNumber - 1) * pageSize, PRODUCT_ID, pageSize)
     fetchAllProposalUpData(PRODUCT_ID)
+    queryParticipationStats(PRODUCT_ID)
     fetchTotalveHarborSupply()
   }, [address])
 
@@ -113,11 +125,11 @@ const Govern = ({
     },
     {
       title: "Total Proposals",
-      counts: proposalUpData ? proposalUpData?.proposal_count : "-"
+      counts: proposalUpData ? participationStats?.proposal_count || 0 : "-"
     },
     {
       title: "Average Participation",
-      counts: proposalUpData ? `${calculateAverageParticipation() + "%"}` : "-"
+      counts: proposalUpData ? `${Number((participationStats?.active_participation) * 100 || 0).toFixed(DOLLAR_DECIMALS) + "%"}` : "-"
     }
   ];
 
