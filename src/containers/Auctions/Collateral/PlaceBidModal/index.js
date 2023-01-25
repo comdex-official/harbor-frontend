@@ -46,6 +46,32 @@ const PlaceBidModal = ({
   const [maxValidationError, setMaxValidationError] = useState();
   const [calculatedQuantityBid, setCalculatedQuantityBid] = useState();
 
+  function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height
+    };
+  }
+
+  function useWindowDimensions() {
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+    useEffect(() => {
+      function handleResize() {
+        setWindowDimensions(getWindowDimensions());
+      }
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return windowDimensions;
+  }
+
+  const { height, width } = useWindowDimensions();
+
+
   const fetchSingleDutchAuctions = (auctionId, auctionMappingId) => {
     querySingleDutchAuction(auctionId, auctionMappingId, (error, data) => {
       if (error) {
@@ -179,7 +205,7 @@ const PlaceBidModal = ({
         header={null}
         open={isModalOpen}
         width={550}
-        closable={false}
+        closable={(width < 650) ? true : null}
         onOk={handleOk}
         onCancel={handleCancel}
         closeIcon={null}
