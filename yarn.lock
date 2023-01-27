@@ -2429,7 +2429,7 @@
     joi "^17.5.0"
     utility-types "^3.10.0"
 
-"@keplr-wallet/common@0.11.37", "@keplr-wallet/common@^0.11.17":
+"@keplr-wallet/common@0.11.37", "@keplr-wallet/common@^0.11.37":
   version "0.11.37"
   resolved "https://registry.yarnpkg.com/@keplr-wallet/common/-/common-0.11.37.tgz#40e024a0cb0782b87a467343763ae468ccbc8a83"
   integrity sha512-qKUVu4EtZ4yt4b2onS9cjG0ftLZT/+tR3JvTx19wmlBsMXhOm6Vwj/8vKioH5+q6gq4L25Cpus+Aq95pjRwgxQ==
