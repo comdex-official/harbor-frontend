@@ -26,17 +26,20 @@ export const comdex = {
   coinDecimals: 6,
   prefix: "comdex",
   coinType: 118,
+  symbol: "CMDX",
 };
 
 export const cmst = {
   coinDenom: "CMST",
   coinMinimalDenom: "ucmst",
   coinDecimals: 6,
+  symbol: "CMST",
 };
 export const harbor = {
   coinDenom: "HARBOR",
   coinMinimalDenom: "uharbor",
   coinDecimals: 6,
+  symbol: "HARBOR",
 };
 
 export const ibcDenoms = getIbcDenomsMap() || {};
