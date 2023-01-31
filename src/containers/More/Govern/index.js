@@ -85,7 +85,7 @@ const Govern = ({
   const unixToGMTTime = (time) => {
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
-    timestamp = timestamp.format("DD-MM-YYYY hh:mm:ss")
+    timestamp = timestamp.format("DD-MM-YYYY HH:mm:ss")
     return timestamp;
   }
 
@@ -211,15 +211,10 @@ const Govern = ({
     return <Spin />;
   }
 
+  console.log(proposalList, "proposalList");
+
   return (
     <div className="app-content-wrapper">
-      <div className="back-btn-container">
-        <Link to="/more">
-          <Button className="back-btn" type="primary">
-            Back
-          </Button>
-        </Link>
-      </div>
       <Row>
         <Col>
           <div className="composite-card earn-deposite-card myhome-upper d-block ">
@@ -293,13 +288,13 @@ const Govern = ({
                               <Row>
                                 <Col sm="6">
                                   <label>Voting Starts :</label>
-                                  <p>{unixToGMTTime(item?.start_time) || "--/--/--"}</p>
+                                  <p>{unixToGMTTime(item?.start_time) || "--/--/--"} UTC</p>
                                 </Col>
                                 <Col sm="6">
                                   <label>Voting Ends :</label>
-                                  <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"}</p>
+                                  <p>{unixToGMTTime(item?.expires?.at_time) || "--/--/--"} UTC</p>
                                 </Col>
-                                <div className="user-vote-box-container">
+                                <div className="user-vote-box-container mt-2">
                                   <div className="user-vote-box">
 
                                     <div className="single-vote-container">
