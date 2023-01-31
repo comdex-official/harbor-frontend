@@ -211,8 +211,6 @@ const Govern = ({
     return <Spin />;
   }
 
-  console.log(proposalList, "proposalList");
-
   return (
     <div className="app-content-wrapper">
       <Row>
