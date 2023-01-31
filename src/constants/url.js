@@ -9,3 +9,4 @@ export const API_URL = process.env.REACT_APP_API_URL;
 export const COINGECKO_API_URL = "https://api.coingecko.com/api/v3/simple/price?ids=comdex,cosmos,osmosis,axlusdc,axlweth&vs_currencies=usd";
 export const HARBOR_AIRDROP_API_URL = process.env.REACT_APP_HARBOR_AIRDROP_API_URL;
 export const DASHBOARD_TVL_DOLLOR_DATA = process.env.REACT_APP_HARBOR_DASHBOARD_TVL_API_URL;
+export const DASHBOARD_TVL_MINTED_DATA = process.env.REACT_APP_HARBOR_DASHBOARD_TVL_API_URL;
