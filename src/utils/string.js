@@ -66,6 +66,10 @@ export const symbolToDenom = (key) => {
     case "wbnb-wei":
     case ibcDenoms["wbnb-wei"]:
       return ibcDenoms["wbnb-wei"];
+    case ibcDenoms["uluna"]:
+      return ibcDenoms["uluna"];
+    case ibcDenoms["acanto"]:
+      return ibcDenoms["acanto"];
     case "cmdx":
       return "ucmdx";
     case "cmst":
