@@ -1,6 +1,6 @@
 import { Button, Form, message, Modal, Spin } from "antd";
 import * as PropTypes from "prop-types";
-import React, { useState, useEffect, } from "react";
+import React, { useCallback, useState, useEffect, } from "react";
 import { connect } from "react-redux";
 import { fetchProofHeight } from "../../../actions/asset";
 import { Col, Row, SvgIcon } from "../../../components/common";
@@ -22,7 +22,7 @@ import { toDecimals, truncateString } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import "./index.scss";
 
-const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
+const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sourceAddress, setSourceAddress] = useState("");
   const [inProgress, setInProgress] = useState(false);
@@ -41,16 +41,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
     );
   };
 
-  useEffect(() => {
-    initialize();
-  }, [address]);
-
-  const showModal = () => {
-    initialize()
-    setIsModalOpen(true);
-  };
-
-  const initialize = () => {
+  const initialize = useCallback(() => {
     initializeIBCChain(chain.chainInfo, (error, account) => {
       if (error) {
         message.error(error);
@@ -80,7 +71,18 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
         setProofHeight(data);
       });
     });
-  }
+  }, [chain?.chainInfo, chain?.coinMinimalDenom, chain?.sourceChannelId]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      initialize();
+    }
+  }, [address, initialize, isModalOpen]);
+
+  const showModal = () => {
+    initialize();
+    setIsModalOpen(true);
+  };
 
   const signIBCTx = () => {
     setInProgress(true);
@@ -98,7 +100,10 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
           source_channel: chain.destChannelId,
           token: {
             denom: chain.coinMinimalDenom,
-            amount: getAmount(amount),
+            amount: getAmount(
+              amount,
+              assetMap[chain?.ibcDenomHash]?.decimals
+            ),
           },
           sender: sourceAddress,
           receiver: address,
@@ -296,7 +301,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
                     <span className="ml-1">
                       {(availableBalance &&
                         availableBalance.amount &&
-                        amountConversion(availableBalance.amount)) ||
+                        amountConversion(availableBalance.amount, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals)) ||
                         0}{" "}
                       {denomConversion(chain?.coinMinimalDenom || "")}
                     </span>
@@ -307,9 +312,9 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances }) => {
                           setAmount(
                             availableBalance?.amount > DEFAULT_FEE
                               ? amountConversion(
-                                availableBalance?.amount - DEFAULT_FEE
+                                availableBalance?.amount - DEFAULT_FEE, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals
                               )
-                              : amountConversion(availableBalance?.amount)
+                              : amountConversion(availableBalance?.amount, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals)
                           );
                         }}
                       >
@@ -356,6 +361,7 @@ Deposit.propTypes = {
   lang: PropTypes.string.isRequired,
   handleRefresh: PropTypes.func.isRequired,
   address: PropTypes.string,
+  assetMap: PropTypes.object,
   chain: PropTypes.any,
 };
 
@@ -363,6 +369,7 @@ const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    assetMap: state.asset.map,
   };
 };
 

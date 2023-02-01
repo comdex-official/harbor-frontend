@@ -45,7 +45,7 @@ const routes = [
     element: <StableMintVault />,
   },
   {
-    path: "/earn",
+    path: "/more/earn",
     element: <Earn />,
   },
   {
@@ -57,11 +57,11 @@ const routes = [
     element: <More />,
   },
   {
-    path: "/more/govern",
+    path: "/govern",
     element: <Govern />,
   },
   {
-    path: "/more/govern/govern-details/:proposalId",
+    path: "/govern/govern-details/:proposalId",
     element: <GovernDetails />,
   },
   {

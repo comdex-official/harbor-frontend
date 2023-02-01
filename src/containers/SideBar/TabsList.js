@@ -41,19 +41,19 @@ export const tabsList = [
     className: "disable",
   },
   {
-    name: "earn",
-    value: "earn-icon",
-    langKey: "earn",
-    path: "earn",
-    active: "earn",
-    index: 5,
-  },
-  {
     name: "auction",
     value: "auction-icon",
     langKey: "auction",
     path: "auctions",
     active: "auctions",
+    index: 5,
+  },
+  {
+    name: "govern",
+    value: "govern",
+    langKey: "govern",
+    path: "govern",
+    active: "govern",
     index: 6,
   },
   {

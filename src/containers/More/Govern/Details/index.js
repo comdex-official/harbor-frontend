@@ -136,7 +136,7 @@ const GovernDetails = ({
     // *Removing miliSec from unix time 
     let newTime = Math.floor(time / 1000000000);
     var timestamp = moment.unix(newTime);
-    timestamp = timestamp.format("DD-MM-YYYY hh:mm:ss")
+    timestamp = timestamp.format("DD-MM-YYYY ")
     return timestamp;
   }
   const votingStartTime = unixToGMTTime(currentProposal?.start_time);
@@ -151,11 +151,11 @@ const GovernDetails = ({
   const data = [
     {
       title: "Voting Starts",
-      counts: votingStartTime !== "Invalid date" ? votingStartTime : "--/--/-- 00:00:00"
+      counts: votingStartTime !== "Invalid date" ? `${votingStartTime} ` : "--/--/-- 00:00:00"
     },
     {
       title: "Voting Ends",
-      counts: votingEndTime !== "Invalid date" ? votingEndTime : "--/--/-- 00:00:00"
+      counts: votingEndTime !== "Invalid date" ? `${votingEndTime} ` : "--/--/-- 00:00:00"
     },
     {
       title: "Voting Ends In",
@@ -283,7 +283,7 @@ const GovernDetails = ({
         </Col>
 
         <Col className="text-right mb-3">
-          <Link to="/more/govern"><Button className="back-btn" type="primary">Back</Button></Link>
+          <Link to="/govern"><Button className="back-btn" type="primary">Back</Button></Link>
         </Col>
       </Row>
       <Row>

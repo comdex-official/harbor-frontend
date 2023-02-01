@@ -1,3 +1,5 @@
+import { envConfig } from "../../../../config/envConfig";
+
 export const missions = [
     {
         id: 1,
@@ -31,7 +33,7 @@ export const missions = [
         title: "Lend $CMST on Commodo platform",
         icon: "lend-icon",
         viewBox: "0 0 30.023 32.127",
-        path: process.env.REACT_APP_COMMODO_WEBSITE_URL + "/lend",
+        path: envConfig?.commodo?.websiteUrl + "/lend",
         disable: false,
     },
     {
@@ -40,7 +42,7 @@ export const missions = [
         title: "LP  on cSwap dex in the  ATOM/CMDX Pool and Farm your LP Tokens",
         icon: "masterpool-icon",
         viewBox: "0 0 32 32",
-        path: process.env.REACT_APP_CSWAP_WEBSITE_URL + "/farm",
+        path: envConfig?.cSwap?.websiteUrl + "/farm",
         disable: false,
     },
 ]
