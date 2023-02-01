@@ -88,7 +88,7 @@ const Assets = ({
       align: "center",
       render: (price) => (
         <>
-          <p>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</p>
+          <p>${commaSeparator(Number(Math.floor(price * Math.pow(10, DOLLAR_DECIMALS)) / Math.pow(10, DOLLAR_DECIMALS)))}</p>
         </>
       ),
     },
@@ -99,7 +99,7 @@ const Assets = ({
       align: "center",
       render: (amount) => (
         <>
-          <p>${commaSeparator(Number(amount?.value || 0).toFixed(DOLLAR_DECIMALS))}</p>
+          <p>${commaSeparator(Number(Math.floor(amount * Math.pow(10, DOLLAR_DECIMALS)) / Math.pow(10, DOLLAR_DECIMALS)))}</p>
         </>
       ),
     },
