@@ -30,6 +30,22 @@ export const generateHash = (txBytes) =>
 
 export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
+
+export const transformPairName = (name) => {
+  if (name === "STATOM-A") {
+    return "stAtom-A"
+  }
+  else if (name === "STATOM-B") {
+    return "stAtom-B"
+  }
+  else if (name === "STATOM-C") {
+    return "stAtom-C"
+  }
+  else {
+    return name;
+  }
+}
+
 // For getIcon From extendedPair name 
 export const symbolToDenom = (key) => {
   switch (key) {
@@ -54,7 +70,8 @@ export const symbolToDenom = (key) => {
     case "wmatic-wei" || "wmatic":
     case ibcDenoms["wmatic-wei"]:
       return ibcDenoms["wmatic-wei"];
-    case "stuatom":
+    case "statom":
+      return ibcDenoms["stuatom"];
     case ibcDenoms["stuatom"]:
       return ibcDenoms["stuatom"];
     case "dai":

@@ -197,17 +197,17 @@
           border-color: #18305a;
           color: $white;
         }
-          .dark-mode & {
-        color: $white;
-
-        &::-webkit-placeholder {
+        .dark-mode & {
           color: $white;
-        }
 
-        &::placeholder {
-          color: $white;
+          &::-webkit-placeholder {
+            color: $white;
+          }
+
+          &::placeholder {
+            color: $white;
+          }
         }
-      }
       }
       .collateral-percentage {
         margin-left: -22px;
@@ -339,17 +339,17 @@
       background: $background-dark1;
       color: $white;
     }
-      .dark-mode & {
+    .dark-mode & {
+      color: $white;
+
+      &::-webkit-placeholder {
         color: $white;
-
-        &::-webkit-placeholder {
-          color: $white;
-        }
-
-        &::placeholder {
-          color: $white;
-        }
       }
+
+      &::placeholder {
+        color: $white;
+      }
+    }
   }
   .label_max_button {
     display: flex;
@@ -483,10 +483,26 @@
             border-radius: 50%;
           }
         }
+        .mint-page-icon-container {
+          .icon {
+            width: 57px;
+            @media only screen and (min-width: 620px) and (max-width: 720px) {
+              width: 109px;
+            }
+            @media only screen and (min-width: 490px) and (max-width: 620px) {
+              width: 88px;
+            }
+            @media only screen and (min-width: 381px) and (max-width: 490px) {
+              width: 67px;
+            }
+            @media only screen and (min-width: 280px) and (max-width: 381px) {
+              width: 45px;
+            }
+          }
+        }
         .vault-name-container {
           flex-basis: 80%;
           .vault-name {
-            text-transform: uppercase;
             font-size: 1.3rem;
             font-weight: 600;
             color: #000;
