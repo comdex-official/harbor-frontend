@@ -1,3 +1,5 @@
+import { envConfig } from "../config/envConfig";
+
 import {
   AccountSetBase,
   ChainStore,
@@ -5,9 +7,9 @@ import {
 } from "@keplr-wallet/stores";
 import { cmst, comdex, harbor } from "../config/network";
 
-export const contractAddress = process.env.REACT_APP_GOVERNANCE_CONTRACT;
-export const lockingContractAddress = process.env.REACT_APP_LOCKING_CONTRACT;
-export const airdropContractAddress = process.env.REACT_APP_AIRDROP_CONTRACT;
+export const contractAddress = envConfig?.harbor?.governanceContractAddress;
+export const lockingContractAddress = envConfig?.harbor?.lockingContractAddress;
+export const airdropContractAddress = envConfig?.harbor?.airdropContractAddress;
 
 const getCurrencies = (chain) => {
   if (chain?.rpc === comdex?.rpc) {
