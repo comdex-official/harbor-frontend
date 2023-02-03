@@ -33,13 +33,13 @@ export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
 export const transformPairName = (name) => {
   if (name === "STATOM-A") {
-    return "stAtom-A"
+    return "stATOM-A"
   }
   else if (name === "STATOM-B") {
-    return "stAtom-B"
+    return "stATOM-B"
   }
   else if (name === "STATOM-C") {
-    return "stAtom-C"
+    return "stATOM-C"
   }
   else {
     return name;
