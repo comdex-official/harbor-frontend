@@ -224,3 +224,84 @@
     transform: rotate(360deg);
   }
 }
+.assets-search-section {
+  text-align: right;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  @media screen and (max-width: 576px) {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .ant-input-affix-wrapper {
+    border: 1px solid $secondary-color;
+    background: none;
+    border-radius: 30px;
+    margin-left: 25px;
+    height: 39px;
+    padding: 4px 18px;
+    max-width: 260px;
+
+    @media screen and (max-width: 576px) {
+      margin-top: 1.2rem;
+      max-width: 100%;
+      margin-left: 0;
+    }
+
+    &:hover {
+      border-color: $border-light;
+    }
+
+    input {
+      background: none;
+      font-weight: normal;
+
+      .dark-mode & {
+        color: $white;
+      }
+
+      &::placeholder {
+        color: #303950;
+        opacity: 1;
+        font-weight: 500;
+        .dark-mode & {
+          color: white;
+        }
+      }
+    }
+
+    .ant-input-suffix {
+      .icon {
+        fill: $border-dark;
+        .dark-mode & {
+          fill: $secondary-color;
+        }
+      }
+    }
+  }
+
+  .ant-switch {
+    background: #b1b1b1;
+
+    .dark-mode & {
+      background: #b1b1b1;
+    }
+
+    .ant-switch-handle {
+      &:before {
+        background: #ffffff;
+      }
+    }
+
+    &.ant-switch-checked {
+      background: $secondary-color;
+      .dark-mode & {
+        background: $secondary-color;
+      }
+    }
+  }
+}
