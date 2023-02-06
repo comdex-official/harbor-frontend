@@ -1,7 +1,7 @@
 import { QueryClientImpl } from "comdex-codec/build/comdex/market/v1beta1/query";
 import Long from "long";
 import { createQueryClient } from "../helper";
-import { API_URL, COINGECKO_API_URL, DASHBOARD_TVL_DOLLOR_DATA } from "../../constants/url";
+import { API_URL, COINGECKO_API_URL, DASHBOARD_TVL_DOLLOR_DATA, DASHBOARD_TVL_MINTED_DATA } from "../../constants/url";
 import axios from "axios";
 
 let myClient = null;
@@ -91,6 +91,17 @@ export const fetchCoingeckoPrices = (callback) => {
 export const fetchDashboardDollorTVL = (callback) => {
   axios
     .get(`${DASHBOARD_TVL_DOLLOR_DATA}/api/v2/harbor/tvl`)
+    .then((result) => {
+      callback(null, result?.data);
+    })
+    .catch((error) => {
+      callback(error?.message);
+    });
+};
+
+export const fetchDashboardMintedCMSTTVL = (callback) => {
+  axios
+    .get(`${DASHBOARD_TVL_MINTED_DATA}/api/v2/harbor/cmst/minted`)
     .then((result) => {
       callback(null, result?.data);
     })
