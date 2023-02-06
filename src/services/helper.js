@@ -5,7 +5,7 @@ import {
   QueryClient,
   SigningStargateClient
 } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
@@ -50,7 +50,11 @@ export const createQueryClient = (callback) => {
 };
 
 export const newQueryClientRPC = (rpc, callback) => {
-  Tendermint34Client.connect(rpc)
+  const httpBatch = new HttpBatchClient(rpc, {
+    batchSizeLimit: 50,
+    dispatchInterval: 500,
+  });
+  Tendermint34Client.create(httpBatch)
     .then((tendermintClient) => {
       const queryClient = new QueryClient(tendermintClient);
       const rpcClient = createProtobufRpcClient(queryClient);

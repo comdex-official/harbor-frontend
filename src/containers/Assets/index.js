@@ -1,4 +1,4 @@
-import { Button, Table } from "antd";
+import { Button, Table, Input, Switch } from "antd";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -34,6 +34,8 @@ const Assets = ({
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
+  const [isHideToggleOn, setHideToggle] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
 
   const handleBalanceRefresh = () => {
     setLoading(true);
@@ -52,6 +54,14 @@ const Assets = ({
     setTimeout(() => {
       setLoading(false);
     }, 500);
+  };
+
+  const handleHideSwitchChange = (value) => {
+    setHideToggle(value);
+  };
+
+  const onSearchChange = (searchKey) => {
+    setSearchKey(searchKey.trim().toLowerCase());
   };
 
   const columns = [
@@ -78,7 +88,7 @@ const Assets = ({
       align: "center",
       render: (price) => (
         <>
-          <p>${commaSeparator(Number(price || 0).toFixed(DOLLAR_DECIMALS))}</p>
+          <p>${commaSeparator(Number(Math.floor(price * Math.pow(10, DOLLAR_DECIMALS)) / Math.pow(10, DOLLAR_DECIMALS)))}</p>
         </>
       ),
     },
@@ -89,7 +99,7 @@ const Assets = ({
       align: "center",
       render: (amount) => (
         <>
-          <p>${commaSeparator(Number(amount || 0).toFixed(DOLLAR_DECIMALS))}</p>
+          <p>${commaSeparator(Number(Math.floor(amount * Math.pow(10, DOLLAR_DECIMALS)) / Math.pow(10, DOLLAR_DECIMALS)))}</p>
         </>
       ),
     },
@@ -179,6 +189,7 @@ const Assets = ({
     return {
       chainInfo: getChainConfig(token),
       coinMinimalDenom: token?.coinMinimalDenom,
+      symbol: token?.symbol,
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
@@ -223,6 +234,7 @@ const Assets = ({
   const currentChainData = [
     {
       key: comdex.chainId,
+      symbol: comdex?.symbol,
       asset: (
         <>
           <div className="assets-withicon">
@@ -239,6 +251,7 @@ const Assets = ({
     },
     {
       key: cmst?.coinDenom,
+      symbol: cmst?.symbol,
       asset: (
         <>
           <div className="assets-withicon">
@@ -255,6 +268,7 @@ const Assets = ({
     },
     {
       key: harbor?.coinDenom,
+      symbol: harbor?.symbol,
       asset: (
         <>
           <div className="assets-withicon">
@@ -277,6 +291,7 @@ const Assets = ({
     ibcBalances.map((item) => {
       return {
         key: item?.coinMinimalDenom,
+        symbol: item?.symbol,
         asset: (
           <>
             <div className="assets-withicon">
@@ -295,7 +310,19 @@ const Assets = ({
       };
     });
 
-  const tableData = Lodash.concat(currentChainData, tableIBCData);
+  let allTableData = Lodash.concat(currentChainData, tableIBCData);
+
+  let tableData = isHideToggleOn
+    ? allTableData?.filter((item) => Number(item?.noOfTokens) > 0)
+    : allTableData;
+
+  tableData = searchKey ? allTableData?.filter((item) => {
+    return ((item?.symbol).toLowerCase()).includes(searchKey.toLowerCase())
+  }) : tableData;
+
+  let balanceExists = allTableData?.find(
+    (item) => Number(item?.noOfTokens) > 0
+  );
 
   return (
     <div className="app-content-wrapper">
@@ -324,6 +351,26 @@ const Assets = ({
             </div>
           </Col>
         </Row>
+
+        <Row>
+          <Col className="assets-search-section">
+            <div>
+              Hide 0 Balances{" "}
+              <Switch
+                disabled={!balanceExists}
+                onChange={(value) => handleHideSwitchChange(value)}
+                checked={isHideToggleOn}
+              />
+            </div>
+            <Input
+              placeholder="Search Asset.."
+              onChange={(event) => onSearchChange(event.target.value)}
+              suffix={<SvgIcon name="search" viewbox="0 0 18 18" />}
+            />
+          </Col>
+        </Row>
+
+
         <Row>
           <Col>
             <Table

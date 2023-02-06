@@ -80,6 +80,17 @@
         .dark-mode & {
           background: $background-dark2;
         }
+        .dark-mode & {
+          color: $white;
+
+          &::-webkit-placeholder {
+            color: $white;
+          }
+
+          &::placeholder {
+            color: $white;
+          }
+        }
       }
     }
   }
@@ -119,6 +130,17 @@
             background: rgba($secondary-color, 0.2);
             border-color: #18305a;
             color: $white;
+          }
+          .dark-mode & {
+            color: $white;
+
+            &::-webkit-placeholder {
+              color: $white;
+            }
+
+            &::placeholder {
+              color: $white;
+            }
           }
         }
         .collateral-percentage {

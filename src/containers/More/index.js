@@ -285,17 +285,17 @@ const More = ({
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
-                <h2> Governance</h2>
+                <h2> Earn</h2>
                 <p>
-                  Use veHARBOR token to drive key decision for the protocol via proposals
+                  Deposit $CMST to earn variable interest on it.
                 </p>
                 <div className="button-container">
                   <Button
                     type="primary"
                     className="btn-filled"
-                    onClick={() => handleRouteChange("./govern")}
+                    onClick={() => handleRouteChange("/more/earn")}
                   >
-                    Govern
+                    Earn
                   </Button>
                 </div>
               </div>
