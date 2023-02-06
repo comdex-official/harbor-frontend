@@ -8,6 +8,7 @@ import { setOwnerVaultId, setOwnerVaultInfo } from '../../../../../actions/locke
 import moment from 'moment';
 import { decimalConversion } from '../../../../../utils/number';
 import TooltipIcon from '../../../../../components/TooltipIcon';
+import { transformPairName } from '../../../../../utils/string';
 
 
 const VaultDetails = ({
@@ -70,7 +71,7 @@ const VaultDetails = ({
     <>
       <div className="composite-card farm-content-card earn-deposite-card ">
         <div className="card-head">
-          <div className="head-left">Vault : {selectedExtentedPairVaultListData?.pairName}</div>
+          <div className="head-left">Vault : {transformPairName(selectedExtentedPairVaultListData?.pairName)}</div>
         </div>
         <div className="card-assets-container">
           <div className="assets-row">
