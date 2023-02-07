@@ -7,9 +7,8 @@ import { connect } from "react-redux";
 import { Col, Row } from "../../components/common";
 import TooltipIcon from "../../components/TooltipIcon";
 import { comdex, ibcDenoms } from "../../config/network";
-import { ZERO_DOLLAR_DECIMALS } from "../../constants/common";
-import { fetchDashboardDollorTVL } from "../../services/oracle/query";
-import { queryPairsLockedAndMintedStatistic } from "../../services/vault/query";
+import { DOLLAR_DECIMALS, ZERO_DOLLAR_DECIMALS } from "../../constants/common";
+import { fetchDashboardDollorTVL, fetchDashboardMintedCMSTTVL } from "../../services/oracle/query";
 import { amountConversion } from "../../utils/coin";
 import { commaSeparator } from "../../utils/number";
 import variables from "../../utils/variables";
@@ -19,41 +18,9 @@ import "./index.scss";
 const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
   const [totalValueLocked, setTotalValueLocked] = useState();
   const [totalDollarValue, setTotalDollarValue] = useState();
-  const [allCMSTMintedStatistic, setAllCMSTMintedStatistic] = useState([])
   const [uniqueCMSTMintedData, setUniqueCMSTMintedData] = useState();
   const [totalMintedCMST, setTotalMintedCMST] = useState();
 
-
-  const fetchQueryPairsLockedAndMintedStatistic = () => {
-    queryPairsLockedAndMintedStatistic((error, result) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      result?.pairStatisticData?.map((item) => {
-        setAllCMSTMintedStatistic(oldArray => [...oldArray, { "name": item?.assetInDenom, "amount": Number(amountConversion(item?.mintedAmount), comdex?.coinDecimals) }])
-      })
-    });
-  };
-
-  const calculateUniqueCMSTMintedData = () => {
-    let myMap = {};
-    let total = 0;
-
-    for (let i = 0; i < allCMSTMintedStatistic?.length; i++) {
-      if (myMap[allCMSTMintedStatistic[i]?.name]) {
-        myMap[allCMSTMintedStatistic[i]?.name] += allCMSTMintedStatistic[i]?.amount;
-        total += Number(allCMSTMintedStatistic[i]?.amount);
-      }
-      else {
-        myMap[allCMSTMintedStatistic[i]?.name] = allCMSTMintedStatistic[i]?.amount;
-        total += Number(allCMSTMintedStatistic[i]?.amount);
-      }
-    }
-    setTotalMintedCMST(Number(total).toFixed(comdex?.coinDecimals))
-
-    setUniqueCMSTMintedData(myMap)
-  }
 
   const calculateTotalValueLockedInDollarForOthers = () => {
     let amount = 0;
@@ -72,20 +39,21 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
   };
 
   useEffect(() => {
-    fetchQueryPairsLockedAndMintedStatistic()
-  }, []);
-
-  useEffect(() => {
-    calculateUniqueCMSTMintedData()
-  }, [allCMSTMintedStatistic])
-
-  useEffect(() => {
     fetchDashboardDollorTVL((error, result) => {
       if (error) {
         console.log(error, "TVL Api Error");
       }
       setTotalValueLocked(result?.data?.assets)
       setTotalDollarValue(result?.data?.total_value_locked)
+    })
+
+    fetchDashboardMintedCMSTTVL((error, result) => {
+      if (error) {
+        console.log(error, "TVL Api Error");
+      }
+
+      setTotalMintedCMST(amountConversion(result?.data?.total_minted || 0, comdex?.coinDecimals))
+      setUniqueCMSTMintedData(result?.data?.assets)
     })
   }, [])
 
@@ -118,6 +86,27 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
         },
       },
     },
+    tooltip: {
+      formatter: function () {
+        return (
+          '<div style="text-align:center; font-weight:800; ">' +
+          commaSeparator(Number(this.y).toFixed(DOLLAR_DECIMALS)) +
+          "<br />" +
+          '<small style="font-size: 10px; font-weight:400;">' +
+          this.key +
+          "</small>" +
+          "</div>"
+        );
+      },
+      useHTML: true,
+      backgroundColor: "#232231",
+      borderColor: "#fff",
+      borderRadius: 10,
+      zIndex: 99,
+      style: {
+        color: "#fff",
+      },
+    },
     series: [
       {
         states: {
@@ -129,25 +118,25 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
         data: [
           {
             name: "AXL-USDC",
-            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]),
+            y: Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]?.minted_amount)),
             color: "#665AA6",
           },
           {
             name: "ATOM",
-            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]),
+            y: Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]?.minted_amount || 0, comdex?.coinDecimals)),
             color: "#BFA9D7",
           },
           {
             name: "OSMO",
-            y: Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]),
+            y: Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)),
             color: "#8e78a5",
           },
           {
             name: "Others",
             y: Number(totalMintedCMST || 0) -
-              (Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
-                Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
-                Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
+              (Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)) +
+                Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]?.minted_amount || 0, comdex?.coinDecimals)) +
+                Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]?.minted_amount || 0, comdex?.coinDecimals))
               ),
             color: isDarkMode ? "#373549" : "#E0E0E0",
           },
@@ -183,6 +172,27 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             fontsize: 50,
           },
         },
+      },
+    },
+    tooltip: {
+      formatter: function () {
+        return (
+          '<div style="text-align:center; font-weight:800; ">' +
+          commaSeparator(Number(this.y).toFixed(DOLLAR_DECIMALS)) +
+          "<br />" +
+          '<small style="font-size: 10px; font-weight:400;">' +
+          this.key +
+          "</small>" +
+          "</div>"
+        );
+      },
+      useHTML: true,
+      backgroundColor: "#232231",
+      borderColor: "#fff",
+      borderRadius: 10,
+      zIndex: 99,
+      style: {
+        color: "#fff",
       },
     },
     series: [
@@ -226,7 +236,6 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
       },
     ],
   };
-
 
 
   return (
@@ -328,20 +337,20 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                   <div className="dashboard-statics mb-4 ">
                     <p>AXL-USDC</p>
                     <h3>
-                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                      {commaSeparator(Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]?.minted_amount || 0, comdex?.coinDecimals)).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
 
                   <div className="dashboard-statics mb-4 total-dashboard-stats">
                     <p>ATOM</p>
                     <h3>
-                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                      {commaSeparator(Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]?.minted_amount || 0, comdex?.coinDecimals)).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
                   <div className="dashboard-statics mb-4 total-dashboard-stats-2">
                     <p>OSMO</p>
                     <h3>
-                      {commaSeparator(Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                      {commaSeparator(Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
 
@@ -352,9 +361,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                         Math.max(
                           Number(Number(totalMintedCMST || 0) -
                             (
-                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo] || 0) +
-                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom] || 0) +
-                              Number(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc] || 0)
+                              Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)) +
+                              Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]?.minted_amount || 0, comdex?.coinDecimals)) +
+                              Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]?.minted_amount || 0, comdex?.coinDecimals))
                             )).toFixed(ZERO_DOLLAR_DECIMALS)
                           , 0))
 

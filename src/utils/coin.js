@@ -23,13 +23,12 @@ export const getAmount = (selectedAmount, coinDecimals) =>
 export const amountConversionWithComma = (amount, decimals, chainDecimals) => {
 
   const result = Number(amount) / (chainDecimals || 10 ** comdex.coinDecimals);
-
-  return commaSeparator(result.toFixed(decimals || comdex.coinDecimals));
+  return commaSeparator(Math.floor(result * Math.pow(10, decimals || comdex.coinDecimals)) / Math.pow(10, decimals || comdex.coinDecimals));
 };
 
 export const amountConversion = (amount, decimals, chainDecimals) => {
   const result = Number(amount) / (chainDecimals || 10 ** comdex.coinDecimals);
-  return result.toFixed(decimals || comdex.coinDecimals);
+  return String(Math.floor(result * Math.pow(10, decimals || comdex.coinDecimals)) / Math.pow(10, decimals || comdex.coinDecimals));
 };
 
 
