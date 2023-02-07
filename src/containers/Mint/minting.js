@@ -5,7 +5,7 @@ import { message, Spin } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
-import { iconNameFromDenom, symbolToDenom } from "../../utils/string";
+import { iconNameFromDenom, symbolToDenom, transformPairName } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
 import React, { useEffect, useState } from "react";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
@@ -141,11 +141,11 @@ const Minting = ({ address }) => {
                         }}
                       >
                         <div className="up-container">
-                          <div className="icon-container">
+                          <div className="icon-container mint-page-icon-container">
                             <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} />
                           </div>
                           <div className="vault-name-container">
-                            <div className="vault-name">{item?.pairName}</div>
+                            <div className="vault-name">{transformPairName(item?.pairName)}</div>
                             <div className="vault-desc" />
                           </div>
                         </div>

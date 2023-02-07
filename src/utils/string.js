@@ -30,6 +30,22 @@ export const generateHash = (txBytes) =>
 
 export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
+
+export const transformPairName = (name) => {
+  if (name === "STATOM-A") {
+    return "stATOM-A"
+  }
+  else if (name === "STATOM-B") {
+    return "stATOM-B"
+  }
+  else if (name === "STATOM-C") {
+    return "stATOM-C"
+  }
+  else {
+    return name;
+  }
+}
+
 // For getIcon From extendedPair name 
 export const symbolToDenom = (key) => {
   switch (key) {
@@ -54,7 +70,8 @@ export const symbolToDenom = (key) => {
     case "wmatic-wei" || "wmatic":
     case ibcDenoms["wmatic-wei"]:
       return ibcDenoms["wmatic-wei"];
-    case "stuatom":
+    case "statom":
+      return ibcDenoms["stuatom"];
     case ibcDenoms["stuatom"]:
       return ibcDenoms["stuatom"];
     case "dai":
@@ -66,6 +83,10 @@ export const symbolToDenom = (key) => {
     case "wbnb-wei":
     case ibcDenoms["wbnb-wei"]:
       return ibcDenoms["wbnb-wei"];
+    case ibcDenoms["uluna"]:
+      return ibcDenoms["uluna"];
+    case ibcDenoms["acanto"]:
+      return ibcDenoms["acanto"];
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -120,6 +141,8 @@ const iconMap = {
   [ibcDenoms["dai-wei"]]: "dai-icon",
   [ibcDenoms["aevmos"]]: "evmos-icon",
   [ibcDenoms["wbnb-wei"]]: "wbnb-icon",
+  [ibcDenoms["uluna"]]: "luna2-icon",
+  [ibcDenoms["acanto"]]: "canto-icon",
 };
 
 export const iconNameFromDenom = (key) => {
