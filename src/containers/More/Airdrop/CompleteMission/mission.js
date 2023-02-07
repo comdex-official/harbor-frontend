@@ -24,7 +24,7 @@ export const missions = [
         title: "Vote on proposal",
         icon: "vote-icon",
         viewBox: "0 0 30 32.46",
-        path: "/more/govern",
+        path: "/govern",
         disable: false,
     },
     {
