@@ -86,14 +86,21 @@ export const getChainConfig = (chain = comdex) => {
         coinMinimalDenom: chain?.coinMinimalDenom,
         coinDecimals: chain?.coinDecimals,
         coinGeckoId: chain?.coinGeckoId,
-        gasPriceStep: {
-          low: 0.01,
-          average: 0.025,
-          high: 0.04,
-        },
+        // Adding separate gas steps for eth accounts.
+        gasPriceStep: chain?.features?.includes("eth-address-gen")
+          ? {
+            low: 1000000000000,
+            average: 1500000000000,
+            high: 2000000000000,
+          }
+          : {
+            low: 0.01,
+            average: 0.025,
+            high: 0.04,
+          },
       },
     ],
-    features: getFeatures(chain),
+    features: chain?.features,
     coinType: chain?.coinType,
   };
 };
@@ -184,8 +191,8 @@ export const fetchKeplrAccountName = async () => {
   const accountSetBase = new AccountSetBase(
     {
       // No need
-      addEventListener: () => {},
-      removeEventListener: () => {},
+      addEventListener: () => { },
+      removeEventListener: () => { },
     },
     chainStore,
     comdex?.chainId,
