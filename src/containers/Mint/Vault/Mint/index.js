@@ -494,7 +494,7 @@ const Mint = ({
                 <div className="farm-asset-icon-container">
                   <div className="select-inner">
                     <div className="svg-icon">
-                      <div className="svg-icon-inner">
+                      <div className="svg-icon-inner mint-svg-icon-inner">
                         {pair && pair.denomIn ? <SvgIcon name={pair && pair.denomIn ? iconNameFromDenom(pair && pair?.denomIn) : ""} /> : <span className="mint-custom-skelton" ><CustomSkelton /></span>}
                         <span> {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomIn) : ""}</span>
                       </div>
@@ -545,7 +545,7 @@ const Mint = ({
                 <div className="farm-asset-icon-container">
                   <div className="select-inner">
                     <div className="svg-icon">
-                      <div className="svg-icon-inner">
+                      <div className="svg-icon-inner mint-svg-icon-inner">
                         <SvgIcon name={iconNameFromDenom("ucmst")} />{" "}
                         <span> CMST</span>
                       </div>
