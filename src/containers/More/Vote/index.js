@@ -50,19 +50,20 @@ const Vote = ({
   const data = [
     {
       title: "Voting Starts",
-      counts: "10/01/2023 11: 35: 06"
+      counts: "2022-12-10 06:54:17 UTC"
+    },
+
+    {
+      title: "Your Emission",
+      counts: "05 HARBOR"
     },
     {
       title: "Voting Ends",
-      counts: "11/01/2023 11: 35: 06"
+      counts: "2022-12-10 06:54:17 UTC"
     },
     {
-      title: "Voting Ends In",
-      counts: "12 D 8 H 07 M 16 S"
-    },
-    {
-      title: "No. of Weeks",
-      counts: "01"
+      title: "Week 1 Total Emission",
+      counts: "25 HARBOR"
     },
   ];
 
@@ -625,7 +626,7 @@ const Vote = ({
       <div className="app-content-wrapper">
         <Row>
           <Col>
-            <div className="totol-voting-main-container">
+            <div className="totol-voting-main-container mb-3">
               <div className='d-flex total-voting-power-tooltip-box'>
                 <div className="total-voting-container">
                   <div className="total-veHARBOR">
@@ -643,19 +644,24 @@ const Vote = ({
 
         <Row>
           <Col>
-            <div className="earn-deposite-card emission-card w-100 mt-3 mb-2">
+            <div className="emission-card w-100" style={{ height: "100%" }}>
               <div className="card-header">
-                PROPOSAL DETAILS <TooltipIcon text="Your vote will allocate 100% of the veHARBOR voting power. Votes can be changed during the voting period. A user's last vote on the vault/pool will be considered. " />
+                <div className="left">
+                  Emission Voting <TooltipIcon text="" />
+                </div>
+                <div className="right">
+                  Voting Ends In <b>10</b> D  <b>21</b> H <b>24</b> M
+                </div>
               </div>
               <List
                 grid={{
                   gutter: 16,
                   xs: 1,
-                  sm: 2,
+                  sm: 1,
                   md: 2,
-                  lg: 4,
-                  xl: 4,
-                  xxl: 4,
+                  lg: 2,
+                  xl: 2,
+                  xxl: 2,
                 }}
                 dataSource={data}
                 renderItem={item => (
@@ -669,13 +675,35 @@ const Vote = ({
               />
             </div>
           </Col>
+
+
+          <Col>
+            <div className="emission-card w-100" style={{ height: "100%" }}>
+              <div className="graph-container">
+                <div className="top">
+                  <div className="card-header">
+                    <div className="left">
+                      Vaults & Pools
+                    </div>
+                    <div className="right">
+                      View All
+                    </div>
+                  </div>
+                </div>
+                <div className="bottom">
+
+                </div>
+              </div>
+            </div>
+          </Col>
+
         </Row>
 
 
         <Row>
           <Col>
             <Tabs
-              className="comdex-tabs mt-2"
+              className="comdex-tabs mt-4"
               defaultActiveKey="1"
               items={tabsItem}
             />
