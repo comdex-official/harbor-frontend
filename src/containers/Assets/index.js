@@ -316,7 +316,7 @@ const Assets = ({
     ? allTableData?.filter((item) => Number(item?.noOfTokens) > 0)
     : allTableData;
 
-  tableData = searchKey ? allTableData?.filter((item) => {
+  tableData = searchKey ? tableData?.filter((item) => {
     return ((item?.symbol).toLowerCase()).includes(searchKey.toLowerCase())
   }) : tableData;
 
