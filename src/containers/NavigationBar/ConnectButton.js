@@ -113,7 +113,7 @@ const ConnectButton = ({
   useEffect(() => {
     fetchAssets(
       (DEFAULT_PAGE_NUMBER - 1) * (DEFAULT_PAGE_SIZE * 2),
-      DEFAULT_PAGE_SIZE * 2,
+      DEFAULT_PAGE_SIZE * 10,
       true,
       false
     );
@@ -264,7 +264,7 @@ const ConnectButton = ({
     });
   };
 
-  const items =  [
+  const items = [
     { label: <ConnectModal />, key: 'item-1' }
   ];
 
