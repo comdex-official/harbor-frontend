@@ -3,11 +3,11 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import './index.scss';
 import { connect } from "react-redux";
-import { Button, List, message, Table, Tabs } from "antd";
+import { Button, List, message, Modal, Table, Tabs } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
-import { totalVTokens, userProposalAllUpData, userProposalAllUpPoolData, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
+import { totalVTokens, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
 import { queryAssets, queryPair, queryPairVault } from '../../../services/asset/query';
 import { queryMintedTokenSpecificVaultType, queryOwnerVaults, queryOwnerVaultsInfo, queryUserVaults } from '../../../services/vault/query';
 import { transactionForVotePairProposal } from '../../../services/voteContractsWrites';
@@ -22,6 +22,9 @@ import NoDataIcon from '../../../components/common/NoDataIcon';
 import CustomSkelton from '../../../components/CustomSkelton';
 import Pool from './pool';
 import { queryPoolsList } from '../../../services/pools/query';
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
+import { formatNumber } from '../../../utils/number';
 
 const Vote = ({
   lang,
@@ -46,26 +49,11 @@ const Vote = ({
   const [myBorrowed, setMyBorrowed] = useState({});
 
   const [totalVotingPower, setTotalVotingPower] = useState(0);
+  const [isViewAllModalVisible, setIsViewAllModalVisible] = useState(false);
+  const [protectedEmission, setProtectedEmission] = useState(0);
+  const [poolList, setPoolList] = useState();
 
-  const data = [
-    {
-      title: "Voting Starts",
-      counts: "2022-12-10 06:54:17 UTC"
-    },
 
-    {
-      title: "Your Emission",
-      counts: "05 HARBOR"
-    },
-    {
-      title: "Voting Ends",
-      counts: "2022-12-10 06:54:17 UTC"
-    },
-    {
-      title: "Week 1 Total Emission",
-      counts: "25 HARBOR"
-    },
-  ];
 
   // Query 
   const fetchVotingCurrentProposalId = () => {
@@ -83,6 +71,14 @@ const Vote = ({
     votingCurrentProposal(proposalId).then((res) => {
       setProposalExtenderPair(res?.extended_pair)
       setCurrentProposalAllData(res)
+    }).catch((error) => {
+      console.log(error);
+    })
+  }
+  const fetchuserProposalProjectedEmission = (proposalId) => {
+    userProposalProjectedEmission(proposalId).then((res) => {
+      setProtectedEmission(amountConversion(res))
+      console.log(amountConversion(res), "userProposalProjectedEmission");
     }).catch((error) => {
       console.log(error);
     })
@@ -117,6 +113,31 @@ const Vote = ({
     }
     return endDate;
   }
+
+  const votingStart = () => {
+    let startDate = currentProposalAllData?.voting_start_time;
+    // *Removing miliSec from unix time 
+    let newTime = Math.floor(startDate / 1000000000);
+    var timestamp = moment.unix(newTime);
+    timestamp = moment.utc(timestamp).format("YYYY-MM-DD HH:mm:ss [UTC]")
+    if (timestamp === "Invalid date") {
+      return "0000-00-00 00:00:00 UTC"
+    }
+    return timestamp;
+  }
+
+  const votingEnd = () => {
+    let endDate = currentProposalAllData?.voting_end_time;
+    // *Removing miliSec from unix time 
+    let newTime = Math.floor(endDate / 1000000000);
+    var timestamp = moment.unix(newTime);
+    timestamp = moment.utc(timestamp).format("YYYY-MM-DD HH:mm:ss [UTC]")
+    if (timestamp === "Invalid date") {
+      return "0000-00-00 00:00:00 UTC"
+    }
+    return timestamp;
+  }
+
 
   const calculteVotingStartTime = () => {
     let startDate = currentProposalAllData?.voting_start_time;
@@ -245,6 +266,29 @@ const Vote = ({
     })
   };
 
+
+  // *For pools 
+  const fetchProposalAllUpPoolData = (address, proposalId) => {
+    setLoading(true)
+    userProposalAllUpPoolData(address, proposalId,).then((res) => {
+      setAllProposalPoolData(res?.proposal_pair_data)
+      setLoading(false)
+    }).catch((error) => {
+      setLoading(false)
+      console.log(error);
+    })
+  };
+
+  const fetchPoolLists = () => {
+    queryPoolsList((error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setPoolList(data?.pools)
+    })
+  }
+
   useEffect(() => {
     proposalExtenderPair && proposalExtenderPair.map((item) => {
       getOwnerVaultInfoByVaultId(vaultId[item])
@@ -254,6 +298,8 @@ const Vote = ({
   useEffect(() => {
     if (proposalId) {
       fetchProposalAllUpData(address, proposalId);
+      fetchuserProposalProjectedEmission(proposalId)
+      fetchProposalAllUpPoolData(address, proposalId)
     }
   }, [address, proposalId, refreshBalance])
 
@@ -311,11 +357,25 @@ const Vote = ({
       true,
       false
     );
+    fetchPoolLists()
   }, [])
 
   useEffect(() => {
     getPairFromExtendedPair()
   }, [allProposalData, refreshBalance])
+
+
+  const handleViewAllOk = () => {
+    setIsViewAllModalVisible(false);
+  };
+
+  const showViewAll = () => {
+    setIsViewAllModalVisible(true);
+  };
+
+  const handleViewAllCancel = () => {
+    setIsViewAllModalVisible(false);
+  };
 
   const columns = [
     {
@@ -402,6 +462,26 @@ const Vote = ({
       key: "action",
       align: "centre",
       width: 130,
+    },
+  ];
+
+  const data = [
+    {
+      title: "Voting Starts",
+      counts: `${votingStart()}`
+    },
+
+    {
+      title: "Your Emission",
+      counts: "05 HARBOR"
+    },
+    {
+      title: "Voting Ends",
+      counts: `${votingEnd()}`
+    },
+    {
+      title: `Week ${proposalId} Total Emission`,
+      counts: `${formatNumber(protectedEmission || 0)} HARBOR`
     },
   ];
 
@@ -543,53 +623,35 @@ const Vote = ({
     },
   ];
 
-  const poolTableData =
+
+  const upPoolTableData =
     allProposalPoolData && allProposalPoolData.map((item, index) => {
       return {
         key: index,
-        asset: (
+        asset_color: <>
+          <div className="asset_color"></div>
+        </>,
+        pools: (
           <>
             <div className="assets-withicon">
               <div className="assets-icon">
                 <SvgIcon
-                  name={iconNameFromDenom(
-                    symbolToDenom(getIconFromPairName(pairVaultData[item?.extended_pair_id]))
-                  )}
+                  name={iconNameFromDenom(poolList[index]?.balances?.baseCoin?.denom)}
                 />
               </div>
-              {pairVaultData[item?.extended_pair_id]}
+              <div className="assets-icon" style={{ marginLeft: "-22px" }}>
+                <SvgIcon
+                  name={iconNameFromDenom(poolList[index]?.balances?.quoteCoin?.denom)}
+                />
+              </div>
+              {denomToSymbol(poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList[index]?.balances?.quoteCoin?.denom)}
             </div>
           </>
         ),
-        my_borrowed: (
-          <>
-            <div className="assets-withicon display-center">
-              {myBorrowed[item?.extended_pair_id] ? amountConversionWithComma(myBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS) : Number(0).toFixed(2)}
-              {" "}{denomToSymbol("ucmst")}
-            </div>
-          </>
-        ),
-        total_borrowed:
-          <div>
-            {totalBorrowed[item?.extended_pair_id] ? amountConversionWithComma(
-              totalBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS
-            ) : Number(0).toFixed(2)} {denomToSymbol("ucmst")}
+        amount:
+          <div >
+            <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>) </div>
           </div>,
-        total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
-        bribe: item?.bribe,
-        my_vote: <div>{item?.my_vote ? amountConversion(item?.my_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR</div>,
-        action: <>
-          <Button
-            type="primary"
-            className="btn-filled"
-            size="sm"
-            loading={index === btnLoading ? inProcess : false}
-            onClick={() => handleVote(item?.extended_pair_id, index)}
-            disabled={disableVoteBtn}
-          >
-            Vote
-          </Button>
-        </>,
       }
     })
 
@@ -620,6 +682,252 @@ const Vote = ({
       label: "Pools", key: "2", children: <Pool />
     },
   ]
+
+
+  const PieChart1 = {
+    chart: {
+      type: "pie",
+      backgroundColor: null,
+      height: 150,
+      margin: 5,
+      style: {
+        fontFamily: 'Montserrat'
+      }
+    },
+    credits: {
+      enabled: false,
+    },
+    title: {
+      text: null,
+    },
+    plotOptions: {
+      pie: {
+        showInLegend: false,
+        size: "110%",
+        borderWidth: 0,
+        innerSize: "65%",
+        className: "pie-chart",
+        dataLabels: {
+          enabled: false,
+          distance: -14,
+          style: {
+            fontsize: 50,
+          },
+        },
+      },
+    },
+    // tooltip: {
+    //   className: 'chart-tooltip',
+    //   useHTML: true,
+    //   padding: 0,
+    //   backgroundColor: '#DCF2FC',
+    //   borderWidth: 1,
+    //   borderColor: '#19C1FE',
+    //   shadow: false,
+    //   formatter: function () {
+    //     return '<div class="chart-tooltip">' + '<b>' + this.point.name + '</b>' + '<br />' + amountConversionWithComma(this.y, DOLLAR_DECIMALS) + '</div>';
+    //   }
+    // },
+    series: [
+      {
+        states: {
+          hover: {
+            enabled: true,
+          },
+        },
+        name: "",
+        data: [
+          {
+            name: "AXL-USDC",
+            y: 90,
+            color: "#F07167",
+          },
+          {
+            name: "ATOM",
+            y: 70,
+            color: "#0081A7",
+          },
+          {
+            name: "OSMO",
+            y: 40,
+            color: "#00AFB9",
+          },
+          {
+            name: "AXL-DAI",
+            y: 25,
+            color: "#FDFCDC",
+          },
+          {
+            name: "Lorem ipsum",
+            y: 79,
+            color: "#94D2BD",
+          },
+          {
+            name: "Lorem ipsum",
+            y: 36,
+            color: "#FED9B7",
+          },
+        ],
+      },
+    ],
+  };
+
+  const upPoolColumns = [
+    {
+      title: (
+        <>
+
+        </>
+      ),
+      dataIndex: "asset_color",
+      key: "asset_color",
+    },
+    {
+      title: (
+        <>
+          Pools
+        </>
+      ),
+      dataIndex: "pools",
+      key: "pools",
+      // width: 150,
+    },
+    {
+      title: (
+        <>
+          Amount
+        </>
+      ),
+      dataIndex: "amount",
+      key: "amount",
+      // width: 150,
+    },
+  ];
+
+  // const upPoolTableData = [
+  //   {
+  //     key: 1,
+  //     asset_color: <>
+  //       <div className="asset_color"></div>
+  //     </>,
+  //     pools:
+  //       <>
+  //         <div className="assets-withicon">
+  //           <div className="assets-icon">
+  //             <SvgIcon
+  //               name={iconNameFromDenom("uatom")}
+  //             />
+  //           </div>
+  //           <div className="assets-icon" style={{ marginLeft: "-22px" }}>
+  //             <SvgIcon
+  //               name={iconNameFromDenom("ucmdx")}
+  //             />
+  //           </div>
+  //           {denomToSymbol("uatom")} - {denomToSymbol("ucmdx")}
+  //         </div>
+  //       </>,
+  //     amount: <>
+  //       <div>
+  //         23% (10 HARBOR)
+  //       </div>
+  //     </>
+
+  //   },
+  //   {
+  //     key: 2,
+  //     asset_color: <>
+  //       <div className="asset_color"></div>
+  //     </>,
+  //     pools:
+  //       <>
+  //         <div className="assets-withicon">
+  //           <div className="assets-icon">
+  //             <SvgIcon
+  //               name={iconNameFromDenom("uatom")}
+  //             />
+  //           </div>
+  //           <div className="assets-icon" style={{ marginLeft: "-22px" }}>
+  //             <SvgIcon
+  //               name={iconNameFromDenom("ucmdx")}
+  //             />
+  //           </div>
+  //           {denomToSymbol("uatom")} - {denomToSymbol("ucmdx")}
+  //         </div>
+  //       </>,
+  //     amount: <>
+  //       <div>
+  //         23% (10 HARBOR)
+  //       </div>
+  //     </>
+
+  //   }
+  // ]
+
+
+  // *vault data table row for showing pair vault in up container 
+  const upVaultColumns = [
+    {
+      title: (
+        <>
+
+        </>
+      ),
+      dataIndex: "asset_color",
+      key: "asset_color",
+    },
+    {
+      title: (
+        <>
+          Vaults
+        </>
+      ),
+      dataIndex: "vaults",
+      key: "vaults",
+      // width: 150,
+    },
+    {
+      title: (
+        <>
+          Amount
+        </>
+      ),
+      dataIndex: "amount",
+      key: "amount",
+      // width: 150,
+    },
+  ];
+
+  // *vault data table row for showing pair vault in up container 
+  const upVaultTableData =
+    allProposalData && allProposalData.map((item, index) => {
+      return {
+        key: index,
+        asset_color: <>
+          <div className="asset_color"></div>
+        </>,
+        vaults: (
+          <>
+            <div className="assets-withicon">
+              <div className="assets-icon">
+                <SvgIcon
+                  name={iconNameFromDenom(
+                    symbolToDenom(getIconFromPairName(pairVaultData[item?.extended_pair_id]))
+                  )}
+                />
+              </div>
+              <div className="assets-icon" style={{ marginLeft: "-22px" }}>
+                <SvgIcon
+                  name={iconNameFromDenom("")}
+                />
+              </div>
+              {pairVaultData[item?.extended_pair_id]}
+            </div>
+          </>
+        ),
+        amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>)</div>,
+      }
+    })
+
 
   return (
     <>
@@ -685,16 +993,135 @@ const Vote = ({
                     <div className="left">
                       Vaults & Pools
                     </div>
-                    <div className="right">
+                    <div className="right" onClick={showViewAll}>
                       View All
                     </div>
                   </div>
                 </div>
                 <div className="bottom">
+                  <div className="bottom-left">
+                    <div className="graph-container">
+                      <HighchartsReact highcharts={Highcharts} options={PieChart1} />
+                    </div>
+                  </div>
+                  <div className="bottom-right">
+                    <div className="asset-container">
 
+                      <div className="composite-card ">
+                        <div className="card-content">
+                          <Table
+                            className="custom-table vote-up-data-table-container"
+                            dataSource={upPoolTableData}
+                            columns={upPoolColumns}
+                            // loading={loading}
+                            pagination={false}
+                            scroll={{ x: "100%" }}
+                            locale={{ emptyText: <NoDataIcon /> }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="composite-card vault-table-card">
+                        <div className="card-content">
+                          <Table
+                            className="custom-table vote-up-data-table-container"
+                            dataSource={upVaultTableData}
+                            columns={upVaultColumns}
+                            loading={loading}
+                            pagination={false}
+                            scroll={{ x: "100%" }}
+                            locale={{ emptyText: <NoDataIcon /> }}
+                          />
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+
+
+            {/* View all pools and vaults  */}
+            <div>
+              <Modal
+                centered={true}
+                className="palcebid-modal reward-collect-modal"
+                footer={null}
+                header={null}
+                open={isViewAllModalVisible}
+                width={600}
+                closable={true}
+                onOk={handleViewAllOk}
+                // loading={loading}
+                onCancel={handleViewAllCancel}
+              >
+                <div className="palcebid-modal-inner rewards-modal-main-container">
+                  <Row>
+                    <Col>
+                      <div className="rewards-title">
+                        Vaults & Pools
+                      </div>
+                    </Col>
+                  </Row>
+
+                  <Row style={{ paddingTop: 0 }}>
+                    <Col>
+
+                      <div className="emission-card">
+                        <div className="graph-container">
+                          <div className="bottom">
+                            <div className="bottom-left">
+                              <div className="graph-container">
+                                <HighchartsReact highcharts={Highcharts} options={PieChart1} />
+                              </div>
+                            </div>
+                            <div className="bottom-right">
+                              <div className="asset-container">
+
+                                <div className="composite-card ">
+                                  <div className="card-content">
+                                    <Table
+                                      className="custom-table vote-up-data-table-container"
+                                      dataSource={upPoolTableData}
+                                      columns={upPoolColumns}
+                                      // loading={loading}
+                                      pagination={false}
+                                      scroll={{ x: "100%" }}
+                                      locale={{ emptyText: <NoDataIcon /> }}
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="composite-card vault-table-card">
+                                  <div className="card-content">
+                                    <Table
+                                      className="custom-table vote-up-data-table-container"
+                                      dataSource={upVaultTableData}
+                                      columns={upVaultColumns}
+                                      // loading={loading}
+                                      pagination={false}
+                                      scroll={{ x: "100%" }}
+                                      locale={{ emptyText: <NoDataIcon /> }}
+                                    />
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </Col>
+                  </Row>
+                </div>
+              </Modal>
+            </div>
+
+
+
           </Col>
 
         </Row>

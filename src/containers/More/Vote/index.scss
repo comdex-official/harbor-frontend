@@ -56,6 +56,9 @@
   box-shadow: 3px 3px 10px rgb(174 174 192 / 40%),
     -8px -8px 12px rgb(174 174 192 / 25%);
   border: 0.5px solid rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   .dark-mode & {
     box-shadow: none;
     background-color: #211d33 !important;
@@ -89,6 +92,7 @@
             .ant-list-item {
               border-left: 4px solid $secondary-color;
               padding-left: 12px;
+              padding-right: 20px;
               .emission-card-p {
                 .dark-mode & {
                   color: white;
@@ -101,6 +105,225 @@
                 }
               }
             }
+          }
+        }
+      }
+    }
+  }
+
+  .graph-container {
+    .top {
+      .card-header {
+        .left {
+        }
+        .right {
+          padding: 3px 15px;
+          font-size: 0.7rem;
+          cursor: pointer;
+        }
+      }
+    }
+    .bottom {
+      display: flex;
+      .bottom-left {
+        width: 100%;
+        flex-basis: 35%;
+        .graph-container {
+        }
+      }
+      .bottom-right {
+        width: 100%;
+        flex-basis: 65%;
+        .asset-container {
+          .composite-card {
+            .card-content {
+              .vote-up-data-table-container {
+                .ant-table {
+                  background: none;
+
+                  .ant-table-content {
+                    table {
+                      border-collapse: separate;
+                      border-spacing: 0 1px;
+
+                      .ant-table-thead {
+                        tr {
+                          th {
+                            background: none;
+                            font-weight: 300;
+                            border: 0;
+                            padding: 0px 15px 0 15px;
+                            font-size: $font-size-sm;
+                            font-weight: 600;
+                            color: $dark-color;
+                            text-align: center;
+                            .dark-mode & {
+                              color: $text-color-white;
+                            }
+                            &::before {
+                              position: absolute;
+                              top: 50%;
+                              inset-inline-end: 0;
+                              width: 1px;
+                              height: 0em;
+                              background-color: #f0f0f0;
+                              transform: translateY(-50%);
+                              transition: background-color 0.2s;
+                              content: "";
+                            }
+                          }
+                          td {
+                            background: transparent;
+                            border: none;
+                          }
+                          th:nth-child(1) {
+                            text-align: left !important;
+                          }
+                          th:nth-child(2) {
+                            text-align: left !important;
+                          }
+                          th:last-child {
+                            text-align: right !important;
+                          }
+                          td {
+                            background: transparent;
+                            border: none;
+                          }
+                        }
+                      }
+
+                      .ant-table-tbody {
+                        .ant-table-placeholder {
+                          .ant-empty {
+                            .dark-mode & {
+                              color: $text-color-light;
+                            }
+                          }
+                        }
+                        tr {
+                          border-radius: 15px;
+                          border: 0.5px solid $border-color-base;
+
+                          td {
+                            .ant-btn-sm {
+                              padding: 0 22px;
+                            }
+                            color: $text-color-light2;
+                            border-top: 1px solid;
+                            border-bottom: 1px solid;
+                            border: 1.5px solid $border-color-base;
+                            border-left: 0;
+                            border-right: 0;
+                            padding: 0px 5px;
+                            font-size: $font-size-lg - 1;
+                            line-height: 1;
+                            border-color: transparent;
+                            background: none;
+                            text-align: center;
+                            font-size: 0.65rem;
+                            font-weight: 500;
+                            &:last-child {
+                              text-align: right !important;
+                            }
+                            &:first-child {
+                              border-radius: 15px 0 0 15px;
+                              text-align: start;
+                              .dark-mode & {
+                                // border-left: 1px solid $border-dark;
+                              }
+                            }
+
+                            &:last-child {
+                              border-radius: 0 15px 15px 0;
+                              text-align: end;
+                              .dark-mode & {
+                                // border-right: 1px solid $border-dark;
+                              }
+                            }
+
+                            .dark-mode & {
+                              color: $white;
+                              // border-color: $border-dark;
+                            }
+                            a {
+                              color: $text-color-light2;
+                              .dark-mode & {
+                                color: white;
+                              }
+                            }
+
+                            .assets-withicon {
+                              .assets-icon {
+                                height: 24px;
+                              }
+                            }
+                          }
+
+                          p {
+                            margin-bottom: 0;
+                            line-height: 1;
+                            font-size: $font-size-base + 3;
+                          }
+
+                          small {
+                            font-size: $font-size-sm;
+                            line-height: 1;
+
+                            .dark-mode & {
+                              color: $text-color-light;
+                            }
+                          }
+
+                          &:nth-child(odd) {
+                            // box-shadow: $box-shadow-inner-light;
+                            background: transparent !important;
+                            box-shadow: none;
+                            border-color: transparent;
+                            .dark-mode & {
+                              // background: $background-dark1;
+                              box-shadow: none;
+                            }
+                            &:hover {
+                              // box-shadow: $box-shadow-inner-light;
+                              // background: rgba($secondary-color, 0.3);
+                              .dark-mode & {
+                                // background: rgba($secondary-color, 0.6);
+                                box-shadow: none;
+                              }
+                            }
+                          }
+
+                          &:nth-child(even) {
+                            // box-shadow: $box-shadow-inner-light;
+                            background: transparent !important;
+                            box-shadow: none;
+                            border-color: transparent;
+                            .dark-mode & {
+                              // background: $background-dark1;
+                            }
+                            &:hover {
+                              // box-shadow: $box-shadow-inner-light-hover;
+                              // background: rgba($secondary-color, 0.3);
+
+                              .dark-mode & {
+                                // background: rgba($secondary-color, 0.6);
+                                box-shadow: none;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          .asset_color {
+            background-color: teal;
+            height: 15px;
+            width: 15px;
+            border-radius: 3px;
           }
         }
       }

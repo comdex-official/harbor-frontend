@@ -121,6 +121,7 @@ const Pool = ({
             }))
         })
     }
+
     const getOwnerVaultId = (productId, address, extentedPairId) => {
         queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
             if (error) {
@@ -233,6 +234,7 @@ const Pool = ({
             }))
         })
     }
+
     const fetchFarmedPoolCoin = (poolId, extendexPairId) => {
         queryFarmedPoolCoin(poolId, (error, data) => {
             if (error) {
@@ -438,15 +440,15 @@ const Pool = ({
                         <div className="assets-withicon">
                             <div className="assets-icon">
                                 <SvgIcon
-                                    name={iconNameFromDenom(poolList[index]?.balances[0]?.denom)}
+                                    name={iconNameFromDenom(poolList[index]?.balances?.baseCoin?.denom)}
                                 />
                             </div>
                             <div className="assets-icon" style={{ marginLeft: "-22px" }}>
                                 <SvgIcon
-                                    name={iconNameFromDenom(poolList[index]?.balances[1]?.denom)}
+                                    name={iconNameFromDenom(poolList[index]?.balances?.quoteCoin?.denom)}
                                 />
                             </div>
-                            {denomToSymbol(poolList[index]?.balances[0]?.denom)} - {denomToSymbol(poolList[index]?.balances[1]?.denom)}
+                            {denomToSymbol(poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList[index]?.balances?.quoteCoin?.denom)}
                         </div>
                     </>
                 ),

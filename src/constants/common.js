@@ -11,6 +11,7 @@ export const ZERO_DOLLAR_DECIMALS = 0;
 export const TOTAL_ACTIVITY = 5;
 export const TOTAL_VEHARBOR_ACTIVITY = 4;
 export const DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP = 1;
+export const HARBOR_ASSET_ID = 9;
 
 
 export const PRODUCT_ID = Number(envConfig?.[app]?.appId);
