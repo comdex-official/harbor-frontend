@@ -1,8 +1,8 @@
 import { sha256, stringToPath } from "@cosmjs/crypto";
 import moment from "moment";
+import AssetList from "../config/ibc_assets.json";
 import { comdex, ibcDenoms } from "../config/network";
 import { denomConversion } from "./coin";
-import AssetList from "../config/ibc_assets.json";
 
 const getIbcDenomToDenomMap = () => {
   let myMap = {};
@@ -87,6 +87,15 @@ export const symbolToDenom = (key) => {
       return ibcDenoms["uluna"];
     case ibcDenoms["acanto"]:
       return ibcDenoms["acanto"];
+    case "stuosmo" || "stosmo":
+    case ibcDenoms["stuosmo"]:
+      return ibcDenoms["stuosmo"];
+    case "uxprt" || "xprt":
+    case ibcDenoms["uxprt"]:
+      return ibcDenoms["uxprt"];
+    case "uakt" || "akt":
+    case ibcDenoms["uakt"]:
+      return ibcDenoms["uakt"];
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -143,6 +152,9 @@ const iconMap = {
   [ibcDenoms["wbnb-wei"]]: "wbnb-icon",
   [ibcDenoms["uluna"]]: "luna2-icon",
   [ibcDenoms["acanto"]]: "canto-icon",
+  [ibcDenoms["stuosmo"]]: "stosmo-icon",
+  [ibcDenoms["uxprt"]]: "xprt-icon",
+  [ibcDenoms["uakt"]]: "akt-icon",
 };
 
 export const iconNameFromDenom = (key) => {
