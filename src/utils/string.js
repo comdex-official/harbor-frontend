@@ -1,8 +1,8 @@
 import { sha256, stringToPath } from "@cosmjs/crypto";
 import moment from "moment";
+import AssetList from "../config/ibc_assets.json";
 import { comdex, ibcDenoms } from "../config/network";
 import { denomConversion } from "./coin";
-import AssetList from "../config/ibc_assets.json";
 
 const getIbcDenomToDenomMap = () => {
   let myMap = {};
