@@ -456,8 +456,8 @@ const Edit = ({
 
       setInputValidationError(
         ValidateInputNumber(
-          Number(value).toFixed(DOLLAR_DECIMALS),
-          Number(amountConversion(collateralAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomIn]?.decimals))
+          Number(value),
+          Number(amountConversion(collateralAssetBalance, comdex?.coinDecimals, assetMap[pair?.denomIn]?.decimals))
         )
       )
     } else if (type === "withdraw") {
