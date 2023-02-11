@@ -143,6 +143,7 @@ const Mint = ({
       Number(ownerCurrrentCollateral) / 100,
       marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
     );
+    setDebtValidationError(ValidateInputNumber(dataAmount, "", "", 0))
     setAmountOut(dataAmount);
   }
 
@@ -160,9 +161,11 @@ const Mint = ({
       marketPrice(markets, pair?.denomOut, assetMap[pair?.denomOut]?.id)
     );
     setAmountOut(dataAmount);
-    setDebtValidationError(
-      ValidateInputNumber(getAmount(dataAmount), "", "", debtFloor)
-    );
+    if (!ownerVaultId) {
+      setDebtValidationError(
+        ValidateInputNumber(getAmount(dataAmount), "", "", debtFloor)
+      );
+    }
 
   };
 
