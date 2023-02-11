@@ -64,10 +64,10 @@ export const symbolToDenom = (key) => {
     case "weth":
     case ibcDenoms["weth-wei"]:
       return ibcDenoms["weth-wei"];
-    case "wbtc-satoshi" || "wbtc":
+    case "wbtc":
     case ibcDenoms["wbtc-satoshi"]:
       return ibcDenoms["wbtc-satoshi"];
-    case "wmatic-wei" || "wmatic":
+    case "wmatic":
     case ibcDenoms["wmatic-wei"]:
       return ibcDenoms["wmatic-wei"];
     case "statom":
@@ -80,20 +80,20 @@ export const symbolToDenom = (key) => {
     case "aevmos":
     case ibcDenoms["aevmos"]:
       return ibcDenoms["aevmos"];
-    case "wbnb-wei":
+    case "wbnb":
     case ibcDenoms["wbnb-wei"]:
       return ibcDenoms["wbnb-wei"];
     case ibcDenoms["uluna"]:
       return ibcDenoms["uluna"];
     case ibcDenoms["acanto"]:
       return ibcDenoms["acanto"];
-    case "stuosmo" || "stosmo":
+    case "stosmo":
     case ibcDenoms["stuosmo"]:
       return ibcDenoms["stuosmo"];
-    case "uxprt" || "xprt":
+    case "xprt":
     case ibcDenoms["uxprt"]:
       return ibcDenoms["uxprt"];
-    case "uakt" || "akt":
+    case "akt":
     case ibcDenoms["uakt"]:
       return ibcDenoms["uakt"];
     case "cmdx":
