@@ -309,11 +309,41 @@
   .dark-mode & {
     background: $background-dark1;
     box-shadow: $box-shadow-inner-dark;
-    background-image: url("../../assets/images/dashboard-banner.svg");
+    // background-image: url("../../assets/images/dashboard-banner.svg");
+    background-image: url("../../assets/images/Banner-Dashboard-198h.svg");
+    height: 9rem;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     @media only screen and (min-width: 1800px) {
       background-size: 110%;
+    }
+    @media only screen and (min-width: 1030px) and (max-width: 1060px) {
+      background-size: contain;
+      height: 8.5rem;
+    }
+    @media only screen and (min-width: 1000px) and (max-width: 1030px) {
+      height: 8.2rem;
+    }
+    @media only screen and (min-width: 790px) and (max-width: 900px) {
+      height: 8rem;
+    }
+    @media only screen and (min-width: 700px) and (max-width: 790px) {
+      height: 7rem;
+    }
+    @media only screen and (min-width: 630px) and (max-width: 700px) {
+      background-size: auto;
+      background-position-x: 57%;
+      height: 10rem;
+    }
+    @media only screen and (min-width: 450px) and (max-width: 630px) {
+      background-size: cover;
+      background-position-x: 55%;
+      height: 10.2rem;
+    }
+    @media only screen and (min-width: 330px) and (max-width: 450px) {
+      background-position-x: 56%;
+      height: 7rem;
     }
   }
   .banner-left {
