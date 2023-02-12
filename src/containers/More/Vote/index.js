@@ -20,17 +20,20 @@ import variables from '../../../utils/variables';
 import { comdex } from '../../../config/network';
 import NoDataIcon from '../../../components/common/NoDataIcon';
 import CustomSkelton from '../../../components/CustomSkelton';
+import { MyTimer } from '../../../components/TimerForAirdrop'
 import Pool from './pool';
-import { queryPoolsList } from '../../../services/pools/query';
+import { queryFarmedPoolCoin, queryFarmer, queryPoolsList } from '../../../services/pools/query';
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { formatNumber } from '../../../utils/number';
+import { fetchRestPrices } from '../../../services/oracle/query';
 
 const Vote = ({
   lang,
   address,
   refreshBalance,
   setBalanceRefresh,
+  assetMap,
 }) => {
   const [loading, setLoading] = useState(false);
   const [inProcess, setInProcess] = useState(false);
@@ -52,6 +55,10 @@ const Vote = ({
   const [isViewAllModalVisible, setIsViewAllModalVisible] = useState(false);
   const [protectedEmission, setProtectedEmission] = useState(0);
   const [poolList, setPoolList] = useState();
+  const [concatedExtendedPair, setConcatedExtendedPair] = useState([]);
+  const [cswapPrice, setCswapPrice] = useState([])
+  const [userPoolFarmedData, setUserPoolFarmedData] = useState({})
+  const [totalPoolFarmedData, setTotalPoolFarmedData] = useState({})
 
 
 
@@ -75,10 +82,10 @@ const Vote = ({
       console.log(error);
     })
   }
+
   const fetchuserProposalProjectedEmission = (proposalId) => {
     userProposalProjectedEmission(proposalId).then((res) => {
       setProtectedEmission(amountConversion(res))
-      console.log(amountConversion(res), "userProposalProjectedEmission");
     }).catch((error) => {
       console.log(error);
     })
@@ -137,7 +144,6 @@ const Vote = ({
     }
     return timestamp;
   }
-
 
   const calculteVotingStartTime = () => {
     let startDate = currentProposalAllData?.voting_start_time;
@@ -289,6 +295,50 @@ const Vote = ({
     })
   }
 
+  const fetchFarmer = (poolId, address, extendexPairId) => {
+    queryFarmer(poolId, address, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setUserPoolFarmedData((prevData) => ({
+        ...prevData, [extendexPairId]: data
+        // ...prevData, [extendexPairId]: data?.activePoolCoin?.amount
+      }))
+    })
+  }
+
+  const fetchFarmedPoolCoin = (poolId, extendexPairId) => {
+    queryFarmedPoolCoin(poolId, (error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      setTotalPoolFarmedData((prevData) => ({
+        // ...prevData, [extendexPairId]: data
+        ...prevData, [extendexPairId]: data?.coin?.amount
+      }))
+    })
+  }
+
+  const getPoolId = (value) => {
+    let extendedPairId = value;
+    let divisor = 10 ** comdex?.coinDecimals
+    let result = extendedPairId % divisor;
+    return result;
+  }
+
+  const getUserFarmData = (address) => {
+    allProposalPoolData?.map((item) => {
+      fetchFarmer(getPoolId(item?.extended_pair_id), address, item?.extended_pair_id)
+      fetchFarmedPoolCoin(getPoolId(item?.extended_pair_id), item?.extended_pair_id)
+    })
+  }
+
+  useEffect(() => {
+    getUserFarmData(address)
+  }, [allProposalPoolData, address])
+
   useEffect(() => {
     proposalExtenderPair && proposalExtenderPair.map((item) => {
       getOwnerVaultInfoByVaultId(vaultId[item])
@@ -358,6 +408,12 @@ const Vote = ({
       false
     );
     fetchPoolLists()
+    fetchRestPrices((error, result) => {
+      if (error) {
+        console.log(error, "Price Error");
+      }
+      setCswapPrice(result)
+    })
   }, [])
 
   useEffect(() => {
@@ -398,16 +454,16 @@ const Vote = ({
       key: "my_borrowed",
       width: 150,
     },
-    {
-      title: (
-        <>
-          Total Borrowed
-        </>
-      ),
-      dataIndex: "total_borrowed",
-      key: "total_borrowed",
-      width: 200,
-    },
+    // {
+    //   title: (
+    //     <>
+    //       Total Borrowed
+    //     </>
+    //   ),
+    //   dataIndex: "total_borrowed",
+    //   key: "total_borrowed",
+    //   width: 200,
+    // },
     {
       title: (
         <>
@@ -636,15 +692,15 @@ const Vote = ({
             <div className="assets-withicon">
               <div className="assets-icon">
                 <SvgIcon
-                  name={iconNameFromDenom(poolList[index]?.balances?.baseCoin?.denom)}
+                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.baseCoin?.denom)}
                 />
               </div>
               <div className="assets-icon" style={{ marginLeft: "-22px" }}>
                 <SvgIcon
-                  name={iconNameFromDenom(poolList[index]?.balances?.quoteCoin?.denom)}
+                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
                 />
               </div>
-              {denomToSymbol(poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList[index]?.balances?.quoteCoin?.denom)}
+              {denomToSymbol(poolList && poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
             </div>
           </>
         ),
@@ -679,7 +735,7 @@ const Vote = ({
       )
     },
     {
-      label: "Pools", key: "2", children: <Pool />
+      label: "Pools", key: "2", children: <Pool cswapPrice={cswapPrice} assetMap={assetMap} />
     },
   ]
 
@@ -804,64 +860,6 @@ const Vote = ({
     },
   ];
 
-  // const upPoolTableData = [
-  //   {
-  //     key: 1,
-  //     asset_color: <>
-  //       <div className="asset_color"></div>
-  //     </>,
-  //     pools:
-  //       <>
-  //         <div className="assets-withicon">
-  //           <div className="assets-icon">
-  //             <SvgIcon
-  //               name={iconNameFromDenom("uatom")}
-  //             />
-  //           </div>
-  //           <div className="assets-icon" style={{ marginLeft: "-22px" }}>
-  //             <SvgIcon
-  //               name={iconNameFromDenom("ucmdx")}
-  //             />
-  //           </div>
-  //           {denomToSymbol("uatom")} - {denomToSymbol("ucmdx")}
-  //         </div>
-  //       </>,
-  //     amount: <>
-  //       <div>
-  //         23% (10 HARBOR)
-  //       </div>
-  //     </>
-
-  //   },
-  //   {
-  //     key: 2,
-  //     asset_color: <>
-  //       <div className="asset_color"></div>
-  //     </>,
-  //     pools:
-  //       <>
-  //         <div className="assets-withicon">
-  //           <div className="assets-icon">
-  //             <SvgIcon
-  //               name={iconNameFromDenom("uatom")}
-  //             />
-  //           </div>
-  //           <div className="assets-icon" style={{ marginLeft: "-22px" }}>
-  //             <SvgIcon
-  //               name={iconNameFromDenom("ucmdx")}
-  //             />
-  //           </div>
-  //           {denomToSymbol("uatom")} - {denomToSymbol("ucmdx")}
-  //         </div>
-  //       </>,
-  //     amount: <>
-  //       <div>
-  //         23% (10 HARBOR)
-  //       </div>
-  //     </>
-
-  //   }
-  // ]
 
 
   // *vault data table row for showing pair vault in up container 
@@ -928,6 +926,67 @@ const Vote = ({
       }
     })
 
+  const calculateToatalUserFarmedToken = (tokens) => {
+    let activePoolCoins = Number(tokens?.activePoolCoin?.amount) || 0;
+    let quedPoolCoins = 0;
+    let totalUserPoolCoin = 0;
+    let quedPoolCoinsArray = tokens?.queuedPoolCoin?.map((item) => {
+      let amount = Number(item?.poolCoin?.amount)
+      quedPoolCoins += amount;
+    })
+    totalUserPoolCoin = activePoolCoins + quedPoolCoins
+    // return totalUserPoolCoin;
+    return activePoolCoins;
+  }
+
+
+  // *calculate user emission 
+
+  const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
+    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
+    let myBorrowed = _myBorrowed || 0;
+    let totalBorrowed = _totalBorrowed || 0;
+    let totalVoteOfPair = _totalVoteOfPair || 0;
+    let totalWeight = amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS);
+    let projectedEmission = protectedEmission;
+    console.log(myBorrowed, "myBorrowed");
+    console.log(totalBorrowed, "totalBorrowed");
+    console.log(totalVoteOfPair, "totalVoteOfPair");
+    console.log(totalWeight, "toralWeight");
+
+  }
+
+
+  useEffect(() => {
+    let concatedData = allProposalData?.concat(allProposalPoolData)
+    setConcatedExtendedPair(concatedData)
+  }, [allProposalData, allProposalPoolData])
+
+  useEffect(() => {
+    if (concatedExtendedPair) {
+      concatedExtendedPair?.map((singleConcatedExtendedPair) => {
+        // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
+        if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
+          // *For vault 
+          calculateUserEmission(
+            amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
+            amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
+            calculateTotalVotes(amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals))
+          )
+        } else {
+          // *For Pool 
+          calculateUserEmission(
+            amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
+            amountConversion(totalPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
+            calculateTotalVotes(amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals))
+          )
+        }
+
+
+      })
+    }
+  }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData])
+
 
   return (
     <>
@@ -958,7 +1017,11 @@ const Vote = ({
                   Emission Voting <TooltipIcon text="" />
                 </div>
                 <div className="right">
-                  Voting Ends In <b>10</b> D  <b>21</b> H <b>24</b> M
+                  {currentProposalAllData?.voting_end_time ?
+                    <span><MyTimer expiryTimestamp={currentProposalAllData && (currentProposalAllData?.voting_end_time) / 1000000} text={"Voting Ends In : "} /></span>
+                    :
+                    <span>Voting Ends In <b>0</b> D  <b>0</b> H <b>0</b> M </span>
+                  }
                 </div>
               </div>
               <List
@@ -1146,13 +1209,16 @@ Vote.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string,
   refreshBalance: PropTypes.number.isRequired,
+  assetMap: PropTypes.object,
 };
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
     refreshBalance: state.account.refreshBalance,
+    assetMap: state.asset.map,
   };
+
 };
 const actionsToProps = {
   setBalanceRefresh,
