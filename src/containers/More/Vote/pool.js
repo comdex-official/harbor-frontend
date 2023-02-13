@@ -470,22 +470,7 @@ const Pool = ({
                                 <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
 
                             </div>
-
                             : (
-                                // item && item?.map((singleBribe, index) => {
-                                //     return <div className="bribe-container mt-1" key={index}>
-                                //         <span className="assets-withicon">
-                                //             <span className="assets-icon">
-                                //                 <SvgIcon
-                                //                     name={iconNameFromDenom(singleBribe?.denom)}
-                                //                 />
-                                //             </span>
-                                //         </span>
-                                //         <span>{amountConversionWithComma(singleBribe?.amount, DOLLAR_DECIMALS)} {denomToSymbol(singleBribe?.denom)} </span>
-
-                                //     </div>
-                                // })
-
                                 <div className="bribe-container mt-1" >
                                     <span className="assets-withicon">
                                         <span className="assets-icon">
@@ -497,13 +482,7 @@ const Pool = ({
                                     <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
                                     <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
                                 </div>
-
-
                             )
-
-
-
-
                         : <div className="mt-1" >0</div>
 
                     }

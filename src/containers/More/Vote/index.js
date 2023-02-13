@@ -27,6 +27,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { formatNumber } from '../../../utils/number';
 import { fetchRestPrices } from '../../../services/oracle/query';
+import ViewAllToolTip from './viewAllModal';
 
 const Vote = ({
   lang,
@@ -487,11 +488,32 @@ const Vote = ({
       render: (item) => (
         <>
           {item?.length > 0 ?
-            item && item?.map((singleBribe, index) => {
-              return <div className="endtime-badge mt-1" key={index}>{amountConversionWithComma(singleBribe?.amount, DOLLAR_DECIMALS)} {denomToSymbol(singleBribe?.denom)}</div>
-            })
-            : <div className="endtime-badge mt-1" >{"       "}</div>
+            (item?.length == 1) ?
+              <div className="bribe-container mt-1" >
+                <span className="assets-withicon">
+                  <span className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item[0]?.denom)}
+                    />
+                  </span>
+                </span>
+                <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
 
+              </div>
+              : (
+                <div className="bribe-container mt-1" >
+                  <span className="assets-withicon">
+                    <span className="assets-icon">
+                      <SvgIcon
+                        name={iconNameFromDenom(item[0]?.denom)}
+                      />
+                    </span>
+                  </span>
+                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
+                </div>
+              )
+            : <div className="mt-1" >0</div>
           }
 
         </>
