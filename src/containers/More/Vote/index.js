@@ -702,36 +702,7 @@ const Vote = ({
   ];
 
 
-  const upPoolTableData =
-    allProposalPoolData && allProposalPoolData.map((item, index) => {
-      return {
-        key: index,
-        asset_color: <>
-          <div className="asset_color"></div>
-        </>,
-        pools: (
-          <>
-            <div className="assets-withicon">
-              <div className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.baseCoin?.denom)}
-                />
-              </div>
-              <div className="assets-icon" style={{ marginLeft: "-22px" }}>
-                <SvgIcon
-                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
-                />
-              </div>
-              {denomToSymbol(poolList && poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
-            </div>
-          </>
-        ),
-        amount:
-          <div >
-            <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>) </div>
-          </div>,
-      }
-    })
+
 
   const tabsItem = [
     {
@@ -850,6 +821,7 @@ const Vote = ({
     ],
   };
 
+  // *Pool data Column row for showing pair Pools in up container 
   const upPoolColumns = [
     {
       title: (
@@ -883,8 +855,74 @@ const Vote = ({
   ];
 
 
+  // *Pool data table row for showing pair Pools in up container 
+  const upPoolTableData =
+    allProposalPoolData && allProposalPoolData.map((item, index) => {
+      if (
+        (index) < 2
+      ) {
+        return {
+          key: index,
+          asset_color: <>
+            <div className="asset_color"></div>
+          </>,
+          pools: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(poolList && poolList[index]?.balances?.baseCoin?.denom)}
+                  />
+                </div>
+                <div className="assets-icon" style={{ marginLeft: "-22px" }}>
+                  <SvgIcon
+                    name={iconNameFromDenom(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
+                  />
+                </div>
+                {denomToSymbol(poolList && poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
+              </div>
+            </>
+          ),
+          amount:
+            <div >
+              <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>) </div>
+            </div>,
+        }
+      }
+    })
 
-  // *vault data table row for showing pair vault in up container 
+  const upPoolTableDataForModal =
+    allProposalPoolData && allProposalPoolData.map((item, index) => {
+      return {
+        key: index,
+        asset_color: <>
+          <div className="asset_color"></div>
+        </>,
+        pools: (
+          <>
+            <div className="assets-withicon">
+              <div className="assets-icon">
+                <SvgIcon
+                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.baseCoin?.denom)}
+                />
+              </div>
+              <div className="assets-icon" style={{ marginLeft: "-22px" }}>
+                <SvgIcon
+                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
+                />
+              </div>
+              {denomToSymbol(poolList && poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
+            </div>
+          </>
+        ),
+        amount:
+          <div >
+            <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>) </div>
+          </div>,
+      }
+    })
+
+  // *vault data Column row for showing pair vault in up container 
   const upVaultColumns = [
     {
       title: (
@@ -919,6 +957,40 @@ const Vote = ({
 
   // *vault data table row for showing pair vault in up container 
   const upVaultTableData =
+    allProposalData && allProposalData.map((item, index) => {
+      if (
+        (index) < 2
+      ) {
+        return {
+          key: index,
+          asset_color: <>
+            <div className="asset_color"></div>
+          </>,
+          vaults: (
+            <>
+              <div className="assets-withicon">
+                <div className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom(
+                      symbolToDenom(getIconFromPairName(pairVaultData[item?.extended_pair_id]))
+                    )}
+                  />
+                </div>
+                <div className="assets-icon" style={{ marginLeft: "-22px" }}>
+                  <SvgIcon
+                    name={iconNameFromDenom("")}
+                  />
+                </div>
+                {pairVaultData[item?.extended_pair_id]}
+              </div>
+            </>
+          ),
+          amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>)</div>,
+        }
+      }
+    })
+
+  const upVaultTableDataForModal =
     allProposalData && allProposalData.map((item, index) => {
       return {
         key: index,
@@ -963,7 +1035,6 @@ const Vote = ({
 
 
   // *calculate user emission 
-
   const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
     // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
     let myBorrowed = _myBorrowed || 0;
@@ -1112,7 +1183,7 @@ const Vote = ({
                             className="custom-table vote-up-data-table-container"
                             dataSource={upVaultTableData}
                             columns={upVaultColumns}
-                            loading={loading}
+                            // loading={loading}
                             pagination={false}
                             scroll={{ x: "100%" }}
                             locale={{ emptyText: <NoDataIcon /> }}
@@ -1142,8 +1213,8 @@ const Vote = ({
                 // loading={loading}
                 onCancel={handleViewAllCancel}
               >
-                <div className="palcebid-modal-inner rewards-modal-main-container">
-                  <Row>
+                <div className="palcebid-modal-inner rewards-modal-main-container emission-modal-container">
+                  <Row style={{ paddingBottom: 0 }}>
                     <Col>
                       <div className="rewards-title">
                         Vaults & Pools
@@ -1169,9 +1240,9 @@ const Vote = ({
                                   <div className="card-content">
                                     <Table
                                       className="custom-table vote-up-data-table-container"
-                                      dataSource={upPoolTableData}
+                                      dataSource={upPoolTableDataForModal}
                                       columns={upPoolColumns}
-                                      // loading={loading}
+                                      loading={loading}
                                       pagination={false}
                                       scroll={{ x: "100%" }}
                                       locale={{ emptyText: <NoDataIcon /> }}
@@ -1183,9 +1254,9 @@ const Vote = ({
                                   <div className="card-content">
                                     <Table
                                       className="custom-table vote-up-data-table-container"
-                                      dataSource={upVaultTableData}
+                                      dataSource={upVaultTableDataForModal}
                                       columns={upVaultColumns}
-                                      // loading={loading}
+                                      loading={loading}
                                       pagination={false}
                                       scroll={{ x: "100%" }}
                                       locale={{ emptyText: <NoDataIcon /> }}

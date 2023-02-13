@@ -125,6 +125,7 @@
     }
     .bottom {
       display: flex;
+      align-items: center;
       .bottom-left {
         width: 100%;
         flex-basis: 35%;
@@ -328,6 +329,15 @@
         }
       }
     }
+  }
+}
+.emission-modal-container {
+  .emission-card {
+    padding: 10px 0px !important;
+    border: none;
+  }
+  .rewards-title {
+    font-size: 1rem;
   }
 }
 
