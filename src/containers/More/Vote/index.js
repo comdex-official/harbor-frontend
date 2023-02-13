@@ -28,6 +28,7 @@ import HighchartsReact from "highcharts-react-official";
 import { formatNumber } from '../../../utils/number';
 import { fetchRestPrices } from '../../../services/oracle/query';
 import ViewAllToolTip from './viewAllModal';
+import { combineColor, poolColor, vaultColor } from './color';
 
 const Vote = ({
   lang,
@@ -701,9 +702,6 @@ const Vote = ({
     },
   ];
 
-
-
-
   const tabsItem = [
     {
       label: "Vaults", key: "1", children: (
@@ -789,32 +787,32 @@ const Vote = ({
           {
             name: "AXL-USDC",
             y: 90,
-            color: "#F07167",
+            color: combineColor[0],
           },
           {
             name: "ATOM",
             y: 70,
-            color: "#0081A7",
+            color: combineColor[1],
           },
           {
             name: "OSMO",
             y: 40,
-            color: "#00AFB9",
+            color: combineColor[2],
           },
           {
             name: "AXL-DAI",
             y: 25,
-            color: "#FDFCDC",
+            color: combineColor[3],
           },
           {
             name: "Lorem ipsum",
             y: 79,
-            color: "#94D2BD",
+            color: combineColor[4],
           },
           {
             name: "Lorem ipsum",
             y: 36,
-            color: "#FED9B7",
+            color: combineColor[5],
           },
         ],
       },
@@ -864,7 +862,7 @@ const Vote = ({
         return {
           key: index,
           asset_color: <>
-            <div className="asset_color"></div>
+            <div className="asset_color" style={{ backgroundColor: `${poolColor[index]}` }}></div>
           </>,
           pools: (
             <>
@@ -896,7 +894,7 @@ const Vote = ({
       return {
         key: index,
         asset_color: <>
-          <div className="asset_color"></div>
+          <div className="asset_color" style={{ backgroundColor: `${poolColor[index]}` }}></div>
         </>,
         pools: (
           <>
@@ -964,7 +962,7 @@ const Vote = ({
         return {
           key: index,
           asset_color: <>
-            <div className="asset_color"></div>
+            <div className="asset_color" style={{ backgroundColor: `${vaultColor[index]}` }}></div>
           </>,
           vaults: (
             <>
@@ -995,7 +993,7 @@ const Vote = ({
       return {
         key: index,
         asset_color: <>
-          <div className="asset_color"></div>
+          <div className="asset_color" style={{ backgroundColor: `${vaultColor[index]}` }}></div>
         </>,
         vaults: (
           <>
@@ -1049,6 +1047,7 @@ const Vote = ({
 
   }
 
+  console.log(concatedExtendedPair, "concatedExtendedPair");
 
   useEffect(() => {
     let concatedData = allProposalData?.concat(allProposalPoolData)
