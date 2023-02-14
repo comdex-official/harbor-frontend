@@ -403,7 +403,9 @@ button {
       display: none;
     }
     .ant-tooltip-inner {
-      background: $secondary-color;
+      background: #232231;
+      border: 1px solid white;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
