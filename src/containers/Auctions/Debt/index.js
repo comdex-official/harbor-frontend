@@ -233,7 +233,7 @@ const DebtAuctions = ({ setPairs, address, refreshBalance, }) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className={auctions?.auctions?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16"}>
+          <div className={auctions?.auctions?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16 "}>
             <div className="card-content">
               <Table
                 className="custom-table liquidation-table"

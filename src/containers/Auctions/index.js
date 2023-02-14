@@ -127,17 +127,38 @@ const Auctions = ({
 
   return (
     <>
-      <div className="app-content-wrapper">
+      <div className="app-content-wrapper auction-extra-tab-btn-relative">
         <Row>
           <Col>
             <Tabs
               className="comdex-tabs auction-extra-tabs"
               onChange={callback}
               activeKey={activeKey}
-              tabBarExtraContent={activeKey === "1" ? refreshAuctionButton : ""}
               items={tabItems}
             />
           </Col>
+
+          {activeKey === "1" && <div className="auction-extra-tab-btn">
+            <Col>
+              <Row >
+                <div className="locker-up-main-container">
+                  <div className="locker-up-container mr-4">
+                    <div className="claim-container ">
+                      <div className="claim-btn">
+                        <Button
+                          type="primary"
+                          className="btn-filled mr-1"
+                          disabled={disableFetchBtn}
+                          onClick={() => fetchLatestPrice()}
+                        >Update Auction Price </Button> <TooltipIcon text="The price of the auction changes every block, click on the button to update the price for placing accurate bids." />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </Row>
+            </Col>
+          </div>}
         </Row>
       </div>
     </>

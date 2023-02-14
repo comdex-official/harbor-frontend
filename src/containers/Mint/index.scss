@@ -426,7 +426,8 @@
     flex-wrap: wrap;
     .card-container {
       background: white;
-      padding: 25px 25px;
+      // padding: 25px 25px;
+      padding: 18px 25px;
       border-radius: $base-border-radius;
       box-shadow: $box-shadow-inner-light;
       border: 1px solid $border-color-base;
@@ -519,7 +520,7 @@
       .bottom-container {
         display: flex;
         flex-direction: column;
-        row-gap: 12px;
+        row-gap: 10px;
         .contenet-container {
           display: flex;
           justify-content: space-between;
