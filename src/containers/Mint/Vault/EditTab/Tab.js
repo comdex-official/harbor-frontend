@@ -694,7 +694,7 @@ const Edit = ({
                     "comdex-slider borrow-comdex-slider " +
                     (newCollateralRatio <= minCrRatio
                       ? " red-track"
-                      : collateralRatio < moderateSafe
+                      : newCollateralRatio < moderateSafe
                         ? " red-track"
                         : newCollateralRatio < safeCrRatio
                           ? " orange-track"
