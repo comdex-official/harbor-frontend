@@ -2429,12 +2429,21 @@
     joi "^17.5.0"
     utility-types "^3.10.0"
 
-"@keplr-wallet/common@0.11.37", "@keplr-wallet/common@^0.11.17":
+"@keplr-wallet/common@0.11.37":
   version "0.11.37"
   resolved "https://registry.yarnpkg.com/@keplr-wallet/common/-/common-0.11.37.tgz#40e024a0cb0782b87a467343763ae468ccbc8a83"
   integrity sha512-qKUVu4EtZ4yt4b2onS9cjG0ftLZT/+tR3JvTx19wmlBsMXhOm6Vwj/8vKioH5+q6gq4L25Cpus+Aq95pjRwgxQ==
   dependencies:
     "@keplr-wallet/crypto" "0.11.37"
+    buffer "^6.0.3"
+    delay "^4.4.0"
+
+"@keplr-wallet/common@^0.11.41":
+  version "0.11.41"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/common/-/common-0.11.41.tgz#431d03c265410d5ac8c20a34f80aa3a451699f62"
+  integrity sha512-uGhYtscZIGVp0IerAu6eBn0BKi+NVlZNfdoCrt/eNwNeOa6zCd3uv6aPwAv/0hYm7tXhKA3USnRJr4oLMKTq1Q==
+  dependencies:
+    "@keplr-wallet/crypto" "0.11.41"
     buffer "^6.0.3"
     delay "^4.4.0"
 
@@ -2459,6 +2468,20 @@
   version "0.11.37"
   resolved "https://registry.yarnpkg.com/@keplr-wallet/crypto/-/crypto-0.11.37.tgz#581c11b26e53c6f9f64e6c8fdc134574fbdc7857"
   integrity sha512-zJGjyme+t1IpCL9FWD2CoiB1/s0FOZ7uL2wsRtVgi56GdpUSMyU1ux/GYhrdqUAenF4/mVkLZzu1PNiRvAlU5Q==
+  dependencies:
+    "@ethersproject/keccak256" "^5.5.0"
+    bip32 "^2.0.6"
+    bip39 "^3.0.3"
+    bs58check "^2.1.2"
+    buffer "^6.0.3"
+    crypto-js "^4.0.0"
+    elliptic "^6.5.3"
+    sha.js "^2.4.11"
+
+"@keplr-wallet/crypto@0.11.41":
+  version "0.11.41"
+  resolved "https://registry.yarnpkg.com/@keplr-wallet/crypto/-/crypto-0.11.41.tgz#9e385a20c1af49f1f73978b6480a2ef0c8cac073"
+  integrity sha512-9H3Rm8OXrHy2Tc2YIoqhZa7PpEaXhOfUDCNM3r2p3ol/5G90r/WmvENqodciWs7t0/PJEvu54KFFT1N3Czy9Cg==
   dependencies:
     "@ethersproject/keccak256" "^5.5.0"
     bip32 "^2.0.6"
