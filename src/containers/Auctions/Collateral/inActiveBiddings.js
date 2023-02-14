@@ -87,10 +87,12 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap }) => {
             ),
             dataIndex: "outflowToken",
             key: "outflowToken",
-            width: 200,
+            width: 250,
         },
         {
-            title: "Timestamp",
+            title: <>
+                Timestamp <TooltipIcon text="Placed bid time" />
+            </>,
             dataIndex: "timestamp",
             key: "timestamp",
             width: 250,

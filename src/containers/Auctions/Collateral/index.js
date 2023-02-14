@@ -46,8 +46,8 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
 
   const tabItems =
     [
-      { label: "Active", key: "1", children: <Bidding address={address} refreshBalance={refreshBalance} assetMap={assetMap} />},
-      { label: "Completed", key: "2", children: <InActiveBidding address={address} refreshBalance={refreshBalance} assetMap={assetMap}  /> }
+      { label: "Active", key: "1", children: <Bidding address={address} refreshBalance={refreshBalance} assetMap={assetMap} /> },
+      { label: "Completed", key: "2", children: <InActiveBidding address={address} refreshBalance={refreshBalance} assetMap={assetMap} /> }
     ]
 
   const callback = (key) => {
@@ -145,7 +145,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
       ),
       dataIndex: "quantity",
       key: "quantity",
-      width: 200,
+      width: 170,
     },
     {
       title: (
@@ -155,7 +155,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
       ),
       dataIndex: "end_time",
       key: "end_time",
-      width: 200,
+      width: 180,
       render: (end_time) => <div className="endtime-badge">{end_time}</div>,
     },
     {
@@ -176,7 +176,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
       ),
       dataIndex: "current_price",
       key: "current_price",
-      width: 160,
+      width: 190,
       render: (item) => (
         <>
           $
@@ -295,7 +295,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
             </div>
           </div>
 
-          <div className="more-bottom mt-4">
+          <div className="more-bottom mt-3">
             <h3 className="title ">Bidding History</h3>
             <div className="more-bottom-card">
               <Row>

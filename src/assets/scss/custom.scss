@@ -103,7 +103,8 @@ button {
 
     .content {
       max-width: 100%;
-      padding: 20px 45px 0;
+      // padding: 20px 45px 0;
+      padding: 8px 45px 0;
       margin: 0 auto;
       width: 100%;
       display: flex;
@@ -365,10 +366,11 @@ button {
     }
     &.red-track {
       .ant-slider-track {
-        background: $secondary-color;
+        background: $error-color !important;
       }
       .ant-slider-handle {
-        border-color: $secondary-color !important;
+        border-color: $error-color !important;
+        border: none;
       }
     }
     &.orange-track {
@@ -377,14 +379,17 @@ button {
       }
       .ant-slider-handle {
         border-color: orange !important;
+        border: none;
       }
     }
     &.green-track {
       .ant-slider-track {
         background: $secondary-color;
+        background: $success-color !important;
       }
       .ant-slider-handle {
-        border-color: $secondary-color !important;
+        border-color: $success-color !important;
+        border: none;
       }
     }
   }
@@ -411,6 +416,10 @@ button {
     }
     .ant-tooltip-arrow {
       display: block;
+      --antd-arrow-background-color: rgba($secondary-color, 0.3);
+      .dark-mode & {
+        --antd-arrow-background-color: $secondary-color;
+      }
       .ant-tooltip-arrow-content {
         transform: translateY(-13px) rotate(223deg);
         background: $secondary-color;
