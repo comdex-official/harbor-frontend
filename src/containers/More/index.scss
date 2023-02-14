@@ -76,6 +76,11 @@
           margin-top: 10px;
         }
       }
+      .same-button-container {
+        .ant-btn {
+          width: 120px;
+        }
+      }
     }
     .morecard-right {
       display: flex;

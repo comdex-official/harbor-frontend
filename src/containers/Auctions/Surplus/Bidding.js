@@ -80,7 +80,9 @@ export const Bidding = ({ lang, address, refreshBalance }) => {
       width: 250,
     },
     {
-      title: "Timestamp",
+      title: <>
+        Timestamp <TooltipIcon text="Placed bid time" />
+      </>,
       dataIndex: "timestamp",
       key: "timestamp",
       width: 260,

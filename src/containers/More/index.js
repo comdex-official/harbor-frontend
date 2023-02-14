@@ -289,7 +289,7 @@ const More = ({
                 <p>
                   Deposit $CMST to earn variable interest on it.
                 </p>
-                <div className="button-container">
+                <div className="button-container same-button-container">
                   <Button
                     type="primary"
                     className="btn-filled"
@@ -312,7 +312,7 @@ const More = ({
                 <p>
                   Perform tasks to claim your HARBOR airdrop.
                 </p>
-                <div className="button-container">
+                <div className="button-container same-button-container">
                   <Button
                     type="primary"
                     className="btn-filled"
@@ -335,7 +335,7 @@ const More = ({
                 <p>
                   Stake your Harbor token for veHarbor to benefit from increased voting power, rebases, external incentives and surplus rewards.
                 </p>
-                <div className="button-container">
+                <div className="button-container same-button-container">
                   <Button
                     type="primary"
                     className="btn-filled"
@@ -359,7 +359,7 @@ const More = ({
                   Vote for your desired vault-pair to receive external incentives to direct emissions to that specific vault.
 
                 </p>
-                <div className="button-container">
+                <div className="button-container same-button-container">
                   <Button
                     type="primary"
                     className="btn-filled"
