@@ -187,15 +187,6 @@ const Minting = ({ address }) => {
                             </div>
                           </div>
 
-                          <div className="contenet-container">
-                            <div className="name">
-                              Closing Fee <TooltipIcon text="Fee charged on closing the vault" />
-                            </div>
-                            <div className="value">
-                              {" "}
-                              {(decimalConversion(item?.closingFee) * 100).toFixed(2)} %
-                            </div>
-                          </div>
 
                           <div className="contenet-container">
                             <div className="name">
@@ -209,7 +200,7 @@ const Minting = ({ address }) => {
 
                           <div className="contenet-container">
                             <div className="name">
-                              Vault’s Global Debt <TooltipIcon text="The total $CMST Debt of the protocol against this vault type" />
+                              Total CMST Minted <TooltipIcon text="The total $CMST Debt of the protocol against this vault type" />
                             </div>
                             <div className="value">
                               {vaultDebt.length > 0

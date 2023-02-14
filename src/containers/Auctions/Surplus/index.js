@@ -235,7 +235,7 @@ const SurplusAuctions = ({ setPairs, address }) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className="composite-card py-3">
+          <div className={auctions?.auctions?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16 "}>
             <div className="card-content">
               <Table
                 className="custom-table liquidation-table"
@@ -255,10 +255,9 @@ const SurplusAuctions = ({ setPairs, address }) => {
               />
             </div>
           </div>
-          <div className="more-bottom">
+          <div className="more-bottom mt-3">
             <h3 className="title">Bidding History</h3>
             <div className="more-bottom-card">
-              {/* <Bidding biddingList={biddings} /> */}
               <Row>
                 <Col>
                   <Tabs

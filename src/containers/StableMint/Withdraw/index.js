@@ -297,6 +297,7 @@ const Deposit = ({
                     <div className="assets PoolSelect-btn">
                         <div className="assets-form-btn text-center  mb-2">
                             <Button
+                                style={{ width: "12.1rem" }}
                                 loading={inProgress}
                                 type="primary"
                                 className="btn-filled"

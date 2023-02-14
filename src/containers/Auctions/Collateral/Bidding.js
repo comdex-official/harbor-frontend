@@ -22,7 +22,7 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
 
   const fetchBiddings = (address, offset, limit, countTotal, reverse, history) => {
     setInProgress(true);
-    queryDutchBiddingList(address, offset, limit, countTotal, reverse, history,(error, result) => {
+    queryDutchBiddingList(address, offset, limit, countTotal, reverse, history, (error, result) => {
       setInProgress(false);
 
       if (error) {
@@ -42,7 +42,7 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
 
   useEffect(() => {
     if (address) {
-      fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true,false);
+      fetchBiddings(address, (pageNumber - 1) * pageSize, pageSize, true, true, false);
     }
   }, [address, refreshBalance])
 
@@ -81,7 +81,9 @@ export const Bidding = ({ address, refreshBalance, assetMap }) => {
       width: 250,
     },
     {
-      title: "Timestamp",
+      title: <>
+        Timestamp <TooltipIcon text="Placed bid time" />
+      </>,
       dataIndex: "timestamp",
       key: "timestamp",
       width: 250,

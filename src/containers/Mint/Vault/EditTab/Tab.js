@@ -193,7 +193,9 @@ const Edit = ({
 
   let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
   minCrRatio = Number(minCrRatio);
-  let safeCrRatio = minCrRatio + 50;
+  let safeCrRatio = minCrRatio + 70;
+  let moderateSafe = Number(minCrRatio) + 30
+  let maxCrRatio = Number(minCrRatio) + 130
   let interestAccumulated = Number(amountConversion(ownerVaultInfo?.interestAccumulated));
 
   const getAmountBasedOnDenom = (editType) => {
@@ -488,12 +490,32 @@ const Edit = ({
     }
   };
 
+  // const marks = {
+  //   0: "0%",
+  //   [minCrRatio]: `Min`,
+  //   [safeCrRatio]: `Safe`,
+  //   500: "500%"
+  // };
+
   const marks = {
-    0: "0%",
-    [minCrRatio]: `Min`,
+    [minCrRatio + 5]: `Min`,
+    [moderateSafe]: `Moderate`,
     [safeCrRatio]: `Safe`,
-    500: "500%"
+    [maxCrRatio]: "Max"
   };
+
+  const tipFormatter = (value) => {
+    if (value < moderateSafe) {
+      return ` Very Risky at ${value}%`;
+    }
+    if (value <= safeCrRatio) {
+      return ` Moderate Risky at ${value}%`;
+    }
+    if (value > safeCrRatio) {
+      return ` Safe at ${value}%`;
+    }
+  };
+
   useEffect(() => {
     if (ownerVaultId) {
       getOwnerVaultInfoByVaultId(ownerVaultId)
@@ -503,7 +525,6 @@ const Edit = ({
       setOwnerCurrentCollateral(0)
     }
   }, [])
-
 
   return (
     <>
@@ -667,25 +688,30 @@ const Edit = ({
               </Col>
             </Row>
             <div className="Interest-rate-container mt-4">
-              <div className="slider-numbers mt-4">
+              <div className="slider-numbers mt-4 mint-slider-number">
                 <Slider
                   className={
                     "comdex-slider borrow-comdex-slider " +
                     (newCollateralRatio <= minCrRatio
                       ? " red-track"
-                      : newCollateralRatio < safeCrRatio
-                        ? " orange-track"
-                        : newCollateralRatio >= 200
-                          ? " green-track"
-                          : " ")
+                      : newCollateralRatio < moderateSafe
+                        ? " red-track"
+                        : newCollateralRatio < safeCrRatio
+                          ? " orange-track"
+                          : newCollateralRatio >= safeCrRatio
+                            ? " green-track"
+                            : " ")
                   }
                   defaultValue="150"
                   marks={marks}
                   value={newCollateralRatio}
-                  max={500}
+                  max={maxCrRatio}
                   onChange={handleSliderChange}
-                  min={0}
-                  tooltip={{ open: false }}
+                  min={minCrRatio + 5}
+                  // tooltip={{ open: false }}
+                  tooltip={{
+                    formatter: tipFormatter
+                  }}
                 />
 
 
