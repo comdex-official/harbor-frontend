@@ -326,7 +326,8 @@ const CompleteMission = ({
           <>
             <div className="assets-withicon">
               <div className="left-icon"><SvgIcon name={item?.icon} viewbox={item?.viewBox} /></div>
-              {item?.title}
+              {item?.title} {"  "}
+              <span className="ml-1">{item?.id === 3 && <TooltipIcon text="Users will be able to receive this airdrop if they had some (voting power) veharbor before the proposal was raised. New proposals will be raised every 2-3 days." />}</span>
             </div>
           </>
         ),
