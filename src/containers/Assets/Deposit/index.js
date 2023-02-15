@@ -18,7 +18,7 @@ import {
   denomConversion,
   getAmount
 } from "../../../utils/coin";
-import { toDecimals, truncateString } from "../../../utils/string";
+import { decode, toDecimals, truncateString } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import "./index.scss";
 
@@ -299,7 +299,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
                   <>
                     {variables[lang].available}
                     <span className="ml-1">
-                      {(availableBalance &&
+                      {(address && availableBalance &&
                         availableBalance.amount &&
                         amountConversion(availableBalance.amount, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals)) ||
                         0}{" "}
