@@ -18,7 +18,7 @@ import {
   denomConversion,
   getAmount
 } from "../../../utils/coin";
-import { decode, toDecimals, truncateString } from "../../../utils/string";
+import { toDecimals, truncateString } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import "./index.scss";
 
@@ -310,11 +310,13 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
                         className=" active"
                         onClick={() => {
                           setAmount(
-                            availableBalance?.amount > DEFAULT_FEE
-                              ? amountConversion(
-                                availableBalance?.amount - DEFAULT_FEE, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals
-                              )
-                              : amountConversion(availableBalance?.amount, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals)
+                            address ?
+                              availableBalance?.amount > DEFAULT_FEE
+                                ? amountConversion(
+                                  availableBalance?.amount - DEFAULT_FEE, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals
+                                )
+                                : amountConversion(availableBalance?.amount, comdex?.coinDecimals, assetMap[chain?.ibcDenomHash]?.decimals)
+                              : 0
                           );
                         }}
                       >
