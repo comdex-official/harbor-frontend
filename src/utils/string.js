@@ -102,6 +102,12 @@ export const symbolToDenom = (key) => {
     case "mntl":
     case ibcDenoms["mntl"]:
       return ibcDenoms["mntl"];
+    case "huahua":
+    case ibcDenoms["uhuahua"]:
+      return ibcDenoms["uhuahua"];
+    case "shib":
+    case ibcDenoms["shib-wei"]:
+      return ibcDenoms["shib-wei"];
 
     case "cmdx":
       return "ucmdx";
@@ -164,6 +170,8 @@ const iconMap = {
   [ibcDenoms["uakt"]]: "akt-icon",
   [ibcDenoms["wftm-wei"]]: "wfmt-icon",
   [ibcDenoms["umntl"]]: "mntl-icon",
+  [ibcDenoms["shib-wei"]]: "shib-icon",
+  [ibcDenoms["uhuahua"]]: "huahua-icon",
 };
 
 export const iconNameFromDenom = (key) => {
