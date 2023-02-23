@@ -2,6 +2,7 @@
 
 .time-left-head {
   border: 1px solid #c5b2db;
+  background-color: #c5b2db;
   border-radius: 30px;
   max-width: 480px;
   padding: 6px 10px;
@@ -23,6 +24,10 @@
   span {
     font-size: 0.9rem;
     font-weight: 300;
+  }
+  .dark-mode & {
+    background-color: $secondary-color;
+    border-color: $secondary-color;
   }
 }
 

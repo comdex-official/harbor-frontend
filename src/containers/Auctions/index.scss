@@ -134,3 +134,21 @@
     }
   }
 }
+.auction-extra-tab-btn-relative {
+  position: relative;
+  .auction-extra-tab-btn {
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    z-index: 999;
+    .locker-up-main-container {
+      .locker-up-container {
+        .claim-container {
+          .claim-btn {
+            margin-top: 1px;
+          }
+        }
+      }
+    }
+  }
+}

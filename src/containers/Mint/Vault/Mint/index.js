@@ -188,7 +188,10 @@ const Mint = ({
 
   let minCrRatio = decimalConversion(selectedExtentedPairVaultListData[0]?.minCr) * 100;
   minCrRatio = Number(minCrRatio);
-  let safeCrRatio = minCrRatio + 50;
+  let safeCrRatio = minCrRatio + 70;
+  let moderateSafe = Number(minCrRatio) + 30
+  let maxCrRatio = Number(minCrRatio) + 130
+
 
   const showInAssetValue = () => {
     const oralcePrice = marketPrice(markets, pair?.denomIn, assetMap[pair?.denomIn]?.id);
@@ -472,10 +475,28 @@ const Mint = ({
 
 
   const marks = {
-    0: "0%",
-    [minCrRatio]: `Min`,
+    [minCrRatio + 5]: `Min`,
+    [moderateSafe]: `Moderate`,
     [safeCrRatio]: `Safe`,
-    500: "500%"
+    [maxCrRatio]: "Max"
+  };
+  // const marks = {
+  //   0: "0%",
+  //   [minCrRatio]: `Min`,
+  //   [safeCrRatio]: `Safe`,
+  //   500: "500%"
+  // };
+
+  const tipFormatter = (value) => {
+    if (value < moderateSafe) {
+      return ` Very Risky at ${value}%`;
+    }
+    if (value <= safeCrRatio) {
+      return ` Moderate Risky at ${value}%`;
+    }
+    if (value > safeCrRatio) {
+      return ` Safe at ${value}%`;
+    }
   };
 
   if (loading) {
@@ -593,25 +614,30 @@ const Mint = ({
           </div>
 
           {!ownerVaultId && <div className="Interest-rate-container mt-4">
-            <div className="slider-numbers mt-4">
+            <div className="slider-numbers mt-4 mint-slider-number">
               <Slider
                 className={
                   "comdex-slider borrow-comdex-slider " +
                   (collateralRatio <= minCrRatio
                     ? " red-track"
-                    : collateralRatio < safeCrRatio
-                      ? " orange-track"
-                      : collateralRatio >= safeCrRatio
-                        ? " green-track"
-                        : " ")
+                    : collateralRatio < moderateSafe
+                      ? " red-track"
+                      : collateralRatio < safeCrRatio
+                        ? " orange-track"
+                        : collateralRatio >= safeCrRatio
+                          ? " green-track"
+                          : " ")
                 }
                 defaultValue={collateralRatio}
                 marks={marks}
                 value={collateralRatio}
-                max={500}
+                max={maxCrRatio}
                 onChange={handleSliderChange}
-                min={0}
-                tooltip={{ open: false }}
+                min={minCrRatio + 5}
+                // tooltip={{ open: false }}
+                tooltip={{
+                  formatter: tipFormatter
+                }}
               />
               {/* collateral container  */}
               <div className="slider-input-box-container mt-2">

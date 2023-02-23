@@ -179,14 +179,14 @@ const CloseTab = ({
   return (
     <div className="borrw-content-card ">
       <div className="close-tab-content">
-        <div className="close-tab-row">
+        {/* <div className="close-tab-row">
           <div className="text-left">
             Closing Fee Amount{" "}
           </div>
           <div className="text-right d-flex align-center">
             {amountConversion(ownerVaultInfo?.closingFeeAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals) || 0} {pair && pair.denomIn ? denomToSymbol(pair && pair?.denomOut) : <span className="ml-1"><CustomSkelton height={20} /></span>}
           </div>
-        </div>
+        </div> */}
         <div className="close-tab-row">
           <div className="text-left">
             Total CMST Payable{" "}

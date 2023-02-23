@@ -119,6 +119,14 @@
   }
   .ant-slider-handle {
     border-color: $error-color !important;
+    &::after {
+      box-shadow: 0 0 0 2px $error-color;
+    }
+    &:hover {
+      &::after {
+        box-shadow: 0 0 0 2px $error-color;
+      }
+    }
   }
 }
 .orange-track {
@@ -127,6 +135,14 @@
   }
   .ant-slider-handle {
     border-color: orange !important;
+    &::after {
+      box-shadow: 0 0 0 2px orange;
+    }
+    &:hover {
+      &::after {
+        box-shadow: 0 0 0 2px orange;
+      }
+    }
   }
 }
 .green-track {
@@ -135,6 +151,14 @@
   }
   .ant-slider-handle {
     border-color: $secondary-color !important;
+    &::after {
+      box-shadow: 0 0 0 2px $success-color;
+    }
+    &:hover {
+      &::after {
+        box-shadow: 0 0 0 2px $success-color;
+      }
+    }
   }
 }
 .small-text {
@@ -233,5 +257,18 @@
   span {
     margin-left: -5px !important;
     margin-top: 20px;
+  }
+}
+
+.mint-slider-number {
+  // display: flex;
+  // align-items: flex-end;
+  .non-draggable {
+    height: 4.8px;
+    width: 25%;
+    background-color: #e8e8e8;
+    // border-radius: 4px;
+    margin-right: -1px;
+    margin-bottom: 3px;
   }
 }
