@@ -93,7 +93,6 @@ const StableMint = ({
     }
 
     const getIconFromPairName = (extendexPairVaultPairName) => {
-        console.log('the name', extendexPairVaultPairName)
         if(extendexPairVaultPairName === "GRAV-USDC-CMST"){
             return "gusdc" // returning denom
         }
@@ -102,8 +101,6 @@ const StableMint = ({
         pairName = pairName?.substring(pairName?.indexOf('-') + 1);
         pairName = pairName?.substring(0, pairName?.indexOf('-'));
         pairName = pairName?.toLowerCase();
-
-        console.log('the name', extendexPairVaultPairName, pairName)
 
         return pairName;
     }
