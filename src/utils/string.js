@@ -19,7 +19,6 @@ const getIbcDenomToDenomMap = () => {
 
 let ibcDenomToDenomMap = getIbcDenomToDenomMap();
 
-
 const encoding = require("@cosmjs/encoding");
 
 export const decode = (hash) =>
@@ -30,23 +29,19 @@ export const generateHash = (txBytes) =>
 
 export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
-
 export const transformPairName = (name) => {
   if (name === "STATOM-A") {
-    return "stATOM-A"
-  }
-  else if (name === "STATOM-B") {
-    return "stATOM-B"
-  }
-  else if (name === "STATOM-C") {
-    return "stATOM-C"
-  }
-  else {
+    return "stATOM-A";
+  } else if (name === "STATOM-B") {
+    return "stATOM-B";
+  } else if (name === "STATOM-C") {
+    return "stATOM-C";
+  } else {
     return name;
   }
-}
+};
 
-// For getIcon From extendedPair name 
+// For getIcon From extendedPair name
 export const symbolToDenom = (key) => {
   switch (key) {
     case "atom":
@@ -146,7 +141,6 @@ export const denomToCoingeckoTokenId = (key) => {
   }
 };
 
-
 const iconMap = {
   ucmdx: "comdex-icon",
   ucmst: "cmst-icon",
@@ -172,6 +166,8 @@ const iconMap = {
   [ibcDenoms["umntl"]]: "mntl-icon",
   [ibcDenoms["shib-wei"]]: "shib-icon",
   [ibcDenoms["uhuahua"]]: "huahua-icon",
+  [ibcDenoms["gravity0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]]:
+    "gusdc-icon",
 };
 
 export const iconNameFromDenom = (key) => {
@@ -215,7 +211,7 @@ export const lowercaseFirstLetter = (string) => {
 export const toDecimals = (value, decimal = comdex.coinDecimals) =>
   value.indexOf(".") >= 0
     ? value.substr(0, value.indexOf(".")) +
-    value.substr(value.indexOf("."), decimal + 1)
+      value.substr(value.indexOf("."), decimal + 1)
     : value;
 
 export const showUserAssetCount = (assetShare, denom) => {
@@ -237,8 +233,8 @@ export const uniqueLiquidityPairDenoms = (list, type) => {
     ...new Set(
       list && list.length > 0
         ? list.map((item) =>
-          type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
-        )
+            type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
+          )
         : []
     ),
   ];
@@ -248,10 +244,10 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   const quoteList =
     list && list.length > 0
       ? list.filter((item) =>
-        type === "in"
-          ? item.baseCoinDenom === denom
-          : item.quoteCoinDenom === denom
-      )
+          type === "in"
+            ? item.baseCoinDenom === denom
+            : item.quoteCoinDenom === denom
+        )
       : [];
 
   const quoteMap = quoteList.map((item) =>
@@ -274,18 +270,18 @@ export const makeHdPath = (
 export const unixToGMTTime = (time) => {
   let newTime = Math.floor(time / 1000000000);
   var timestamp = moment.unix(newTime);
-  timestamp = timestamp.format("DD/MMMM/YYYY")
+  timestamp = timestamp.format("DD/MMMM/YYYY");
   return timestamp;
-}
+};
 
-export const stringTagParser = input => {
-  const lines = input.split('\n')
-  const output = []
+export const stringTagParser = (input) => {
+  const lines = input.split("\n");
+  const output = [];
   lines.forEach((d, i) => {
     if (i > 0) {
-      output.push(<br />)
+      output.push(<br />);
     }
-    output.push(d)
-  })
-  return output
-}
+    output.push(d);
+  });
+  return output;
+};
