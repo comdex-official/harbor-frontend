@@ -93,72 +93,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
     setIsModalOpen(true);
   };
 
-  // const signIBCTx = () => {
-  //   setInProgress(true);
 
-  //   if (!proofHeight?.revision_height) {
-  //     message.error("Unable to get the latest block height");
-  //     setInProgress(false);
-  //     return;
-  //   }
-  //   const data = {
-  //     msg: {
-  //       typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
-  //       value: {
-  //         source_port: "transfer",
-  //         source_channel: chain.destChannelId,
-  //         token: {
-  //           denom: chain.coinMinimalDenom,
-  //           amount: getAmount(
-  //             amount,
-  //             assetMap[chain?.ibcDenomHash]?.decimals
-  //           ),
-  //         },
-  //         sender: sourceAddress,
-  //         receiver: address,
-  //         timeout_height: {
-  //           revisionNumber: Number(proofHeight.revision_number),
-  //           revisionHeight: Number(proofHeight.revision_height) + 100,
-  //           // Need to add some blocks in order to get the timeout
-  //         },
-  //         timeout_timestamp: undefined,
-  //       },
-  //     },
-  //     fee: { amount: [{ denom: chain.denom, amount: "25000" }], gas: "200000" },
-  //     memo: "",
-  //   };
-
-  //   aminoSignIBCTx(chain.chainInfo, data, (error, result) => {
-  //     setInProgress(false);
-  //     if (error) {
-  //       if (result?.transactionHash) {
-  //         message.error(
-  //           <Snack
-  //             message={variables[lang].tx_failed}
-  //             explorerUrlToTx={chain?.explorerUrlToTx}
-  //             hash={result?.transactionHash}
-  //           />
-  //         );
-  //       } else {
-  //         message.error(error);
-  //       }
-
-  //       resetValues();
-
-  //       return;
-  //     }
-
-  //     if (result?.transactionHash) {
-  //       message.loading(
-  //         "Transaction Broadcasting, Waiting for transaction to be included in the block"
-  //       );
-
-  //       handleHash(result?.transactionHash);
-  //     }
-  //   });
-  // };
-
-  
   const handleEvmIBC = async () => {
     setInProgress(true);
 
@@ -326,7 +261,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
       }
     });
   };
-  
+
   const resetValues = () => {
     setInProgress(false);
     setIsModalOpen(false);
