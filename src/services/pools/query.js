@@ -111,5 +111,29 @@ export const queryDeserializePoolCoin = (
     });
 };
 
+export const queryTotalActiveAndQueuedPoolCoin = (
+    callback
+) => {
+    createQueryClient((error, client) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+
+        const queryService = new QueryClientImpl(client);
+
+        queryService
+            .TotalActiveAndQueuedPoolCoin({
+                appId: Long.fromNumber(CSWAP_APP_ID),
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message)
+            });
+    });
+};
+
 
 

@@ -22,7 +22,7 @@ import NoDataIcon from '../../../components/common/NoDataIcon';
 import CustomSkelton from '../../../components/CustomSkelton';
 import { MyTimer } from '../../../components/TimerForAirdrop'
 import Pool from './pool';
-import { queryFarmedPoolCoin, queryFarmer, queryPoolsList } from '../../../services/pools/query';
+import { queryFarmedPoolCoin, queryFarmer, queryPoolsList, queryTotalActiveAndQueuedPoolCoin } from '../../../services/pools/query';
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { formatNumber } from '../../../utils/number';
@@ -323,6 +323,20 @@ const Vote = ({
     })
   }
 
+  const fetchTotalActiveAndQueuedPoolCoin = (extendexPairId) => {
+    queryTotalActiveAndQueuedPoolCoin((error, data) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log(data, "TotalActiveAndQueuedPoolCoin");
+      // setTotalPoolFarmedData((prevData) => ({
+      //   ...prevData, [extendexPairId]: data?.totalActiveAndQueuedCoins
+      // }))
+      setTotalPoolFarmedData(data?.totalActiveAndQueuedCoins)
+    })
+  }
+
   const getPoolId = (value) => {
     let extendedPairId = value;
     let divisor = 10 ** comdex?.coinDecimals
@@ -333,7 +347,8 @@ const Vote = ({
   const getUserFarmData = (address) => {
     allProposalPoolData?.map((item) => {
       fetchFarmer(getPoolId(item?.extended_pair_id), address, item?.extended_pair_id)
-      fetchFarmedPoolCoin(getPoolId(item?.extended_pair_id), item?.extended_pair_id)
+      // fetchFarmedPoolCoin(getPoolId(item?.extended_pair_id), item?.extended_pair_id)
+      // fetchTotalActiveAndQueuedPoolCoin(item?.extended_pair_id)
     })
   }
 
@@ -416,7 +431,8 @@ const Vote = ({
       }
       setCswapPrice(result)
     })
-  }, [])
+    fetchTotalActiveAndQueuedPoolCoin()
+  }, [address])
 
   useEffect(() => {
     getPairFromExtendedPair()
@@ -1040,10 +1056,19 @@ const Vote = ({
     let totalVoteOfPair = _totalVoteOfPair || 0;
     let totalWeight = amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS);
     let projectedEmission = protectedEmission;
+
+    let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
     console.log(myBorrowed, "myBorrowed");
     console.log(totalBorrowed, "totalBorrowed");
     console.log(totalVoteOfPair, "totalVoteOfPair");
     console.log(totalWeight, "toralWeight");
+    console.log(projectedEmission, "projectedEmission");
+    // console.log(isNaN(calculatedEmission), "calculatedEmission");
+    if (isNaN(calculatedEmission)) {
+      console.log(0, "calculatedEmission");
+    } else {
+      console.log(calculatedEmission, "calculatedEmission");
+    }
 
   }
 
@@ -1056,29 +1081,30 @@ const Vote = ({
 
   useEffect(() => {
     if (concatedExtendedPair) {
-      concatedExtendedPair?.map((singleConcatedExtendedPair) => {
+      concatedExtendedPair?.map((singleConcatedExtendedPair, index) => {
         // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
         if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
           // *For vault 
           calculateUserEmission(
             amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
             amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-            calculateTotalVotes(amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals))
+            amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
           )
         } else {
           // *For Pool 
-          calculateUserEmission(
-            amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
-            amountConversion(totalPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-            calculateTotalVotes(amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals))
-          )
+          // calculateUserEmission(
+          //   amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
+          //   amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
+          //   calculateTotalVotes(amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals))
+          // )
         }
 
 
       })
     }
-  }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData])
-
+  }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData, address, myBorrowed])
+  // console.log(userPoolFarmedData, "userPoolFarmedData");
+  console.log(totalPoolFarmedData, "totalPoolFarmedData");
 
   return (
     <>
@@ -1171,7 +1197,8 @@ const Vote = ({
                             // loading={loading}
                             pagination={false}
                             scroll={{ x: "100%" }}
-                            locale={{ emptyText: <NoDataIcon /> }}
+                            // locale={{ emptyText: <NoDataIcon /> }}
+                            locale={{ emptyText: <div className='text-center mb-3 mt-3'>No data</div> }}
                           />
                         </div>
                       </div>
@@ -1185,7 +1212,8 @@ const Vote = ({
                             // loading={loading}
                             pagination={false}
                             scroll={{ x: "100%" }}
-                            locale={{ emptyText: <NoDataIcon /> }}
+                            // locale={{ emptyText: <NoDataIcon /> }}
+                            locale={{ emptyText: <div className='text-center mt-3'>No data</div> }}
                           />
                         </div>
                       </div>
