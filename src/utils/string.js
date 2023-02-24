@@ -78,6 +78,7 @@ export const symbolToDenom = (key) => {
     case "wbnb":
     case ibcDenoms["wbnb-wei"]:
       return ibcDenoms["wbnb-wei"];
+    case "luna":
     case ibcDenoms["uluna"]:
       return ibcDenoms["uluna"];
     case ibcDenoms["acanto"]:
@@ -213,7 +214,7 @@ export const lowercaseFirstLetter = (string) => {
 export const toDecimals = (value, decimal = comdex.coinDecimals) =>
   value.indexOf(".") >= 0
     ? value.substr(0, value.indexOf(".")) +
-      value.substr(value.indexOf("."), decimal + 1)
+    value.substr(value.indexOf("."), decimal + 1)
     : value;
 
 export const showUserAssetCount = (assetShare, denom) => {
@@ -235,8 +236,8 @@ export const uniqueLiquidityPairDenoms = (list, type) => {
     ...new Set(
       list && list.length > 0
         ? list.map((item) =>
-            type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
-          )
+          type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
+        )
         : []
     ),
   ];
@@ -246,10 +247,10 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   const quoteList =
     list && list.length > 0
       ? list.filter((item) =>
-          type === "in"
-            ? item.baseCoinDenom === denom
-            : item.quoteCoinDenom === denom
-        )
+        type === "in"
+          ? item.baseCoinDenom === denom
+          : item.quoteCoinDenom === denom
+      )
       : [];
 
   const quoteMap = quoteList.map((item) =>
