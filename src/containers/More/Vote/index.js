@@ -29,6 +29,8 @@ import { formatNumber } from '../../../utils/number';
 import { fetchRestPrices } from '../../../services/oracle/query';
 import ViewAllToolTip from './viewAllModal';
 import { combineColor, poolColor, vaultColor } from './color';
+import Rebase from './Rebase';
+import Reward from './Rewards';
 
 const Vote = ({
   lang,
@@ -58,9 +60,13 @@ const Vote = ({
   const [protectedEmission, setProtectedEmission] = useState(0);
   const [poolList, setPoolList] = useState();
   const [concatedExtendedPair, setConcatedExtendedPair] = useState([]);
+  const [concatedPairName, setConcatedPairName] = useState([]);
   const [cswapPrice, setCswapPrice] = useState([])
   const [userPoolFarmedData, setUserPoolFarmedData] = useState({})
   const [totalPoolFarmedData, setTotalPoolFarmedData] = useState({})
+  const [userEmission, setUserEmission] = useState(0)
+  const [poolsName, setPoolsName] = useState({})
+  const [allPairTotalVote, setAllPairTotalVote] = useState({})
 
 
 
@@ -329,10 +335,7 @@ const Vote = ({
         message.error(error);
         return;
       }
-      console.log(data, "TotalActiveAndQueuedPoolCoin");
-      // setTotalPoolFarmedData((prevData) => ({
-      //   ...prevData, [extendexPairId]: data?.totalActiveAndQueuedCoins
-      // }))
+
       setTotalPoolFarmedData(data?.totalActiveAndQueuedCoins)
     })
   }
@@ -460,7 +463,7 @@ const Vote = ({
       ),
       dataIndex: "asset",
       key: "asset",
-      width: 150,
+      width: 230,
     },
     {
       title: (
@@ -501,7 +504,7 @@ const Vote = ({
       ),
       dataIndex: "bribe",
       key: "bribe",
-      width: 200,
+      width: 250,
       render: (item) => (
         <>
           {item?.length > 0 ?
@@ -545,7 +548,7 @@ const Vote = ({
       dataIndex: "my_vote",
       key: "my_vote",
       align: "center",
-      width: 100,
+      width: 200,
     },
     {
       title: (
@@ -568,7 +571,7 @@ const Vote = ({
 
     {
       title: "Your Emission",
-      counts: "05 HARBOR"
+      counts: `${formatNumber(userEmission || 0)} HARBOR`
     },
     {
       title: "Voting Ends",
@@ -769,7 +772,7 @@ const Vote = ({
         size: "110%",
         borderWidth: 0,
         innerSize: "65%",
-        className: "pie-chart",
+        className: "pie-chart totalvalue-chart",
         dataLabels: {
           enabled: false,
           distance: -14,
@@ -779,18 +782,6 @@ const Vote = ({
         },
       },
     },
-    // tooltip: {
-    //   className: 'chart-tooltip',
-    //   useHTML: true,
-    //   padding: 0,
-    //   backgroundColor: '#DCF2FC',
-    //   borderWidth: 1,
-    //   borderColor: '#19C1FE',
-    //   shadow: false,
-    //   formatter: function () {
-    //     return '<div class="chart-tooltip">' + '<b>' + this.point.name + '</b>' + '<br />' + amountConversionWithComma(this.y, DOLLAR_DECIMALS) + '</div>';
-    //   }
-    // },
     series: [
       {
         states: {
@@ -799,38 +790,15 @@ const Vote = ({
           },
         },
         name: "",
-        data: [
-          {
-            name: "AXL-USDC",
-            y: 90,
-            color: combineColor[0],
-          },
-          {
-            name: "ATOM",
-            y: 70,
-            color: combineColor[1],
-          },
-          {
-            name: "OSMO",
-            y: 40,
-            color: combineColor[2],
-          },
-          {
-            name: "AXL-DAI",
-            y: 25,
-            color: combineColor[3],
-          },
-          {
-            name: "Lorem ipsum",
-            y: 79,
-            color: combineColor[4],
-          },
-          {
-            name: "Lorem ipsum",
-            y: 36,
-            color: combineColor[5],
-          },
-        ],
+        data: concatedExtendedPair && concatedExtendedPair?.map((item, index) => {
+          return ({
+            name: (item?.extended_pair_id / 1000000) >= 1 ? denomToSymbol(concatedPairName[item?.extended_pair_id]?.baseCoin?.denom) + "-" + denomToSymbol(concatedPairName[item?.extended_pair_id]?.quoteCoin?.denom)
+              :
+              concatedPairName[item?.extended_pair_id],
+            y: Number(item?.total_vote),
+            color: (item?.extended_pair_id / 1000000) >= 1 ? poolColor[Math.floor(item?.extended_pair_id / 1000000) - 1] : vaultColor[item?.extended_pair_id - 1],
+          })
+        })
       },
     ],
   };
@@ -849,7 +817,7 @@ const Vote = ({
     {
       title: (
         <>
-          Pools
+          Pools/Vault
         </>
       ),
       dataIndex: "pools",
@@ -859,7 +827,7 @@ const Vote = ({
     {
       title: (
         <>
-          Amount
+          Amount (HARBOR)
         </>
       ),
       dataIndex: "amount",
@@ -899,7 +867,7 @@ const Vote = ({
           ),
           amount:
             <div >
-              <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>) </div>
+              <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} </span>) </div>
             </div>,
         }
       }
@@ -931,7 +899,7 @@ const Vote = ({
         ),
         amount:
           <div >
-            <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>) </div>
+            <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))}</span>) </div>
           </div>,
       }
     })
@@ -999,7 +967,7 @@ const Vote = ({
               </div>
             </>
           ),
-          amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>)</div>,
+          amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))}</span>)</div>,
         }
       }
     })
@@ -1030,7 +998,7 @@ const Vote = ({
             </div>
           </>
         ),
-        amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))} HARBOR</span>)</div>,
+        amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))}</span>)</div>,
       }
     })
 
@@ -1058,21 +1026,20 @@ const Vote = ({
     let projectedEmission = protectedEmission;
 
     let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
-    console.log(myBorrowed, "myBorrowed");
-    console.log(totalBorrowed, "totalBorrowed");
-    console.log(totalVoteOfPair, "totalVoteOfPair");
-    console.log(totalWeight, "toralWeight");
-    console.log(projectedEmission, "projectedEmission");
-    // console.log(isNaN(calculatedEmission), "calculatedEmission");
+    // console.log(myBorrowed, "myBorrowed");
+    // console.log(totalBorrowed, "totalBorrowed");
+    // console.log(totalVoteOfPair, "totalVoteOfPair");
+    // console.log(totalWeight, "toralWeight");
+    // console.log(projectedEmission, "projectedEmission");
     if (isNaN(calculatedEmission)) {
-      console.log(0, "calculatedEmission");
+      // console.log(0, "calculatedEmission");
+      return 0;
     } else {
-      console.log(calculatedEmission, "calculatedEmission");
+      // console.log(calculatedEmission, "calculatedEmission");
+      return Number(calculatedEmission);
     }
 
   }
-
-  console.log(concatedExtendedPair, "concatedExtendedPair");
 
   useEffect(() => {
     let concatedData = allProposalData?.concat(allProposalPoolData)
@@ -1080,31 +1047,76 @@ const Vote = ({
   }, [allProposalData, allProposalPoolData])
 
   useEffect(() => {
+    if (poolList && poolsName) {
+      let concatedData = { ...pairVaultData, ...poolsName };
+      setConcatedPairName(concatedData)
+    }
+  }, [pairVaultData, poolsName])
+
+  useEffect(() => {
     if (concatedExtendedPair) {
+      concatedExtendedPair?.length > 0 && concatedExtendedPair?.map((item) => {
+        setAllPairTotalVote((prevData) => ({ ...prevData, [item?.extendedPairId]: calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission }))
+      })
+    }
+  }, [concatedExtendedPair, concatedPairName])
+
+  // *Concating pools name with extended pair id 
+
+  useEffect(() => {
+
+    if (poolList) {
+      poolList?.map((item) => {
+        setPoolsName((prevState) => ({
+          ...prevState, [(item?.id?.toNumber()) + 1000000]: item?.balances
+        }))
+      })
+
+    }
+
+  }, [poolList])
+
+  useEffect(() => {
+    if (concatedExtendedPair) {
+      let totalCalculatedEmission = 0;
       concatedExtendedPair?.map((singleConcatedExtendedPair, index) => {
         // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
         if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
           // *For vault 
-          calculateUserEmission(
+          totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
             amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
             amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
             amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
           )
         } else {
           // *For Pool 
-          // calculateUserEmission(
-          //   amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
-          //   amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
-          //   calculateTotalVotes(amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals))
-          // )
+          totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
+            amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
+            amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
+            amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
+          )
         }
-
+        setUserEmission(totalCalculatedEmission)
 
       })
     }
   }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData, address, myBorrowed])
-  // console.log(userPoolFarmedData, "userPoolFarmedData");
-  console.log(totalPoolFarmedData, "totalPoolFarmedData");
+
+
+  const refreshAuctionButton = {
+    right: (
+      <>
+        <Row >
+          <div className="mr-4">
+            <Rebase />
+          </div>
+          <div className="ml-2">
+            <Reward />
+          </div>
+        </Row>
+      </>
+    ),
+  };
 
   return (
     <>
@@ -1206,14 +1218,14 @@ const Vote = ({
                       <div className="composite-card vault-table-card">
                         <div className="card-content">
                           <Table
-                            className="custom-table vote-up-data-table-container"
+                            className="custom-table vote-up-data-table-container valut-emission-up-table"
                             dataSource={upVaultTableData}
                             columns={upVaultColumns}
                             // loading={loading}
                             pagination={false}
                             scroll={{ x: "100%" }}
                             // locale={{ emptyText: <NoDataIcon /> }}
-                            locale={{ emptyText: <div className='text-center mt-3'>No data</div> }}
+                            locale={{ emptyText: <div className='text-center mt-3'></div> }}
                           />
                         </div>
                       </div>
@@ -1280,7 +1292,7 @@ const Vote = ({
                                 <div className="composite-card vault-table-card">
                                   <div className="card-content">
                                     <Table
-                                      className="custom-table vote-up-data-table-container"
+                                      className="custom-table vote-up-data-table-container valut-emission-up-table"
                                       dataSource={upVaultTableDataForModal}
                                       columns={upVaultColumns}
                                       loading={loading}
@@ -1316,6 +1328,7 @@ const Vote = ({
               className="comdex-tabs mt-4"
               defaultActiveKey="1"
               items={tabsItem}
+              tabBarExtraContent={refreshAuctionButton}
             />
           </Col>
         </Row>

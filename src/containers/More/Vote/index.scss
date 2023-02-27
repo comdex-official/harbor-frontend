@@ -419,3 +419,35 @@
     }
   }
 }
+
+.valut-emission-up-table {
+  .ant-spin-container {
+    .ant-table {
+      .ant-table-container {
+        .ant-table-content {
+          .ant-table-thead {
+            tr {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.totalvalues-chart {
+  width: 50%;
+  text-align: left;
+  .totalvalue-chart {
+    .highcharts-empty-series {
+      fill: #c0c0c0;
+    }
+  }
+}
+
+.totalvalue-chart {
+  .highcharts-empty-series {
+    fill: #c0c0c0;
+  }
+}

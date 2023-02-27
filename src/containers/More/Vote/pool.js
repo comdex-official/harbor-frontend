@@ -413,7 +413,7 @@ const Pool = ({
             ),
             dataIndex: "asset",
             key: "asset",
-            // width: 250,
+            width: 230,
         },
         {
             title: (
@@ -423,7 +423,7 @@ const Pool = ({
             ),
             dataIndex: "my_borrowed",
             key: "my_borrowed",
-            // width: 150,
+            width: 150,
         },
         // {
         //     title: (
