@@ -19,7 +19,6 @@ const getIbcDenomToDenomMap = () => {
 
 let ibcDenomToDenomMap = getIbcDenomToDenomMap();
 
-
 const encoding = require("@cosmjs/encoding");
 
 export const decode = (hash) =>
@@ -30,23 +29,19 @@ export const generateHash = (txBytes) =>
 
 export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
-
 export const transformPairName = (name) => {
   if (name === "STATOM-A") {
-    return "stATOM-A"
-  }
-  else if (name === "STATOM-B") {
-    return "stATOM-B"
-  }
-  else if (name === "STATOM-C") {
-    return "stATOM-C"
-  }
-  else {
+    return "stATOM-A";
+  } else if (name === "STATOM-B") {
+    return "stATOM-B";
+  } else if (name === "STATOM-C") {
+    return "stATOM-C";
+  } else {
     return name;
   }
-}
+};
 
-// For getIcon From extendedPair name 
+// For getIcon From extendedPair name
 export const symbolToDenom = (key) => {
   switch (key) {
     case "atom":
@@ -83,6 +78,7 @@ export const symbolToDenom = (key) => {
     case "wbnb":
     case ibcDenoms["wbnb-wei"]:
       return ibcDenoms["wbnb-wei"];
+    case "luna":
     case ibcDenoms["uluna"]:
       return ibcDenoms["uluna"];
     case ibcDenoms["acanto"]:
@@ -102,7 +98,14 @@ export const symbolToDenom = (key) => {
     case "mntl":
     case ibcDenoms["mntl"]:
       return ibcDenoms["mntl"];
-
+    case "huahua":
+    case ibcDenoms["uhuahua"]:
+      return ibcDenoms["uhuahua"];
+    case "shib":
+    case ibcDenoms["shib-wei"]:
+      return ibcDenoms["shib-wei"];
+    case "gusdc":
+      return "gusdc";
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -140,7 +143,6 @@ export const denomToCoingeckoTokenId = (key) => {
   }
 };
 
-
 const iconMap = {
   ucmdx: "comdex-icon",
   ucmst: "cmst-icon",
@@ -164,6 +166,11 @@ const iconMap = {
   [ibcDenoms["uakt"]]: "akt-icon",
   [ibcDenoms["wftm-wei"]]: "wfmt-icon",
   [ibcDenoms["umntl"]]: "mntl-icon",
+  [ibcDenoms["shib-wei"]]: "shib-icon",
+  [ibcDenoms["uhuahua"]]: "huahua-icon",
+  gusdc: "gusdc-icon",
+  [ibcDenoms["gravity0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]]:
+    "gusdc-icon",
 };
 
 export const iconNameFromDenom = (key) => {
@@ -266,18 +273,18 @@ export const makeHdPath = (
 export const unixToGMTTime = (time) => {
   let newTime = Math.floor(time / 1000000000);
   var timestamp = moment.unix(newTime);
-  timestamp = timestamp.format("DD/MMMM/YYYY")
+  timestamp = timestamp.format("DD/MMMM/YYYY");
   return timestamp;
-}
+};
 
-export const stringTagParser = input => {
-  const lines = input.split('\n')
-  const output = []
+export const stringTagParser = (input) => {
+  const lines = input.split("\n");
+  const output = [];
   lines.forEach((d, i) => {
     if (i > 0) {
-      output.push(<br />)
+      output.push(<br />);
     }
-    output.push(d)
-  })
-  return output
-}
+    output.push(d);
+  });
+  return output;
+};

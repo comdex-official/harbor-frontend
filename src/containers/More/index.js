@@ -207,7 +207,7 @@ const More = ({
     {
       title: (
         <>
-          Epoch Id <TooltipIcon text="Unique proposal id for weekely voting" />
+          No. of Weeks
         </>
       ),
       dataIndex: "epocId",
@@ -354,10 +354,9 @@ const More = ({
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
-                <h2>Vote</h2>
+                <h2>Emission</h2>
                 <p>
-                  Vote for your desired vault-pair to receive external incentives to direct emissions to that specific vault.
-
+                  Vote for your desired vaults or liquidity pools to direct emissions to that specific vault/pool and receive external incentives. The voting on emissions will run every week.
                 </p>
                 <div className="button-container same-button-container">
                   <Button
@@ -374,7 +373,7 @@ const More = ({
         </Col>
 
         {/* Reward  */}
-        <Col lg="6" md="6" sm="12" className="mb-3">
+        {/* <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
@@ -465,7 +464,7 @@ const More = ({
               </div>
             </div>
           </div>
-        </Col>
+        </Col> */}
 
         {/* Rebasing  */}
         <div>

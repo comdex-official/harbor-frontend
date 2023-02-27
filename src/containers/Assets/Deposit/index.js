@@ -22,6 +22,15 @@ import { toDecimals, truncateString } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import "./index.scss";
 
+import { createTxRaw } from "@tharsis/proto";
+import { generateEndpointAccount } from "@tharsis/provider";
+import {
+  generateEndpointBroadcast,
+  generatePostBodyBroadcast
+} from "@tharsis/provider/dist/rest/broadcast";
+import { createTxIBCMsgTransfer } from "@tharsis/transactions";
+import Long from "long";
+
 const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sourceAddress, setSourceAddress] = useState("");
@@ -84,14 +93,120 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
     setIsModalOpen(true);
   };
 
-  const signIBCTx = () => {
+
+  const handleEvmIBC = async () => {
     setInProgress(true);
 
-    if (!proofHeight?.revision_height) {
-      message.error("Unable to get the latest block height");
-      setInProgress(false);
+    try {
+      const timeout = Math.floor(new Date().getTime() / 1000) + 600;
+      const timeoutTimestampNanoseconds =
+        Long.fromNumber(timeout).multiply(1_000_000_000);
+
+      const ibcMsg = {
+        receiver: address,
+        sender: sourceAddress,
+        sourceChannel: chain.destChannelId,
+        sourcePort: "transfer",
+        timeoutTimestamp: String(timeoutTimestampNanoseconds),
+        amount: getAmount(amount, assetMap[chain?.ibcDenomHash]?.decimals),
+        denom: chain?.coinMinimalDenom,
+        revisionNumber: Number(proofHeight.revision_number),
+        revisionHeight: Number(proofHeight.revision_height) + 100,
+      };
+      const chainInfoForMsg = {
+        chainId: comdex.chainId || 0,
+        cosmosChainId: chain.chainInfo?.chainId,
+      };
+
+      let accountResponse = await fetch(
+        `${chain.chainInfo?.rest}${generateEndpointAccount(sourceAddress)}`
+      );
+      let accountResult = await accountResponse.json();
+
+      const sender = {
+        accountAddress: accountResult.account.base_account.address,
+        sequence: accountResult.account.base_account.sequence,
+        accountNumber: accountResult.account.base_account.account_number,
+        pubkey: accountResult.account.base_account.pub_key?.key || "",
+      };
+
+      const fee = {
+        amount: "20",
+        denom: chain.chainInfo?.coinMinimalDenom,
+        gas: "200000",
+      };
+
+      const transferMsg = createTxIBCMsgTransfer(
+        chainInfoForMsg,
+        sender,
+        fee,
+        "ibc_transfer",
+        ibcMsg
+      );
+
+      const sign = await window?.keplr?.signDirect(
+        chain.chainInfo?.chainId,
+        sourceAddress,
+        {
+          bodyBytes: transferMsg.signDirect.body.serializeBinary(),
+          authInfoBytes: transferMsg.signDirect.authInfo.serializeBinary(),
+          chainId: chainInfoForMsg.cosmosChainId,
+          accountNumber: new Long(sender.accountNumber),
+        },
+        { isEthereum: true }
+      );
+
+      if (sign !== undefined) {
+        let rawTx = createTxRaw(
+          sign.signed.bodyBytes,
+          sign.signed.authInfoBytes,
+          [new Uint8Array(Buffer.from(sign.signature.signature, "base64"))]
+        );
+
+        // Broadcast it
+        const postOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: generatePostBodyBroadcast(rawTx),
+        };
+        try {
+          let broadcastPost = await fetch(
+            `${chain.chainInfo?.rest}/${generateEndpointBroadcast()}`,
+            postOptions
+          );
+          let response = await broadcastPost.json();
+
+          if (response.tx_response?.txhash) {
+            message.loading(
+              "Transaction Broadcasting, Waiting for transaction to be included in the block"
+            );
+
+            handleHash(response.tx_response?.txhash);
+          }
+        } catch (e) {
+          resetValues();
+          return;
+        }
+      }
+    } catch (e) {
+      resetValues();
       return;
     }
+  };
+
+  const signIBCTx = () => {
+    if (!proofHeight?.revision_height) {
+      message.error("Unable to get the latest block height");
+      return;
+    }
+
+    if (chain?.chainInfo?.features?.includes("eth-address-gen")) {
+      // handle evm based token deposits
+      return handleEvmIBC();
+    }
+
+    setInProgress(true);
+
     const data = {
       msg: {
         typeUrl: "/ibc.applications.transfer.v1.MsgTransfer",
@@ -99,10 +214,10 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
           source_port: "transfer",
           source_channel: chain.destChannelId,
           token: {
-            denom: chain.coinMinimalDenom,
+            denom: chain?.coinMinimalDenom,
             amount: getAmount(
               amount,
-              assetMap[chain?.ibcDenomHash]?.decimals
+              assetMap[chain?.coinMinimalDenom]?.decimals
             ),
           },
           sender: sourceAddress,
@@ -120,7 +235,6 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
     };
 
     aminoSignIBCTx(chain.chainInfo, data, (error, result) => {
-      setInProgress(false);
       if (error) {
         if (result?.transactionHash) {
           message.error(
@@ -135,7 +249,6 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
         }
 
         resetValues();
-
         return;
       }
 

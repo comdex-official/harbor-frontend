@@ -17,14 +17,16 @@ import {
   setCurrentPairID,
   setSelectedExtentedPairvault,
 } from "../../actions/locker";
-import { amountConversionWithComma } from "../../utils/coin";
+import { amountConversion, amountConversionWithComma } from "../../utils/coin";
 import NoData from "../../components/NoData";
 import { queryExtendedPairVaultById, queryPair } from "../../services/asset/query";
-import { decimalConversion } from "../../utils/number";
+import { decimalConversion, formatNumber } from "../../utils/number";
 import { queryVaultMintedStatistic } from "../../services/vault/query";
 import { Pagination } from 'antd';
+import { userProposalAllUpData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId } from "../../services/voteContractsRead";
+import { comdex } from "../../config/network";
 
-const Minting = ({ address }) => {
+const Minting = ({ address, refreshBalance }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -39,6 +41,12 @@ const Minting = ({ address }) => {
   const [pageSize, setPageSize] = useState(6);
   const [activePage, setActivePage] = useState(DEFAULT_PAGE_NUMBER)
   const [totalExtendedPair, setTotalExtendedPair] = useState()
+  const [allProposalData, setAllProposalData] = useState();
+  const [proposalId, setProposalId] = useState();
+  const [protectedEmission, setProtectedEmission] = useState(0);
+  const [currentProposalAllData, setCurrentProposalAllData] = useState();
+  const [proposalExtenderPair, setProposalExtenderPair] = useState();
+
 
   const navigateToMint = (path) => {
     navigate({
@@ -112,6 +120,68 @@ const Minting = ({ address }) => {
     fetchExtendexPairList((currentPage - 1) * pageSize, pageSize, true, false, PRODUCT_ID);
   };
 
+  // Emission 
+
+  const fetchVotingCurrentProposalId = () => {
+    setLoading(true)
+    votingCurrentProposalId(PRODUCT_ID).then((res) => {
+      setProposalId(res)
+      setLoading(false)
+    }).catch((error) => {
+      setLoading(false)
+      console.log(error);
+    })
+  }
+
+  const fetchuserProposalProjectedEmission = (proposalId) => {
+    userProposalProjectedEmission(proposalId).then((res) => {
+      setProtectedEmission(amountConversion(res))
+    }).catch((error) => {
+      console.log(error);
+    })
+  }
+
+  const fetchProposalAllUpData = (address, proposalId) => {
+    setLoading(true)
+    userProposalAllUpData(address, proposalId,).then((res) => {
+      setAllProposalData(res?.proposal_pair_data)
+      setLoading(false)
+    }).catch((error) => {
+      setLoading(false)
+      console.log(error);
+    })
+  };
+
+  useEffect(() => {
+    fetchVotingCurrentProposalId()
+  }, [])
+
+  useEffect(() => {
+    if (proposalId) {
+      fetchProposalAllUpData(address, proposalId);
+      fetchuserProposalProjectedEmission(proposalId)
+      fetchVotingCurrentProposal(proposalId)
+    }
+  }, [address, proposalId, refreshBalance])
+
+  const fetchVotingCurrentProposal = (proposalId) => {
+    votingCurrentProposal(proposalId).then((res) => {
+      setProposalExtenderPair(res?.extended_pair)
+      setCurrentProposalAllData(res)
+    }).catch((error) => {
+      console.log(error);
+    })
+  }
+
+  const calculateTotalVotes = (value) => {
+    let userTotalVotes = 0;
+    let calculatePercentage = 0;
+
+    calculatePercentage = (Number(value) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
+    calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
+    return calculatePercentage;
+  }
+
   if (loading) {
     return <Spin />;
   }
@@ -146,7 +216,12 @@ const Minting = ({ address }) => {
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{transformPairName(item?.pairName)}</div>
-                            <div className="vault-desc" />
+                            <div className="vault-desc" > Harbor Emission -
+                              {
+                                allProposalData?.[index]?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(allProposalData?.[index]?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission))
+                                  : Number(0).toFixed(DOLLAR_DECIMALS)
+                              }
+                            </div>
                           </div>
                         </div>
                         <div className="bottom-container">
@@ -237,6 +312,7 @@ Minting.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
+  refreshBalance: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -244,6 +320,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     pairs: state.asset.pairs,
+    refreshBalance: state.account.refreshBalance,
   };
 };
 
