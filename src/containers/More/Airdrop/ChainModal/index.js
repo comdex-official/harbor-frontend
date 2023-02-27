@@ -1,34 +1,28 @@
-import React, { useEffect, useState } from "react";
+import { Button, Input, message, Modal } from "antd";
 import * as PropTypes from "prop-types";
-import { SvgIcon, Row, Col } from "../../../../components/common";
+import React, { useEffect, useState } from "react";
+import Lottie from 'react-lottie';
 import { connect } from "react-redux";
-import { Button, Modal, Input, message } from "antd";
-import "./index.scss";
 import { useNavigate } from "react-router";
-import AGORIC_ICON from '../../../../assets/images/icons/AGORIC.png';
-import TooltipIcon from "../../../../components/TooltipIcon";
-import { checkEligibility, unclaimHarbor } from "../../../../services/airdropContractRead";
-import { setuserEligibilityData } from "../../../../actions/airdrop";
-import { TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../../constants/common";
-import { amountConversionWithComma, getAmount, getAmountForMagicTx } from "../../../../utils/coin";
 import { Link } from "react-router-dom";
-import { truncateString } from "../../../../utils/string";
-import Copy from "../../../../components/Copy";
-import { fetchKeplrAccountName, initializeChain, magicInitializeChain } from "../../../../services/keplr";
-import { chainNetworks } from "../../../../config/magixTx_chain_config";
-import { maginTxChain } from '../magicTxChain'
-import { Fee, MsgSendTokens, signAndBroadcastMagicTransaction, signAndBroadcastTransaction } from "../../../../services/helper";
-import Snack from "../../../../components/common/Snack";
-import variables from "../../../../utils/variables";
-import { Tooltip } from 'antd';
-import { encode } from "js-base64";
 import {
   setAccountAddress,
-  setAccountName,
+  setAccountName
 } from "../../../../actions/account";
-import Lottie from 'react-lottie';
-import celebrationAnimation from '../../../../assets/lottefiles/74680-confetti.json'
-import { airdropEligibleUserPostRew, eligibilityCheckTracker } from "../../../../services/airdropEligiblityTracker";
+import { setuserEligibilityData } from "../../../../actions/airdrop";
+import celebrationAnimation from '../../../../assets/lottefiles/74680-confetti.json';
+import { Col, Row, SvgIcon } from "../../../../components/common";
+import Snack from "../../../../components/common/Snack";
+import Copy from "../../../../components/Copy";
+import { chainNetworks } from "../../../../config/magixTx_chain_config";
+import { TOTAL_ACTIVITY, TOTAL_VEHARBOR_ACTIVITY } from "../../../../constants/common";
+import { checkEligibility } from "../../../../services/airdropContractRead";
+import { eligibilityCheckTracker } from "../../../../services/airdropEligiblityTracker";
+import { Fee, MsgSendTokens, signAndBroadcastMagicTransaction } from "../../../../services/helper";
+import { magicInitializeChain } from "../../../../services/keplr";
+import { amountConversionWithComma } from "../../../../utils/coin";
+import variables from "../../../../utils/variables";
+import "./index.scss";
 
 const ChainModal = ({
   currentChain,
@@ -208,7 +202,7 @@ $HARBOR   $CMST`
 
   return (
     <>
-      <Button className="icons" onClick={showModal}>
+      <Button disabled className="icons" onClick={showModal}>
         <div className="icon-inner" >
           <img src={currentChain?.icon} alt="" />
         </div>
