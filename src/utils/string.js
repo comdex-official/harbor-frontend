@@ -78,6 +78,7 @@ export const symbolToDenom = (key) => {
     case "wbnb":
     case ibcDenoms["wbnb-wei"]:
       return ibcDenoms["wbnb-wei"];
+    case "luna":
     case ibcDenoms["uluna"]:
       return ibcDenoms["uluna"];
     case ibcDenoms["acanto"]:
@@ -103,7 +104,8 @@ export const symbolToDenom = (key) => {
     case "shib":
     case ibcDenoms["shib-wei"]:
       return ibcDenoms["shib-wei"];
-
+    case "gusdc":
+      return "gusdc";
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -166,6 +168,7 @@ const iconMap = {
   [ibcDenoms["umntl"]]: "mntl-icon",
   [ibcDenoms["shib-wei"]]: "shib-icon",
   [ibcDenoms["uhuahua"]]: "huahua-icon",
+  gusdc: "gusdc-icon",
   [ibcDenoms["gravity0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]]:
     "gusdc-icon",
 };
