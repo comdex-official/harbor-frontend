@@ -1,4 +1,4 @@
-import { Button, Table, Input, Switch } from "antd";
+import { Button, Table, Input, Switch, Tabs } from "antd";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -324,6 +324,11 @@ const Assets = ({
     (item) => Number(item?.noOfTokens) > 0
   );
 
+  const tabItems = [
+    { label: "Asset", key: "1", children: '' },
+    { label: "LPToken", key: "2", children: '' }
+  ]
+
   return (
     <div className="app-content-wrapper">
       <div className=" assets-section">
@@ -352,7 +357,13 @@ const Assets = ({
           </Col>
         </Row>
 
-        <Row>
+        <Row className="align-items-center">
+          <Col>
+            <Tabs
+              className="comdex-tabs assets-tab"
+              items={tabItems}
+            />
+          </Col>
           <Col className="assets-search-section">
             <div>
               Hide 0 Balances{" "}
