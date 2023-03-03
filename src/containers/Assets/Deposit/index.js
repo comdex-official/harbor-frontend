@@ -1,6 +1,14 @@
+import { createTxRaw } from "@tharsis/proto";
+import { generateEndpointAccount } from "@tharsis/provider";
+import {
+  generateEndpointBroadcast,
+  generatePostBodyBroadcast
+} from "@tharsis/provider/dist/rest/broadcast";
+import { createTxIBCMsgTransfer } from "@tharsis/transactions";
 import { Button, Form, message, Modal, Spin } from "antd";
+import Long from "long";
 import * as PropTypes from "prop-types";
-import React, { useCallback, useState, useEffect, } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { fetchProofHeight } from "../../../actions/asset";
 import { Col, Row, SvgIcon } from "../../../components/common";
@@ -22,14 +30,6 @@ import { toDecimals, truncateString } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import "./index.scss";
 
-import { createTxRaw } from "@tharsis/proto";
-import { generateEndpointAccount } from "@tharsis/provider";
-import {
-  generateEndpointBroadcast,
-  generatePostBodyBroadcast
-} from "@tharsis/provider/dist/rest/broadcast";
-import { createTxIBCMsgTransfer } from "@tharsis/transactions";
-import Long from "long";
 
 const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -89,6 +89,11 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
   }, [address, initialize, isModalOpen]);
 
   const showModal = () => {
+    if (!address) {
+      message.info("Please connect your wallet");
+      return;
+    }
+    
     initialize();
     setIsModalOpen(true);
   };

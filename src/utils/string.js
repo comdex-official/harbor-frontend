@@ -171,6 +171,7 @@ const iconMap = {
   gusdc: "gusdc-icon",
   [ibcDenoms["gravity0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]]:
     "gusdc-icon",
+    [ibcDenoms["stkATOM"]]: "stkatom-icon",
 };
 
 export const iconNameFromDenom = (key) => {
@@ -214,7 +215,7 @@ export const lowercaseFirstLetter = (string) => {
 export const toDecimals = (value, decimal = comdex.coinDecimals) =>
   value.indexOf(".") >= 0
     ? value.substr(0, value.indexOf(".")) +
-    value.substr(value.indexOf("."), decimal + 1)
+      value.substr(value.indexOf("."), decimal + 1)
     : value;
 
 export const showUserAssetCount = (assetShare, denom) => {
@@ -236,8 +237,8 @@ export const uniqueLiquidityPairDenoms = (list, type) => {
     ...new Set(
       list && list.length > 0
         ? list.map((item) =>
-          type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
-        )
+            type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
+          )
         : []
     ),
   ];
@@ -247,10 +248,10 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   const quoteList =
     list && list.length > 0
       ? list.filter((item) =>
-        type === "in"
-          ? item.baseCoinDenom === denom
-          : item.quoteCoinDenom === denom
-      )
+          type === "in"
+            ? item.baseCoinDenom === denom
+            : item.quoteCoinDenom === denom
+        )
       : [];
 
   const quoteMap = quoteList.map((item) =>
