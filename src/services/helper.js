@@ -5,7 +5,7 @@ import {
   QueryClient,
   SigningStargateClient
 } from "@cosmjs/stargate";
-import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
+import { HttpBatchClient, Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
@@ -74,8 +74,8 @@ export const KeplrWallet = async (chainID = comdex.chainId) => {
 
   const offlineSigner =
     walletType === "keplr"
-      ? window.getOfflineSigner(chainID)
-      : window?.leap?.getOfflineSigner(chainID);
+      ? await window.getOfflineSignerAuto(chainID)
+      : await window?.leap?.getOfflineSignerAuto(chainID);
 
   const accounts = await offlineSigner.getAccounts();
   return [offlineSigner, accounts];
@@ -285,21 +285,19 @@ async function Transaction(wallet, signerAddress, msgs, fee, memo = "") {
 
 export const aminoSignIBCTx = (config, transaction, callback) => {
   (async () => {
-
     let walletType = localStorage.getItem("loginType");
 
-
     (walletType === "keplr" ? await window.keplr : await window.wallet) &&
-      walletType === "keplr"
+    walletType === "keplr"
       ? window.keplr.enable(config.chainId)
       : window.leap.enable(config.chainId);
 
     const offlineSigner =
       walletType === "keplr"
         ? window.getOfflineSignerOnlyAmino &&
-        window.getOfflineSignerOnlyAmino(config.chainId)
+          window.getOfflineSignerOnlyAmino(config.chainId)
         : window?.leap?.getOfflineSignerOnlyAmino &&
-        window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
+          window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
 
     const client = await SigningStargateClient.connectWithSigner(
       config.rpc,
