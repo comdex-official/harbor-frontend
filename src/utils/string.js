@@ -112,6 +112,8 @@ export const symbolToDenom = (key) => {
       return ibcDenoms["shib-wei"];
     case "gusdc":
       return "gusdc";
+    case "gdai":
+      return "gdai";
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -178,6 +180,7 @@ const iconMap = {
   [ibcDenoms["gravity0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]]:
     "gusdc-icon",
   [ibcDenoms["stkATOM"]]: "stkatom-icon",
+  gdai: "gdai-icon",
   [ibcDenoms["gravity0x6B175474E89094C44Da98b954EedeAC495271d0F"]]: "gdai-icon",
   [ibcDenoms["stujuno"]]: "stujuno-icon",
   [ibcDenoms["stuluna"]]: "stuluna-icon",
