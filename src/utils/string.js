@@ -30,7 +30,6 @@ export const generateHash = (txBytes) =>
 export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
 export const transformPairName = (name) => {
-  console.log("name", name);
   if (name === "STATOM-A") {
     return "stATOM-A";
   } else if (name === "STATOM-B") {
