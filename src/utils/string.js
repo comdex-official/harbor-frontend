@@ -36,6 +36,12 @@ export const transformPairName = (name) => {
     return "stATOM-B";
   } else if (name === "STATOM-C") {
     return "stATOM-C";
+  } else if (name === "STOSMO-A") {
+    return "stOSMO-A";
+  } else if (name === "STOSMO-B") {
+    return "stOSMO-B";
+  } else if (name === "STOSMO-C") {
+    return "stOSMO-C";
   } else {
     return name;
   }
@@ -171,7 +177,11 @@ const iconMap = {
   gusdc: "gusdc-icon",
   [ibcDenoms["gravity0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]]:
     "gusdc-icon",
-    [ibcDenoms["stkATOM"]]: "stkatom-icon",
+  [ibcDenoms["stkATOM"]]: "stkatom-icon",
+  [ibcDenoms["gravity0x6B175474E89094C44Da98b954EedeAC495271d0F"]]: "gdai-icon",
+  [ibcDenoms["stujuno"]]: "stujuno-icon",
+  [ibcDenoms["stuluna"]]: "stuluna-icon",
+  [ibcDenoms["stevmos"]]: "stevmos-icon",
 };
 
 export const iconNameFromDenom = (key) => {
