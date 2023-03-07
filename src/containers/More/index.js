@@ -317,6 +317,7 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("./airdrop")}
+                    disabled={true}
                   >
                     Airdrop
                   </Button>
