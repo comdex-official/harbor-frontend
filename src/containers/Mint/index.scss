@@ -421,84 +421,58 @@
 
 .vault-mint-main-container {
   .card-main-container {
-    display: flex;
-    gap: 13px;
-    flex-wrap: wrap;
+    &.mint-card-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 30px;
+
+      @media screen and (max-width:1440px) {
+        grid-gap: 20px;
+      }
+      @media screen and (max-width: 1280px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @media screen and (max-width: 700px) {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
     .card-container {
       background: white;
       // padding: 25px 25px;
-      padding: 18px 25px;
+      padding: 35px;
       border-radius: $base-border-radius;
       box-shadow: $box-shadow-inner-light;
       border: 1px solid $border-color-base;
-      flex-basis: 30%;
-      @media only screen and (min-width: 990px) and (max-width: 1300px) {
-        flex-basis: 45%;
-      }
-      @media only screen and (max-width: 972px) {
-        flex-basis: 45%;
-      }
-      @media only screen and (max-width: 720px) {
-        flex-basis: 100%;
+      @media screen and (max-width:1440px) {
+        padding: 30px;
       }
       .dark-mode & {
-        background: $background-dark2;
+        background: rgba($black, 0.4);
+        border-color: rgba($white, 0.3);
         box-shadow: none;
-      }
-      &:hover {
-        background: rgba($secondary-color, 0.3);
-        border-color: rgb(199 194 226 / 30%);
-        cursor: pointer;
-        .dark-mode & {
-          background: $secondary-color;
-          border-color: $secondary-color;
-        }
-      }
-      &:hover .tooltip-icon {
-        fill: black;
-        .dark-mode & {
-          fill: white;
-        }
       }
 
       .up-container {
         display: flex;
-        column-gap: 10px;
+        align-items: center;
+        margin-bottom: 1rem;
         .icon-container {
-          flex-basis: 20%;
-          height: 5rem;
-          @media only screen and (min-width: 620px) and (max-width: 720px) {
-            height: auto;
-          }
-          @media only screen and (max-width: 619px) {
-            height: 8rem;
-          }
-          @media only screen and (max-width: 490px) {
-            height: 6rem;
-          }
-          @media only screen and (max-width: 380px) {
-            height: 4rem;
+          width: 70px;
+          height: 70px;
+          border-radius: 70px;
+          margin-right: 15px;
+          @media screen and (max-width:1440px) {
+            width: 60px;
+            height: 60px;
           }
           .icon {
-            width: 100%;
-            height: 70%;
-            border-radius: 50%;
-          }
-        }
-        .mint-page-icon-container {
-          .icon {
-            width: 57px;
-            @media only screen and (min-width: 620px) and (max-width: 720px) {
-              width: 109px;
-            }
-            @media only screen and (min-width: 490px) and (max-width: 620px) {
-              width: 88px;
-            }
-            @media only screen and (min-width: 381px) and (max-width: 490px) {
-              width: 67px;
-            }
-            @media only screen and (min-width: 280px) and (max-width: 381px) {
-              width: 45px;
+            width: 70px;
+            height: 70px;
+            border-radius: 70px;
+            @media screen and (max-width:1440px) {
+              width: 60px;
+              height: 60px;
+              border-radius: 60px;
             }
           }
         }
@@ -508,19 +482,47 @@
             font-size: 1.3rem;
             font-weight: 600;
             color: #000;
-            margin-top: 12px;
+            margin-top: 0;
+            @media screen and (max-width:1440px) {
+              font-size: 1.2rem;
+            }
             .dark-mode & {
               color: #fff;
             }
           }
-          .vault-desc {
+        }
+      }
+      .vault-desc {
+        margin-bottom: 1rem;
+        p {
+          font-size: 1.3rem;
+          font-weight: 600;
+          @media screen and (max-width:1440px) {
+            font-size: 1.05rem;
+          }
+        }
+        .coins{
+          font-size: 1.9rem;
+          font-weight: 800;
+          background: $text-gradient;
+          -webkit-background-clip: text;
+	        -webkit-text-fill-color: transparent;
+          @media screen and (max-width:1440px) {
+            font-size: 1.6rem;
+          }
+          span {
+            font-size: 1.375rem;
+            margin-left: 6px;
           }
         }
       }
       .bottom-container {
         display: flex;
         flex-direction: column;
-        row-gap: 10px;
+        row-gap: 15px;
+        @media screen and (max-width:1440px) {
+          row-gap: 12px;
+        }
         .contenet-container {
           display: flex;
           justify-content: space-between;
@@ -530,11 +532,41 @@
             color: #fff;
           }
           .name {
-            font-size: 13px;
+            font-size: 0.9rem;
+            @media screen and (max-width:1440px) {
+              font-size: 0.8rem;
+            }
           }
           .value {
-            font-size: 11px;
+            font-size: 0.9rem;
             font-weight: 500;
+            @media screen and (max-width:1440px) {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+      &:hover {
+        background: rgba($secondary-color, 0.3);
+        border-color: rgb(199 194 226 / 30%);
+        cursor: pointer;
+        .dark-mode & {
+          background: $secondary-color;
+          border-color: $secondary-color;
+        }
+        .vault-desc {
+          .coins{
+            .dark-mode & {
+              background: $white;
+              -webkit-background-clip: text;
+	            -webkit-text-fill-color: transparent;
+            }
+          }
+        }
+        .tooltip-icon {
+          fill: black;
+          .dark-mode & {
+            fill: white;
           }
         }
       }
@@ -547,5 +579,59 @@
   font-size: 20px;
   .dark-mode & {
     color: white;
+  }
+}
+
+
+.mint-search-section {
+  text-align: right;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+
+  .ant-input-affix-wrapper {
+    border: 1px solid $secondary-color;
+    background: none;
+    border-radius: 30px;
+    height: 38px;
+    padding: 4px 18px;
+    max-width: 260px;
+
+    @media screen and (max-width: 576px) {
+      max-width: 100%;
+    }
+
+    &:hover {
+      border-color: $border-light;
+    }
+
+    input {
+      background: none;
+      font-weight: 400;
+
+      .dark-mode & {
+        color: $white;
+      }
+
+      &::placeholder {
+        color: #303950;
+        opacity: 1;
+        font-weight: 400;
+        .dark-mode & {
+          color: white;
+        }
+      }
+    }
+
+    .ant-input-suffix {
+      .icon {
+        fill: $border-dark;
+        .dark-mode & {
+          fill: $secondary-color;
+        }
+      }
+    }
   }
 }
