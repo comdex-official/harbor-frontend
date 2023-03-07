@@ -72,14 +72,14 @@ const routes = [
     path: "/more/vote",
     element: <Vote />,
   },
-  {
-    path: "/more/airdrop",
-    element: <Airdrop />,
-  },
-  {
-    path: "/more/airdrop/complete-mission/:chainId",
-    element: <CompleteMission />,
-  },
+  // {
+  //   path: "/more/airdrop",
+  //   element: <Airdrop />,
+  // },
+  // {
+  //   path: "/more/airdrop/complete-mission/:chainId",
+  //   element: <CompleteMission />,
+  // },
 ];
 
 export default routes;
