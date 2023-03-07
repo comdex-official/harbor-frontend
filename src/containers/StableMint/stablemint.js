@@ -96,6 +96,9 @@ const StableMint = ({
         if(extendexPairVaultPairName === "GRAV-USDC-CMST"){
             return "gusdc" // returning denom
         }
+        if(extendexPairVaultPairName === "GRAV-DAI-CMST"){
+            return "gdai" // returning denom
+        }
         let pairName = extendexPairVaultPairName;
         pairName = pairName?.replace(/\s+/g, ' ').trim()
         pairName = pairName?.substring(pairName?.indexOf('-') + 1);
