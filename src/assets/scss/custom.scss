@@ -540,10 +540,11 @@ button {
 
 .ant-tooltip {
   & .ant-tooltip-inner {
-    background-color: $primary-color;
     border-radius: $base-border-radius;
     padding-left: 15px;
     padding-right: 15px;
+    background-color: $tooltip-bg-light;
+    color: $tooltip-color-dark;
   }
 
   & .ant-tooltip-arrow-content {
