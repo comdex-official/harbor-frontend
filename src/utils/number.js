@@ -35,13 +35,14 @@ export const truncateToDecimals = (num, dec = 2) => {
 
 export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPrice) => {
   const value = marketsMap?.map[assetId]
-  if (denom === "ucmst") {
-    return 1;
-  }
+  
+  // if (denom === "ucmst") {
+  //   return 1;
+  // }
 
-  if (denom === ibcDenoms["uusdc"]) {
-    return 1;
-  }
+  // if (denom === ibcDenoms["uusdc"]) {
+  //   return 1;
+  // }
 
   if (value && value?.twa && value?.isPriceActive) {
     return value?.twa?.toNumber() / 1000000;
