@@ -481,15 +481,6 @@ const Edit = ({
     } else if (type === "repay") {
       const ratio = (Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals) * Number(collateralPrice))) / ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) - Number(value)) * Number(debtPrice))
       setNewCollateralRatio((ratio * 100).toFixed(1));
-      // if (Number(getAmount(value, assetMap[pair?.denomOut]?.decimals)) > Number(amountConversion(debtAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomOut]?.decimals))) {
-      //   setInputValidationError(
-      //     ValidateInputNumber(
-      //       Number(getAmount(value, assetMap[pair?.denomOut]?.decimals)),
-      //       Number(getAmount(getMaxRepay(), assetMap[pair?.denomOut]?.decimals)),
-      //     )
-      //   );
-      // }
-      // else {
       setInputValidationError(
         ValidateInputNumber(
           Number(getAmount(value, assetMap[pair?.denomOut]?.decimals)),
@@ -499,7 +490,6 @@ const Edit = ({
           `Max repay amount is $${Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS)}`
         )
       );
-      // }
     } else {
       const ratio = (Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals) * Number(collateralPrice))) / ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) + Number(value)) * Number(debtPrice))
 
