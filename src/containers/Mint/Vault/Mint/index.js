@@ -76,7 +76,7 @@ const Mint = ({
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.toNumber();
   const ownerVaultId = useSelector((state) => state.locker.ownerVaultId);
-  const selectedIBCAsset = AssetList?.tokens.filter((item) => item.coinDenom === denomToSymbol(pair && pair?.denomIn));
+  const selectedIBCAsset = AssetList?.tokens.filter((item) => (item.coinDenom)?.toLocaleLowerCase() === (denomToSymbol(pair && pair?.denomIn))?.toLowerCase());
 
   const getOwnerVaultInfo = (ownerVaultId) => {
     queryUserVaultsInfo(ownerVaultId, (error, data) => {
@@ -113,7 +113,7 @@ const Mint = ({
       handleAmountInChange(value);
     }
 
-    if (selectedIBCAsset && selectedIBCAsset[0]?.coinDenom === denomToSymbol(pair && pair?.denomIn)) {
+    if ((selectedIBCAsset && selectedIBCAsset[0]?.coinDenom)?.toLocaleLowerCase() === (denomToSymbol(pair && pair?.denomIn))?.toLowerCase()) {
       setValidationError(
         ValidateInputNumber(value, (collateralAssetBalance / assetMap[pair?.denomIn]?.decimals).toFixed(6))
       );
