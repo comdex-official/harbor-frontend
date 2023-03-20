@@ -13,7 +13,7 @@ import {
     getAmount,
     getDenomBalance,
 } from "../../../utils/coin";
-import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../utils/string";
+import { denomToSymbol, errorMessageMappingParser, iconNameFromDenom, toDecimals } from "../../../utils/string";
 import variables from "../../../utils/variables";
 import { setAssets, setPair } from "../../../actions/asset";
 import {
@@ -193,7 +193,7 @@ const Deposit = ({
                 }
 
                 if (result?.code) {
-                    message.info(result?.rawLog);
+                    message.info(errorMessageMappingParser(result?.rawLog));
                     return;
                 }
                 message.success(

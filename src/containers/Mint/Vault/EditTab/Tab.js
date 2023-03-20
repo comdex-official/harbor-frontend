@@ -32,7 +32,7 @@ import {
 } from "../../../../utils/number";
 import { comdex } from "../../../../config/network";
 import AssetList from "../../../../config/ibc_assets.json";
-import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
+import { denomToSymbol, errorMessageMappingParser, iconNameFromDenom } from "../../../../utils/string";
 import "../index.scss";
 import Snack from "../../../../components/common/Snack";
 import variables from "../../../../utils/variables";
@@ -240,7 +240,7 @@ const Edit = ({
         }
 
         if (result?.code) {
-          message.info(result?.rawLog);
+          message.info(errorMessageMappingParser(result?.rawLog));
           return;
         }
 
@@ -501,12 +501,6 @@ const Edit = ({
     }
   };
 
-  // const marks = {
-  //   0: "0%",
-  //   [minCrRatio]: `Min`,
-  //   [safeCrRatio]: `Safe`,
-  //   500: "500%"
-  // };
 
   const marks = {
     [minCrRatio + 5]: `Min`,
