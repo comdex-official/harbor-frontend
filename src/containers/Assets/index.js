@@ -1,4 +1,4 @@
-import { Button, Table, Input, Switch } from "antd";
+import { Button, Table, Input, Switch, Tabs } from "antd";
 import Lodash from "lodash";
 import * as PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -20,6 +20,7 @@ import { iconNameFromDenom } from "../../utils/string";
 import variables from "../../utils/variables";
 import Deposit from "./Deposit";
 import "./index.scss";
+import LPAsssets from "./LPAassets";
 import Withdraw from "./Withdraw";
 
 const Assets = ({
@@ -36,6 +37,18 @@ const Assets = ({
   const [loading, setLoading] = useState(false);
   const [isHideToggleOn, setHideToggle] = useState(false);
   const [searchKey, setSearchKey] = useState("");
+  const [filterValue, setFilterValue] = useState("1");
+
+  const tabItems = [
+    {
+      key: "1",
+      label: "Assets",
+    },
+    {
+      key: "2",
+      label: "LF Tokens",
+    },
+  ];
 
   const handleBalanceRefresh = () => {
     setLoading(true);
@@ -324,6 +337,10 @@ const Assets = ({
     (item) => Number(item?.noOfTokens) > 0
   );
 
+  const onChange = (key) => {
+    setFilterValue(key);
+  };
+
   return (
     <div className="app-content-wrapper">
       <div className=" assets-section">
@@ -353,6 +370,15 @@ const Assets = ({
         </Row>
 
         <Row>
+          <div className="mt-4">
+            <Tabs
+              defaultActiveKey="1"
+              items={tabItems}
+              activeKey={filterValue}
+              onChange={onChange}
+              className="comdex-tabs farm-details-tabmain"
+            />
+          </div>
           <Col className="assets-search-section">
             <div>
               Hide 0 Balances{" "}
@@ -373,15 +399,23 @@ const Assets = ({
 
         <Row>
           <Col>
-            <Table
-              className="custom-table assets-table"
-              dataSource={tableData}
-              columns={columns}
-              loading={loading}
-              pagination={false}
-              scroll={{ x: "100%" }}
-              locale={{ emptyText: <NoDataIcon /> }}
-            />
+            {filterValue === "1" ? (
+              <Table
+                className="custom-table assets-table"
+                dataSource={tableData}
+                columns={columns}
+                loading={loading}
+                pagination={false}
+                scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
+              />
+            ) : (
+              <LPAsssets
+                isHideToggleOn={isHideToggleOn}
+                searchKey={searchKey}
+                activeKey={filterValue}
+              />
+            )}
           </Col>
         </Row>
       </div>

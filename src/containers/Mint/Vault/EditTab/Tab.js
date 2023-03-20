@@ -32,7 +32,7 @@ import {
 } from "../../../../utils/number";
 import { comdex } from "../../../../config/network";
 import AssetList from "../../../../config/ibc_assets.json";
-import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
+import { denomToSymbol, errorMessageMappingParser, iconNameFromDenom } from "../../../../utils/string";
 import "../index.scss";
 import Snack from "../../../../components/common/Snack";
 import variables from "../../../../utils/variables";
@@ -148,6 +148,8 @@ const Edit = ({
 
   const collateralAssetBalance = getDenomBalance(balances, pair && pair?.denomIn) || 0;
 
+  const debtAssetBalance = getDenomBalance(balances, pair && pair?.denomOut) || 0;
+
 
   const getOwnerVaultId = (productId, address, extentedPairId) => {
     queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
@@ -238,7 +240,7 @@ const Edit = ({
         }
 
         if (result?.code) {
-          message.info(result?.rawLog);
+          message.info(errorMessageMappingParser(result?.rawLog));
           return;
         }
 
@@ -349,6 +351,7 @@ const Edit = ({
     setDraw("");
     setRepay("");
   }
+
   const getWithdrawMax = () => {
     let availableBalance = withdrawableCollateral();
     checkValidation(availableBalance, "withdraw")
@@ -359,6 +362,7 @@ const Edit = ({
     setDraw("");
     setRepay("");
   }
+
   const getDrawMax = () => {
     let availableBalance = availableToBorrow();
     checkValidation(availableBalance, "draw")
@@ -369,8 +373,10 @@ const Edit = ({
     setDraw(availableBalance);
     setRepay("");
   }
+
   const getRepayMax = () => {
     let availableBalance = getMaxRepay();
+    // let availableBalance = amountConversion(debtAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomOut]?.decimals)
     checkValidation(availableBalance, "repay")
     setInputAmount(availableBalance);
     setEditType("repay")
@@ -378,6 +384,7 @@ const Edit = ({
     setWithdraw("");
     setDraw("");
     setRepay(availableBalance);
+
   }
 
   const handleSliderChange = (value, type = editType) => {
@@ -477,7 +484,11 @@ const Edit = ({
       setInputValidationError(
         ValidateInputNumber(
           Number(getAmount(value, assetMap[pair?.denomOut]?.decimals)),
-          Number(getAmount(getMaxRepay(), assetMap[pair?.denomOut]?.decimals)))
+          Number(getAmount(getMaxRepay(), assetMap[pair?.denomOut]?.decimals)),
+          "",
+          "",
+          `Max repay amount is $${Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS)}`
+        )
       );
     } else {
       const ratio = (Number(amountConversion(currentCollateral, comdex.coinDecimals, assetMap[pair?.denomIn]?.decimals) * Number(collateralPrice))) / ((Number(amountConversion(currentDebt, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) + Number(value)) * Number(debtPrice))
@@ -490,12 +501,6 @@ const Edit = ({
     }
   };
 
-  // const marks = {
-  //   0: "0%",
-  //   [minCrRatio]: `Min`,
-  //   [safeCrRatio]: `Safe`,
-  //   500: "500%"
-  // };
 
   const marks = {
     [minCrRatio + 5]: `Min`,
@@ -661,7 +666,9 @@ const Edit = ({
                     Repay <TooltipIcon text="Partially repay your Borrowed Collateral" />
                   </label>
                   {showRepayMax && <span className="ml-1" onClick={getRepayMax}>
-                    <span className="available">Avl.</span>   {formatNumber(Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)}
+                    {/* <span className="available">Avl.</span>   {formatNumber(Number(getMaxRepay()).toFixed(DOLLAR_DECIMALS))} {denomToSymbol(pair && pair?.denomOut)} */}
+                    {formatNumber(amountConversion(debtAssetBalance, DOLLAR_DECIMALS, assetMap[pair?.denomOut]?.decimals))} {" "}
+                    {denomToSymbol(pair && pair?.denomOut)}
                   </span>}
                 </div>
                 <CustomInput
