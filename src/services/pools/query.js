@@ -83,5 +83,57 @@ export const queryFarmedPoolCoin = (
     });
 };
 
+export const queryDeserializePoolCoin = (
+    poolId,
+    poolCoinAmount,
+    callback
+) => {
+    createQueryClient((error, client) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+
+        const queryService = new QueryClientImpl(client);
+
+        queryService
+            .DeserializePoolCoin({
+                appId: Long.fromNumber(CSWAP_APP_ID),
+                poolId: Long.fromNumber(poolId),
+                poolCoinAmount: Long.fromNumber(poolCoinAmount)
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message)
+            });
+    });
+};
+
+export const queryTotalActiveAndQueuedPoolCoin = (
+    callback
+) => {
+    createQueryClient((error, client) => {
+        if (error) {
+            callback(error);
+            return;
+        }
+
+        const queryService = new QueryClientImpl(client);
+
+        queryService
+            .TotalActiveAndQueuedPoolCoin({
+                appId: Long.fromNumber(CSWAP_APP_ID),
+            })
+            .then((result) => {
+                callback(null, result);
+            })
+            .catch((error) => {
+                callback(error?.message)
+            });
+    });
+};
+
 
 
