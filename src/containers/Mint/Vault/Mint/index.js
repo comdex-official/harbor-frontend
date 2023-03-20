@@ -32,7 +32,7 @@ import {
 } from "../../../../utils/coin";
 import CustomSkelton from "../../../../components/CustomSkelton";
 import { commaSeparator, decimalConversion, marketPrice } from "../../../../utils/number";
-import { denomToSymbol, iconNameFromDenom, toDecimals } from "../../../../utils/string";
+import { denomToSymbol, errorMessageMappingParser, iconNameFromDenom, toDecimals } from "../../../../utils/string";
 import variables from "../../../../utils/variables";
 import "./index.scss";
 import PricePool from "./PricePool";
@@ -315,7 +315,7 @@ const Mint = ({
           }
 
           if (result?.code) {
-            message.info(result?.rawLog);
+            message.info(errorMessageMappingParser(result?.rawLog));
             resetValues();
             return;
           }
@@ -365,7 +365,7 @@ const Mint = ({
           }
 
           if (result?.code) {
-            message.info(result?.rawLog);
+            message.info(errorMessageMappingParser(result?.rawLog));
             resetValues();
             return;
           }

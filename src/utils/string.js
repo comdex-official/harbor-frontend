@@ -228,7 +228,7 @@ export const lowercaseFirstLetter = (string) => {
 export const toDecimals = (value, decimal = comdex.coinDecimals) =>
   value.indexOf(".") >= 0
     ? value.substr(0, value.indexOf(".")) +
-      value.substr(value.indexOf("."), decimal + 1)
+    value.substr(value.indexOf("."), decimal + 1)
     : value;
 
 export const showUserAssetCount = (assetShare, denom) => {
@@ -250,8 +250,8 @@ export const uniqueLiquidityPairDenoms = (list, type) => {
     ...new Set(
       list && list.length > 0
         ? list.map((item) =>
-            type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
-          )
+          type === "in" ? item.baseCoinDenom : item.quoteCoinDenom
+        )
         : []
     ),
   ];
@@ -261,10 +261,10 @@ export const uniqueQuoteDenomsForBase = (list, type, denom) => {
   const quoteList =
     list && list.length > 0
       ? list.filter((item) =>
-          type === "in"
-            ? item.baseCoinDenom === denom
-            : item.quoteCoinDenom === denom
-        )
+        type === "in"
+          ? item.baseCoinDenom === denom
+          : item.quoteCoinDenom === denom
+      )
       : [];
 
   const quoteMap = quoteList.map((item) =>
@@ -302,3 +302,15 @@ export const stringTagParser = (input) => {
   });
   return output;
 };
+
+
+export const errorMessageMappingParser = (message) => {
+  var str = message;
+
+  var truncatedString = str?.match(/ibc\/\w{64}/g);
+  
+  for (var i = 0; i < truncatedString?.length; i++) {
+    str = str.replace(truncatedString[i], " " + `${ibcDenomToDenom(truncatedString[i])}`);
+  }
+  return str;
+}
