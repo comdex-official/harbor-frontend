@@ -163,17 +163,18 @@ button {
   }
 
   .ant-tooltip-inner {
-    background-color: $tooltip-bg-light !important;
+    background-color: $tooltip-bg-light;
     color: $tooltip-color-dark;
     font-size: $font-size-sm - 2;
     min-height: 20px;
     padding: 2px 3px;
     line-height: 12px;
-    border-radius: 3px !important;
+    border-radius: 5px !important;
 
     .dark-mode & {
-      background-color: $tooltip-bg-light;
-      color: $tooltip-color-dark;
+      background-color: #232231;
+      border: 1px solid #fff;
+      color: white;
     }
   }
 }
@@ -540,10 +541,11 @@ button {
 
 .ant-tooltip {
   & .ant-tooltip-inner {
-    background-color: $primary-color;
     border-radius: $base-border-radius;
     padding-left: 15px;
     padding-right: 15px;
+    background-color: $tooltip-bg-light;
+    color: $tooltip-color-dark;
   }
 
   & .ant-tooltip-arrow-content {

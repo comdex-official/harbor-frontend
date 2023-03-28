@@ -1,6 +1,6 @@
 import { Button, Form, message, Modal } from "antd";
 import * as PropTypes from "prop-types";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { fetchProofHeight } from "../../../actions/asset";
 import { Col, Row, SvgIcon } from "../../../components/common";
@@ -60,6 +60,11 @@ const Withdraw = ({ lang, chain, address, balances, handleRefresh, assetMap }) =
   }, [address, initialize, isModalOpen]);
 
   const showModal = () => {
+    if (!address) {
+      message.info("Please connect your wallet");
+      return;
+    }
+    
     initialize();
     setIsModalOpen(true);
   };

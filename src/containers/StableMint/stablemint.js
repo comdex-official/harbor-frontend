@@ -1,26 +1,23 @@
-import './index.scss'
+import { message, Pagination, Spin } from "antd";
 import * as PropTypes from "prop-types";
-import { SvgIcon } from "../../components/common";
-import { message, Spin } from "antd";
-import { useNavigate } from "react-router";
-import { iconNameFromDenom, symbolToDenom } from "../../utils/string";
-import TooltipIcon from "../../components/TooltipIcon";
 import React, { useEffect, useState } from "react";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { amountConversionWithComma } from "../../utils/coin";
-import NoData from "../../components/NoData";
-import { queryExtendedPairVaultById, queryPairVault, queryStableMintExtendedPairVaultById } from "../../services/asset/query";
-import { setStableMintVaultList } from "../../actions/stableMint"
+import { connect, useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import {
     setCurrentPairID,
-    setSelectedExtentedPairvault,
+    setSelectedExtentedPairvault
 } from "../../actions/locker";
-import { decimalConversion } from "../../utils/number";
+import { setStableMintVaultList } from "../../actions/stableMint";
+import { SvgIcon } from "../../components/common";
+import NoData from "../../components/NoData";
+import TooltipIcon from "../../components/TooltipIcon";
+import { DEFAULT_PAGE_NUMBER, DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
+import { queryPairVault } from "../../services/asset/query";
 import { queryStableVault, queryVaultMintedStatistic } from "../../services/vault/query";
-import { connect } from "react-redux";
-import { Pagination } from 'antd';
+import { amountConversionWithComma } from "../../utils/coin";
+import { decimalConversion } from "../../utils/number";
+import { iconNameFromDenom, symbolToDenom } from "../../utils/string";
+import './index.scss';
 
 
 const StableMint = ({
@@ -96,11 +93,18 @@ const StableMint = ({
     }
 
     const getIconFromPairName = (extendexPairVaultPairName) => {
+        if(extendexPairVaultPairName === "GRAV-USDC-CMST"){
+            return "gusdc" // returning denom
+        }
+        if(extendexPairVaultPairName === "GRAV-DAI-CMST"){
+            return "gdai" // returning denom
+        }
         let pairName = extendexPairVaultPairName;
         pairName = pairName?.replace(/\s+/g, ' ').trim()
         pairName = pairName?.substring(pairName?.indexOf('-') + 1);
         pairName = pairName?.substring(0, pairName?.indexOf('-'));
         pairName = pairName?.toLowerCase();
+
         return pairName;
     }
 

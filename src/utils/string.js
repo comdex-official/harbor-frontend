@@ -19,7 +19,6 @@ const getIbcDenomToDenomMap = () => {
 
 let ibcDenomToDenomMap = getIbcDenomToDenomMap();
 
-
 const encoding = require("@cosmjs/encoding");
 
 export const decode = (hash) =>
@@ -30,23 +29,25 @@ export const generateHash = (txBytes) =>
 
 export const ibcDenomToDenom = (key) => ibcDenomToDenomMap?.[key];
 
-
 export const transformPairName = (name) => {
   if (name === "STATOM-A") {
-    return "stATOM-A"
-  }
-  else if (name === "STATOM-B") {
-    return "stATOM-B"
-  }
-  else if (name === "STATOM-C") {
-    return "stATOM-C"
-  }
-  else {
+    return "stATOM-A";
+  } else if (name === "STATOM-B") {
+    return "stATOM-B";
+  } else if (name === "STATOM-C") {
+    return "stATOM-C";
+  } else if (name === "STOSMO-A") {
+    return "stOSMO-A";
+  } else if (name === "STOSMO-B") {
+    return "stOSMO-B";
+  } else if (name === "STOSMO-C") {
+    return "stOSMO-C";
+  } else {
     return name;
   }
-}
+};
 
-// For getIcon From extendedPair name 
+// For getIcon From extendedPair name
 export const symbolToDenom = (key) => {
   switch (key) {
     case "atom":
@@ -83,6 +84,7 @@ export const symbolToDenom = (key) => {
     case "wbnb":
     case ibcDenoms["wbnb-wei"]:
       return ibcDenoms["wbnb-wei"];
+    case "luna":
     case ibcDenoms["uluna"]:
       return ibcDenoms["uluna"];
     case ibcDenoms["acanto"]:
@@ -102,7 +104,16 @@ export const symbolToDenom = (key) => {
     case "mntl":
     case ibcDenoms["mntl"]:
       return ibcDenoms["mntl"];
-
+    case "huahua":
+    case ibcDenoms["uhuahua"]:
+      return ibcDenoms["uhuahua"];
+    case "shib":
+    case ibcDenoms["shib-wei"]:
+      return ibcDenoms["shib-wei"];
+    case "gusdc":
+      return "gusdc";
+    case "gdai":
+      return "gdai";
     case "cmdx":
       return "ucmdx";
     case "cmst":
@@ -140,7 +151,6 @@ export const denomToCoingeckoTokenId = (key) => {
   }
 };
 
-
 const iconMap = {
   ucmdx: "comdex-icon",
   ucmst: "cmst-icon",
@@ -164,6 +174,17 @@ const iconMap = {
   [ibcDenoms["uakt"]]: "akt-icon",
   [ibcDenoms["wftm-wei"]]: "wfmt-icon",
   [ibcDenoms["umntl"]]: "mntl-icon",
+  [ibcDenoms["shib-wei"]]: "shib-icon",
+  [ibcDenoms["uhuahua"]]: "huahua-icon",
+  gusdc: "gusdc-icon",
+  [ibcDenoms["gravity0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"]]:
+    "gusdc-icon",
+  [ibcDenoms["stkATOM"]]: "stkatom-icon",
+  gdai: "gdai-icon",
+  [ibcDenoms["gravity0x6B175474E89094C44Da98b954EedeAC495271d0F"]]: "gdai-icon",
+  [ibcDenoms["stujuno"]]: "stujuno-icon",
+  [ibcDenoms["stuluna"]]: "stuluna-icon",
+  [ibcDenoms["stevmos"]]: "stevmos-icon",
 };
 
 export const iconNameFromDenom = (key) => {
@@ -266,18 +287,30 @@ export const makeHdPath = (
 export const unixToGMTTime = (time) => {
   let newTime = Math.floor(time / 1000000000);
   var timestamp = moment.unix(newTime);
-  timestamp = timestamp.format("DD/MMMM/YYYY")
+  timestamp = timestamp.format("DD/MMMM/YYYY");
   return timestamp;
-}
+};
 
-export const stringTagParser = input => {
-  const lines = input.split('\n')
-  const output = []
+export const stringTagParser = (input) => {
+  const lines = input.split("\n");
+  const output = [];
   lines.forEach((d, i) => {
     if (i > 0) {
-      output.push(<br />)
+      output.push(<br />);
     }
-    output.push(d)
-  })
-  return output
+    output.push(d);
+  });
+  return output;
+};
+
+
+export const errorMessageMappingParser = (message) => {
+  var str = message;
+
+  var truncatedString = str?.match(/ibc\/\w{64}/g);
+  
+  for (var i = 0; i < truncatedString?.length; i++) {
+    str = str.replace(truncatedString[i], " " + `${ibcDenomToDenom(truncatedString[i])}`);
+  }
+  return str;
 }
