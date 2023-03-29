@@ -184,7 +184,7 @@ export const queryAuctionParams = (callback) => {
     }
 
     queryService
-      .QueryAuctionParams({
+      .QueryGenericAuctionParams({
         appId: Long.fromNumber(PRODUCT_ID),
       })
       .then((result) => {
