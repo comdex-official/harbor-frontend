@@ -14,6 +14,7 @@ import CompleteMission from './containers/More/Airdrop/CompleteMission';
 import Vesting from "./containers/More/Locker";
 import Vote from "./containers/More/Vote";
 import StableMintVault from "./containers/StableMint/vault";
+import Rewards from "./containers/More/Rewards";
 
 const routes = [
   {
@@ -71,6 +72,10 @@ const routes = [
   {
     path: "/more/vote",
     element: <Vote />,
+  },
+  {
+    path: "/more/rewards",
+    element: <Rewards />,
   },
   // {
   //   path: "/more/airdrop",

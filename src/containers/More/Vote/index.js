@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import './index.scss';
 import { connect } from "react-redux";
-import { Button, List, message, Modal, Table, Tabs } from "antd";
+import { Button, Input, List, message, Slider, Switch, Table } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
@@ -14,13 +14,10 @@ import { transactionForVotePairProposal } from '../../../services/voteContractsW
 import { setBalanceRefresh } from "../../../actions/account";
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import TooltipIcon from '../../../components/TooltipIcon';
 import Snack from '../../../components/common/Snack';
 import variables from '../../../utils/variables';
 import { comdex } from '../../../config/network';
 import NoDataIcon from '../../../components/common/NoDataIcon';
-import CustomSkelton from '../../../components/CustomSkelton';
-import { MyTimer } from '../../../components/TimerForAirdrop'
 import Pool from './pool';
 import { queryFarmedPoolCoin, queryFarmer, queryPoolsList, queryTotalActiveAndQueuedPoolCoin } from '../../../services/pools/query';
 import Highcharts from "highcharts";
@@ -31,6 +28,8 @@ import ViewAllToolTip from './viewAllModal';
 import { combineColor, poolColor, vaultColor } from './color';
 import Rebase from './Rebase';
 import Reward from './Rewards';
+import EmissionDistributionAllModal from './EmissionDistributionAllModal';
+import ExternalIncentivesModal from './ExternalIncentivesModal';
 
 const Vote = ({
   lang,
@@ -56,7 +55,6 @@ const Vote = ({
   const [myBorrowed, setMyBorrowed] = useState({});
 
   const [totalVotingPower, setTotalVotingPower] = useState(0);
-  const [isViewAllModalVisible, setIsViewAllModalVisible] = useState(false);
   const [protectedEmission, setProtectedEmission] = useState(0);
   const [poolList, setPoolList] = useState();
   const [concatedExtendedPair, setConcatedExtendedPair] = useState([]);
@@ -68,7 +66,11 @@ const Vote = ({
   const [poolsName, setPoolsName] = useState({})
   const [allPairTotalVote, setAllPairTotalVote] = useState({})
 
+  const [inputValue, setInputValue] = useState(1);
 
+  const onChange = (newValue) => {
+    setInputValue(newValue);
+  };
 
   // Query 
   const fetchVotingCurrentProposalId = () => {
@@ -441,19 +443,6 @@ const Vote = ({
     getPairFromExtendedPair()
   }, [allProposalData, refreshBalance])
 
-
-  const handleViewAllOk = () => {
-    setIsViewAllModalVisible(false);
-  };
-
-  const showViewAll = () => {
-    setIsViewAllModalVisible(true);
-  };
-
-  const handleViewAllCancel = () => {
-    setIsViewAllModalVisible(false);
-  };
-
   const columns = [
     {
       title: (
@@ -674,7 +663,6 @@ const Vote = ({
       key: "total_votes",
       width: 200,
     },
-
     {
       title: (
         <>
@@ -690,10 +678,8 @@ const Vote = ({
             item && item?.map((singleBribe, index) => {
               return <div className="endtime-badge mt-1" key={index}>{amountConversionWithComma(singleBribe?.amount, DOLLAR_DECIMALS)} {denomToSymbol(singleBribe?.denom)}</div>
             })
-            : <div className="endtime-badge mt-1" >{"       "}</div>
-
+            : <div className="endtime-badge mt-1" >{""}</div>
           }
-
         </>
       ),
     },
@@ -754,8 +740,8 @@ const Vote = ({
     chart: {
       type: "pie",
       backgroundColor: null,
-      height: 150,
-      margin: 5,
+      height: 170,
+      margin: 0,
       style: {
         fontFamily: 'Montserrat'
       }
@@ -771,7 +757,7 @@ const Vote = ({
         showInLegend: false,
         size: "110%",
         borderWidth: 0,
-        innerSize: "65%",
+        innerSize: "78%",
         className: "pie-chart totalvalue-chart",
         dataLabels: {
           enabled: false,
@@ -1118,20 +1104,209 @@ const Vote = ({
     ),
   };
 
+  const emissionDistributionColumns = [
+    {
+      title: '',
+      dataIndex: "assets_color",
+      key: "assets_color",
+      render: (text) => <div className='colorbox' style={{ backgroundColor: `${text}` }}></div>,
+      width: 30
+    },
+    {
+      title: 'Vaults/Pools',
+      dataIndex: "assets",
+      key: "assets",
+      align: 'left',
+      render: (text) => <>
+        <div className="assets-withicon">
+          <div className="assets-icons">
+            <div className="assets-icon">
+              <SvgIcon
+                name='atom-icon'
+              />
+            </div>
+            <div className="assets-icon">
+              <SvgIcon
+                name='cmdx-icon'
+              />
+            </div>
+          </div>
+          <div className='name'>{text}</div>
+        </div>
+      </>
+    },
+    {
+      title: 'Vote',
+      dataIndex: "vote",
+      key: "vote",
+    }
+  ];
+
+  const emissionDistributionData = [
+    {
+      key: 1,
+      assets_color: '#00AFB9',
+      assets: 'ATOM-C',
+      vote: '23%'
+    },
+    {
+      key: 2,
+      assets_color: '#FDFCDC',
+      assets: 'ATOM-C',
+      vote: '23%'
+    },
+    {
+      key: 3,
+      assets_color: '#00AFB9',
+      assets: 'ATOM-C',
+      vote: '23%'
+    },
+    {
+      key: 4,
+      assets_color: '#F07167',
+      assets: 'ATOM-C',
+      vote: '23%'
+    },
+    {
+      key: 5,
+      assets_color: '#FED9B7',
+      assets: 'ATOM-C',
+      vote: '23%'
+    }
+  ];
+
+  const emissionVotingColumns = [
+    {
+      title: 'Vaults/Pools',
+      dataIndex: "assets",
+      key: "assets",
+      align: 'left',
+      render: (text) => <>
+        <div className="assets-withicon">
+          <div className="assets-icon">
+            <SvgIcon
+              name='atom-icon'
+            />
+          </div>
+          <div className='name'>{text}</div>
+        </div>
+      </>
+    },
+    {
+      title: 'My Borrowed/Farmed',
+      dataIndex: "my_borrowed",
+      key: "my_borrowed",
+    },
+    {
+      title: 'Total Votes',
+      dataIndex: "total_votes",
+      key: "total_votes",
+      align: 'center',
+    },
+    {
+      title: 'External Incentives',
+      dataIndex: "external_incentives",
+      key: "external_incentives",
+      align: 'left',
+      render: (text) => <>
+        <div className="assets-withicon">
+          <div className="assets-icon">
+            <SvgIcon
+              name='cmdx-icon'
+            />
+          </div>
+          <div className='name'>{text}</div>
+          <ExternalIncentivesModal />
+        </div>
+      </>
+    },
+    {
+      title: 'My Vote',
+      dataIndex: "my_vote",
+      key: "my_vote",
+      align: 'center',
+    },
+    {
+      title: 'Vote',
+      dataIndex: "vote",
+      key: "vote",
+      align: 'center',
+      render: (text) => <div className='vote-slider'>
+        <Slider
+          min={1}
+          max={20}
+          onChange={onChange}
+          tooltip={false}
+        />
+        <div className='percents'>{inputValue}%</div>
+      </div>
+    }
+  ];
+
+  const emissionVotingdata = [
+    {
+      key: 1,
+      assets: 'ATOM-A',
+      my_borrowed: '13.09 CMST',
+      total_votes: '502.76 veHarbor',
+      external_incentives: '4.40 CMDX',
+      my_vote: '0.00 veHARBOR',
+      vote: ''
+    },
+    {
+      key: 2,
+      assets: 'ATOM-A',
+      my_borrowed: '13.09 CMST',
+      total_votes: '502.76 veHarbor',
+      external_incentives: '4.40 CMDX',
+      my_vote: '0.00 veHARBOR',
+      vote: ''
+    },
+    {
+      key: 3,
+      assets: 'ATOM-A',
+      my_borrowed: '13.09 CMST',
+      total_votes: '502.76 veHarbor',
+      external_incentives: '4.40 CMDX',
+      my_vote: '0.00 veHARBOR',
+      vote: ''
+    },
+    {
+      key: 4,
+      assets: 'ATOM-A',
+      my_borrowed: '13.09 CMST',
+      total_votes: '502.76 veHarbor',
+      external_incentives: '4.40 CMDX',
+      my_vote: '0.00 veHARBOR',
+      vote: ''
+    },
+    {
+      key: 5,
+      assets: 'ATOM-A',
+      my_borrowed: '13.09 CMST',
+      total_votes: '502.76 veHarbor',
+      external_incentives: '4.40 CMDX',
+      my_vote: '0.00 veHARBOR',
+      vote: ''
+    },
+    {
+      key: 6,
+      assets: 'ATOM-A',
+      my_borrowed: '13.09 CMST',
+      total_votes: '502.76 veHarbor',
+      external_incentives: '4.40 CMDX',
+      my_vote: '0.00 veHARBOR',
+      vote: ''
+    }
+  ];
+
   return (
     <>
       <div className="app-content-wrapper">
         <Row>
           <Col>
             <div className="totol-voting-main-container mb-3">
-              <div className='d-flex total-voting-power-tooltip-box'>
-                <div className="total-voting-container">
-                  <div className="total-veHARBOR">
-                    My Voting Power : <span className='fill-box'><span>{amountConversionWithComma(totalVotingPower, DOLLAR_DECIMALS)}</span> veHARBOR</span>
-                  </div>
-                </div>
-                <TooltipIcon text={` Voting power will be calculated as per the last voting epoch date: ${calculteVotingStartTime()}`} />
-              </div>
+              <div className='d-flex total-voting-power-tooltip-box'></div>
               <div>
                 <Link to="/more"><Button className="back-btn" type="primary">Back</Button></Link>
               </div>
@@ -1144,14 +1319,7 @@ const Vote = ({
             <div className="emission-card w-100" style={{ height: "100%" }}>
               <div className="card-header">
                 <div className="left">
-                  Emission Voting <TooltipIcon text="" />
-                </div>
-                <div className="right">
-                  {currentProposalAllData?.voting_end_time ?
-                    <span><MyTimer expiryTimestamp={currentProposalAllData && (currentProposalAllData?.voting_end_time) / 1000000} text={"Voting Ends In : "} /></span>
-                    :
-                    <span>Voting Ends In <b>0</b> D  <b>0</b> H <b>0</b> M </span>
-                  }
+                  Emission Voting
                 </div>
               </div>
               <List
@@ -1176,19 +1344,15 @@ const Vote = ({
               />
             </div>
           </Col>
-
-
           <Col>
             <div className="emission-card w-100" style={{ height: "100%" }}>
               <div className="graph-container">
                 <div className="top">
-                  <div className="card-header">
+                  <div className="card-header mb-2">
                     <div className="left">
-                      Vaults & Pools
+                      Emission Distribution
                     </div>
-                    <div className="right" onClick={showViewAll}>
-                      View All
-                    </div>
+                    <EmissionDistributionAllModal />
                   </div>
                 </div>
                 <div className="bottom">
@@ -1199,141 +1363,57 @@ const Vote = ({
                   </div>
                   <div className="bottom-right">
                     <div className="asset-container">
-
                       <div className="composite-card ">
                         <div className="card-content">
                           <Table
-                            className="custom-table vote-up-data-table-container"
-                            dataSource={upPoolTableData}
-                            columns={upPoolColumns}
-                            // loading={loading}
+                            className="custom-table emission-distribution-table"
+                            dataSource={emissionDistributionData}
+                            columns={emissionDistributionColumns}
                             pagination={false}
                             scroll={{ x: "100%" }}
-                            // locale={{ emptyText: <NoDataIcon /> }}
-                            locale={{ emptyText: <div className='text-center mb-3 mt-3'>No data</div> }}
                           />
                         </div>
                       </div>
-
-                      <div className="composite-card vault-table-card">
-                        <div className="card-content">
-                          <Table
-                            className="custom-table vote-up-data-table-container valut-emission-up-table"
-                            dataSource={upVaultTableData}
-                            columns={upVaultColumns}
-                            // loading={loading}
-                            pagination={false}
-                            scroll={{ x: "100%" }}
-                            // locale={{ emptyText: <NoDataIcon /> }}
-                            locale={{ emptyText: <div className='text-center mt-3'></div> }}
-                          />
-                        </div>
-                      </div>
-
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-
-
-            {/* View all pools and vaults  */}
-            <div>
-              <Modal
-                centered={true}
-                className="palcebid-modal reward-collect-modal"
-                footer={null}
-                header={null}
-                open={isViewAllModalVisible}
-                width={600}
-                closable={true}
-                onOk={handleViewAllOk}
-                // loading={loading}
-                onCancel={handleViewAllCancel}
-              >
-                <div className="palcebid-modal-inner rewards-modal-main-container emission-modal-container">
-                  <Row style={{ paddingBottom: 0 }}>
-                    <Col>
-                      <div className="rewards-title">
-                        Vaults & Pools
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <Row style={{ paddingTop: 0 }}>
-                    <Col>
-
-                      <div className="emission-card">
-                        <div className="graph-container">
-                          <div className="bottom">
-                            <div className="bottom-left">
-                              <div className="graph-container">
-                                <HighchartsReact highcharts={Highcharts} options={PieChart1} />
-                              </div>
-                            </div>
-                            <div className="bottom-right">
-                              <div className="asset-container">
-
-                                <div className="composite-card ">
-                                  <div className="card-content">
-                                    <Table
-                                      className="custom-table vote-up-data-table-container"
-                                      dataSource={upPoolTableDataForModal}
-                                      columns={upPoolColumns}
-                                      loading={loading}
-                                      pagination={false}
-                                      scroll={{ x: "100%" }}
-                                      locale={{ emptyText: <NoDataIcon /> }}
-                                    />
-                                  </div>
-                                </div>
-
-                                <div className="composite-card vault-table-card">
-                                  <div className="card-content">
-                                    <Table
-                                      className="custom-table vote-up-data-table-container valut-emission-up-table"
-                                      dataSource={upVaultTableDataForModal}
-                                      columns={upVaultColumns}
-                                      loading={loading}
-                                      pagination={false}
-                                      scroll={{ x: "100%" }}
-                                      locale={{ emptyText: <NoDataIcon /> }}
-                                    />
-                                  </div>
-                                </div>
-
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                    </Col>
-                  </Row>
-                </div>
-              </Modal>
-            </div>
-
-
-
           </Col>
 
         </Row>
-
-
         <Row>
           <Col>
-            <Tabs
-              className="comdex-tabs mt-4"
-              defaultActiveKey="1"
-              items={tabsItem}
-              tabBarExtraContent={refreshAuctionButton}
+            <h2 className='mt-4'>Emission Voting</h2>
+          </Col>
+          <Col className="assets-search-section">
+            <div>
+              Hide 0 Balances{" "}
+              <Switch
+              />
+            </div>
+            <Input
+              placeholder="Search"
+              suffix={<SvgIcon name="search" viewbox="0 0 18 18" />}
             />
+          </Col>
+          <Col sm='12'>
+            <Table
+                className="custom-table emission-voting-table"
+                dataSource={emissionVotingdata}
+                columns={emissionVotingColumns}
+                pagination={false}
+                scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
+              />
           </Col>
         </Row>
       </div>
-
+      <div className='votepwoter-card'>
+        <div className='votepwoter-card-inner'>
+          Voting Power Used: <span className='green-text'>0%</span> <Button type='primary' className='btn-filled'>Vote</Button>
+        </div>
+      </div>
     </>
   )
 }
