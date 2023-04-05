@@ -26,6 +26,8 @@ import { Pagination } from 'antd';
 import { userProposalAllUpData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId } from "../../services/voteContractsRead";
 import { comdex } from "../../config/network";
 
+import HotIcon from '../../assets/images/hot-icon.png';
+
 const Minting = ({ address, refreshBalance }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -211,13 +213,25 @@ const Minting = ({ address, refreshBalance }) => {
                   {item &&
                     (
                       <div
-                        className="card-container "
+                        className="card-container"
                         onClick={() => {
                           dispatch(setCurrentPairID(item?.pairId?.toNumber()));
                           dispatch(setSelectedExtentedPairvault(item));
                           navigateToMint(item?.id?.toNumber());
                         }}
                       >
+                        <div className="hot-tag hot-tag1">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div>
+                        {/* <div className="hot-tag hot-tag2">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div>
+                        <div className="hot-tag hot-tag3">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div>
+                        <div className="hot-tag hot-tag4">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div> */}
                         <div className="up-container">
                           <div className="icon-container mint-page-icon-container">
                             <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} />
@@ -227,14 +241,22 @@ const Minting = ({ address, refreshBalance }) => {
                           </div>
                         </div>
                         <div className="vault-desc" >
-                          <p>Emission</p>
-                          <div className="coins">
-                            {
-                              allProposalData?.[index]?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(allProposalData?.[index]?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission))
-                                : Number(0).toFixed(DOLLAR_DECIMALS)
-                            }
-                            <span>Harbor</span>
-                          </div>
+                          <Row>
+                            <Col>
+                              <p>Weekly Emission</p>
+                              <div className="coins">
+                                {
+                                  allProposalData?.[index]?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(allProposalData?.[index]?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission))
+                                    : Number(0).toFixed(DOLLAR_DECIMALS)
+                                }
+                                <span>Harbor</span>
+                              </div>
+                            </Col>
+                            <Col className='text-right'>
+                              <p>APY</p>
+                              <div className="coins">345678%</div>
+                            </Col>
+                          </Row>
                         </div>
                         <div className="bottom-container">
                           <div className="contenet-container">
