@@ -36,7 +36,7 @@ export const queryPairs = (offset, limit, countTotal, reverse, callback) => {
     }
 
     queryService
-      .QueryPairs({
+      .QueryAssetPairs({
         pagination: {
           key: "",
           offset: Long.fromNumber(offset),
@@ -90,7 +90,7 @@ export const queryPair = (pairId, callback) => {
     }
 
     queryService
-      .QueryPair({
+      .QueryAssetPair({
         id: Long.fromNumber(pairId),
       })
       .then((result) => {

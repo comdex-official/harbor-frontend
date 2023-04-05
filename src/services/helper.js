@@ -5,7 +5,7 @@ import {
   QueryClient,
   SigningStargateClient
 } from "@cosmjs/stargate";
-import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
+import { HttpBatchClient, Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
@@ -66,8 +66,17 @@ export const newQueryClientRPC = (rpc, callback) => {
 };
 
 export const KeplrWallet = async (chainID = comdex.chainId) => {
-  await window.keplr.enable(chainID);
-  const offlineSigner = await window.getOfflineSignerAuto(chainID);
+  let walletType = localStorage.getItem("loginType");
+
+  walletType === "keplr"
+    ? await window.keplr.enable(chainID)
+    : await window.leap.enable(chainID);
+
+  const offlineSigner =
+    walletType === "keplr"
+      ? await window.getOfflineSignerAuto(chainID)
+      : await window?.leap?.getOfflineSignerAuto(chainID);
+
   const accounts = await offlineSigner.getAccounts();
   return [offlineSigner, accounts];
 };
@@ -276,10 +285,20 @@ async function Transaction(wallet, signerAddress, msgs, fee, memo = "") {
 
 export const aminoSignIBCTx = (config, transaction, callback) => {
   (async () => {
-    (await window.keplr) && window.keplr.enable(config.chainId);
+    let walletType = localStorage.getItem("loginType");
+
+    (walletType === "keplr" ? await window.keplr : await window.wallet) &&
+    walletType === "keplr"
+      ? window.keplr.enable(config.chainId)
+      : window.leap.enable(config.chainId);
+
     const offlineSigner =
-      window.getOfflineSignerOnlyAmino &&
-      window.getOfflineSignerOnlyAmino(config.chainId);
+      walletType === "keplr"
+        ? window.getOfflineSignerOnlyAmino &&
+          window.getOfflineSignerOnlyAmino(config.chainId)
+        : window?.leap?.getOfflineSignerOnlyAmino &&
+          window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
+
     const client = await SigningStargateClient.connectWithSigner(
       config.rpc,
       offlineSigner,

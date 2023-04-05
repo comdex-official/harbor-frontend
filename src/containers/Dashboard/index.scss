@@ -309,58 +309,13 @@
   .dark-mode & {
     background: $background-dark1;
     box-shadow: $box-shadow-inner-dark;
-    // background-image: url("../../assets/images/dashboard-banner.svg");
-    background-image: url("../../assets/images/Banner-Dashboard-198h\ \(1\).png");
-    height: 9rem;
-    background-size: cover;
+    background-image: url("../../assets/images/dashboard-banner.svg");
     background-repeat: no-repeat;
     background-position: center;
 
     @media only screen and (min-width: 1800px) {
       background-size: 100%;
       height: 14rem;
-    }
-    @media only screen and (min-width: 1030px) and (max-width: 1060px) {
-      background-size: contain;
-      height: 8.5rem;
-    }
-    @media only screen and (min-width: 1000px) and (max-width: 1030px) {
-      height: 8.2rem;
-    }
-    @media only screen and (min-width: 790px) and (max-width: 900px) {
-      height: 8rem;
-    }
-    @media only screen and (min-width: 700px) and (max-width: 790px) {
-      height: 7rem;
-    }
-    @media only screen and (min-width: 630px) and (max-width: 700px) {
-      background-image: url("../../assets/images/Banner-Dashboard-Mobile.png");
-      background-size: cover;
-      background-position-x: 57%;
-      height: 9rem;
-    }
-    @media only screen and (min-width: 521px) and (max-width: 630px) {
-      background-image: url("../../assets/images/Banner-Dashboard-Mobile.png");
-      background-size: cover;
-      background-position-x: 55%;
-      height: 8rem;
-    }
-    @media only screen and (min-width: 500px) and (max-width: 521px) {
-      background-image: url("../../assets/images/Banner-Dashboard-Mobile.png");
-      background-size: contain;
-      background-position-x: 55%;
-      height: 7rem;
-    }
-    @media only screen and (min-width: 400px) and (max-width: 500px) {
-      background-image: url("../../assets/images/Banner-Dashboard-Mobile.png");
-      background-size: cover;
-      background-position-x: 55%;
-      height: 6rem;
-    }
-    @media only screen and (min-width: 330px) and (max-width: 400px) {
-      background-image: url("../../assets/images/Banner-Dashboard-Mobile.png");
-      background-position-x: 56%;
-      height: 5rem;
     }
   }
   .banner-left {

@@ -41,9 +41,14 @@ const CloseTab = ({
   const selectedExtentedPairVault = useSelector((state) => state.locker.selectedExtentedPairVault);
   const selectedExtentedPairVaultListData = useSelector((state) => state.locker.extenedPairVaultListData);
   const pairId = selectedExtentedPairVaultListData && selectedExtentedPairVaultListData[0]?.pairId?.toNumber();
+
   const [inProgress, setInProgress] = useState(false);
   const [pair, setPair] = useState();
   const navigate = useNavigate();
+  const payableCMST = Number(Number(amountConversion(ownerVaultInfo?.amountOut || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals)) + Number(amountConversion(ownerVaultInfo?.closingFeeAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals) || 0) + Number(amountConversion(ownerVaultInfo?.interestAccumulated || 0, comdex.coinDecimals, assetMap[pair?.denomOut]?.decimals))).toFixed(comdex.coinDecimals);
+
+  const debtAssetBalance = amountConversion(getDenomBalance(balances, pair && pair?.denomOut) || 0);
+
 
   useEffect(() => {
     fetchQueryPairValut(pathVaultId)
@@ -118,6 +123,11 @@ const CloseTab = ({
 
   const handleClick = () => {
     setInProgress(true);
+    if (Number(debtAssetBalance) < Number(payableCMST)) {
+      message.error("Insufficient funds")
+      setInProgress(false);
+      return;
+    }
 
     if (
       Number(getDenomBalance(balances, vault?.debt?.denom)) <
@@ -167,6 +177,8 @@ const CloseTab = ({
         navigate("/mint")
       }
     );
+
+
   };
 
 
@@ -209,7 +221,9 @@ const CloseTab = ({
       <div className="assets-form-btn">
         <Button
           loading={inProgress}
-          disabled={inProgress}
+          disabled={
+            inProgress
+          }
           type="primary"
           onClick={() => handleClick()}
           className="btn-filled"

@@ -20,6 +20,7 @@ import { iconNameFromDenom } from "../../utils/string";
 import variables from "../../utils/variables";
 import Deposit from "./Deposit";
 import "./index.scss";
+import LPAsssets from "./LPAassets";
 import Withdraw from "./Withdraw";
 
 const Assets = ({
@@ -36,6 +37,18 @@ const Assets = ({
   const [loading, setLoading] = useState(false);
   const [isHideToggleOn, setHideToggle] = useState(false);
   const [searchKey, setSearchKey] = useState("");
+  const [filterValue, setFilterValue] = useState("1");
+
+  const tabItems = [
+    {
+      key: "1",
+      label: "Assets",
+    },
+    {
+      key: "2",
+      label: "LF Tokens",
+    },
+  ];
 
   const handleBalanceRefresh = () => {
     setLoading(true);
@@ -175,9 +188,13 @@ const Assets = ({
     },
   ];
 
+
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
       return harborPrice;
+    }
+    if (denom === "ucmst") {
+      return markets?.cswapApiPrice?.ucmst?.price || 0;
     }
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
@@ -324,10 +341,9 @@ const Assets = ({
     (item) => Number(item?.noOfTokens) > 0
   );
 
-  const tabItems = [
-    { label: "Asset", key: "1", children: '' },
-    { label: "LPToken", key: "2", children: '' }
-  ]
+  const onChange = (key) => {
+    setFilterValue(key);
+  };
 
   return (
     <div className="app-content-wrapper">
@@ -357,13 +373,16 @@ const Assets = ({
           </Col>
         </Row>
 
-        <Row className="align-items-center">
-          <Col>
+        <Row>
+          <div className="mt-4">
             <Tabs
-              className="comdex-tabs assets-tab"
+              defaultActiveKey="1"
               items={tabItems}
+              activeKey={filterValue}
+              onChange={onChange}
+              className="comdex-tabs farm-details-tabmain"
             />
-          </Col>
+          </div>
           <Col className="assets-search-section">
             <div>
               Hide 0 Balances{" "}
@@ -384,15 +403,23 @@ const Assets = ({
 
         <Row>
           <Col>
-            <Table
-              className="custom-table assets-table"
-              dataSource={tableData}
-              columns={columns}
-              loading={loading}
-              pagination={false}
-              scroll={{ x: "100%" }}
-              locale={{ emptyText: <NoDataIcon /> }}
-            />
+            {filterValue === "1" ? (
+              <Table
+                className="custom-table assets-table"
+                dataSource={tableData}
+                columns={columns}
+                loading={loading}
+                pagination={false}
+                scroll={{ x: "100%" }}
+                locale={{ emptyText: <NoDataIcon /> }}
+              />
+            ) : (
+              <LPAsssets
+                isHideToggleOn={isHideToggleOn}
+                searchKey={searchKey}
+                activeKey={filterValue}
+              />
+            )}
           </Col>
         </Row>
       </div>
