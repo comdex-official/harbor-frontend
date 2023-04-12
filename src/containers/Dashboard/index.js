@@ -27,7 +27,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
     if (totalDollarValue) {
       amount =
         Number(totalDollarValue) -
-        (Number(totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0) +
+        (Number(totalValueLocked?.[ibcDenoms?.stuatom]?.value_locked || 0) +
           Number(totalValueLocked?.[ibcDenoms?.uatom]?.value_locked || 0) +
           Number(totalValueLocked?.[ibcDenoms?.uusdc]?.value_locked || 0)
 
@@ -127,14 +127,14 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             color: "#BFA9D7",
           },
           {
-            name: "OSMO",
-            y: Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)),
+            name: "STATOM",
+            y: Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.stuatom]?.minted_amount || 0, comdex?.coinDecimals)),
             color: "#8e78a5",
           },
           {
             name: "Others",
             y: Number(totalMintedCMST || 0) -
-              (Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)) +
+              (Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.stuatom]?.minted_amount || 0, comdex?.coinDecimals)) +
                 Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]?.minted_amount || 0, comdex?.coinDecimals)) +
                 Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]?.minted_amount || 0, comdex?.coinDecimals))
               ),
@@ -217,8 +217,8 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             color: "#BFA9D7",
           },
           {
-            name: "OSMO",
-            y: Number(totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0),
+            name: "STATOM",
+            y: Number(totalValueLocked?.[ibcDenoms?.stuatom]?.value_locked || 0),
             color: "#8e78a5",
           },
           {
@@ -226,7 +226,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
             y:
               Number(totalDollarValue || 0) -
               (
-                Number(totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0) +
+                Number(totalValueLocked?.[ibcDenoms?.stuatom]?.value_locked || 0) +
                 Number(totalValueLocked?.[ibcDenoms?.uatom]?.value_locked || 0) +
                 Number(totalValueLocked?.[ibcDenoms?.uusdc]?.value_locked || 0)
               ),
@@ -290,12 +290,12 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     </h3>
                   </div>
                   <div className="dashboard-statics mb-4 total-dashboard-stats-2">
-                    <p>OSMO</p>
+                    <p>STATOM</p>
                     <h3>
                       $
                       {commaSeparator(
                         Number(
-                          totalValueLocked?.[ibcDenoms?.uosmo]?.value_locked || 0
+                          totalValueLocked?.[ibcDenoms?.stuatom]?.value_locked || 0
                         ).toFixed(ZERO_DOLLAR_DECIMALS)
                       )}
                     </h3>
@@ -348,9 +348,9 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                     </h3>
                   </div>
                   <div className="dashboard-statics mb-4 total-dashboard-stats-2">
-                    <p>OSMO</p>
+                    <p>STATOM</p>
                     <h3>
-                      {commaSeparator(Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
+                      {commaSeparator(Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.stuatom]?.minted_amount || 0, comdex?.coinDecimals)).toFixed(ZERO_DOLLAR_DECIMALS))} CMST
                     </h3>
                   </div>
 
@@ -361,7 +361,7 @@ const Dashboard = ({ lang, isDarkMode, markets, assetMap, harborPrice }) => {
                         Math.max(
                           Number(Number(totalMintedCMST || 0) -
                             (
-                              Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uosmo]?.minted_amount || 0, comdex?.coinDecimals)) +
+                              Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.stuatom]?.minted_amount || 0, comdex?.coinDecimals)) +
                               Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uatom]?.minted_amount || 0, comdex?.coinDecimals)) +
                               Number(amountConversion(uniqueCMSTMintedData && uniqueCMSTMintedData[ibcDenoms?.uusdc]?.minted_amount || 0, comdex?.coinDecimals))
                             )).toFixed(ZERO_DOLLAR_DECIMALS)
