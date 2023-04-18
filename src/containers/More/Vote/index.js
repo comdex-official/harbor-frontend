@@ -7,7 +7,7 @@ import { Button, Input, List, message, Slider, Switch, Table } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
-import { totalVTokens, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
+import { totalVTokens, userCurrentProposal, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
 import { queryAssets, queryPair, queryPairVault } from '../../../services/asset/query';
 import { queryMintedTokenSpecificVaultType, queryOwnerVaults, queryOwnerVaultsInfo, queryUserVaults } from '../../../services/vault/query';
 import { transactionForVotePairProposal } from '../../../services/voteContractsWrites';
@@ -66,10 +66,22 @@ const Vote = ({
   const [poolsName, setPoolsName] = useState({})
   const [allPairTotalVote, setAllPairTotalVote] = useState({})
 
-  const [inputValue, setInputValue] = useState(1);
+  const [inputValue, setInputValue] = useState(0);
 
-  const onChange = (newValue) => {
-    setInputValue(newValue);
+  // ---------------------------net Variable-----------------------------------
+
+  const [userCurrentProposalData, setUserCurrentProposalData] = useState();
+  const [userVoteArray, setUserVoteArray] = useState({})
+  const [sumOfVotes, setSumOfVotes] = useState(0);
+  const [updatedUserVote, setUpdatedUserVote] = useState({})
+  const [lastSelectedSlider, setLastSelectedSlider] = useState()
+
+  const onChange = (extendedPairId, value) => {
+    setUserVoteArray((prevState) => ({
+      ...prevState, [String(extendedPairId)]: Number(value)
+    }))
+    setLastSelectedSlider(extendedPairId)
+    setInputValue(value);
   };
 
   // Query 
@@ -1104,6 +1116,28 @@ const Vote = ({
     ),
   };
 
+
+  // ------------------------------New Code from here------------------------------ 
+
+
+  const fetchuserCurrentProposal = (address, proposalId) => {
+    setLoading(true)
+    userCurrentProposal(address, proposalId,).then((res) => {
+      console.log(res, "User proposal current data");
+      setUserCurrentProposalData(res)
+    }).catch((error) => {
+      setLoading(false)
+      console.log(error);
+    })
+  };
+
+  useEffect(() => {
+    if (address) {
+      fetchuserCurrentProposal(address, PRODUCT_ID)
+    }
+  }, [address])
+
+
   const emissionDistributionColumns = [
     {
       title: '',
@@ -1208,17 +1242,50 @@ const Vote = ({
       dataIndex: "external_incentives",
       key: "external_incentives",
       align: 'left',
-      render: (text) => <>
-        <div className="assets-withicon">
-          <div className="assets-icon">
-            <SvgIcon
-              name='cmdx-icon'
-            />
-          </div>
-          <div className='name'>{text}</div>
-          <ExternalIncentivesModal />
-        </div>
-      </>
+      // render: (text) => <>
+      //   <div className="assets-withicon">
+      //     <div className="assets-icon">
+      //       <SvgIcon
+      //         name='cmdx-icon'
+      //       />
+      //     </div>
+      //     <div className='name'>{text}</div>
+      //     <ExternalIncentivesModal />
+      //   </div>
+      // </>
+      render: (item) => (
+        <>
+          {item?.length > 0 ?
+            (item?.length == 1) ?
+              <div className="bribe-container mt-1 justify-content-start" >
+                <span className="assets-withicon">
+                  <span className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item[0]?.denom)}
+                    />
+                  </span>
+                </span>
+                <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+
+              </div>
+              : (
+                <div className="bribe-container mt-1" >
+                  <span className="assets-withicon">
+                    <span className="assets-icon">
+                      <SvgIcon
+                        name={iconNameFromDenom(item[0]?.denom)}
+                      />
+                    </span>
+                  </span>
+                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
+                </div>
+              )
+            : <div className="mt-1" >0</div>
+          }
+
+        </>
+      ),
     },
     {
       title: 'My Vote',
@@ -1231,74 +1298,134 @@ const Vote = ({
       dataIndex: "vote",
       key: "vote",
       align: 'center',
-      render: (text) => <div className='vote-slider'>
-        <Slider
-          min={1}
-          max={20}
-          onChange={onChange}
-          tooltip={false}
-        />
-        <div className='percents'>{inputValue}%</div>
-      </div>
+      width: 120,
+      // render: (text) => <div className='vote-slider'>
+      //   <Slider
+      //     min={0}
+      //     max={100}
+      //     onChange={onChange}
+      //     tooltip={false}
+      //   />
+      //   <div className='percents'>{inputValue}%</div>
+      // </div>
     }
   ];
 
-  const emissionVotingdata = [
-    {
-      key: 1,
+  // const emissionVotingdata = [
+  //   {
+  //     key: 1,
+  //     assets: 'ATOM-A',
+  //     my_borrowed: '13.09 CMST',
+  //     total_votes: '502.76 veHarbor',
+  //     external_incentives: '4.40 CMDX',
+  //     my_vote: '0.00 veHARBOR',
+  //     vote: ''
+  //   },
+  //   {
+  //     key: 2,
+  //     assets: 'ATOM-A',
+  //     my_borrowed: '13.09 CMST',
+  //     total_votes: '502.76 veHarbor',
+  //     external_incentives: '4.40 CMDX',
+  //     my_vote: '0.00 veHARBOR',
+  //     vote: ''
+  //   },
+  //   {
+  //     key: 3,
+  //     assets: 'ATOM-A',
+  //     my_borrowed: '13.09 CMST',
+  //     total_votes: '502.76 veHarbor',
+  //     external_incentives: '4.40 CMDX',
+  //     my_vote: '0.00 veHARBOR',
+  //     vote: ''
+  //   },
+  //   {
+  //     key: 4,
+  //     assets: 'ATOM-A',
+  //     my_borrowed: '13.09 CMST',
+  //     total_votes: '502.76 veHarbor',
+  //     external_incentives: '4.40 CMDX',
+  //     my_vote: '0.00 veHARBOR',
+  //     vote: ''
+  //   },
+  //   {
+  //     key: 5,
+  //     assets: 'ATOM-A',
+  //     my_borrowed: '13.09 CMST',
+  //     total_votes: '502.76 veHarbor',
+  //     external_incentives: '4.40 CMDX',
+  //     my_vote: '0.00 veHARBOR',
+  //     vote: ''
+  //   },
+  //   {
+  //     key: 6,
+  //     assets: 'ATOM-A',
+  //     my_borrowed: '13.09 CMST',
+  //     total_votes: '502.76 veHarbor',
+  //     external_incentives: '4.40 CMDX',
+  //     my_vote: '0.00 veHARBOR',
+  //     vote: ''
+  //   }
+  // ];
+
+  const emissionVotingdata = userCurrentProposalData && userCurrentProposalData?.map((item) => {
+    return {
+      key: item?.pair,
       assets: 'ATOM-A',
       my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 2,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 3,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 4,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 5,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 6,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
+      total_votes: `${item?.total_vote} veHarbor`,
+      external_incentives: item?.total_incentive,
+      my_vote: `${item?.user_vote} veHARBOR`,
+      // vote: item?.pairId
+      vote: <div className='vote-slider'>
+        <Slider
+          min={0}
+          max={100}
+          value={userVoteArray[item?.pair]}
+          onChange={(value) => onChange(item?.pair, value)}
+          tooltip={false}
+        />
+        {/* <div className='percents'>{inputValue}%</div> */}
+        <div className='percents'>{userVoteArray[item?.pair] || 0}%</div>
+      </div>
     }
-  ];
+  })
+
+  useEffect(() => {
+    let totalVotesSum = 0;
+    Object.values(userVoteArray).forEach(function (key, index) {
+      totalVotesSum = totalVotesSum + Number(key);
+    });
+    console.log(totalVotesSum, " totalVotesSum in sum function");
+    setSumOfVotes(totalVotesSum || 0);
+
+  }, [userVoteArray])
+
+
+
+  useEffect(() => {
+    // let lastValue;
+    // for (lastValue in userVoteArray);
+    console.log(userVoteArray, "userVoteArray");
+    console.log(sumOfVotes, "sumOfVotes");
+    if (Number(sumOfVotes) > 100) {
+      let lastVoteValue = Number(sumOfVotes) - Number(userVoteArray[lastSelectedSlider])
+      console.log(lastVoteValue, "lastVoteValue 01");
+      lastVoteValue = 100 - Math.abs(lastVoteValue);
+      console.log(lastVoteValue, "lastVoteValue 02");
+      setUserVoteArray((prevState) => ({
+        ...prevState, [String(lastSelectedSlider)]: Math.abs(Number(lastVoteValue))
+      }))
+    }
+  }, [sumOfVotes])
+
+  // useEffect(() => {
+
+  //   console.log(userVoteArray, "userVoteArray");
+  // }, [userVoteArray])
+
+
+
 
   return (
     <>
@@ -1399,19 +1526,21 @@ const Vote = ({
           </Col>
           <Col sm='12'>
             <Table
-                className="custom-table emission-voting-table"
-                dataSource={emissionVotingdata}
-                columns={emissionVotingColumns}
-                pagination={false}
-                scroll={{ x: "100%" }}
-                locale={{ emptyText: <NoDataIcon /> }}
-              />
+              className="custom-table emission-voting-table"
+              dataSource={emissionVotingdata}
+              columns={emissionVotingColumns}
+              pagination={false}
+              scroll={{ x: "100%" }}
+              loading={loading}
+              locale={{ emptyText: <NoDataIcon /> }}
+              style={{ marginBottom: "5rem" }}
+            />
           </Col>
         </Row>
       </div>
       <div className='votepwoter-card'>
         <div className='votepwoter-card-inner'>
-          Voting Power Used: <span className='green-text'>0%</span> <Button type='primary' className='btn-filled'>Vote</Button>
+          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled'>Vote</Button>
         </div>
       </div>
     </>

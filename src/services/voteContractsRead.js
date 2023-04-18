@@ -60,4 +60,12 @@ export const userProposalProjectedEmission = async (proposalId) => {
     const client = await CosmWasmClient.connect(configin.rpcEndpoint);
     const config = await client.queryContractSmart(lockingContractAddress, { "projected_emission": { "proposal_id": proposalId, "app_id": PRODUCT_ID, "gov_token_denom": "uharbor", "gov_token_id": HARBOR_ASSET_ID } });
     return await config;
-} 
+}
+
+// New Query 
+
+export const userCurrentProposal = async (address, productId) => {
+    const client = await CosmWasmClient.connect(configin.rpcEndpoint);
+    const config = await client.queryContractSmart(lockingContractAddress, { "current_proposal_user": { "address": address, "app_id": productId } });
+    return await config;
+}
