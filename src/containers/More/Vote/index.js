@@ -7,7 +7,7 @@ import { Button, Input, List, message, Slider, Switch, Table } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
-import { totalVTokens, userCurrentProposal, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
+import { emissiondata, totalVTokens, userCurrentProposal, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
 import { queryAssets, queryPair, queryPairVault } from '../../../services/asset/query';
 import { queryMintedTokenSpecificVaultType, queryOwnerVaults, queryOwnerVaultsInfo, queryUserVaults } from '../../../services/vault/query';
 import { transactionForVotePairProposal } from '../../../services/voteContractsWrites';
@@ -78,7 +78,7 @@ const Vote = ({
 
   const onChange = (extendedPairId, value) => {
     setUserVoteArray((prevState) => ({
-      ...prevState, [String(extendedPairId)]: Number(value)
+      ...prevState, [extendedPairId]: Number(value)
     }))
     setLastSelectedSlider(extendedPairId)
     setInputValue(value);
@@ -261,9 +261,13 @@ const Vote = ({
     let userTotalVotes = 0;
     let calculatePercentage = 0;
 
-    calculatePercentage = (Number(value) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
+    calculatePercentage = (Number(value) / Number(amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS))) * 100;
     calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
-    return calculatePercentage;
+    if (calculatePercentage === "Infinity") {
+      return 0
+    } else {
+      return calculatePercentage;
+    }
   }
 
   useEffect(() => {
@@ -393,29 +397,32 @@ const Vote = ({
     setBtnLoading(index)
     if (address) {
       if (proposalId) {
-        if (amountConversion(totalVotingPower, DOLLAR_DECIMALS) === Number(0).toFixed(DOLLAR_DECIMALS)) {
-          message.error("Insufficient Voting Power")
-          setInProcess(false)
-        }
-        else {
-          transactionForVotePairProposal(address, PRODUCT_ID, proposalId, item, (error, result) => {
-            if (error) {
-              message.error(error?.rawLog || "Transaction Failed")
-              setInProcess(false)
-              return;
-            }
-            message.success(
-              < Snack
-                message={variables[lang].tx_success}
-                explorerUrlToTx={comdex?.explorerUrlToTx}
-                hash={result?.transactionHash}
-              />
-            )
-            setBalanceRefresh(refreshBalance + 1);
-            setInProcess(false)
-          })
+        // if (amountConversion(totalVotingPower, DOLLAR_DECIMALS) === Number(0).toFixed(DOLLAR_DECIMALS)) {
+        //   message.error("Insufficient Voting Power")
+        //   setInProcess(false)
+        // }
+        // else {
+        const extendedPairId = Object.keys(userVoteArray).map(Number);
+        const ratio = Object.values(userVoteArray).map(val => (val / 100).toString());
 
-        }
+        transactionForVotePairProposal(address, PRODUCT_ID, proposalId, extendedPairId, ratio, (error, result) => {
+          if (error) {
+            message.error(error?.rawLog || "Transaction Failed")
+            setInProcess(false)
+            return;
+          }
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
+          setBalanceRefresh(refreshBalance + 1);
+          setInProcess(false)
+        })
+
+        // }
       } else {
         setInProcess(false)
         message.error("Please enter amount")
@@ -747,60 +754,6 @@ const Vote = ({
     },
   ]
 
-
-  const PieChart1 = {
-    chart: {
-      type: "pie",
-      backgroundColor: null,
-      height: 170,
-      margin: 0,
-      style: {
-        fontFamily: 'Montserrat'
-      }
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text: null,
-    },
-    plotOptions: {
-      pie: {
-        showInLegend: false,
-        size: "110%",
-        borderWidth: 0,
-        innerSize: "78%",
-        className: "pie-chart totalvalue-chart",
-        dataLabels: {
-          enabled: false,
-          distance: -14,
-          style: {
-            fontsize: 50,
-          },
-        },
-      },
-    },
-    series: [
-      {
-        states: {
-          hover: {
-            enabled: true,
-          },
-        },
-        name: "",
-        data: concatedExtendedPair && concatedExtendedPair?.map((item, index) => {
-          return ({
-            name: (item?.extended_pair_id / 1000000) >= 1 ? denomToSymbol(concatedPairName[item?.extended_pair_id]?.baseCoin?.denom) + "-" + denomToSymbol(concatedPairName[item?.extended_pair_id]?.quoteCoin?.denom)
-              :
-              concatedPairName[item?.extended_pair_id],
-            y: Number(item?.total_vote),
-            color: (item?.extended_pair_id / 1000000) >= 1 ? poolColor[Math.floor(item?.extended_pair_id / 1000000) - 1] : vaultColor[item?.extended_pair_id - 1],
-          })
-        })
-      },
-    ],
-  };
-
   // *Pool data Column row for showing pair Pools in up container 
   const upPoolColumns = [
     {
@@ -1013,32 +966,6 @@ const Vote = ({
     return activePoolCoins;
   }
 
-
-  // *calculate user emission 
-  const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
-    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
-    let myBorrowed = _myBorrowed || 0;
-    let totalBorrowed = _totalBorrowed || 0;
-    let totalVoteOfPair = _totalVoteOfPair || 0;
-    let totalWeight = amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS);
-    let projectedEmission = protectedEmission;
-
-    let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
-    // console.log(myBorrowed, "myBorrowed");
-    // console.log(totalBorrowed, "totalBorrowed");
-    // console.log(totalVoteOfPair, "totalVoteOfPair");
-    // console.log(totalWeight, "toralWeight");
-    // console.log(projectedEmission, "projectedEmission");
-    if (isNaN(calculatedEmission)) {
-      // console.log(0, "calculatedEmission");
-      return 0;
-    } else {
-      // console.log(calculatedEmission, "calculatedEmission");
-      return Number(calculatedEmission);
-    }
-
-  }
-
   useEffect(() => {
     let concatedData = allProposalData?.concat(allProposalPoolData)
     setConcatedExtendedPair(concatedData)
@@ -1074,31 +1001,31 @@ const Vote = ({
 
   }, [poolList])
 
-  useEffect(() => {
-    if (concatedExtendedPair) {
-      let totalCalculatedEmission = 0;
-      concatedExtendedPair?.map((singleConcatedExtendedPair, index) => {
-        // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
-        if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
-          // *For vault 
-          totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
-            amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-            amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-            amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
-          )
-        } else {
-          // *For Pool 
-          totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
-            amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
-            amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
-            amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
-          )
-        }
-        setUserEmission(totalCalculatedEmission)
+  // useEffect(() => {
+  //   if (concatedExtendedPair) {
+  //     let totalCalculatedEmission = 0;
+  //     concatedExtendedPair?.map((singleConcatedExtendedPair, index) => {
+  //       // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
+  //       if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
+  //         // *For vault 
+  //         totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
+  //           amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
+  //           amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
+  //           amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
+  //         )
+  //       } else {
+  //         // *For Pool 
+  //         totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
+  //           amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
+  //           amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
+  //           amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
+  //         )
+  //       }
+  //       setUserEmission(totalCalculatedEmission)
 
-      })
-    }
-  }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData, address, myBorrowed])
+  //     })
+  //   }
+  // }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData, address, myBorrowed])
 
 
   const refreshAuctionButton = {
@@ -1131,19 +1058,141 @@ const Vote = ({
     })
   };
 
+  const fetchEmissiondata = (address) => {
+    emissiondata(address, (error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+      console.log(result, "Emission Data");
+      setUserCurrentProposalData(result?.data)
+
+    });
+  }
+
+  // *calculate user emission 
+  const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
+    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
+    let myBorrowed = _myBorrowed || 0;
+    let totalBorrowed = _totalBorrowed || 0;
+    let totalVoteOfPair = _totalVoteOfPair || 0;
+    // let totalWeight = amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS);
+    let totalWeight = currentProposalAllData?.total_voted_weight || 0;
+    let projectedEmission = protectedEmission;
+
+    let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
+    console.log(myBorrowed, "myBorrowed");
+    console.log(totalBorrowed, "totalBorrowed");
+    console.log(totalVoteOfPair, "totalVoteOfPair");
+    console.log(totalWeight, "toralWeight");
+    console.log(projectedEmission, "projectedEmission");
+    if (isNaN(calculatedEmission)) {
+      // console.log(0, "calculatedEmission");
+      return 0;
+    } else {
+      // console.log(calculatedEmission, "calculatedEmission");
+      return Number(calculatedEmission);
+    }
+
+  }
+
+  useEffect(() => {
+    let totalUserEmission = 0
+    userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+      totalUserEmission = totalUserEmission + calculateUserEmission(item?.user_position, item?.total_position, item?.total_vote)
+    })
+    console.log(totalUserEmission, "totalUserEmission");
+    setUserEmission(totalUserEmission || 0)
+  }, [userCurrentProposalData, currentProposalAllData, protectedEmission])
+
+
   useEffect(() => {
     if (address) {
-      fetchuserCurrentProposal(address, PRODUCT_ID)
+      // fetchuserCurrentProposal(address, PRODUCT_ID)
+      fetchEmissiondata(address)
     }
   }, [address])
 
+  const PieChart1 = {
+    chart: {
+      type: "pie",
+      backgroundColor: null,
+      height: 170,
+      margin: 0,
+      style: {
+        fontFamily: 'Montserrat'
+      }
+    },
+    credits: {
+      enabled: false,
+    },
+    title: {
+      text: null,
+    },
+    plotOptions: {
+      pie: {
+        showInLegend: false,
+        size: "110%",
+        borderWidth: 0,
+        innerSize: "78%",
+        className: "pie-chart totalvalue-chart",
+        dataLabels: {
+          enabled: false,
+          distance: -14,
+          style: {
+            fontsize: 50,
+          },
+        },
+      },
+    },
+    tooltip: {
+      formatter: function () {
+        return (
+          '<div style="text-align:center; font-weight:800; ">' +
+          Number(calculateTotalVotes(amountConversion(Number(this.y) || 0, 6) || 0)) + "%" +
+          "<br />" +
+          '<small style="font-size: 10px; font-weight:400;">' +
+          this.point.name +
+          "</small>" +
+          "</div>"
+        );
+      },
+      useHTML: true,
+      backgroundColor: "#232231",
+      borderColor: "#fff",
+      borderRadius: 10,
+      zIndex: 99,
+      style: {
+        color: "#fff",
+      },
+    },
+    series: [
+      {
+        states: {
+          hover: {
+            enabled: true,
+          },
+        },
+        name: "",
+        data: userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+          if (index <= 3) {
+            return ({
+              name: item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name,
+              y: Number(item?.total_vote),
+              color: combineColor[index],
+            })
+          }
+        })
+      },
+    ],
+  };
 
   const emissionDistributionColumns = [
     {
       title: '',
       dataIndex: "assets_color",
       key: "assets_color",
-      render: (text) => <div className='colorbox' style={{ backgroundColor: `${text}` }}></div>,
+      // render: (text) => <div className='colorbox' style={{ backgroundColor: `${text}` }}></div>,
       width: 30
     },
     {
@@ -1151,63 +1200,65 @@ const Vote = ({
       dataIndex: "assets",
       key: "assets",
       align: 'left',
-      render: (text) => <>
-        <div className="assets-withicon">
-          <div className="assets-icons">
-            <div className="assets-icon">
-              <SvgIcon
-                name='atom-icon'
-              />
-            </div>
-            <div className="assets-icon">
-              <SvgIcon
-                name='cmdx-icon'
-              />
-            </div>
-          </div>
-          <div className='name'>{text}</div>
-        </div>
-      </>
+      // render: (item) => <>
+      //   <div className="assets-withicon">
+      //     <div className="assets-icons">
+      //       <div className="assets-icon">
+      //         <SvgIcon
+      //           name={iconNameFromDenom(item?.base_coin)}
+      //         />
+      //       </div>
+
+      //       {item?.pair_name === "" && <div className="assets-icon">
+      //         <SvgIcon
+      //           name={iconNameFromDenom(item?.quote_coin)}
+      //         />
+      //       </div>}
+      //     </div>
+      //     <div className='name'>{item?.pair_name}</div>
+      //   </div>
+      // </>
     },
     {
       title: 'Vote',
       dataIndex: "vote",
       key: "vote",
+      // render: (item) =>
+      //   // <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} </span>) </div>
+      //   <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%  </div>
     }
   ];
 
-  const emissionDistributionData = [
-    {
-      key: 1,
-      assets_color: '#00AFB9',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 2,
-      assets_color: '#FDFCDC',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 3,
-      assets_color: '#00AFB9',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 4,
-      assets_color: '#F07167',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 5,
-      assets_color: '#FED9B7',
-      assets: 'ATOM-C',
-      vote: '23%'
+  const emissionDistributionData = userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+    if (index <= 3) {
+      return {
+        key: item?.pair_id,
+        // assets_color: '#00AFB9',
+        assets_color: <div className='colorbox' style={{ backgroundColor: `${combineColor[index]}` }}></div>,
+        // assets: item,
+        assets: <div className="assets-withicon">
+          <div className="assets-icons">
+            <div className="assets-icon">
+              <SvgIcon
+                name={iconNameFromDenom(item?.base_coin)}
+              />
+            </div>
+
+            {item?.pair_name === "" && <div className="assets-icon">
+              <SvgIcon
+                name={iconNameFromDenom(item?.quote_coin)}
+              />
+            </div>}
+          </div>
+          {/* <div className='name'>{item?.pair_name}</div> */}
+          <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
+        </div>,
+        // vote: item,
+        vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
+        // vote:`{{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} </span>)}`
+      }
     }
-  ];
+  })
 
   const emissionVotingColumns = [
     {
@@ -1215,14 +1266,20 @@ const Vote = ({
       dataIndex: "assets",
       key: "assets",
       align: 'left',
-      render: (text) => <>
+      render: (item) => <>
         <div className="assets-withicon">
           <div className="assets-icon">
             <SvgIcon
-              name='atom-icon'
+              name={iconNameFromDenom(item?.base_coin)}
             />
           </div>
-          <div className='name'>{text}</div>
+          <div className="assets-icon">
+            <SvgIcon
+              name={item?.pair_name === "" && iconNameFromDenom(item?.quote_coin)}
+            />
+          </div>
+          {/* <div className='name'>{item?.pair_name}</div> */}
+          <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
         </div>
       </>
     },
@@ -1311,82 +1368,27 @@ const Vote = ({
     }
   ];
 
-  // const emissionVotingdata = [
-  //   {
-  //     key: 1,
-  //     assets: 'ATOM-A',
-  //     my_borrowed: '13.09 CMST',
-  //     total_votes: '502.76 veHarbor',
-  //     external_incentives: '4.40 CMDX',
-  //     my_vote: '0.00 veHARBOR',
-  //     vote: ''
-  //   },
-  //   {
-  //     key: 2,
-  //     assets: 'ATOM-A',
-  //     my_borrowed: '13.09 CMST',
-  //     total_votes: '502.76 veHarbor',
-  //     external_incentives: '4.40 CMDX',
-  //     my_vote: '0.00 veHARBOR',
-  //     vote: ''
-  //   },
-  //   {
-  //     key: 3,
-  //     assets: 'ATOM-A',
-  //     my_borrowed: '13.09 CMST',
-  //     total_votes: '502.76 veHarbor',
-  //     external_incentives: '4.40 CMDX',
-  //     my_vote: '0.00 veHARBOR',
-  //     vote: ''
-  //   },
-  //   {
-  //     key: 4,
-  //     assets: 'ATOM-A',
-  //     my_borrowed: '13.09 CMST',
-  //     total_votes: '502.76 veHarbor',
-  //     external_incentives: '4.40 CMDX',
-  //     my_vote: '0.00 veHARBOR',
-  //     vote: ''
-  //   },
-  //   {
-  //     key: 5,
-  //     assets: 'ATOM-A',
-  //     my_borrowed: '13.09 CMST',
-  //     total_votes: '502.76 veHarbor',
-  //     external_incentives: '4.40 CMDX',
-  //     my_vote: '0.00 veHARBOR',
-  //     vote: ''
-  //   },
-  //   {
-  //     key: 6,
-  //     assets: 'ATOM-A',
-  //     my_borrowed: '13.09 CMST',
-  //     total_votes: '502.76 veHarbor',
-  //     external_incentives: '4.40 CMDX',
-  //     my_vote: '0.00 veHARBOR',
-  //     vote: ''
-  //   }
-  // ];
-
   const emissionVotingdata = userCurrentProposalData && userCurrentProposalData?.map((item) => {
     return {
-      key: item?.pair,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: `${item?.total_vote} veHarbor`,
+      key: item?.pair_id,
+      assets: item,
+      my_borrowed: `${amountConversionWithComma(item?.user_position || 0, DOLLAR_DECIMALS)} CMST`,
+      total_votes: `${amountConversionWithComma(item?.total_vote || 0, DOLLAR_DECIMALS)} veHarbor`,
       external_incentives: item?.total_incentive,
-      my_vote: `${item?.user_vote} veHARBOR`,
+      my_vote: `${amountConversionWithComma(item?.user_vote || 0, DOLLAR_DECIMALS)} veHARBOR`,
       // vote: item?.pairId
       vote: <div className='vote-slider'>
         <Slider
           min={0}
           max={100}
-          value={userVoteArray[item?.pair]}
-          onChange={(value) => onChange(item?.pair, value)}
+          defaultValue={(item?.user_vote_ratio) * 100}
+          // defaultValue={50}
+          value={userVoteArray[item?.pair_id]}
+          onChange={(value) => onChange(item?.pair_id, value)}
           tooltip={false}
         />
         {/* <div className='percents'>{inputValue}%</div> */}
-        <div className='percents'>{userVoteArray[item?.pair] || 0}%</div>
+        <div className='percents'>{userVoteArray[item?.pair_id] || 0}%</div>
       </div>
     }
   })
@@ -1401,30 +1403,14 @@ const Vote = ({
 
   }, [userVoteArray])
 
-
-
   useEffect(() => {
-    // let lastValue;
-    // for (lastValue in userVoteArray);
-    console.log(userVoteArray, "userVoteArray");
-    console.log(sumOfVotes, "sumOfVotes");
     if (Number(sumOfVotes) > 100) {
       let lastVoteValue = Number(sumOfVotes) - Number(userVoteArray[lastSelectedSlider])
-      console.log(lastVoteValue, "lastVoteValue 01");
-      lastVoteValue = 100 - Math.abs(lastVoteValue);
-      console.log(lastVoteValue, "lastVoteValue 02");
       setUserVoteArray((prevState) => ({
-        ...prevState, [String(lastSelectedSlider)]: Math.abs(Number(lastVoteValue))
+        ...prevState, [lastSelectedSlider]: Math.abs(Number(lastVoteValue))
       }))
     }
   }, [sumOfVotes])
-
-  // useEffect(() => {
-
-  //   console.log(userVoteArray, "userVoteArray");
-  // }, [userVoteArray])
-
-
 
 
   return (
@@ -1479,7 +1465,7 @@ const Vote = ({
                     <div className="left">
                       Emission Distribution
                     </div>
-                    <EmissionDistributionAllModal />
+                    <EmissionDistributionAllModal userCurrentProposalData={userCurrentProposalData} currentProposalAllData={currentProposalAllData} />
                   </div>
                 </div>
                 <div className="bottom">
@@ -1540,7 +1526,7 @@ const Vote = ({
       </div>
       <div className='votepwoter-card'>
         <div className='votepwoter-card-inner'>
-          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled'>Vote</Button>
+          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled' onClick={handleVote} disabled={!sumOfVotes}>Vote</Button>
         </div>
       </div>
     </>

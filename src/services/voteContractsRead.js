@@ -1,6 +1,8 @@
+import axios from "axios";
 import { CosmWasmClient } from "cosmwasm";
 import { comdex } from '../config/network'
 import { HARBOR_ASSET_ID, PRODUCT_ID } from "../constants/common";
+import { API_URL, EMISSION_API_URL } from "../constants/url";
 import { lockingContractAddress } from "./keplr";
 
 
@@ -69,3 +71,14 @@ export const userCurrentProposal = async (address, productId) => {
     const config = await client.queryContractSmart(lockingContractAddress, { "current_proposal_user": { "address": address, "app_id": productId } });
     return await config;
 }
+
+export const emissiondata = (address,callback) => {
+    axios
+        .get(`${EMISSION_API_URL}/api/v2/harbor/userEmissionVote/${address}`)
+        .then((result) => {
+            callback(null, result?.data);
+        })
+        .catch((error) => {
+            callback(error?.message);
+        });
+};

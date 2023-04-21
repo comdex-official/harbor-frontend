@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import { Modal, Table } from "antd";
-import { denomToSymbol } from "../../../../utils/string";
+import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { poolColor, vaultColor } from '../color';
+import { combineColor, poolColor, vaultColor } from '../color';
 import './index.scss'
+import { amountConversion } from '../../../../utils/coin';
+import { votingCurrentProposal } from '../../../../services/voteContractsRead';
+import { DOLLAR_DECIMALS } from '../../../../constants/common';
 
-const EmissionDistributionAllModal = ({}) => {
+const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposalAllData }) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [concatedExtendedPair, setConcatedExtendedPair] = useState([]);
@@ -25,11 +28,27 @@ const EmissionDistributionAllModal = ({}) => {
     setIsModalOpen(false);
   };
 
+
+  const calculateTotalVotes = (value) => {
+    let userTotalVotes = 0;
+    let calculatePercentage = 0;
+
+    calculatePercentage = (Number(value) / Number(amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS))) * 100;
+    calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
+    if (calculatePercentage === "Infinity") {
+      return 0
+    } else {
+      return calculatePercentage;
+    }
+  }
+
+
+
   const PieChart1 = {
     chart: {
       type: "pie",
       backgroundColor: null,
-      height: 230,
+      height: 170,
       margin: 0,
       style: {
         fontFamily: 'Montserrat'
@@ -57,6 +76,27 @@ const EmissionDistributionAllModal = ({}) => {
         },
       },
     },
+    tooltip: {
+      formatter: function () {
+        return (
+          '<div style="text-align:center; font-weight:800; ">' +
+          Number(calculateTotalVotes(amountConversion(Number(this.y) || 0, 6) || 0)) + "%" +
+          "<br />" +
+          '<small style="font-size: 10px; font-weight:400;">' +
+          this.point.name +
+          "</small>" +
+          "</div>"
+        );
+      },
+      useHTML: true,
+      backgroundColor: "#232231",
+      borderColor: "#fff",
+      borderRadius: 10,
+      zIndex: 99,
+      style: {
+        color: "#fff",
+      },
+    },
     series: [
       {
         states: {
@@ -65,25 +105,118 @@ const EmissionDistributionAllModal = ({}) => {
           },
         },
         name: "",
-        data: concatedExtendedPair && concatedExtendedPair?.map((item, index) => {
+        data: userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
           return ({
-            name: (item?.extended_pair_id / 1000000) >= 1 ? denomToSymbol(concatedPairName[item?.extended_pair_id]?.baseCoin?.denom) + "-" + denomToSymbol(concatedPairName[item?.extended_pair_id]?.quoteCoin?.denom)
-              :
-              concatedPairName[item?.extended_pair_id],
+            name: item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name,
             y: Number(item?.total_vote),
-            color: (item?.extended_pair_id / 1000000) >= 1 ? poolColor[Math.floor(item?.extended_pair_id / 1000000) - 1] : vaultColor[item?.extended_pair_id - 1],
+            color: combineColor[index],
           })
+
         })
       },
     ],
   };
+
+  // const emissionDistributionColumns = [
+  //   {
+  //     title: '',
+  //     dataIndex: "assets_color",
+  //     key: "assets_color",
+  //     render: (text) => <div className='colorbox' style={{ backgroundColor: `${text}` }}></div>,
+  //     width: 30
+  //   },
+  //   {
+  //     title: 'Vaults/Pools',
+  //     dataIndex: "assets",
+  //     key: "assets",
+  //     align: 'left',
+  //     render: (text) => <>
+  //       <div className="assets-withicon">
+  //         <div className="assets-icons">
+  //           <div className="assets-icon">
+  //             <SvgIcon
+  //               name='atom-icon'
+  //             />
+  //           </div>
+  //           <div className="assets-icon">
+  //             <SvgIcon
+  //               name='cmdx-icon'
+  //             />
+  //           </div>
+  //         </div>
+  //         <div className='name'>{text}</div>
+  //       </div>
+  //     </>
+  //   },
+  //   {
+  //     title: 'Vote',
+  //     dataIndex: "vote",
+  //     key: "vote",
+  //   }
+  // ];
+
+  // const emissionDistributionData = [
+  //   {
+  //     key: 1,
+  //     assets_color: '#00AFB9',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 2,
+  //     assets_color: '#FDFCDC',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 3,
+  //     assets_color: '#00AFB9',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 4,
+  //     assets_color: '#F07167',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 5,
+  //     assets_color: '#FED9B7',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 6,
+  //     assets_color: '#FDFCDC',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 7,
+  //     assets_color: '#00AFB9',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 8,
+  //     assets_color: '#F07167',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   },
+  //   {
+  //     key: 9,
+  //     assets_color: '#FED9B7',
+  //     assets: 'ATOM-C',
+  //     vote: '23%'
+  //   }
+  // ];
 
   const emissionDistributionColumns = [
     {
       title: '',
       dataIndex: "assets_color",
       key: "assets_color",
-      render: (text) => <div className='colorbox' style={{ backgroundColor: `${text}` }}></div>,
       width: 30
     },
     {
@@ -91,23 +224,6 @@ const EmissionDistributionAllModal = ({}) => {
       dataIndex: "assets",
       key: "assets",
       align: 'left',
-      render: (text) => <>
-        <div className="assets-withicon">
-          <div className="assets-icons">
-            <div className="assets-icon">
-              <SvgIcon
-                name='atom-icon'
-              />
-            </div>
-            <div className="assets-icon">
-              <SvgIcon
-                name='cmdx-icon'
-              />
-            </div>
-          </div>
-          <div className='name'>{text}</div>
-        </div>
-      </>
     },
     {
       title: 'Vote',
@@ -116,62 +232,31 @@ const EmissionDistributionAllModal = ({}) => {
     }
   ];
 
-  const emissionDistributionData = [
-    {
-      key: 1,
-      assets_color: '#00AFB9',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 2,
-      assets_color: '#FDFCDC',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 3,
-      assets_color: '#00AFB9',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 4,
-      assets_color: '#F07167',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 5,
-      assets_color: '#FED9B7',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 6,
-      assets_color: '#FDFCDC',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 7,
-      assets_color: '#00AFB9',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 8,
-      assets_color: '#F07167',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 9,
-      assets_color: '#FED9B7',
-      assets: 'ATOM-C',
-      vote: '23%'
+  const emissionDistributionData = userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+
+    return {
+      key: item?.pair_id,
+      assets_color: <div className='colorbox' style={{ backgroundColor: `${combineColor[index]}` }}></div>,
+      assets: <div className="assets-withicon">
+        <div className="assets-icons">
+          <div className="assets-icon">
+            <SvgIcon
+              name={iconNameFromDenom(item?.base_coin)}
+            />
+          </div>
+
+          {item?.pair_name === "" && <div className="assets-icon">
+            <SvgIcon
+              name={iconNameFromDenom(item?.quote_coin)}
+            />
+          </div>}
+        </div>
+        <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
+      </div>,
+      vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
     }
-  ];
+
+  })
 
 
   return (
@@ -186,7 +271,7 @@ const EmissionDistributionAllModal = ({}) => {
         header={null}
         title='Vaults & Pools'
         open={isModalOpen}
-        width={850}
+        width={650}
         closable={true}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -204,7 +289,7 @@ const EmissionDistributionAllModal = ({}) => {
                       </div>
                     </Col>
                     <Col sm='6'>
-                      <div className="asset-container">
+                      <div className="asset-container emission-distribution-modal-asset-container">
                         <div className="composite-card ">
                           <div className="card-content">
                             <Table

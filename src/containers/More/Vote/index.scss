@@ -110,7 +110,7 @@
     }
   }
 
-  .emission-distribution-table{
+  .emission-distribution-table {
     max-width: 280px;
     .ant-table {
       table {
@@ -386,6 +386,10 @@
   .rewards-title {
     font-size: 1rem;
   }
+  .emission-distribution-modal-asset-container {
+    height: 300px;
+    overflow: auto;
+  }
 }
 
 .bribe-container {
@@ -500,7 +504,7 @@
   }
 }
 
-.emission-voting-table{
+.emission-voting-table {
   .vote-slider {
     display: flex;
     align-items: center;
@@ -509,18 +513,17 @@
       width: calc(100% - 30px);
       .ant-slider-rail {
         .dark-mode & {
-          background: #E4E3FB;
+          background: #e4e3fb;
         }
       }
       .ant-slider-track {
-        background: #5541BF;
+        background: #5541bf;
         .dark-mode & {
-          
         }
       }
       .ant-slider-handle {
         &::after {
-          background: #5541BF;
+          background: #5541bf;
           box-shadow: none;
         }
       }
@@ -533,7 +536,7 @@
 }
 
 .votepwoter-card {
-  background: #C0BDED;
+  background: #c0bded;
   border: 1px solid $white;
   padding: 10px;
   height: 56px;
@@ -547,20 +550,21 @@
   bottom: 20px;
   z-index: 10;
   .votepwoter-card-inner {
-    color: #1E1A3E;
+    color: #1e1a3e;
     font-weight: 600;
     .green-text {
-      color: #0C9521;
+      color: #0c9521;
       padding: 0 10px;
     }
     .ant-btn {
       &.btn-filled {
-        background: #5541BF;
-        border-color: #5541BF;
+        background: #5541bf;
+        border-color: #5541bf;
         padding: 0 34px;
-        &:hover, &:focus {
-          background: darken(#5541BF, 10) !important;
-          border-color: darken(#5541BF, 10) !important;
+        &:hover,
+        &:focus {
+          background: darken(#5541bf, 10) !important;
+          border-color: darken(#5541bf, 10) !important;
         }
       }
     }
