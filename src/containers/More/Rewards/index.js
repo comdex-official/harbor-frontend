@@ -167,7 +167,6 @@ const Rewards = ({
       title: 'Assets',
       dataIndex: "assets",
       key: "assets",
-      align: 'left',
       render: (item) => (
         <>
           {item?.length > 0 ?
@@ -281,7 +280,6 @@ const Rewards = ({
       title: 'Assets',
       dataIndex: "assets",
       key: "assets",
-      align: 'left',
       render: (item) => (
         <>
           <div className="bribe-container mt-1" >

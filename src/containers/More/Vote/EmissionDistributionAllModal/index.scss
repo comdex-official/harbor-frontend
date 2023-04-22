@@ -17,7 +17,7 @@
       }
       .ant-modal-header {
         margin-bottom: 1.8rem;
-        .ant-modal-title{
+        .ant-modal-title {
           font-size: 1.5rem;
           font-weight: 800;
         }
@@ -30,6 +30,22 @@
       .emission-card {
         background: none !important;
         box-shadow: none;
+      }
+      .ant-modal-body {
+        .vote-heading {
+          text-align: center;
+          margin-top: 5px;
+          .dark-mode & {
+            color: white;
+          }
+        }
+        .vote-paira {
+          text-align: center;
+          margin-bottom: 1rem;
+          .dark-mode & {
+            color: white;
+          }
+        }
       }
     }
   }

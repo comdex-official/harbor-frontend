@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import './index.scss';
+import './EmissionDistributionAllModal/index.scss';
 import { connect } from "react-redux";
-import { Button, Input, List, message, Slider, Switch, Table } from "antd";
+import { Button, Input, List, message, Modal, Slider, Switch, Table } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
@@ -30,6 +31,10 @@ import Rebase from './Rebase';
 import Reward from './Rewards';
 import EmissionDistributionAllModal from './EmissionDistributionAllModal';
 import ExternalIncentivesModal from './ExternalIncentivesModal';
+import processingAnimation from "../../../assets/lottefiles/processing.json";
+import successAnimation from "../../../assets/lottefiles/success.json";
+import failedAnimation from "../../../assets/lottefiles/failed.json";
+import Lottie from 'react-lottie';
 
 const Vote = ({
   lang,
@@ -38,8 +43,8 @@ const Vote = ({
   setBalanceRefresh,
   assetMap,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [inProcess, setInProcess] = useState(false);
+
+
   const [proposalId, setProposalId] = useState();
   const [proposalExtenderPair, setProposalExtenderPair] = useState();
   const [currentProposalAllData, setCurrentProposalAllData] = useState();
@@ -66,23 +71,51 @@ const Vote = ({
   const [poolsName, setPoolsName] = useState({})
   const [allPairTotalVote, setAllPairTotalVote] = useState({})
 
-  const [inputValue, setInputValue] = useState(0);
 
   // ---------------------------net Variable-----------------------------------
+  const [inputValue, setInputValue] = useState(0);
 
   const [userCurrentProposalData, setUserCurrentProposalData] = useState();
+  const [userCurrentProposalFilterData, setUserCurrentProposalFilterData] = useState();
   const [userVoteArray, setUserVoteArray] = useState({})
   const [sumOfVotes, setSumOfVotes] = useState(0);
   const [updatedUserVote, setUpdatedUserVote] = useState({})
   const [lastSelectedSlider, setLastSelectedSlider] = useState()
+  const [inProcess, setInProcess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [inputSearch, setInputSearch] = useState("")
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [animationProcessing, setAnimationProcesing] = useState(false);
+  const [animationSuccess, setAnimationSuccess] = useState(false);
+  const [animationFailed, setAnimationFailed] = useState(false)
 
-  const onChange = (extendedPairId, value) => {
-    setUserVoteArray((prevState) => ({
-      ...prevState, [extendedPairId]: Number(value)
-    }))
-    setLastSelectedSlider(extendedPairId)
-    setInputValue(value);
+  const processing = {
+    loop: true,
+    autoplay: true,
+    animationData: processingAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
+
+  const success = {
+    loop: true,
+    autoplay: true,
+    animationData: successAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
+  const failed = {
+    loop: true,
+    autoplay: true,
+    animationData: failedAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
 
   // Query 
   const fetchVotingCurrentProposalId = () => {
@@ -391,48 +424,6 @@ const Vote = ({
     }
   }, [address, proposalId, refreshBalance])
 
-
-  const handleVote = (item, index) => {
-    setInProcess(true)
-    setBtnLoading(index)
-    if (address) {
-      if (proposalId) {
-        // if (amountConversion(totalVotingPower, DOLLAR_DECIMALS) === Number(0).toFixed(DOLLAR_DECIMALS)) {
-        //   message.error("Insufficient Voting Power")
-        //   setInProcess(false)
-        // }
-        // else {
-        const extendedPairId = Object.keys(userVoteArray).map(Number);
-        const ratio = Object.values(userVoteArray).map(val => (val / 100).toString());
-
-        transactionForVotePairProposal(address, PRODUCT_ID, proposalId, extendedPairId, ratio, (error, result) => {
-          if (error) {
-            message.error(error?.rawLog || "Transaction Failed")
-            setInProcess(false)
-            return;
-          }
-          message.success(
-            < Snack
-              message={variables[lang].tx_success}
-              explorerUrlToTx={comdex?.explorerUrlToTx}
-              hash={result?.transactionHash}
-            />
-          )
-          setBalanceRefresh(refreshBalance + 1);
-          setInProcess(false)
-        })
-
-        // }
-      } else {
-        setInProcess(false)
-        message.error("Please enter amount")
-      }
-    }
-    else {
-      setInProcess(false)
-      message.error("Please Connect Wallet")
-    }
-  }
 
   useEffect(() => {
     if (currentProposalAllData) {
@@ -1046,6 +1037,29 @@ const Vote = ({
 
   // ------------------------------New Code from here------------------------------ 
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setAnimationSuccess(false);
+    setAnimationFailed(false)
+    setAnimationProcesing(false)
+    setIsModalOpen(false);
+  };
+
+
+  const onChange = (extendedPairId, value) => {
+    setUserVoteArray((prevState) => ({
+      ...prevState, [extendedPairId]: Number(value)
+    }))
+    setLastSelectedSlider(extendedPairId)
+    // setInputValue(value);
+  };
 
   const fetchuserCurrentProposal = (address, proposalId) => {
     setLoading(true)
@@ -1065,10 +1079,78 @@ const Vote = ({
         return;
       }
       console.log(result, "Emission Data");
+
+      result?.data.map((item) => {
+        setUserVoteArray((prevState) => ({
+          ...prevState, [item?.pair_id]: Number(item?.user_vote_ratio) * 100
+        }))
+      })
+
       setUserCurrentProposalData(result?.data)
+      setUserCurrentProposalFilterData(result?.data)
 
     });
   }
+
+  const handleVote = (item, index) => {
+    setIsModalOpen(true)
+    setInProcess(true)
+    setBtnLoading(index)
+    setAnimationProcesing(true)
+    if (address) {
+      if (proposalId) {
+        const extendedPairId = Object.keys(userVoteArray).map(Number);
+        const ratio = Object.values(userVoteArray).map(val => (val / 100).toString());
+
+        transactionForVotePairProposal(address, PRODUCT_ID, proposalId, extendedPairId, ratio, (error, result) => {
+          if (error) {
+            message.error(error?.rawLog || "Transaction Failed")
+            setInProcess(false)
+            setAnimationProcesing(false);
+            setAnimationFailed(true)
+            setInputSearch("")
+            return;
+          }
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
+          setBalanceRefresh(refreshBalance + 1);
+          setInProcess(false)
+          setAnimationProcesing(false);
+          setAnimationSuccess(true)
+          setInputSearch("")
+        })
+
+        // }
+      } else {
+        setInProcess(false)
+        setAnimationProcesing(false);
+        setAnimationFailed(true)
+        setInputSearch("")
+        message.error("")
+      }
+    }
+    else {
+      setInProcess(false)
+      setAnimationProcesing(false);
+      setAnimationFailed(true)
+      message.error("Please Connect Wallet")
+    }
+  }
+
+  const handleInputSearch = (value) => {
+    console.log(value.target.value);
+    let searchedName = userCurrentProposalData?.filter((item) => denomToSymbol(item?.base_coin).toLowerCase().includes(value.target.value.toLowerCase()) || (item?.pair_name).toLowerCase().includes(value.target.value.toLowerCase()))
+
+    console.log(searchedName, "searchedName");
+    setUserCurrentProposalFilterData(searchedName)
+    setInputSearch(value.target.value)
+  }
+
 
   // *calculate user emission 
   const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
@@ -1081,11 +1163,11 @@ const Vote = ({
     let projectedEmission = protectedEmission;
 
     let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
-    console.log(myBorrowed, "myBorrowed");
-    console.log(totalBorrowed, "totalBorrowed");
-    console.log(totalVoteOfPair, "totalVoteOfPair");
-    console.log(totalWeight, "toralWeight");
-    console.log(projectedEmission, "projectedEmission");
+    // console.log(myBorrowed, "myBorrowed");
+    // console.log(totalBorrowed, "totalBorrowed");
+    // console.log(totalVoteOfPair, "totalVoteOfPair");
+    // console.log(totalWeight, "toralWeight");
+    // console.log(projectedEmission, "projectedEmission");
     if (isNaN(calculatedEmission)) {
       // console.log(0, "calculatedEmission");
       return 0;
@@ -1101,7 +1183,6 @@ const Vote = ({
     userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
       totalUserEmission = totalUserEmission + calculateUserEmission(item?.user_position, item?.total_position, item?.total_vote)
     })
-    console.log(totalUserEmission, "totalUserEmission");
     setUserEmission(totalUserEmission || 0)
   }, [userCurrentProposalData, currentProposalAllData, protectedEmission])
 
@@ -1111,13 +1192,13 @@ const Vote = ({
       // fetchuserCurrentProposal(address, PRODUCT_ID)
       fetchEmissiondata(address)
     }
-  }, [address])
+  }, [address, refreshBalance])
 
   const PieChart1 = {
     chart: {
       type: "pie",
       backgroundColor: null,
-      height: 170,
+      height: 150,
       margin: 0,
       style: {
         fontFamily: 'Montserrat'
@@ -1149,7 +1230,7 @@ const Vote = ({
       formatter: function () {
         return (
           '<div style="text-align:center; font-weight:800; ">' +
-          Number(calculateTotalVotes(amountConversion(Number(this.y) || 0, 6) || 0)) + "%" +
+          Number(calculateTotalVotes(amountConversion(Number(this.y) || 0, 6) || 0)) + " %" +
           "<br />" +
           '<small style="font-size: 10px; font-weight:400;">' +
           this.point.name +
@@ -1192,7 +1273,6 @@ const Vote = ({
       title: '',
       dataIndex: "assets_color",
       key: "assets_color",
-      // render: (text) => <div className='colorbox' style={{ backgroundColor: `${text}` }}></div>,
       width: 30
     },
     {
@@ -1200,32 +1280,11 @@ const Vote = ({
       dataIndex: "assets",
       key: "assets",
       align: 'left',
-      // render: (item) => <>
-      //   <div className="assets-withicon">
-      //     <div className="assets-icons">
-      //       <div className="assets-icon">
-      //         <SvgIcon
-      //           name={iconNameFromDenom(item?.base_coin)}
-      //         />
-      //       </div>
-
-      //       {item?.pair_name === "" && <div className="assets-icon">
-      //         <SvgIcon
-      //           name={iconNameFromDenom(item?.quote_coin)}
-      //         />
-      //       </div>}
-      //     </div>
-      //     <div className='name'>{item?.pair_name}</div>
-      //   </div>
-      // </>
     },
     {
       title: 'Vote',
       dataIndex: "vote",
       key: "vote",
-      // render: (item) =>
-      //   // <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} </span>) </div>
-      //   <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%  </div>
     }
   ];
 
@@ -1273,12 +1332,11 @@ const Vote = ({
               name={iconNameFromDenom(item?.base_coin)}
             />
           </div>
-          <div className="assets-icon">
+          <div className="assets-icon margin-left-3">
             <SvgIcon
               name={item?.pair_name === "" && iconNameFromDenom(item?.quote_coin)}
             />
           </div>
-          {/* <div className='name'>{item?.pair_name}</div> */}
           <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
         </div>
       </>
@@ -1299,17 +1357,6 @@ const Vote = ({
       dataIndex: "external_incentives",
       key: "external_incentives",
       align: 'left',
-      // render: (text) => <>
-      //   <div className="assets-withicon">
-      //     <div className="assets-icon">
-      //       <SvgIcon
-      //         name='cmdx-icon'
-      //       />
-      //     </div>
-      //     <div className='name'>{text}</div>
-      //     <ExternalIncentivesModal />
-      //   </div>
-      // </>
       render: (item) => (
         <>
           {item?.length > 0 ?
@@ -1338,7 +1385,7 @@ const Vote = ({
                   <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
                 </div>
               )
-            : <div className="mt-1" >0</div>
+            : <div className="mt-1" >-</div>
           }
 
         </>
@@ -1355,39 +1402,30 @@ const Vote = ({
       dataIndex: "vote",
       key: "vote",
       align: 'center',
-      width: 120,
-      // render: (text) => <div className='vote-slider'>
-      //   <Slider
-      //     min={0}
-      //     max={100}
-      //     onChange={onChange}
-      //     tooltip={false}
-      //   />
-      //   <div className='percents'>{inputValue}%</div>
-      // </div>
+      width: 150,
     }
   ];
 
-  const emissionVotingdata = userCurrentProposalData && userCurrentProposalData?.map((item) => {
+  const emissionVotingdata = userCurrentProposalFilterData && userCurrentProposalFilterData?.map((item) => {
     return {
       key: item?.pair_id,
       assets: item,
       my_borrowed: `${amountConversionWithComma(item?.user_position || 0, DOLLAR_DECIMALS)} CMST`,
-      total_votes: `${amountConversionWithComma(item?.total_vote || 0, DOLLAR_DECIMALS)} veHarbor`,
+      total_votes:
+        <div>
+          {amountConversionWithComma(item?.total_vote || 0, DOLLAR_DECIMALS)} veHarbor
+          <div>{(item?.user_vote_ratio || 0) * 100} %</div>
+        </div>,
       external_incentives: item?.total_incentive,
       my_vote: `${amountConversionWithComma(item?.user_vote || 0, DOLLAR_DECIMALS)} veHARBOR`,
-      // vote: item?.pairId
       vote: <div className='vote-slider'>
         <Slider
           min={0}
           max={100}
-          defaultValue={(item?.user_vote_ratio) * 100}
-          // defaultValue={50}
           value={userVoteArray[item?.pair_id]}
           onChange={(value) => onChange(item?.pair_id, value)}
           tooltip={false}
         />
-        {/* <div className='percents'>{inputValue}%</div> */}
         <div className='percents'>{userVoteArray[item?.pair_id] || 0}%</div>
       </div>
     }
@@ -1398,7 +1436,6 @@ const Vote = ({
     Object.values(userVoteArray).forEach(function (key, index) {
       totalVotesSum = totalVotesSum + Number(key);
     });
-    console.log(totalVotesSum, " totalVotesSum in sum function");
     setSumOfVotes(totalVotesSum || 0);
 
   }, [userVoteArray])
@@ -1406,12 +1443,12 @@ const Vote = ({
   useEffect(() => {
     if (Number(sumOfVotes) > 100) {
       let lastVoteValue = Number(sumOfVotes) - Number(userVoteArray[lastSelectedSlider])
+      lastVoteValue = 100 - Math.abs(Number(lastVoteValue))
       setUserVoteArray((prevState) => ({
         ...prevState, [lastSelectedSlider]: Math.abs(Number(lastVoteValue))
       }))
     }
   }, [sumOfVotes])
-
 
   return (
     <>
@@ -1507,7 +1544,9 @@ const Vote = ({
             </div>
             <Input
               placeholder="Search"
+              value={inputSearch}
               suffix={<SvgIcon name="search" viewbox="0 0 18 18" />}
+              onChange={handleInputSearch}
             />
           </Col>
           <Col sm='12'>
@@ -1526,9 +1565,48 @@ const Vote = ({
       </div>
       <div className='votepwoter-card'>
         <div className='votepwoter-card-inner'>
-          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled' onClick={handleVote} disabled={!sumOfVotes}>Vote</Button>
+          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled' onClick={handleVote} loading={inProcess} disabled={!sumOfVotes || loading || inProcess}>Vote</Button>
         </div>
       </div>
+
+      {/* Vote Modal  */}
+      <Modal
+        centered={true}
+        className="emission-modal"
+        footer={null}
+        header={null}
+        title={false}
+        open={isModalOpen}
+        width={400}
+        closable={true}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        closeIcon={<SvgIcon name='close' viewbox='0 0 19 19' />}
+      >
+        {animationProcessing &&
+          <Lottie
+            options={processing}
+            height={180}
+            width={180}
+          />
+        }
+        {animationSuccess &&
+          <Lottie
+            options={success}
+            height={180}
+            width={180}
+          />
+        }
+        {animationFailed &&
+          <Lottie
+            options={failed}
+            height={180}
+            width={180}
+          />
+        }
+        <h3 className='vote-heading'>Vote Cast</h3>
+        <p className='vote-paira'>Transaction has been confiremed by the blockchain.</p>
+      </Modal>
     </>
   )
 }
