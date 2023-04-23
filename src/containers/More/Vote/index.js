@@ -1173,7 +1173,7 @@ const Vote = ({
     let projectedEmission = protectedEmission;
 
     let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
-   
+
     if (isNaN(calculatedEmission)) {
       return 0;
     } else {
@@ -1351,6 +1351,7 @@ const Vote = ({
       dataIndex: "assets",
       key: "assets",
       align: 'left',
+      // width: 150,
       render: (item) => <>
         <div className="assets-withicon">
           <div className="assets-icon">
@@ -1371,18 +1372,21 @@ const Vote = ({
       title: 'My Borrowed/Farmed',
       dataIndex: "my_borrowed",
       key: "my_borrowed",
+      // width: 150,
     },
     {
       title: 'Total Votes',
       dataIndex: "total_votes",
       key: "total_votes",
       align: 'center',
+      // width: 150,
     },
     {
       title: 'External Incentives',
       dataIndex: "external_incentives",
       key: "external_incentives",
       align: 'left',
+      // width: 150,
       render: (item) => (
         <>
           {item?.length > 0 ?
@@ -1422,6 +1426,7 @@ const Vote = ({
       dataIndex: "my_vote",
       key: "my_vote",
       align: 'center',
+      // width: 150,
     },
     {
       title: 'Vote',
@@ -1440,11 +1445,11 @@ const Vote = ({
       total_votes:
         <div>
           {amountConversionWithComma(item?.total_vote || 0, DOLLAR_DECIMALS)} veHarbor
-          <div>{Number((item?.user_vote_ratio || 0) * 100).toFixed(ZERO_DOLLAR_DECIMALS)} %</div>
+          <div style={{ textAlign: "end", width: "80%" }}>{Number((item?.user_vote_ratio || 0) * 100).toFixed(ZERO_DOLLAR_DECIMALS)} %</div>
         </div>,
       external_incentives: item?.total_incentive,
       my_vote: `${amountConversionWithComma(item?.user_vote || 0, DOLLAR_DECIMALS)} veHARBOR`,
-      vote: <div className='vote-slider'>
+      vote: <div className='vote-slider' style={{ width: '130px' }}>
         <Slider
           min={0}
           max={100}

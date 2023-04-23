@@ -28,6 +28,11 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
     setIsModalOpen(false);
   };
 
+  function getColor(index) {
+    const length = combineColor.length;
+    const wrappedIndex = index % length;
+    return combineColor[wrappedIndex];
+  }
 
   const calculateTotalVotes = (value) => {
     let userTotalVotes = 0;
@@ -109,7 +114,7 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
           return ({
             name: item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name,
             y: Number(item?.total_vote),
-            color: combineColor[index],
+            color: getColor(index),
           })
 
         })
@@ -236,7 +241,7 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
 
     return {
       key: item?.pair_id,
-      assets_color: <div className='colorbox' style={{ backgroundColor: `${combineColor[index]}` }}></div>,
+      assets_color: <div className='colorbox' style={{ backgroundColor: `${getColor(index)}` }}></div>,
       assets: <div className="assets-withicon">
         <div className="assets-icons">
           <div className="assets-icon">
