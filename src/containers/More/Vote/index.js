@@ -5,9 +5,9 @@ import './index.scss';
 import './EmissionDistributionAllModal/index.scss';
 import { connect } from "react-redux";
 import { Button, Input, List, message, Modal, Slider, Switch, Table } from "antd";
-import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
+import { denomToSymbol, iconNameFromDenom, symbolToDenom, unixToGMTTime } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID, ZERO_DOLLAR_DECIMALS } from '../../../constants/common';
 import { emissiondata, totalVTokens, userCurrentProposal, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
 import { queryAssets, queryPair, queryPairVault } from '../../../services/asset/query';
 import { queryMintedTokenSpecificVaultType, queryOwnerVaults, queryOwnerVaultsInfo, queryUserVaults } from '../../../services/vault/query';
@@ -23,7 +23,7 @@ import Pool from './pool';
 import { queryFarmedPoolCoin, queryFarmer, queryPoolsList, queryTotalActiveAndQueuedPoolCoin } from '../../../services/pools/query';
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { formatNumber } from '../../../utils/number';
+import { commaSeparator, formatNumber } from '../../../utils/number';
 import { fetchRestPrices } from '../../../services/oracle/query';
 import ViewAllToolTip from './viewAllModal';
 import { combineColor, poolColor, vaultColor } from './color';
@@ -35,6 +35,8 @@ import processingAnimation from "../../../assets/lottefiles/processing.json";
 import successAnimation from "../../../assets/lottefiles/success.json";
 import failedAnimation from "../../../assets/lottefiles/failed.json";
 import Lottie from 'react-lottie';
+import { vestingIssuedTokens } from '../../../services/vestingContractsRead';
+import { MyTimer } from '../../../components/TimerForAirdrop';
 
 const Vote = ({
   lang,
@@ -88,6 +90,8 @@ const Vote = ({
   const [animationProcessing, setAnimationProcesing] = useState(false);
   const [animationSuccess, setAnimationSuccess] = useState(false);
   const [animationFailed, setAnimationFailed] = useState(false)
+  const [vestingNFTId, setVestingNFTId] = useState();
+  const [issuedveHARBOR, setIssuedveHARBOR] = useState(0)
 
   const processing = {
     loop: true,
@@ -190,14 +194,10 @@ const Vote = ({
 
   const votingEnd = () => {
     let endDate = currentProposalAllData?.voting_end_time;
-    // *Removing miliSec from unix time 
-    let newTime = Math.floor(endDate / 1000000000);
-    var timestamp = moment.unix(newTime);
-    timestamp = moment.utc(timestamp).format("YYYY-MM-DD HH:mm:ss [UTC]")
-    if (timestamp === "Invalid date") {
-      return "0000-00-00 00:00:00 UTC"
-    }
-    return timestamp;
+    let counterEndTime = unixToGMTTime(endDate)
+    const time = new Date(counterEndTime);
+    time.setSeconds(time.getSeconds() + 300);
+    return time;
   }
 
   const calculteVotingStartTime = () => {
@@ -474,16 +474,7 @@ const Vote = ({
       key: "my_borrowed",
       width: 150,
     },
-    // {
-    //   title: (
-    //     <>
-    //       Total Borrowed
-    //     </>
-    //   ),
-    //   dataIndex: "total_borrowed",
-    //   key: "total_borrowed",
-    //   width: 200,
-    // },
+
     {
       title: (
         <>
@@ -564,18 +555,20 @@ const Vote = ({
 
   const data = [
     {
-      title: "Voting Starts",
-      counts: `${votingStart()}`
+      title: "Voting Ends In",
+      counts: currentProposalAllData ? <MyTimer expiryTimestamp={votingEnd()} /> : <div> 0 <small>D</small> 0 <small>H</small> 0 <small>M</small> 0 <small>S</small>  </div>
     },
 
     {
       title: "Your Emission",
       counts: `${formatNumber(userEmission || 0)} HARBOR`
     },
+
     {
-      title: "Voting Ends",
-      counts: `${votingEnd()}`
+      title: "My Voting Power",
+      counts: `${commaSeparator(Number(issuedveHARBOR).toFixed(6) || 0)} veHARBOR`
     },
+
     {
       title: `Week ${proposalId} Total Emission`,
       counts: `${formatNumber(protectedEmission || 0)} HARBOR`
@@ -1058,7 +1051,6 @@ const Vote = ({
       ...prevState, [extendedPairId]: Number(value)
     }))
     setLastSelectedSlider(extendedPairId)
-    // setInputValue(value);
   };
 
   const fetchuserCurrentProposal = (address, proposalId) => {
@@ -1090,6 +1082,18 @@ const Vote = ({
       setUserCurrentProposalFilterData(result?.data)
 
     });
+  }
+
+  const fetchVestingLockNFTData = (address) => {
+    setInProcess(true)
+    vestingIssuedTokens(address).then((res) => {
+      setVestingNFTId(res)
+      setInProcess(false)
+    }).catch((error) => {
+      setVestingNFTId('')
+      setInProcess(false)
+      console.log(error);
+    })
   }
 
   const handleVote = (item, index) => {
@@ -1145,12 +1149,19 @@ const Vote = ({
   const handleInputSearch = (value) => {
     console.log(value.target.value);
     let searchedName = userCurrentProposalData?.filter((item) => denomToSymbol(item?.base_coin).toLowerCase().includes(value.target.value.toLowerCase()) || (item?.pair_name).toLowerCase().includes(value.target.value.toLowerCase()))
-
-    console.log(searchedName, "searchedName");
     setUserCurrentProposalFilterData(searchedName)
     setInputSearch(value.target.value)
   }
 
+  const handleSwitchChange = (value) => {
+    if (value) {
+      let searchedName = userCurrentProposalData?.filter((item) => Number(item?.user_position) > 0)
+      setUserCurrentProposalFilterData(searchedName)
+    }
+    else {
+      setUserCurrentProposalFilterData(userCurrentProposalData)
+    }
+  }
 
   // *calculate user emission 
   const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
@@ -1158,24 +1169,33 @@ const Vote = ({
     let myBorrowed = _myBorrowed || 0;
     let totalBorrowed = _totalBorrowed || 0;
     let totalVoteOfPair = _totalVoteOfPair || 0;
-    // let totalWeight = amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS);
     let totalWeight = currentProposalAllData?.total_voted_weight || 0;
     let projectedEmission = protectedEmission;
 
     let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
-    // console.log(myBorrowed, "myBorrowed");
-    // console.log(totalBorrowed, "totalBorrowed");
-    // console.log(totalVoteOfPair, "totalVoteOfPair");
-    // console.log(totalWeight, "toralWeight");
-    // console.log(projectedEmission, "projectedEmission");
+   
     if (isNaN(calculatedEmission)) {
-      // console.log(0, "calculatedEmission");
       return 0;
     } else {
-      // console.log(calculatedEmission, "calculatedEmission");
       return Number(calculatedEmission);
     }
 
+  }
+
+  const calculateTotalveHARBOR = () => {
+    let totalveHARBORLocked = 0;
+    let tokens = vestingNFTId && vestingNFTId?.reverse().map((item) => {
+      return Number(amountConversion(item?.vtoken?.amount));
+    })
+    totalveHARBORLocked = tokens?.reduce((partialSum, a) => partialSum + a, 0)
+    { totalveHARBORLocked && setIssuedveHARBOR(totalveHARBORLocked) }
+  }
+
+
+  function getColor(index) {
+    const length = combineColor.length;
+    const wrappedIndex = index % length;
+    return combineColor[wrappedIndex];
   }
 
   useEffect(() => {
@@ -1193,6 +1213,17 @@ const Vote = ({
       fetchEmissiondata(address)
     }
   }, [address, refreshBalance])
+
+  useEffect(() => {
+    if (address) {
+      fetchVestingLockNFTData(address)
+    }
+  }, [address])
+
+  useEffect(() => {
+    calculateTotalveHARBOR()
+  }, [address, vestingNFTId])
+
 
   const PieChart1 = {
     chart: {
@@ -1260,7 +1291,7 @@ const Vote = ({
             return ({
               name: item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name,
               y: Number(item?.total_vote),
-              color: combineColor[index],
+              color: getColor(index),
             })
           }
         })
@@ -1292,9 +1323,7 @@ const Vote = ({
     if (index <= 3) {
       return {
         key: item?.pair_id,
-        // assets_color: '#00AFB9',
-        assets_color: <div className='colorbox' style={{ backgroundColor: `${combineColor[index]}` }}></div>,
-        // assets: item,
+        assets_color: <div className='colorbox' style={{ backgroundColor: `${getColor(index)}` }}></div>,
         assets: <div className="assets-withicon">
           <div className="assets-icons">
             <div className="assets-icon">
@@ -1309,12 +1338,9 @@ const Vote = ({
               />
             </div>}
           </div>
-          {/* <div className='name'>{item?.pair_name}</div> */}
           <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
         </div>,
-        // vote: item,
         vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
-        // vote:`{{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} </span>)}`
       }
     }
   })
@@ -1414,7 +1440,7 @@ const Vote = ({
       total_votes:
         <div>
           {amountConversionWithComma(item?.total_vote || 0, DOLLAR_DECIMALS)} veHarbor
-          <div>{(item?.user_vote_ratio || 0) * 100} %</div>
+          <div>{Number((item?.user_vote_ratio || 0) * 100).toFixed(ZERO_DOLLAR_DECIMALS)} %</div>
         </div>,
       external_incentives: item?.total_incentive,
       my_vote: `${amountConversionWithComma(item?.user_vote || 0, DOLLAR_DECIMALS)} veHARBOR`,
@@ -1426,7 +1452,7 @@ const Vote = ({
           onChange={(value) => onChange(item?.pair_id, value)}
           tooltip={false}
         />
-        <div className='percents'>{userVoteArray[item?.pair_id] || 0}%</div>
+        <div className='percents'>{Number(userVoteArray[item?.pair_id] || 0).toFixed(ZERO_DOLLAR_DECIMALS)}%</div>
       </div>
     }
   })
@@ -1464,12 +1490,12 @@ const Vote = ({
           </Col>
         </Row>
 
-        <Row>
-          <Col>
-            <div className="emission-card w-100" style={{ height: "100%" }}>
+        <Row className="emission-top-main-container">
+          <div className='emission-top-left' >
+            <div className="emission-card w-100 emission-top-card-col" style={{ height: "100%", justifyContent: "space-between" }}>
               <div className="card-header">
                 <div className="left">
-                  Emission Voting
+                  Emission Details
                 </div>
               </div>
               <List
@@ -1493,8 +1519,8 @@ const Vote = ({
                 )}
               />
             </div>
-          </Col>
-          <Col>
+          </div>
+          <div className='emission-top-right'>
             <div className="emission-card w-100" style={{ height: "100%" }}>
               <div className="graph-container">
                 <div className="top">
@@ -1529,7 +1555,7 @@ const Vote = ({
                 </div>
               </div>
             </div>
-          </Col>
+          </div>
 
         </Row>
         <Row>
@@ -1540,6 +1566,7 @@ const Vote = ({
             <div>
               Hide 0 Balances{" "}
               <Switch
+                onChange={handleSwitchChange}
               />
             </div>
             <Input

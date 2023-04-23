@@ -112,6 +112,17 @@
 
   .emission-distribution-table {
     max-width: 280px;
+    .ant-table-container {
+      .ant-table-content {
+        .ant-table-thead {
+          .ant-table-cell {
+            &::before {
+              background-color: unset !important;
+            }
+          }
+        }
+      }
+    }
     .ant-table {
       table {
         .ant-table-thead {
@@ -506,6 +517,17 @@
 }
 
 .emission-voting-table {
+  .ant-table-container {
+    .ant-table-content {
+      .ant-table-thead {
+        .ant-table-cell {
+          &::before {
+            background-color: unset !important;
+          }
+        }
+      }
+    }
+  }
   .vote-slider {
     display: flex;
     align-items: center;
@@ -568,6 +590,44 @@
           border-color: darken(#5541bf, 10) !important;
         }
       }
+    }
+  }
+}
+
+.emission-top-card-col {
+
+}
+
+.emission-top-main-container {
+  column-gap: 1rem;
+  flex-wrap: nowrap !important;
+  // @media only screen and (min-width: 600px) and (max-width: 800px) {
+  @media only screen and (max-width: 800px) {
+    flex-wrap: wrap !important;
+  }
+  .emission-top-left {
+    flex-basis: 49%;
+    @media only screen and (max-width: 800px) {
+      margin-bottom: 1rem;
+      flex-basis: 100%;
+    }
+  }
+  .emission-top-right {
+    flex-basis: 49%;
+    @media only screen and (max-width: 800px) {
+      flex-basis: 100%;
+    }
+    .bottom-right {
+      .emission-distribution-table {
+        @media only screen and (max-width: 500px) {
+          max-width: 100%;
+        }
+      }
+    }
+  }
+  .emission-card .graph-container .bottom {
+    @media only screen and (max-width: 500px) {
+      flex-direction: column;
     }
   }
 }

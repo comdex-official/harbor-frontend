@@ -22,49 +22,46 @@ import variables from '../../../utils/variables';
 import Snack from '../../../components/common/Snack';
 import { transactionForClaimRebase } from '../../../services/rebaseingContractWrite';
 import { transactionClaimAllRewards, transactionClaimRewards } from '../../../services/rewardContractsRead';
+import { setLockActiveTab } from "../../../actions/vesting";
 
 const Rewards = ({
   lang,
   address,
   refreshBalance,
   setBalanceRefresh,
+  setLockActiveTab
 }) => {
   const [claimableRewardsData, setClaimableRewardsData] = useState()
   const [loading, setLoading] = useState(false);
   const [allRewardLoading, setAllRewardLoading] = useState(false);
   const [claimableRebaseData, setClaimableRebaseData] = useState()
   const [current, setCurrent] = useState(0);
+  const [rewardCurrent, setRewardCurrent] = useState(0);
+  const [dataLoading, setDataLoading] = useState(false);
 
 
 
 
   // Query 
   const fetchClaimeableRewards = (productId, address) => {
-    setLoading(true)
+    setDataLoading(true)
     claimableRewards(productId, address).then((res) => {
-      let result = [];
-      res?.map((item) => {
-        if ((item?.total_incentive)?.length > 0) {
-          return result.push(item);
-        }
-      })
-      setClaimableRewardsData(result)
-      setLoading(false)
+      setClaimableRewardsData(res?.reverse())
+      setDataLoading(false)
     }).catch((error) => {
       console.log(error);
-      setLoading(false)
+      setDataLoading(false)
     })
   }
 
   const fetchClaimeableRebase = (productId, address) => {
-    setLoading(true)
+    setDataLoading(true)
     totalClaimableRebase(productId, address).then((res) => {
-      console.log(res);
-      setClaimableRebaseData(res)
-      setLoading(false)
+      setClaimableRebaseData(res?.reverse())
+      setDataLoading(false)
     }).catch((error) => {
       console.log(error);
-      setLoading(false)
+      setDataLoading(false)
     })
   }
 
@@ -104,7 +101,7 @@ const Rewards = ({
   }
 
   const claimReward = (proposalId) => {
-    // setCurrent(proposalId)
+    setRewardCurrent(proposalId)
     setLoading(true)
     if (address) {
       transactionClaimRewards(address, PRODUCT_ID, proposalId, (error, result) => {
@@ -132,11 +129,13 @@ const Rewards = ({
 
   const claimAllReward = () => {
     setAllRewardLoading(true)
+    setLoading(true)
     if (address) {
       transactionClaimAllRewards(address, PRODUCT_ID, (error, result) => {
         if (error) {
           message.error(error?.rawLog || "Transaction Failed")
           setAllRewardLoading(false)
+          setLoading(false)
           return;
         }
         message.success(
@@ -148,10 +147,12 @@ const Rewards = ({
         )
         setBalanceRefresh(refreshBalance + 1);
         setAllRewardLoading(false)
+        setLoading(false)
       })
     }
     else {
       setAllRewardLoading(false)
+      setLoading(false)
       message.error("Please Connect Wallet")
     }
   }
@@ -195,7 +196,7 @@ const Rewards = ({
                   <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
                 </div>
               )
-            : <div className="mt-1" >0</div>
+            : <div className="mt-1" >-</div>
           }
 
         </>
@@ -207,64 +208,37 @@ const Rewards = ({
       key: "action",
       align: 'center',
       className: 'justify-content-center',
-      render: (proposal_id) => <>
-        <Button type='primary'
-          className='btn-filled px-4'
-          onClick={() => claimReward(proposal_id)}
-        >
-          Claim
-        </Button>
-        {/* <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>  */}
+      render: (item) => <>
+        {
+          !item?.claimed ?
+            <Button type='primary'
+              className='btn-filled px-4'
+              onClick={() => claimReward(item?.proposal_id)}
+              loading={item?.proposal_id === rewardCurrent ? loading : false}
+              disabled={
+                loading ||
+                item?.total_incentive?.length <= 0
+
+              }
+            >
+              Claim
+            </Button>
+            :
+            <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>
+        }
       </>,
       width: 140
     }
   ];
 
-  // const externalIncentivesdata = [
-  //   {
-  //     key: 1,
-  //     week: '06',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 2,
-  //     week: '05',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 3,
-  //     week: '04',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 4,
-  //     week: '03',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 5,
-  //     week: '02',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 6,
-  //     week: '01',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  // ];
+  
 
   const externalIncentivesdata = claimableRewardsData && claimableRewardsData?.map((item) => {
     return {
       key: item?.proposal_id,
       week: item?.proposal_id,
       assets: item?.total_incentive,
-      action: item?.proposal_id
+      action: item
     }
 
   })
@@ -302,66 +276,33 @@ const Rewards = ({
       key: "action",
       align: 'center',
       className: 'justify-content-center',
-      render: (proposal_id) => <>
-        <Button type='primary'
-          className='btn-filled px-4'
-          onClick={() => claimRebase(proposal_id)}
-          loading={proposal_id === current ? loading : false}
-          disabled={loading}
-        >
-          Claim
-        </Button>
-        {/* <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>  */}
+      render: (item) => <>
+        {
+          !item?.claimed ?
+            <Button type='primary'
+              className='btn-filled px-4'
+              onClick={() => claimRebase(item?.proposal_id)}
+              loading={item?.proposal_id === current ? loading : false}
+              disabled={loading}
+            >
+              Claim
+            </Button>
+            :
+            <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>
+        }
       </>,
       width: 140
     }
   ];
 
-  // const emissionRewardsdata = [
-  //   {
-  //     key: 1,
-  //     week: '06',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 2,
-  //     week: '05',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 3,
-  //     week: '04',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 4,
-  //     week: '03',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 5,
-  //     week: '02',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  //   {
-  //     key: 6,
-  //     week: '01',
-  //     assets: '4.40 CMDX',
-  //     action: ''
-  //   },
-  // ];
+  
 
   const emissionRewardsdata = claimableRebaseData && claimableRebaseData?.map((item) => {
     return {
       key: item?.proposal_id,
       week: item?.proposal_id,
       assets: item?.rebase,
-      action: item?.proposal_id
+      action: item
     }
   })
 
@@ -383,7 +324,15 @@ const Rewards = ({
             <div className='reward-card' style={{ backgroundImage: `url(${cardImage})` }}>
               <h2>Rebase Rewards </h2>
               <p>$veHarbor is distributed to $veHARBOR holders in order to reduce the voting power dilution. Users can see their $veHarbor here.</p>
-              <Button type='primary' className='btn-filled'>Take me there!</Button>
+              <Link to="/more/vesting">
+                <Button type='primary'
+                  className='btn-filled'
+                  onClick={() => {
+                    setLockActiveTab(true)
+                  }
+                  }
+                >Take me there!</Button>
+              </Link>
             </div>
           </Col>
         </Row>
@@ -391,10 +340,10 @@ const Rewards = ({
           <Col md='6'>
             <Row className='mb-2'>
               <Col>
-                <h2>External Incentives </h2>
+                <h2 className='incentives-heading'>External Incentives </h2>
               </Col>
-              <Col className="text-right">
-                <Button type='primary' className='btn-filled' loading={allRewardLoading} disabled={allRewardLoading} onClick={() => claimAllReward()}>Claim All</Button>
+              <Col className="text-right" style={{ flexGrow: "unset" }}>
+                <Button type='primary' className='btn-filled' loading={allRewardLoading} disabled={allRewardLoading || loading} onClick={() => claimAllReward()}>Claim All</Button>
               </Col>
             </Row>
             <Table
@@ -402,14 +351,15 @@ const Rewards = ({
               dataSource={externalIncentivesdata}
               columns={externalIncentivesColumns}
               pagination={false}
+              loading={dataLoading}
               scroll={{ x: "100%" }}
               locale={{ emptyText: <NoDataIcon /> }}
             />
           </Col>
           <Col md='6'>
             <Row className='mb-2'>
-              <Col>
-                <h2>Emission Rewards</h2>
+              <Col >
+                <h2 className='incentives-heading'>Emission Rewards</h2>
               </Col>
             </Row>
             <Table
@@ -417,6 +367,7 @@ const Rewards = ({
               dataSource={emissionRewardsdata}
               columns={emissionRewardsColumns}
               pagination={false}
+              loading={dataLoading}
               scroll={{ x: "100%" }}
               locale={{ emptyText: <NoDataIcon /> }}
             />
@@ -443,5 +394,6 @@ const stateToProps = (state) => {
 };
 const actionsToProps = {
   setBalanceRefresh,
+  setLockActiveTab,
 };
 export default connect(stateToProps, actionsToProps)(Rewards);
