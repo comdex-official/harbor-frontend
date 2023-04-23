@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
-import { SvgIcon } from "../../components/common";
+import { SvgIcon, Row, Col } from "../../components/common";
 import { connect } from "react-redux";
-import { message, Spin } from "antd";
+import { message, Spin, Input } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
@@ -25,6 +25,8 @@ import { queryVaultMintedStatistic } from "../../services/vault/query";
 import { Pagination } from 'antd';
 import { userProposalAllUpData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId } from "../../services/voteContractsRead";
 import { comdex } from "../../config/network";
+
+import HotIcon from '../../assets/images/hot-icon.png';
 
 const Minting = ({ address, refreshBalance }) => {
   const navigate = useNavigate();
@@ -189,8 +191,16 @@ const Minting = ({ address, refreshBalance }) => {
 
   return (
     <div className="app-content-wrapper vault-mint-main-container">
-      <div className="card-main-container">
-        {extenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose Your Vault Type</h1> : ""}
+      {/* {extenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose Your Vault Type</h1> : ""} */}
+      <Row>
+        <Col className="mint-search-section">
+          <Input
+            placeholder="Search Asset.."
+            suffix={<SvgIcon name="search" viewbox="0 0 18 18" />}
+          />
+        </Col>
+      </Row>
+      <div className="card-main-container mint-card-list">
         {extenedPairVaultList?.length > 0 ? (
           extenedPairVaultList?.map((item, index) => {
             if (
@@ -203,26 +213,50 @@ const Minting = ({ address, refreshBalance }) => {
                   {item &&
                     (
                       <div
-                        className="card-container "
+                        className="card-container"
                         onClick={() => {
                           dispatch(setCurrentPairID(item?.pairId?.toNumber()));
                           dispatch(setSelectedExtentedPairvault(item));
                           navigateToMint(item?.id?.toNumber());
                         }}
                       >
+                        <div className="hot-tag hot-tag1">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div>
+                        {/* <div className="hot-tag hot-tag2">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div>
+                        <div className="hot-tag hot-tag3">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div>
+                        <div className="hot-tag hot-tag4">
+                          Hot <img src={HotIcon} alt="Hot" />
+                        </div> */}
                         <div className="up-container">
                           <div className="icon-container mint-page-icon-container">
                             <SvgIcon name={iconNameFromDenom(symbolToDenom(getIconFromPairName(item?.pairName)))} />
                           </div>
                           <div className="vault-name-container">
                             <div className="vault-name">{transformPairName(item?.pairName)}</div>
-                            <div className="vault-desc" > Harbor Emission -
-                              {
-                                allProposalData?.[index]?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(allProposalData?.[index]?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission))
-                                  : Number(0).toFixed(DOLLAR_DECIMALS)
-                              }
-                            </div>
                           </div>
+                        </div>
+                        <div className="vault-desc" >
+                          <Row>
+                            <Col>
+                              <p>Weekly Emission</p>
+                              <div className="coins">
+                                {
+                                  allProposalData?.[index]?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(allProposalData?.[index]?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission))
+                                    : Number(0).toFixed(DOLLAR_DECIMALS)
+                                }
+                                <span>Harbor</span>
+                              </div>
+                            </Col>
+                            <Col className='text-right'>
+                              <p>APY</p>
+                              <div className="coins">345678%</div>
+                            </Col>
+                          </Row>
                         </div>
                         <div className="bottom-container">
                           <div className="contenet-container">

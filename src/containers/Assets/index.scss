@@ -308,3 +308,11 @@
     }
   }
 }
+
+.ant-tabs {
+  &.assets-tab{
+    .ant-tabs-nav{
+      margin-bottom: 0;
+    }
+  }
+}

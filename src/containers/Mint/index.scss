@@ -421,84 +421,88 @@
 
 .vault-mint-main-container {
   .card-main-container {
-    display: flex;
-    gap: 13px;
-    flex-wrap: wrap;
+    &.mint-card-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 30px;
+
+      @media screen and (max-width:1440px) {
+        grid-gap: 20px;
+      }
+      @media screen and (max-width: 1280px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @media screen and (max-width: 700px) {
+        grid-template-columns: repeat(1, 1fr);
+      }
+    }
     .card-container {
       background: white;
       // padding: 25px 25px;
-      padding: 18px 25px;
+      padding: 35px;
       border-radius: $base-border-radius;
       box-shadow: $box-shadow-inner-light;
       border: 1px solid $border-color-base;
-      flex-basis: 30%;
-      @media only screen and (min-width: 990px) and (max-width: 1300px) {
-        flex-basis: 45%;
+      position: relative;
+      @media screen and (max-width:1440px) {
+        padding: 30px;
       }
-      @media only screen and (max-width: 972px) {
-        flex-basis: 45%;
-      }
-      @media only screen and (max-width: 720px) {
-        flex-basis: 100%;
+      .hot-tag {
+        position: absolute;
+        top: -8px;
+        right: 12px;
+        text-align: center;
+        background-size: 100%;
+        width: 68px;
+        height: 69px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 400;
+        img {
+          width: 13px;
+          margin-left: 5px;
+        }
+        &.hot-tag1 {
+          background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzYiIGhlaWdodD0iNzciIHZpZXdCb3g9IjAgMCA3NiA3NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZF8xNDAxXzQ4NzUpIj4KPHBhdGggZD0iTTYyLjI4NTcgMEgxMy43MTQzQzguMzcxNDMgMCA0IDMuNDUgNCA3LjY2NjY3VjY5TDM4IDU3LjVMNzIgNjlWNy42NjY2N0M3MiAzLjQ1IDY3LjYyODYgMCA2Mi4yODU3IDBaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMTQwMV80ODc1KSIvPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2RfMTQwMV80ODc1IiB4PSIwIiB5PSIwIiB3aWR0aD0iNzYiIGhlaWdodD0iNzciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CjxmZU9mZnNldCBkeT0iNCIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+CjxmZUNvbXBvc2l0ZSBpbjI9ImhhcmRBbHBoYSIgb3BlcmF0b3I9Im91dCIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwLjgwNzg0MyAwIDAgMCAwIDAuMDc0NTA5OCAwIDAgMCAwIDAuOTA1ODgyIDAgMCAwIDAuMTEgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18xNDAxXzQ4NzUiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3dfMTQwMV80ODc1IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMTQwMV80ODc1IiB4MT0iNzcuMjMwOCIgeTE9Ijk4LjQyNjUiIHgyPSI1LjIxODgyIiB5Mj0iLTM4LjQ2MDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzRFMTRGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDRTEzRTciLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K)
+        }
+        &.hot-tag2 {
+          background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzYiIGhlaWdodD0iNzciIHZpZXdCb3g9IjAgMCA3NiA3NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZF8xNDA0XzUyMzUpIj4KPHBhdGggZD0iTTYyLjI4NTcgMEgxMy43MTQzQzguMzcxNDMgMCA0IDMuNDUgNCA3LjY2NjY3VjY5TDM4IDU3LjVMNzIgNjlWNy42NjY2N0M3MiAzLjQ1IDY3LjYyODYgMCA2Mi4yODU3IDBaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMTQwNF81MjM1KSIvPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2RfMTQwNF81MjM1IiB4PSIwIiB5PSIwIiB3aWR0aD0iNzYiIGhlaWdodD0iNzciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CjxmZU9mZnNldCBkeT0iNCIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+CjxmZUNvbXBvc2l0ZSBpbjI9ImhhcmRBbHBoYSIgb3BlcmF0b3I9Im91dCIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwLjgwNzg0MyAwIDAgMCAwIDAuMDc0NTA5OCAwIDAgMCAwIDAuOTA1ODgyIDAgMCAwIDAuMTEgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18xNDA0XzUyMzUiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3dfMTQwNF81MjM1IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMTQwNF81MjM1IiB4MT0iNzcuMjMwOCIgeTE9Ijk4LjQyNjUiIHgyPSI1LjIxODgyIiB5Mj0iLTM4LjQ2MDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0NFMTNFNyIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNFODREMTMiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K)
+        }
+        &.hot-tag3 {
+          background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzYiIGhlaWdodD0iNzciIHZpZXdCb3g9IjAgMCA3NiA3NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZF8xNDA0XzUxMTcpIj4KPHBhdGggZD0iTTYyLjI4NTcgMEgxMy43MTQzQzguMzcxNDMgMCA0IDMuNDUgNCA3LjY2NjY3VjY5TDM4IDU3LjVMNzIgNjlWNy42NjY2N0M3MiAzLjQ1IDY3LjYyODYgMCA2Mi4yODU3IDBaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMTQwNF81MTE3KSIvPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2RfMTQwNF81MTE3IiB4PSIwIiB5PSIwIiB3aWR0aD0iNzYiIGhlaWdodD0iNzciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CjxmZU9mZnNldCBkeT0iNCIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+CjxmZUNvbXBvc2l0ZSBpbjI9ImhhcmRBbHBoYSIgb3BlcmF0b3I9Im91dCIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwLjgwNzg0MyAwIDAgMCAwIDAuMDc0NTA5OCAwIDAgMCAwIDAuOTA1ODgyIDAgMCAwIDAuMTEgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18xNDA0XzUxMTciLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3dfMTQwNF81MTE3IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMTQwNF81MTE3IiB4MT0iNzcuMjMwOCIgeTE9Ijk4LjQyNjUiIHgyPSI1LjIxODgyIiB5Mj0iLTM4LjQ2MDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzIyMDBGNCIvPgo8c3RvcCBvZmZzZXQ9IjAuMzkwNjI1IiBzdG9wLWNvbG9yPSIjNzY0M0M4Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI0U4NEQxMyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=)
+        }
+        &.hot-tag4 {
+          background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzYiIGhlaWdodD0iNzciIHZpZXdCb3g9IjAgMCA3NiA3NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZF8xNDA0XzUwMDEpIj4KPHBhdGggZD0iTTYyLjI4NTcgMEgxMy43MTQzQzguMzcxNDMgMCA0IDMuNDUgNCA3LjY2NjY3VjY5TDM4IDU3LjVMNzIgNjlWNy42NjY2N0M3MiAzLjQ1IDY3LjYyODYgMCA2Mi4yODU3IDBaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMTQwNF81MDAxKSIvPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2RfMTQwNF81MDAxIiB4PSIwIiB5PSIwIiB3aWR0aD0iNzYiIGhlaWdodD0iNzciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CjxmZU9mZnNldCBkeT0iNCIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+CjxmZUNvbXBvc2l0ZSBpbjI9ImhhcmRBbHBoYSIgb3BlcmF0b3I9Im91dCIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwLjgwNzg0MyAwIDAgMCAwIDAuMDc0NTA5OCAwIDAgMCAwIDAuOTA1ODgyIDAgMCAwIDAuMTEgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18xNDA0XzUwMDEiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3dfMTQwNF81MDAxIiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMTQwNF81MDAxIiB4MT0iNzcuMjMwOCIgeTE9Ijk4LjQyNjUiIHgyPSI1LjIxODgyIiB5Mj0iLTM4LjQ2MDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iI0ZGQzA3NiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNFODREMTMiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K)
+        }
       }
       .dark-mode & {
-        background: $background-dark2;
+        background: rgba($black, 0.4);
+        border-color: rgba($white, 0.3);
         box-shadow: none;
-      }
-      &:hover {
-        background: rgba($secondary-color, 0.3);
-        border-color: rgb(199 194 226 / 30%);
-        cursor: pointer;
-        .dark-mode & {
-          background: $secondary-color;
-          border-color: $secondary-color;
-        }
-      }
-      &:hover .tooltip-icon {
-        fill: black;
-        .dark-mode & {
-          fill: white;
-        }
       }
 
       .up-container {
         display: flex;
-        column-gap: 10px;
+        align-items: center;
+        margin-bottom: 1rem;
         .icon-container {
-          flex-basis: 20%;
-          height: 5rem;
-          @media only screen and (min-width: 620px) and (max-width: 720px) {
-            height: auto;
-          }
-          @media only screen and (max-width: 619px) {
-            height: 8rem;
-          }
-          @media only screen and (max-width: 490px) {
-            height: 6rem;
-          }
-          @media only screen and (max-width: 380px) {
-            height: 4rem;
+          width: 70px;
+          height: 70px;
+          border-radius: 70px;
+          margin-right: 15px;
+          @media screen and (max-width:1440px) {
+            width: 60px;
+            height: 60px;
           }
           .icon {
-            width: 100%;
-            height: 70%;
-            border-radius: 50%;
-          }
-        }
-        .mint-page-icon-container {
-          .icon {
-            width: 57px;
-            @media only screen and (min-width: 620px) and (max-width: 720px) {
-              width: 109px;
-            }
-            @media only screen and (min-width: 490px) and (max-width: 620px) {
-              width: 88px;
-            }
-            @media only screen and (min-width: 381px) and (max-width: 490px) {
-              width: 67px;
-            }
-            @media only screen and (min-width: 280px) and (max-width: 381px) {
-              width: 45px;
+            width: 70px;
+            height: 70px;
+            border-radius: 70px;
+            @media screen and (max-width:1440px) {
+              width: 60px;
+              height: 60px;
+              border-radius: 60px;
             }
           }
         }
@@ -508,19 +512,47 @@
             font-size: 1.3rem;
             font-weight: 600;
             color: #000;
-            margin-top: 12px;
+            margin-top: 0;
+            @media screen and (max-width:1440px) {
+              font-size: 1.2rem;
+            }
             .dark-mode & {
               color: #fff;
             }
           }
-          .vault-desc {
+        }
+      }
+      .vault-desc {
+        margin-bottom: 1rem;
+        p {
+          font-size: 1rem;
+          font-weight: 600;
+          @media screen and (max-width:1440px) {
+            font-size: 1.05rem;
+          }
+        }
+        .coins{
+          font-size: 1.4rem;
+          font-weight: 800;
+          background: $text-gradient;
+          -webkit-background-clip: text;
+	        -webkit-text-fill-color: transparent;
+          @media screen and (max-width:1440px) {
+            font-size: 1.6rem;
+          }
+          span {
+            font-size: 1.375rem;
+            margin-left: 6px;
           }
         }
       }
       .bottom-container {
         display: flex;
         flex-direction: column;
-        row-gap: 10px;
+        row-gap: 15px;
+        @media screen and (max-width:1440px) {
+          row-gap: 12px;
+        }
         .contenet-container {
           display: flex;
           justify-content: space-between;
@@ -530,11 +562,41 @@
             color: #fff;
           }
           .name {
-            font-size: 13px;
+            font-size: 0.9rem;
+            @media screen and (max-width:1440px) {
+              font-size: 0.8rem;
+            }
           }
           .value {
-            font-size: 11px;
+            font-size: 0.9rem;
             font-weight: 500;
+            @media screen and (max-width:1440px) {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+      &:hover {
+        background: rgba($secondary-color, 0.3);
+        border-color: rgb(199 194 226 / 30%);
+        cursor: pointer;
+        .dark-mode & {
+          background: $secondary-color;
+          border-color: $secondary-color;
+        }
+        .vault-desc {
+          .coins{
+            .dark-mode & {
+              background: $white;
+              -webkit-background-clip: text;
+	            -webkit-text-fill-color: transparent;
+            }
+          }
+        }
+        .tooltip-icon {
+          fill: black;
+          .dark-mode & {
+            fill: white;
           }
         }
       }
@@ -547,5 +609,59 @@
   font-size: 20px;
   .dark-mode & {
     color: white;
+  }
+}
+
+
+.mint-search-section {
+  text-align: right;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+
+  .ant-input-affix-wrapper {
+    border: 1px solid $secondary-color;
+    background: none;
+    border-radius: 30px;
+    height: 38px;
+    padding: 4px 18px;
+    max-width: 260px;
+
+    @media screen and (max-width: 576px) {
+      max-width: 100%;
+    }
+
+    &:hover {
+      border-color: $border-light;
+    }
+
+    input {
+      background: none;
+      font-weight: 400;
+
+      .dark-mode & {
+        color: $white;
+      }
+
+      &::placeholder {
+        color: #303950;
+        opacity: 1;
+        font-weight: 400;
+        .dark-mode & {
+          color: white;
+        }
+      }
+    }
+
+    .ant-input-suffix {
+      .icon {
+        fill: $border-dark;
+        .dark-mode & {
+          fill: $secondary-color;
+        }
+      }
+    }
   }
 }
