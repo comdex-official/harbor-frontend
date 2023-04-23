@@ -194,6 +194,8 @@
       .bottom-right {
         width: 100%;
         flex-basis: 65%;
+        overflow-y: auto;
+        max-height: 400px;
         .asset-container {
           .composite-card {
             .card-content {
