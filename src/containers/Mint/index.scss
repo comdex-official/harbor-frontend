@@ -545,6 +545,13 @@
             margin-left: 6px;
           }
         }
+        .dash-line {
+          height: 4px;
+          width: 50px;
+          background: $text-gradient;
+          display: flex;
+          margin-top: 0.8rem;
+        }
       }
       .bottom-container {
         display: flex;
@@ -590,6 +597,11 @@
               background: $white;
               -webkit-background-clip: text;
               -webkit-text-fill-color: transparent;
+            }
+          }
+          .dash-line {
+            .dark-mode & {
+              background: white;
             }
           }
         }

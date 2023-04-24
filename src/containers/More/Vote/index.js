@@ -1070,7 +1070,6 @@ const Vote = ({
         message.error(error);
         return;
       }
-      console.log(result, "Emission Data");
 
       result?.data.map((item) => {
         setUserVoteArray((prevState) => ({
