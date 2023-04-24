@@ -373,6 +373,29 @@ const More = ({
           </div>
         </Col>
 
+        {/* Rewards  */}
+        <Col lg="6" md="6" sm="12" className="mb-3">
+          <div className="more-card">
+            <div className="more-card-inner">
+              <div className="morecard-left">
+                <h2>Rewards</h2>
+                <p>
+                  Rewards displayed are an estimation of the external incentives, surplus rewards and the rebases that you can claim.
+                </p>
+                <div className="button-container same-button-container">
+                  <Button
+                    type="primary"
+                    className="btn-filled"
+                    onClick={() => handleRouteChange("./rewards")}
+                  >
+                    Claim
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Col>
+
         {/* Reward  */}
         {/* <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">

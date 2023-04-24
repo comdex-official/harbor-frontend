@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import './index.scss';
+import './EmissionDistributionAllModal/index.scss';
 import { connect } from "react-redux";
-import { Button, Input, List, message, Slider, Switch, Table } from "antd";
-import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";
+import { Button, Input, List, message, Modal, Slider, Switch, Table } from "antd";
+import { denomToSymbol, iconNameFromDenom, symbolToDenom, unixToGMTTime } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from '../../../constants/common';
-import { totalVTokens, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID, ZERO_DOLLAR_DECIMALS } from '../../../constants/common';
+import { emissiondata, totalVTokens, userCurrentProposal, userProposalAllUpData, userProposalAllUpPoolData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId, votingTotalBribs, votingTotalVotes, votingUserVote } from '../../../services/voteContractsRead';
 import { queryAssets, queryPair, queryPairVault } from '../../../services/asset/query';
 import { queryMintedTokenSpecificVaultType, queryOwnerVaults, queryOwnerVaultsInfo, queryUserVaults } from '../../../services/vault/query';
 import { transactionForVotePairProposal } from '../../../services/voteContractsWrites';
@@ -22,7 +23,7 @@ import Pool from './pool';
 import { queryFarmedPoolCoin, queryFarmer, queryPoolsList, queryTotalActiveAndQueuedPoolCoin } from '../../../services/pools/query';
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { formatNumber } from '../../../utils/number';
+import { commaSeparator, formatNumber } from '../../../utils/number';
 import { fetchRestPrices } from '../../../services/oracle/query';
 import ViewAllToolTip from './viewAllModal';
 import { combineColor, poolColor, vaultColor } from './color';
@@ -30,6 +31,12 @@ import Rebase from './Rebase';
 import Reward from './Rewards';
 import EmissionDistributionAllModal from './EmissionDistributionAllModal';
 import ExternalIncentivesModal from './ExternalIncentivesModal';
+import processingAnimation from "../../../assets/lottefiles/processing.json";
+import successAnimation from "../../../assets/lottefiles/success.json";
+import failedAnimation from "../../../assets/lottefiles/failed.json";
+import Lottie from 'react-lottie';
+import { vestingIssuedTokens } from '../../../services/vestingContractsRead';
+import { MyTimer } from '../../../components/TimerForAirdrop';
 
 const Vote = ({
   lang,
@@ -38,8 +45,8 @@ const Vote = ({
   setBalanceRefresh,
   assetMap,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [inProcess, setInProcess] = useState(false);
+
+
   const [proposalId, setProposalId] = useState();
   const [proposalExtenderPair, setProposalExtenderPair] = useState();
   const [currentProposalAllData, setCurrentProposalAllData] = useState();
@@ -66,11 +73,53 @@ const Vote = ({
   const [poolsName, setPoolsName] = useState({})
   const [allPairTotalVote, setAllPairTotalVote] = useState({})
 
-  const [inputValue, setInputValue] = useState(1);
 
-  const onChange = (newValue) => {
-    setInputValue(newValue);
+  // ---------------------------net Variable-----------------------------------
+  const [inputValue, setInputValue] = useState(0);
+
+  const [userCurrentProposalData, setUserCurrentProposalData] = useState();
+  const [userCurrentProposalFilterData, setUserCurrentProposalFilterData] = useState();
+  const [userVoteArray, setUserVoteArray] = useState({})
+  const [sumOfVotes, setSumOfVotes] = useState(0);
+  const [updatedUserVote, setUpdatedUserVote] = useState({})
+  const [lastSelectedSlider, setLastSelectedSlider] = useState()
+  const [inProcess, setInProcess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [inputSearch, setInputSearch] = useState("")
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [animationProcessing, setAnimationProcesing] = useState(false);
+  const [animationSuccess, setAnimationSuccess] = useState(false);
+  const [animationFailed, setAnimationFailed] = useState(false)
+  const [vestingNFTId, setVestingNFTId] = useState();
+  const [issuedveHARBOR, setIssuedveHARBOR] = useState(0)
+
+  const processing = {
+    loop: true,
+    autoplay: true,
+    animationData: processingAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
+
+  const success = {
+    loop: true,
+    autoplay: true,
+    animationData: successAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
+  const failed = {
+    loop: true,
+    autoplay: true,
+    animationData: failedAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
 
   // Query 
   const fetchVotingCurrentProposalId = () => {
@@ -145,14 +194,10 @@ const Vote = ({
 
   const votingEnd = () => {
     let endDate = currentProposalAllData?.voting_end_time;
-    // *Removing miliSec from unix time 
-    let newTime = Math.floor(endDate / 1000000000);
-    var timestamp = moment.unix(newTime);
-    timestamp = moment.utc(timestamp).format("YYYY-MM-DD HH:mm:ss [UTC]")
-    if (timestamp === "Invalid date") {
-      return "0000-00-00 00:00:00 UTC"
-    }
-    return timestamp;
+    let counterEndTime = unixToGMTTime(endDate)
+    const time = new Date(counterEndTime);
+    time.setSeconds(time.getSeconds() + 300);
+    return time;
   }
 
   const calculteVotingStartTime = () => {
@@ -249,9 +294,13 @@ const Vote = ({
     let userTotalVotes = 0;
     let calculatePercentage = 0;
 
-    calculatePercentage = (Number(value) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
+    calculatePercentage = (Number(value) / Number(amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS))) * 100;
     calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
-    return calculatePercentage;
+    if (calculatePercentage === "Infinity") {
+      return 0
+    } else {
+      return calculatePercentage;
+    }
   }
 
   useEffect(() => {
@@ -376,45 +425,6 @@ const Vote = ({
   }, [address, proposalId, refreshBalance])
 
 
-  const handleVote = (item, index) => {
-    setInProcess(true)
-    setBtnLoading(index)
-    if (address) {
-      if (proposalId) {
-        if (amountConversion(totalVotingPower, DOLLAR_DECIMALS) === Number(0).toFixed(DOLLAR_DECIMALS)) {
-          message.error("Insufficient Voting Power")
-          setInProcess(false)
-        }
-        else {
-          transactionForVotePairProposal(address, PRODUCT_ID, proposalId, item, (error, result) => {
-            if (error) {
-              message.error(error?.rawLog || "Transaction Failed")
-              setInProcess(false)
-              return;
-            }
-            message.success(
-              < Snack
-                message={variables[lang].tx_success}
-                explorerUrlToTx={comdex?.explorerUrlToTx}
-                hash={result?.transactionHash}
-              />
-            )
-            setBalanceRefresh(refreshBalance + 1);
-            setInProcess(false)
-          })
-
-        }
-      } else {
-        setInProcess(false)
-        message.error("Please enter amount")
-      }
-    }
-    else {
-      setInProcess(false)
-      message.error("Please Connect Wallet")
-    }
-  }
-
   useEffect(() => {
     if (currentProposalAllData) {
       fetchTotalVTokens(address, currentProposalAllData?.height)
@@ -464,16 +474,7 @@ const Vote = ({
       key: "my_borrowed",
       width: 150,
     },
-    // {
-    //   title: (
-    //     <>
-    //       Total Borrowed
-    //     </>
-    //   ),
-    //   dataIndex: "total_borrowed",
-    //   key: "total_borrowed",
-    //   width: 200,
-    // },
+
     {
       title: (
         <>
@@ -554,18 +555,20 @@ const Vote = ({
 
   const data = [
     {
-      title: "Voting Starts",
-      counts: `${votingStart()}`
+      title: "Voting Ends In",
+      counts: currentProposalAllData ? <MyTimer expiryTimestamp={votingEnd()} /> : <div> 0 <small>D</small> 0 <small>H</small> 0 <small>M</small> 0 <small>S</small>  </div>
     },
 
     {
       title: "Your Emission",
       counts: `${formatNumber(userEmission || 0)} HARBOR`
     },
+
     {
-      title: "Voting Ends",
-      counts: `${votingEnd()}`
+      title: "My Voting Power",
+      counts: `${commaSeparator(Number(issuedveHARBOR).toFixed(6) || 0)} veHARBOR`
     },
+
     {
       title: `Week ${proposalId} Total Emission`,
       counts: `${formatNumber(protectedEmission || 0)} HARBOR`
@@ -734,60 +737,6 @@ const Vote = ({
       label: "Pools", key: "2", children: <Pool cswapPrice={cswapPrice} assetMap={assetMap} />
     },
   ]
-
-
-  const PieChart1 = {
-    chart: {
-      type: "pie",
-      backgroundColor: null,
-      height: 170,
-      margin: 0,
-      style: {
-        fontFamily: 'Montserrat'
-      }
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text: null,
-    },
-    plotOptions: {
-      pie: {
-        showInLegend: false,
-        size: "110%",
-        borderWidth: 0,
-        innerSize: "78%",
-        className: "pie-chart totalvalue-chart",
-        dataLabels: {
-          enabled: false,
-          distance: -14,
-          style: {
-            fontsize: 50,
-          },
-        },
-      },
-    },
-    series: [
-      {
-        states: {
-          hover: {
-            enabled: true,
-          },
-        },
-        name: "",
-        data: concatedExtendedPair && concatedExtendedPair?.map((item, index) => {
-          return ({
-            name: (item?.extended_pair_id / 1000000) >= 1 ? denomToSymbol(concatedPairName[item?.extended_pair_id]?.baseCoin?.denom) + "-" + denomToSymbol(concatedPairName[item?.extended_pair_id]?.quoteCoin?.denom)
-              :
-              concatedPairName[item?.extended_pair_id],
-            y: Number(item?.total_vote),
-            color: (item?.extended_pair_id / 1000000) >= 1 ? poolColor[Math.floor(item?.extended_pair_id / 1000000) - 1] : vaultColor[item?.extended_pair_id - 1],
-          })
-        })
-      },
-    ],
-  };
 
   // *Pool data Column row for showing pair Pools in up container 
   const upPoolColumns = [
@@ -1001,32 +950,6 @@ const Vote = ({
     return activePoolCoins;
   }
 
-
-  // *calculate user emission 
-  const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
-    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
-    let myBorrowed = _myBorrowed || 0;
-    let totalBorrowed = _totalBorrowed || 0;
-    let totalVoteOfPair = _totalVoteOfPair || 0;
-    let totalWeight = amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS);
-    let projectedEmission = protectedEmission;
-
-    let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
-    // console.log(myBorrowed, "myBorrowed");
-    // console.log(totalBorrowed, "totalBorrowed");
-    // console.log(totalVoteOfPair, "totalVoteOfPair");
-    // console.log(totalWeight, "toralWeight");
-    // console.log(projectedEmission, "projectedEmission");
-    if (isNaN(calculatedEmission)) {
-      // console.log(0, "calculatedEmission");
-      return 0;
-    } else {
-      // console.log(calculatedEmission, "calculatedEmission");
-      return Number(calculatedEmission);
-    }
-
-  }
-
   useEffect(() => {
     let concatedData = allProposalData?.concat(allProposalPoolData)
     setConcatedExtendedPair(concatedData)
@@ -1062,31 +985,31 @@ const Vote = ({
 
   }, [poolList])
 
-  useEffect(() => {
-    if (concatedExtendedPair) {
-      let totalCalculatedEmission = 0;
-      concatedExtendedPair?.map((singleConcatedExtendedPair, index) => {
-        // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
-        if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
-          // *For vault 
-          totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
-            amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-            amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-            amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
-          )
-        } else {
-          // *For Pool 
-          totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
-            amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
-            amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
-            amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
-          )
-        }
-        setUserEmission(totalCalculatedEmission)
+  // useEffect(() => {
+  //   if (concatedExtendedPair) {
+  //     let totalCalculatedEmission = 0;
+  //     concatedExtendedPair?.map((singleConcatedExtendedPair, index) => {
+  //       // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
+  //       if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
+  //         // *For vault 
+  //         totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
+  //           amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
+  //           amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
+  //           amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
+  //         )
+  //       } else {
+  //         // *For Pool 
+  //         totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
+  //           amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
+  //           amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
+  //           amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
+  //         )
+  //       }
+  //       setUserEmission(totalCalculatedEmission)
 
-      })
-    }
-  }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData, address, myBorrowed])
+  //     })
+  //   }
+  // }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData, address, myBorrowed])
 
 
   const refreshAuctionButton = {
@@ -1104,12 +1027,282 @@ const Vote = ({
     ),
   };
 
+
+  // ------------------------------New Code from here------------------------------ 
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setAnimationSuccess(false);
+    setAnimationFailed(false)
+    setAnimationProcesing(false)
+    setIsModalOpen(false);
+  };
+
+
+  const onChange = (extendedPairId, value) => {
+    setUserVoteArray((prevState) => ({
+      ...prevState, [extendedPairId]: Number(value)
+    }))
+    setLastSelectedSlider(extendedPairId)
+  };
+
+  const fetchuserCurrentProposal = (address, proposalId) => {
+    setLoading(true)
+    userCurrentProposal(address, proposalId,).then((res) => {
+      console.log(res, "User proposal current data");
+      setUserCurrentProposalData(res)
+    }).catch((error) => {
+      setLoading(false)
+      console.log(error);
+    })
+  };
+
+  const fetchEmissiondata = (address) => {
+    emissiondata(address, (error, result) => {
+      if (error) {
+        message.error(error);
+        return;
+      }
+
+      result?.data.map((item) => {
+        setUserVoteArray((prevState) => ({
+          ...prevState, [item?.pair_id]: Number(item?.user_vote_ratio) * 100
+        }))
+      })
+
+      setUserCurrentProposalData(result?.data)
+      setUserCurrentProposalFilterData(result?.data)
+
+    });
+  }
+
+  const fetchVestingLockNFTData = (address) => {
+    setInProcess(true)
+    vestingIssuedTokens(address).then((res) => {
+      setVestingNFTId(res)
+      setInProcess(false)
+    }).catch((error) => {
+      setVestingNFTId('')
+      setInProcess(false)
+      console.log(error);
+    })
+  }
+
+  const handleVote = (item, index) => {
+    setIsModalOpen(true)
+    setInProcess(true)
+    setBtnLoading(index)
+    setAnimationProcesing(true)
+    if (address) {
+      if (proposalId) {
+        const extendedPairId = Object.keys(userVoteArray).map(Number);
+        const ratio = Object.values(userVoteArray).map(val => (val / 100).toString());
+
+        transactionForVotePairProposal(address, PRODUCT_ID, proposalId, extendedPairId, ratio, (error, result) => {
+          if (error) {
+            message.error(error?.rawLog || "Transaction Failed")
+            setInProcess(false)
+            setAnimationProcesing(false);
+            setAnimationFailed(true)
+            setInputSearch("")
+            return;
+          }
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
+          setBalanceRefresh(refreshBalance + 1);
+          setInProcess(false)
+          setAnimationProcesing(false);
+          setAnimationSuccess(true)
+          setInputSearch("")
+        })
+
+        // }
+      } else {
+        setInProcess(false)
+        setAnimationProcesing(false);
+        setAnimationFailed(true)
+        setInputSearch("")
+        message.error("")
+      }
+    }
+    else {
+      setInProcess(false)
+      setAnimationProcesing(false);
+      setAnimationFailed(true)
+      message.error("Please Connect Wallet")
+    }
+  }
+
+  const handleInputSearch = (value) => {
+    console.log(value.target.value);
+    let searchedName = userCurrentProposalData?.filter((item) => denomToSymbol(item?.base_coin).toLowerCase().includes(value.target.value.toLowerCase()) || (item?.pair_name).toLowerCase().includes(value.target.value.toLowerCase()))
+    setUserCurrentProposalFilterData(searchedName)
+    setInputSearch(value.target.value)
+  }
+
+  const handleSwitchChange = (value) => {
+    if (value) {
+      let searchedName = userCurrentProposalData?.filter((item) => Number(item?.user_position) > 0)
+      setUserCurrentProposalFilterData(searchedName)
+    }
+    else {
+      setUserCurrentProposalFilterData(userCurrentProposalData)
+    }
+  }
+
+  // *calculate user emission 
+  const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
+    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
+    let myBorrowed = _myBorrowed || 0;
+    let totalBorrowed = _totalBorrowed || 0;
+    let totalVoteOfPair = _totalVoteOfPair || 0;
+    let totalWeight = currentProposalAllData?.total_voted_weight || 0;
+    let projectedEmission = protectedEmission;
+
+    let calculatedEmission = (Number((Number(myBorrowed) / Number(totalBorrowed)) * (Number(totalVoteOfPair) / Number(totalWeight))) * projectedEmission)
+
+    if (isNaN(calculatedEmission)) {
+      return 0;
+    } else {
+      return Number(calculatedEmission);
+    }
+
+  }
+
+  const calculateTotalveHARBOR = () => {
+    let totalveHARBORLocked = 0;
+    let tokens = vestingNFTId && vestingNFTId?.reverse().map((item) => {
+      return Number(amountConversion(item?.vtoken?.amount));
+    })
+    totalveHARBORLocked = tokens?.reduce((partialSum, a) => partialSum + a, 0)
+    { totalveHARBORLocked && setIssuedveHARBOR(totalveHARBORLocked) }
+  }
+
+
+  function getColor(index) {
+    const length = combineColor.length;
+    const wrappedIndex = index % length;
+    return combineColor[wrappedIndex];
+  }
+
+  useEffect(() => {
+    let totalUserEmission = 0
+    userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+      totalUserEmission = totalUserEmission + calculateUserEmission(item?.user_position, item?.total_position, item?.total_vote)
+    })
+    setUserEmission(totalUserEmission || 0)
+  }, [userCurrentProposalData, currentProposalAllData, protectedEmission])
+
+
+  useEffect(() => {
+    if (address) {
+      // fetchuserCurrentProposal(address, PRODUCT_ID)
+      fetchEmissiondata(address)
+    }
+  }, [address, refreshBalance])
+
+  useEffect(() => {
+    if (address) {
+      fetchVestingLockNFTData(address)
+    }
+  }, [address])
+
+  useEffect(() => {
+    calculateTotalveHARBOR()
+  }, [address, vestingNFTId])
+
+
+  const PieChart1 = {
+    chart: {
+      type: "pie",
+      backgroundColor: null,
+      height: 150,
+      margin: 0,
+      style: {
+        fontFamily: 'Montserrat'
+      }
+    },
+    credits: {
+      enabled: false,
+    },
+    title: {
+      text: null,
+    },
+    plotOptions: {
+      pie: {
+        showInLegend: false,
+        size: "110%",
+        borderWidth: 0,
+        innerSize: "78%",
+        className: "pie-chart totalvalue-chart",
+        dataLabels: {
+          enabled: false,
+          distance: -14,
+          style: {
+            fontsize: 50,
+          },
+        },
+      },
+    },
+    tooltip: {
+      formatter: function () {
+        return (
+          '<div style="text-align:center; font-weight:800; ">' +
+          Number(calculateTotalVotes(amountConversion(Number(this.y) || 0, 6) || 0)) + " %" +
+          "<br />" +
+          '<small style="font-size: 10px; font-weight:400;">' +
+          this.point.name +
+          "</small>" +
+          "</div>"
+        );
+      },
+      useHTML: true,
+      backgroundColor: "#232231",
+      borderColor: "#fff",
+      borderRadius: 10,
+      zIndex: 99,
+      style: {
+        color: "#fff",
+      },
+    },
+    series: [
+      {
+        states: {
+          hover: {
+            enabled: true,
+          },
+        },
+        name: "",
+        data: userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+          if (index <= 3) {
+            return ({
+              name: item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name,
+              y: Number(item?.total_vote),
+              color: getColor(index),
+            })
+          }
+        })
+      },
+    ],
+  };
+
   const emissionDistributionColumns = [
     {
       title: '',
       dataIndex: "assets_color",
       key: "assets_color",
-      render: (text) => <div className='colorbox' style={{ backgroundColor: `${text}` }}></div>,
       width: 30
     },
     {
@@ -1117,23 +1310,6 @@ const Vote = ({
       dataIndex: "assets",
       key: "assets",
       align: 'left',
-      render: (text) => <>
-        <div className="assets-withicon">
-          <div className="assets-icons">
-            <div className="assets-icon">
-              <SvgIcon
-                name='atom-icon'
-              />
-            </div>
-            <div className="assets-icon">
-              <SvgIcon
-                name='cmdx-icon'
-              />
-            </div>
-          </div>
-          <div className='name'>{text}</div>
-        </div>
-      </>
     },
     {
       title: 'Vote',
@@ -1142,38 +1318,31 @@ const Vote = ({
     }
   ];
 
-  const emissionDistributionData = [
-    {
-      key: 1,
-      assets_color: '#00AFB9',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 2,
-      assets_color: '#FDFCDC',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 3,
-      assets_color: '#00AFB9',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 4,
-      assets_color: '#F07167',
-      assets: 'ATOM-C',
-      vote: '23%'
-    },
-    {
-      key: 5,
-      assets_color: '#FED9B7',
-      assets: 'ATOM-C',
-      vote: '23%'
+  const emissionDistributionData = userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+    if (index <= 3) {
+      return {
+        key: item?.pair_id,
+        assets_color: <div className='colorbox' style={{ backgroundColor: `${getColor(index)}` }}></div>,
+        assets: <div className="assets-withicon">
+          <div className="assets-icons">
+            <div className="assets-icon">
+              <SvgIcon
+                name={iconNameFromDenom(item?.base_coin)}
+              />
+            </div>
+
+            {item?.pair_name === "" && <div className="assets-icon">
+              <SvgIcon
+                name={iconNameFromDenom(item?.quote_coin)}
+              />
+            </div>}
+          </div>
+          <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
+        </div>,
+        vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
+      }
     }
-  ];
+  })
 
   const emissionVotingColumns = [
     {
@@ -1181,14 +1350,20 @@ const Vote = ({
       dataIndex: "assets",
       key: "assets",
       align: 'left',
-      render: (text) => <>
+      // width: 150,
+      render: (item) => <>
         <div className="assets-withicon">
           <div className="assets-icon">
             <SvgIcon
-              name='atom-icon'
+              name={iconNameFromDenom(item?.base_coin)}
             />
           </div>
-          <div className='name'>{text}</div>
+          <div className="assets-icon margin-left-3">
+            <SvgIcon
+              name={item?.pair_name === "" && iconNameFromDenom(item?.quote_coin)}
+            />
+          </div>
+          <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
         </div>
       </>
     },
@@ -1196,109 +1371,114 @@ const Vote = ({
       title: 'My Borrowed/Farmed',
       dataIndex: "my_borrowed",
       key: "my_borrowed",
+      // width: 150,
     },
     {
       title: 'Total Votes',
       dataIndex: "total_votes",
       key: "total_votes",
       align: 'center',
+      // width: 150,
     },
     {
       title: 'External Incentives',
       dataIndex: "external_incentives",
       key: "external_incentives",
       align: 'left',
-      render: (text) => <>
-        <div className="assets-withicon">
-          <div className="assets-icon">
-            <SvgIcon
-              name='cmdx-icon'
-            />
-          </div>
-          <div className='name'>{text}</div>
-          <ExternalIncentivesModal />
-        </div>
-      </>
+      // width: 150,
+      render: (item) => (
+        <>
+          {item?.length > 0 ?
+            (item?.length == 1) ?
+              <div className="bribe-container mt-1 justify-content-start" >
+                <span className="assets-withicon">
+                  <span className="assets-icon">
+                    <SvgIcon
+                      name={iconNameFromDenom(item[0]?.denom)}
+                    />
+                  </span>
+                </span>
+                <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+
+              </div>
+              : (
+                <div className="bribe-container mt-1" >
+                  <span className="assets-withicon">
+                    <span className="assets-icon">
+                      <SvgIcon
+                        name={iconNameFromDenom(item[0]?.denom)}
+                      />
+                    </span>
+                  </span>
+                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
+                </div>
+              )
+            : <div className="mt-1" >-</div>
+          }
+
+        </>
+      ),
     },
     {
       title: 'My Vote',
       dataIndex: "my_vote",
       key: "my_vote",
       align: 'center',
+      // width: 150,
     },
     {
       title: 'Vote',
       dataIndex: "vote",
       key: "vote",
       align: 'center',
-      render: (text) => <div className='vote-slider'>
-        <Slider
-          min={1}
-          max={20}
-          onChange={onChange}
-          tooltip={false}
-        />
-        <div className='percents'>{inputValue}%</div>
-      </div>
+      width: 150,
     }
   ];
 
-  const emissionVotingdata = [
-    {
-      key: 1,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 2,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 3,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 4,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 5,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
-    },
-    {
-      key: 6,
-      assets: 'ATOM-A',
-      my_borrowed: '13.09 CMST',
-      total_votes: '502.76 veHarbor',
-      external_incentives: '4.40 CMDX',
-      my_vote: '0.00 veHARBOR',
-      vote: ''
+  const emissionVotingdata = userCurrentProposalFilterData && userCurrentProposalFilterData?.map((item) => {
+    return {
+      key: item?.pair_id,
+      assets: item,
+      my_borrowed: `${amountConversionWithComma(item?.user_position || 0, DOLLAR_DECIMALS)} CMST`,
+      total_votes:
+        <div>
+          {amountConversionWithComma(item?.total_vote || 0, DOLLAR_DECIMALS)} veHarbor
+          <div style={{ textAlign: "end", width: "80%" }}>{Number((item?.user_vote_ratio || 0) * 100).toFixed(ZERO_DOLLAR_DECIMALS)} %</div>
+        </div>,
+      external_incentives: item?.total_incentive,
+      my_vote: `${amountConversionWithComma(item?.user_vote || 0, DOLLAR_DECIMALS)} veHARBOR`,
+      vote: <div className='vote-slider' style={{ width: '130px' }}>
+        <Slider
+          min={0}
+          max={100}
+          value={userVoteArray[item?.pair_id]}
+          onChange={(value) => onChange(item?.pair_id, value)}
+          tooltip={false}
+        />
+        <div className='percents'>{Number(userVoteArray[item?.pair_id] || 0).toFixed(ZERO_DOLLAR_DECIMALS)}%</div>
+      </div>
     }
-  ];
+  })
+
+  useEffect(() => {
+    let totalVotesSum = 0;
+    Object.values(userVoteArray).forEach(function (key, index) {
+      totalVotesSum = totalVotesSum + Number(key);
+    });
+    setSumOfVotes(totalVotesSum || 0);
+
+  }, [userVoteArray])
+
+  useEffect(() => {
+    if (Number(sumOfVotes) > 100) {
+      let lastVoteValue = Number(sumOfVotes) - Number(userVoteArray[lastSelectedSlider])
+      lastVoteValue = 100 - Math.abs(Number(lastVoteValue))
+      setUserVoteArray((prevState) => ({
+        ...prevState, [lastSelectedSlider]: Math.abs(Number(lastVoteValue))
+      }))
+    }
+  }, [sumOfVotes])
 
   return (
     <>
@@ -1314,12 +1494,12 @@ const Vote = ({
           </Col>
         </Row>
 
-        <Row>
-          <Col>
-            <div className="emission-card w-100" style={{ height: "100%" }}>
+        <Row className="emission-top-main-container">
+          <div className='emission-top-left' >
+            <div className="emission-card w-100 emission-top-card-col" style={{ height: "100%", justifyContent: "space-between" }}>
               <div className="card-header">
                 <div className="left">
-                  Emission Voting
+                  Emission Details
                 </div>
               </div>
               <List
@@ -1343,8 +1523,8 @@ const Vote = ({
                 )}
               />
             </div>
-          </Col>
-          <Col>
+          </div>
+          <div className='emission-top-right'>
             <div className="emission-card w-100" style={{ height: "100%" }}>
               <div className="graph-container">
                 <div className="top">
@@ -1352,7 +1532,7 @@ const Vote = ({
                     <div className="left">
                       Emission Distribution
                     </div>
-                    <EmissionDistributionAllModal />
+                    <EmissionDistributionAllModal userCurrentProposalData={userCurrentProposalData} currentProposalAllData={currentProposalAllData} />
                   </div>
                 </div>
                 <div className="bottom">
@@ -1379,7 +1559,7 @@ const Vote = ({
                 </div>
               </div>
             </div>
-          </Col>
+          </div>
 
         </Row>
         <Row>
@@ -1390,30 +1570,74 @@ const Vote = ({
             <div>
               Hide 0 Balances{" "}
               <Switch
+                onChange={handleSwitchChange}
               />
             </div>
             <Input
               placeholder="Search"
+              value={inputSearch}
               suffix={<SvgIcon name="search" viewbox="0 0 18 18" />}
+              onChange={handleInputSearch}
             />
           </Col>
           <Col sm='12'>
             <Table
-                className="custom-table emission-voting-table"
-                dataSource={emissionVotingdata}
-                columns={emissionVotingColumns}
-                pagination={false}
-                scroll={{ x: "100%" }}
-                locale={{ emptyText: <NoDataIcon /> }}
-              />
+              className="custom-table emission-voting-table"
+              dataSource={emissionVotingdata}
+              columns={emissionVotingColumns}
+              pagination={false}
+              scroll={{ x: "100%" }}
+              loading={loading}
+              locale={{ emptyText: <NoDataIcon /> }}
+              style={{ marginBottom: "5rem" }}
+            />
           </Col>
         </Row>
       </div>
       <div className='votepwoter-card'>
         <div className='votepwoter-card-inner'>
-          Voting Power Used: <span className='green-text'>0%</span> <Button type='primary' className='btn-filled'>Vote</Button>
+          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled' onClick={handleVote} loading={inProcess} disabled={!sumOfVotes || loading || inProcess}>Vote</Button>
         </div>
       </div>
+
+      {/* Vote Modal  */}
+      <Modal
+        centered={true}
+        className="emission-modal"
+        footer={null}
+        header={null}
+        title={false}
+        open={isModalOpen}
+        width={400}
+        closable={true}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        closeIcon={<SvgIcon name='close' viewbox='0 0 19 19' />}
+      >
+        {animationProcessing &&
+          <Lottie
+            options={processing}
+            height={180}
+            width={180}
+          />
+        }
+        {animationSuccess &&
+          <Lottie
+            options={success}
+            height={180}
+            width={180}
+          />
+        }
+        {animationFailed &&
+          <Lottie
+            options={failed}
+            height={180}
+            width={180}
+          />
+        }
+        <h3 className='vote-heading'>Vote Cast</h3>
+        <p className='vote-paira'>Transaction has been confiremed by the blockchain.</p>
+      </Modal>
     </>
   )
 }

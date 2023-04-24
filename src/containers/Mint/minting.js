@@ -23,12 +23,12 @@ import { queryExtendedPairVaultById, queryPair } from "../../services/asset/quer
 import { decimalConversion, formatNumber } from "../../utils/number";
 import { queryVaultMintedStatistic } from "../../services/vault/query";
 import { Pagination } from 'antd';
-import { userProposalAllUpData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId } from "../../services/voteContractsRead";
+import { emissiondata, userProposalAllUpData, userProposalProjectedEmission, votingCurrentProposal, votingCurrentProposalId } from "../../services/voteContractsRead";
 import { comdex } from "../../config/network";
 
 import HotIcon from '../../assets/images/hot-icon.png';
 
-const Minting = ({ address, refreshBalance }) => {
+const Minting = ({ address, refreshBalance, harborPrice, }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -48,6 +48,7 @@ const Minting = ({ address, refreshBalance }) => {
   const [protectedEmission, setProtectedEmission] = useState(0);
   const [currentProposalAllData, setCurrentProposalAllData] = useState();
   const [proposalExtenderPair, setProposalExtenderPair] = useState();
+  const [userCurrentProposalData, setUserCurrentProposalData] = useState();
 
 
   const navigateToMint = (path) => {
@@ -104,7 +105,7 @@ const Minting = ({ address, refreshBalance }) => {
 
   const calculateGlobalDebt = (value) => {
     let matchData = vaultDebt[0]?.filter((debt) => debt?.extendedPairVaultId?.toNumber() === value?.id?.toNumber())
-    if (matchData[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
+    if (matchData?.[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
       return amountConversionWithComma(matchData[0]?.mintedAmount, DOLLAR_DECIMALS);
     }
     return (0).toFixed(6)
@@ -175,6 +176,25 @@ const Minting = ({ address, refreshBalance }) => {
     })
   }
 
+  const fetchEmissiondata = (address) => {
+    emissiondata(address, (error, result) => {
+      if (error) {
+        message.error(error);
+        console.log(error, "Emission Api error");
+        return;
+      }
+      setUserCurrentProposalData(result?.data)
+
+    });
+  }
+
+  useEffect(() => {
+    if (address) {
+      fetchEmissiondata(address)
+    }
+  }, [address])
+
+
   const calculateTotalVotes = (value) => {
     let userTotalVotes = 0;
     let calculatePercentage = 0;
@@ -184,22 +204,50 @@ const Minting = ({ address, refreshBalance }) => {
     return calculatePercentage;
   }
 
+  // *calculate user emission 
+  const calculateUserEmission = (_totalVoteOfPair) => {
+    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
+
+    let totalVoteOfPair = _totalVoteOfPair || 0;
+    let totalWeight = currentProposalAllData?.total_voted_weight || 0;
+    let projectedEmission = protectedEmission;
+
+    let calculatedEmission = ((Number(totalVoteOfPair) / Number(totalWeight)) * projectedEmission)
+
+    if (isNaN(calculatedEmission)) {
+      return 0;
+    } else {
+      return Number(calculatedEmission);
+    }
+
+  }
+
+  const calculateAPY = (_totalVoteRatio, _totalVote, _totalMintedCMST) => {
+    // !formula = 365 * (Harbor qty / 7)* harbor price / total cmst minted
+    // !harbor qty formula=total vote on particular vault * total week emission 
+    let harborTokenPrice = harborPrice;
+    let totalMintedCMST = _totalMintedCMST;
+    let totalWeekEmission = protectedEmission;
+    let harborQTY = (Number(_totalVoteRatio) * Number(totalWeekEmission)) / _totalVote
+    let calculatedAPY = (365 * ((harborQTY / 7) * harborTokenPrice)) / Number(totalMintedCMST);
+    return calculatedAPY;
+  }
+
   if (loading) {
     return <Spin />;
   }
 
-
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       {/* {extenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose Your Vault Type</h1> : ""} */}
-      <Row>
+      {/* <Row>
         <Col className="mint-search-section">
           <Input
             placeholder="Search Asset.."
             suffix={<SvgIcon name="search" viewbox="0 0 18 18" />}
           />
         </Col>
-      </Row>
+      </Row> */}
       <div className="card-main-container mint-card-list">
         {extenedPairVaultList?.length > 0 ? (
           extenedPairVaultList?.map((item, index) => {
@@ -244,17 +292,39 @@ const Minting = ({ address, refreshBalance }) => {
                           <Row>
                             <Col>
                               <p>Weekly Emission</p>
-                              <div className="coins">
+                              <div className={calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0) ? "coins" : "conis dash-line"}>
                                 {
-                                  allProposalData?.[index]?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(allProposalData?.[index]?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission))
-                                    : Number(0).toFixed(DOLLAR_DECIMALS)
+                                  calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0) ?
+                                    <span>
+                                      {
+                                        userCurrentProposalData && formatNumber(calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0))
+                                      }
+                                      <span>Harbor</span>
+                                    </span>
+                                    : null
                                 }
-                                <span>Harbor</span>
                               </div>
                             </Col>
                             <Col className='text-right'>
                               <p>APY</p>
-                              <div className="coins">345678%</div>
+                              {/* <div className="coins dash-line"></div> */}
+                              <div className={calculateAPY(
+                                userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
+                                calculateGlobalDebt(item)
+                              ) ? "coins" : "conis dash-line margin-left-auto"}>{
+                                  calculateAPY(
+                                    userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                    userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
+                                    calculateGlobalDebt(item)
+                                  ) ?
+                                    calculateAPY(
+                                      userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                      userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
+                                      calculateGlobalDebt(item)
+                                    ) || 0 + "%" : null
+                                }
+                              </div>
                             </Col>
                           </Row>
                         </div>
@@ -347,6 +417,7 @@ Minting.propTypes = {
   address: PropTypes.string.isRequired,
   setPairs: PropTypes.func.isRequired,
   refreshBalance: PropTypes.number.isRequired,
+  harborPrice: PropTypes.number.isRequired,
 };
 
 const stateToProps = (state) => {
@@ -355,6 +426,7 @@ const stateToProps = (state) => {
     address: state.account.address,
     pairs: state.asset.pairs,
     refreshBalance: state.account.refreshBalance,
+    harborPrice: state.liquidity.harborPrice,
   };
 };
 

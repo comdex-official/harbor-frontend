@@ -7,6 +7,7 @@ import './index.scss'
 import Lock from "./lock";
 import Create from "./create";
 import { setBalanceRefresh } from "../../../actions/account";
+import { setLockActiveTab } from "../../../actions/vesting";
 import { vestingIssuedTokens, withdrawableHarbor } from "../../../services/vestingContractsRead";
 import { denomToSymbol, iconNameFromDenom } from "../../../utils/string";
 import { amountConversionWithComma } from "../../../utils/coin";
@@ -26,7 +27,9 @@ const Vesting = ({
     address,
     refreshBalance,
     setBalanceRefresh,
-    issuedveHARBOR
+    issuedveHARBOR,
+    lockActiveKey,
+    setLockActiveTab
 }) => {
     const [issuedToken, setIssuedTokens] = useState();
     const [withdrawableToken, setWithdrawableToken] = useState();
@@ -91,6 +94,16 @@ const Vesting = ({
             fetchWithdrawableHarbor(address)
         }
     }, [address, refreshBalance])
+
+    useEffect(() => {
+        if (lockActiveKey) {
+            setActiveKey("2")
+        }
+        setTimeout(() => {
+            setLockActiveTab(false)
+        }, 1000);
+    }, [])
+
 
     const BackButton = {
         right: (
@@ -174,6 +187,7 @@ Vesting.propTypes = {
     address: PropTypes.string,
     refreshBalance: PropTypes.number.isRequired,
     issuedveHARBOR: PropTypes.number.isRequired,
+    lockActiveKey: PropTypes.number.isRequired,
 };
 const stateToProps = (state) => {
     return {
@@ -181,10 +195,12 @@ const stateToProps = (state) => {
         address: state.account.address,
         refreshBalance: state.account.refreshBalance,
         issuedveHARBOR: state.vesting.issuedveHARBOR,
+        lockActiveKey: state.vesting.lockActiveKey,
     };
 };
 
 const actionsToProps = {
     setBalanceRefresh,
+    setLockActiveTab,
 };
 export default connect(stateToProps, actionsToProps)(Vesting);

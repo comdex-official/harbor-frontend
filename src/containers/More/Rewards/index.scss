@@ -7,6 +7,9 @@
         tr {
           th {
             &.ant-table-cell {
+              &::before {
+                background-color: unset !important;
+              }
               &.justify-content-center {
                 text-align: center !important;
               }
@@ -50,8 +53,8 @@
   background-repeat: no-repeat;
   .ant-btn {
     &.ant-btn-primary {
-      background: #3B3079 !important;
-      border-color: #3B3079 !important;
+      background: #3b3079 !important;
+      border-color: #3b3079 !important;
       padding: 0 30px;
     }
   }
@@ -61,5 +64,11 @@
   p {
     margin-bottom: 0.6rem;
     max-width: 700px;
+  }
+}
+
+.incentives-heading {
+  @media only screen and (min-width: 765px) and (max-width: 800px) {
+    font-size: 1.4rem;
   }
 }
