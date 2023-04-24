@@ -180,6 +180,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     emissiondata(address, (error, result) => {
       if (error) {
         message.error(error);
+        console.log(error, "Emission Api error");
         return;
       }
       console.log(result);
@@ -297,12 +298,12 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                           <Row>
                             <Col>
                               <p>Weekly Emission</p>
-                              <div className={calculateUserEmission(userCurrentProposalData[item?.id?.toNumber() - 1]?.total_vote || 0) ? "coins" : "conis dash-line"}>
+                              <div className={calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0) ? "coins" : "conis dash-line"}>
                                 {
-                                  calculateUserEmission(userCurrentProposalData[item?.id?.toNumber() - 1]?.total_vote || 0) ?
+                                  calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0) ?
                                     <span>
                                       {
-                                        userCurrentProposalData && formatNumber(calculateUserEmission(userCurrentProposalData[item?.id?.toNumber() - 1]?.total_vote || 0))
+                                        userCurrentProposalData && formatNumber(calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0))
                                       }
                                       <span>Harbor</span>
                                     </span>
@@ -314,18 +315,18 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                               <p>APY</p>
                               {/* <div className="coins dash-line"></div> */}
                               <div className={calculateAPY(
-                                userCurrentProposalData[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                userCurrentProposalData[item?.id?.toNumber() - 1]?.total_vote || 0,
+                                userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
                                 calculateGlobalDebt(item)
                               ) ? "coins" : "conis dash-line margin-left-auto"}>{
                                   calculateAPY(
-                                    userCurrentProposalData[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                    userCurrentProposalData[item?.id?.toNumber() - 1]?.total_vote || 0,
+                                    userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                    userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
                                     calculateGlobalDebt(item)
                                   ) ?
                                     calculateAPY(
-                                      userCurrentProposalData[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                      userCurrentProposalData[item?.id?.toNumber() - 1]?.total_vote || 0,
+                                      userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                      userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
                                       calculateGlobalDebt(item)
                                     ) || 0 + "%" : null
                                 }
