@@ -183,7 +183,6 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
         console.log(error, "Emission Api error");
         return;
       }
-      console.log(result);
       setUserCurrentProposalData(result?.data)
 
     });
@@ -230,30 +229,25 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     let totalMintedCMST = _totalMintedCMST;
     let totalWeekEmission = protectedEmission;
     let harborQTY = (Number(_totalVoteRatio) * Number(totalWeekEmission)) / _totalVote
-    console.log(harborQTY, "harborQTY");
-    console.log(harborTokenPrice, "harborTokenPrice");
-    console.log(totalMintedCMST, "totalMintedCMST");
     let calculatedAPY = (365 * ((harborQTY / 7) * harborTokenPrice)) / Number(totalMintedCMST);
-    console.log(calculatedAPY, "calculatedAPY");
+    return calculatedAPY;
   }
-  console.log(harborPrice, "harborPrice");
 
   if (loading) {
     return <Spin />;
   }
-  console.log(extenedPairVaultList, "extenedPairVaultList");
 
   return (
     <div className="app-content-wrapper vault-mint-main-container">
       {/* {extenedPairVaultList?.length > 0 ? <h1 className="choose-vault">Choose Your Vault Type</h1> : ""} */}
-      <Row>
+      {/* <Row>
         <Col className="mint-search-section">
           <Input
             placeholder="Search Asset.."
             suffix={<SvgIcon name="search" viewbox="0 0 18 18" />}
           />
         </Col>
-      </Row>
+      </Row> */}
       <div className="card-main-container mint-card-list">
         {extenedPairVaultList?.length > 0 ? (
           extenedPairVaultList?.map((item, index) => {
