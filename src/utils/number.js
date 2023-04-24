@@ -39,9 +39,7 @@ export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPri
   if (denom === "ucmst") {
     return 1
   }
-  if (denom === "ucmdx") {
-    return 0.140530;
-  }
+
   if (value && value?.twa && value?.isPriceActive) {
     return value?.twa?.toNumber() / 1000000;
   }
