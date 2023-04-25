@@ -162,6 +162,19 @@ export const vaultColor = [
 // ]
 
 export const combineColor = [
-    "#F07167",
-    "#0081A7",
+    "#4CC9F0",
+    "#4895EF",
+    "#4361EE",
+    "#3A0CA3",
+    "#480CA8",
+    "#9854E7",
+    "#7209B7",
+    "#B5179E",
+    "#009BCC",
+    "#5200FF",
+    "#CC00FF",
+    "#F72585",
+    "#FC6EAF",
+    "#CE13E7",
+    "#B11F77"
 ]
