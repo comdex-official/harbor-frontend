@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row, SvgIcon } from "../../../../components/common";
 import { Modal, Table } from "antd";
 import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
@@ -15,6 +15,7 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [concatedExtendedPair, setConcatedExtendedPair] = useState([]);
   const [concatedPairName, setConcatedPairName] = useState([]);
+  const [topProposalData, setTopProposalData] = useState()
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -46,6 +47,15 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
       return calculatePercentage;
     }
   }
+
+  useEffect(() => {
+    if (userCurrentProposalData) {
+      let filteredData = [...userCurrentProposalData];
+      filteredData.sort((a, b) => calculateTotalVotes(amountConversion(b?.total_vote || 0, 6) || 0) - calculateTotalVotes(amountConversion(a?.total_vote || 0, 6) || 0));
+      setTopProposalData(filteredData)
+    }
+
+  }, [userCurrentProposalData, currentProposalAllData])
 
 
 
@@ -142,7 +152,7 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
     }
   ];
 
-  const emissionDistributionData = userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+  const emissionDistributionData = topProposalData && topProposalData?.map((item, index) => {
 
     return {
       key: item?.pair_id,
