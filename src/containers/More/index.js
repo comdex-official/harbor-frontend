@@ -380,7 +380,7 @@ const More = ({
               <div className="morecard-left">
                 <h2>Rewards</h2>
                 <p>
-                  Rewards displayed are an estimation of the external incentives, surplus rewards and the rebases that you can claim.
+                  Rewards displayed are an estimation of the external incentives and the rebases that you can claim.
                 </p>
                 <div className="button-container same-button-container">
                   <Button

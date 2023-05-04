@@ -38,6 +38,7 @@ const Rewards = ({
   const [current, setCurrent] = useState(0);
   const [rewardCurrent, setRewardCurrent] = useState(0);
   const [dataLoading, setDataLoading] = useState(false);
+  const [disbaleClaimAll, setDisableClaimAll] = useState(true)
 
 
 
@@ -231,7 +232,7 @@ const Rewards = ({
     }
   ];
 
-  
+
 
   const externalIncentivesdata = claimableRewardsData && claimableRewardsData?.map((item) => {
     return {
@@ -295,7 +296,7 @@ const Rewards = ({
     }
   ];
 
-  
+
 
   const emissionRewardsdata = claimableRebaseData && claimableRebaseData?.map((item) => {
     return {
@@ -305,6 +306,25 @@ const Rewards = ({
       action: item
     }
   })
+
+  useEffect(() => {
+    if (claimableRewardsData) {
+      let data = claimableRewardsData && claimableRewardsData?.filter((item) => {
+        if (item?.claimed === false && item?.total_incentive?.length > 0) {
+          return true;
+        }
+        return false;
+      });
+
+      if (data?.length === 0) {
+        setDisableClaimAll(true);
+      } else {
+        setDisableClaimAll(false);
+      }
+    }
+  }, [claimableRewardsData])
+
+
 
   return (
     <>
@@ -343,7 +363,18 @@ const Rewards = ({
                 <h2 className='incentives-heading'>External Incentives </h2>
               </Col>
               <Col className="text-right" style={{ flexGrow: "unset" }}>
-                <Button type='primary' className='btn-filled' loading={allRewardLoading} disabled={allRewardLoading || loading} onClick={() => claimAllReward()}>Claim All</Button>
+                <Button type='primary'
+                  className='btn-filled'
+                  loading={allRewardLoading}
+                  disabled={
+                    allRewardLoading
+                    || loading
+                    || !address
+                    || disbaleClaimAll
+                  }
+                  onClick={() => claimAllReward()}>
+                  Claim All
+                </Button>
               </Col>
             </Row>
             <Table

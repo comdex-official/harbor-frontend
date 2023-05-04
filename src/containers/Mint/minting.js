@@ -7,7 +7,7 @@ import "./index.scss";
 import "./index.scss";
 import { iconNameFromDenom, symbolToDenom, transformPairName } from "../../utils/string";
 import TooltipIcon from "../../components/TooltipIcon";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer, useRef } from "react";
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID } from "../../constants/common";
 import { setPairs } from "../../actions/asset";
 import { useDispatch } from "react-redux";
@@ -31,6 +31,9 @@ import HotIcon from '../../assets/images/hot-icon.png';
 const Minting = ({ address, refreshBalance, harborPrice, }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const allVaultApr = {};
+  let topFiveAprVault = useRef(null)
 
   const extenedPairVaultList = useSelector(
     (state) => state.locker.extenedPairVaultList[0]
@@ -108,7 +111,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     if (matchData?.[0] && amountConversionWithComma(matchData[0]?.mintedAmount)) {
       return amountConversionWithComma(matchData[0]?.mintedAmount, DOLLAR_DECIMALS);
     }
-    return (0).toFixed(6)
+    return (0).toFixed(DOLLAR_DECIMALS)
   }
 
   useEffect(() => {
@@ -196,7 +199,6 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
 
 
   const calculateTotalVotes = (value) => {
-    let userTotalVotes = 0;
     let calculatePercentage = 0;
 
     calculatePercentage = (Number(value) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
@@ -214,7 +216,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
 
     let calculatedEmission = ((Number(totalVoteOfPair) / Number(totalWeight)) * projectedEmission)
 
-    if (isNaN(calculatedEmission)) {
+    if (isNaN(calculatedEmission) || calculatedEmission === Infinity) {
       return 0;
     } else {
       return Number(calculatedEmission);
@@ -222,16 +224,36 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
 
   }
 
-  const calculateAPY = (_totalVoteRatio, _totalVote, _totalMintedCMST) => {
-    // !formula = 365 * (Harbor qty / 7)* harbor price / total cmst minted
-    // !harbor qty formula=total vote on particular vault * total week emission 
+  const calculateAPY = (_totalVoteRatio, _totalVote, _totalMintedCMST, extendedPairID) => {
+    // *formula = (365 * ((Harbor qty / 7)* harbor price)) / total cmst minted
+    // !harbor qty formula=(total vote on particular vault * total week emission )/total vote
+    // *harbor qty formula=(totalVoteOnIndivisualVault / TotalVoteOnAllVaults) * (TotalWeekEmission) 
     let harborTokenPrice = harborPrice;
-    let totalMintedCMST = _totalMintedCMST;
+    let totalMintedCMST = _totalMintedCMST.replace(',', '');;
     let totalWeekEmission = protectedEmission;
-    let harborQTY = (Number(_totalVoteRatio) * Number(totalWeekEmission)) / _totalVote
+    let harborQTY = ((Number(_totalVote) / 100) * Number(totalWeekEmission))
     let calculatedAPY = (365 * ((harborQTY / 7) * harborTokenPrice)) / Number(totalMintedCMST);
-    return calculatedAPY;
+
+    if (isNaN(calculatedAPY) || calculatedAPY === Infinity) {
+      return 0;
+    } else {
+      allVaultApr[extendedPairID] = (Number(calculatedAPY) * 100).toFixed(DOLLAR_DECIMALS);
+      return (Number(calculatedAPY) * 100).toFixed(DOLLAR_DECIMALS);
+    }
   }
+
+
+
+  useEffect(() => {
+    const topVault = Object.fromEntries(
+      Object.entries(allVaultApr)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3)
+    );
+
+    topFiveAprVault.current = { ...topVault };
+  }, [allVaultApr])
+
 
   if (loading) {
     return <Spin />;
@@ -268,9 +290,14 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                           navigateToMint(item?.id?.toNumber());
                         }}
                       >
-                        <div className="hot-tag hot-tag1">
-                          Hot <img src={HotIcon} alt="Hot" />
-                        </div>
+                        {
+                          topFiveAprVault && topFiveAprVault.current?.[item?.id?.toNumber()] ?
+                            <div className="hot-tag hot-tag1">
+                              Hot <img src={HotIcon} alt="Hot" />
+                            </div>
+                            : null
+                        }
+
                         {/* <div className="hot-tag hot-tag2">
                           Hot <img src={HotIcon} alt="Hot" />
                         </div>
@@ -298,7 +325,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                                     <span>
                                       {
                                         userCurrentProposalData && formatNumber(calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0))
-                                      }
+                                      } {" "}
                                       <span>Harbor</span>
                                     </span>
                                     : null
@@ -310,19 +337,22 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                               {/* <div className="coins dash-line"></div> */}
                               <div className={calculateAPY(
                                 userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
-                                calculateGlobalDebt(item)
+                                calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
+                                calculateGlobalDebt(item),
+                                item?.id?.toNumber()
                               ) ? "coins" : "conis dash-line margin-left-auto"}>{
                                   calculateAPY(
                                     userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                    userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
-                                    calculateGlobalDebt(item)
+                                    calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
+                                    calculateGlobalDebt(item),
+                                    item?.id?.toNumber()
                                   ) ?
                                     calculateAPY(
                                       userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                      userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0,
-                                      calculateGlobalDebt(item)
-                                    ) || 0 + "%" : null
+                                      calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
+                                      calculateGlobalDebt(item),
+                                      item?.id?.toNumber()
+                                    ) + "%" : null
                                 }
                               </div>
                             </Col>
@@ -386,7 +416,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                                 ?
                                 calculateGlobalDebt(item)
                                 :
-                                "0.000000"
+                                "0.00"
                               } CMST
                             </div>
                           </div>

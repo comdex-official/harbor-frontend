@@ -91,7 +91,9 @@ const Vote = ({
   const [animationSuccess, setAnimationSuccess] = useState(false);
   const [animationFailed, setAnimationFailed] = useState(false)
   const [vestingNFTId, setVestingNFTId] = useState();
-  const [issuedveHARBOR, setIssuedveHARBOR] = useState(0)
+  const [issuedveHARBOR, setIssuedveHARBOR] = useState(0);
+  const [topProposalData, setTopProposalData] = useState()
+  const [proposalInActive, setProposalInActive] = useState(true);
 
   const processing = {
     loop: true,
@@ -194,11 +196,14 @@ const Vote = ({
 
   const votingEnd = () => {
     let endDate = currentProposalAllData?.voting_end_time;
-    let counterEndTime = unixToGMTTime(endDate)
+    let newTime = Math.floor(endDate / 1000000000);
+    var counterEndTime = moment.unix(newTime);
+    counterEndTime = counterEndTime.format("DD/MMMM/YYYY HH:mm:ss");
     const time = new Date(counterEndTime);
-    time.setSeconds(time.getSeconds() + 300);
+    time.setSeconds(time.getSeconds());
     return time;
   }
+  console.log(currentProposalAllData, "currentProposalAllData");
 
   const calculteVotingStartTime = () => {
     let startDate = currentProposalAllData?.voting_start_time;
@@ -272,6 +277,7 @@ const Vote = ({
 
   const fetchTotalVTokens = (address, height) => {
     totalVTokens(address, height).then((res) => {
+      setIssuedveHARBOR(Number(res))
       setTotalVotingPower(res)
     }).catch((error) => {
       console.log(error);
@@ -291,12 +297,11 @@ const Vote = ({
   }
 
   const calculateTotalVotes = (value) => {
-    let userTotalVotes = 0;
     let calculatePercentage = 0;
 
     calculatePercentage = (Number(value) / Number(amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS))) * 100;
     calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
-    if (calculatePercentage === "Infinity") {
+    if (calculatePercentage === "Infinity" || calculatePercentage === Infinity) {
       return 0
     } else {
       return calculatePercentage;
@@ -374,7 +379,6 @@ const Vote = ({
         return;
       }
       setTotalPoolFarmedData((prevData) => ({
-        // ...prevData, [extendexPairId]: data
         ...prevData, [extendexPairId]: data?.coin?.amount
       }))
     })
@@ -566,7 +570,7 @@ const Vote = ({
 
     {
       title: "My Voting Power",
-      counts: `${commaSeparator(Number(issuedveHARBOR).toFixed(6) || 0)} veHARBOR`
+      counts: `${formatNumber(amountConversion(Number(issuedveHARBOR), DOLLAR_DECIMALS || 0) || 0)} veHARBOR`
     },
 
     {
@@ -771,7 +775,6 @@ const Vote = ({
     },
   ];
 
-
   // *Pool data table row for showing pair Pools in up container 
   const upPoolTableData =
     allProposalPoolData && allProposalPoolData.map((item, index) => {
@@ -946,7 +949,6 @@ const Vote = ({
       quedPoolCoins += amount;
     })
     totalUserPoolCoin = activePoolCoins + quedPoolCoins
-    // return totalUserPoolCoin;
     return activePoolCoins;
   }
 
@@ -985,31 +987,6 @@ const Vote = ({
 
   }, [poolList])
 
-  // useEffect(() => {
-  //   if (concatedExtendedPair) {
-  //     let totalCalculatedEmission = 0;
-  //     concatedExtendedPair?.map((singleConcatedExtendedPair, index) => {
-  //       // *if extended pair is less than 1, means it is vault extended pair else it is pool extended pair 
-  //       if (((singleConcatedExtendedPair?.extended_pair_id) / 100000) < 1) {
-  //         // *For vault 
-  //         totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
-  //           amountConversionWithComma(myBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-  //           amountConversionWithComma(totalBorrowed[singleConcatedExtendedPair?.extended_pair_id] || 0, DOLLAR_DECIMALS),
-  //           amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
-  //         )
-  //       } else {
-  //         // *For Pool 
-  //         totalCalculatedEmission = totalCalculatedEmission + calculateUserEmission(
-  //           amountConversion(calculateToatalUserFarmedToken(userPoolFarmedData[singleConcatedExtendedPair?.extended_pair_id]) || 0, DOLLAR_DECIMALS),
-  //           amountConversion(totalPoolFarmedData?.[getPoolId(singleConcatedExtendedPair?.extended_pair_id) - 1]?.totalActivePoolCoin?.amount || 0, DOLLAR_DECIMALS),
-  //           amountConversion(singleConcatedExtendedPair?.total_vote || 0, comdex?.coinDecimals)
-  //         )
-  //       }
-  //       setUserEmission(totalCalculatedEmission)
-
-  //     })
-  //   }
-  // }, [concatedExtendedPair, totalPoolFarmedData, userPoolFarmedData, address, myBorrowed])
 
 
   const refreshAuctionButton = {
@@ -1146,7 +1123,6 @@ const Vote = ({
   }
 
   const handleInputSearch = (value) => {
-    console.log(value.target.value);
     let searchedName = userCurrentProposalData?.filter((item) => denomToSymbol(item?.base_coin).toLowerCase().includes(value.target.value.toLowerCase()) || (item?.pair_name).toLowerCase().includes(value.target.value.toLowerCase()))
     setUserCurrentProposalFilterData(searchedName)
     setInputSearch(value.target.value)
@@ -1164,7 +1140,9 @@ const Vote = ({
 
   // *calculate user emission 
   const calculateUserEmission = (_myBorrowed, _totalBorrowed, _totalVoteOfPair) => {
-    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
+    // *formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
+    // *formula = ((myBorrowed/TotalBorrowed) * (userVote))*projected_emission
+
     let myBorrowed = _myBorrowed || 0;
     let totalBorrowed = _totalBorrowed || 0;
     let totalVoteOfPair = _totalVoteOfPair || 0;
@@ -1180,7 +1158,6 @@ const Vote = ({
     }
 
   }
-
   const calculateTotalveHARBOR = () => {
     let totalveHARBORLocked = 0;
     let tokens = vestingNFTId && vestingNFTId?.reverse().map((item) => {
@@ -1220,8 +1197,14 @@ const Vote = ({
   }, [address])
 
   useEffect(() => {
-    calculateTotalveHARBOR()
-  }, [address, vestingNFTId])
+    if (userCurrentProposalData) {
+      let filteredData = [...userCurrentProposalData];
+      filteredData.sort((a, b) => calculateTotalVotes(amountConversion(b?.total_vote || 0, 6) || 0) - calculateTotalVotes(amountConversion(a?.total_vote || 0, 6) || 0));
+      setTopProposalData(filteredData)
+    }
+
+  }, [userCurrentProposalData, currentProposalAllData])
+
 
 
   const PieChart1 = {
@@ -1285,7 +1268,7 @@ const Vote = ({
           },
         },
         name: "",
-        data: userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+        data: topProposalData && topProposalData?.map((item, index) => {
           if (index <= 3) {
             return ({
               name: item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name,
@@ -1318,7 +1301,7 @@ const Vote = ({
     }
   ];
 
-  const emissionDistributionData = userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
+  const emissionDistributionData = topProposalData && topProposalData?.map((item, index) => {
     if (index <= 3) {
       return {
         key: item?.pair_id,
@@ -1374,7 +1357,7 @@ const Vote = ({
       // width: 150,
     },
     {
-      title: 'Total Votes',
+      title: 'Total Votes (veHARBOR)',
       dataIndex: "total_votes",
       key: "total_votes",
       align: 'center',
@@ -1384,7 +1367,7 @@ const Vote = ({
       title: 'External Incentives',
       dataIndex: "external_incentives",
       key: "external_incentives",
-      align: 'left',
+      align: 'center',
       // width: 150,
       render: (item) => (
         <>
@@ -1402,7 +1385,7 @@ const Vote = ({
 
               </div>
               : (
-                <div className="bribe-container mt-1" >
+                <div className="bribe-container mt-1 justify-content-start" >
                   <span className="assets-withicon">
                     <span className="assets-icon">
                       <SvgIcon
@@ -1421,7 +1404,7 @@ const Vote = ({
       ),
     },
     {
-      title: 'My Vote',
+      title: 'My Vote (veHARBOR)',
       dataIndex: "my_vote",
       key: "my_vote",
       align: 'center',
@@ -1436,25 +1419,28 @@ const Vote = ({
     }
   ];
 
+
   const emissionVotingdata = userCurrentProposalFilterData && userCurrentProposalFilterData?.map((item) => {
     return {
       key: item?.pair_id,
       assets: item,
-      my_borrowed: `${amountConversionWithComma(item?.user_position || 0, DOLLAR_DECIMALS)} CMST`,
+      my_borrowed: `$${Number(item?.user_position_value || 0).toFixed(DOLLAR_DECIMALS)}`,
       total_votes:
         <div>
-          {amountConversionWithComma(item?.total_vote || 0, DOLLAR_DECIMALS)} veHarbor
-          <div style={{ textAlign: "end", width: "80%" }}>{Number((item?.user_vote_ratio || 0) * 100).toFixed(ZERO_DOLLAR_DECIMALS)} %</div>
+          {formatNumber(amountConversion(item?.total_vote || 0, DOLLAR_DECIMALS) || 0)} {" "}
+          (<span style={{ textAlign: "end" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %</span>)
         </div>,
       external_incentives: item?.total_incentive,
-      my_vote: `${amountConversionWithComma(item?.user_vote || 0, DOLLAR_DECIMALS)} veHARBOR`,
+      my_vote: `${formatNumber(amountConversion(item?.user_vote || 0, DOLLAR_DECIMALS) || 0)}`,
       vote: <div className='vote-slider' style={{ width: '130px' }}>
         <Slider
           min={0}
           max={100}
+          className='emission-volt-slider'
           value={userVoteArray[item?.pair_id]}
           onChange={(value) => onChange(item?.pair_id, value)}
           tooltip={false}
+          tooltipVisible={false}
         />
         <div className='percents'>{Number(userVoteArray[item?.pair_id] || 0).toFixed(ZERO_DOLLAR_DECIMALS)}%</div>
       </div>
@@ -1479,6 +1465,24 @@ const Vote = ({
       }))
     }
   }, [sumOfVotes])
+
+  useEffect(() => {
+    if (currentProposalAllData) {
+      let endDate = currentProposalAllData?.voting_end_time;
+      let counterEndTime = Math.floor(endDate / 1000000000);
+      let currentUnixTime = moment().unix();
+      if (Number(currentUnixTime) > Number(counterEndTime)) {
+        setProposalInActive(true)
+      }
+      else {
+        setProposalInActive(false)
+      }
+      console.log(counterEndTime, "counterEndTime");
+      console.log(currentUnixTime, "currentUnixTime");
+
+    }
+  }, [currentProposalAllData])
+
 
   return (
     <>
@@ -1549,6 +1553,7 @@ const Vote = ({
                             className="custom-table emission-distribution-table"
                             dataSource={emissionDistributionData}
                             columns={emissionDistributionColumns}
+                            loading={loading}
                             pagination={false}
                             scroll={{ x: "100%" }}
                           />
@@ -1596,7 +1601,7 @@ const Vote = ({
       </div>
       <div className='votepwoter-card'>
         <div className='votepwoter-card-inner'>
-          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled' onClick={handleVote} loading={inProcess} disabled={!sumOfVotes || loading || inProcess}>Vote</Button>
+          Voting Power Used: <span className='green-text'>{sumOfVotes || 0}%</span> <Button type='primary' className='btn-filled' onClick={handleVote} loading={inProcess} disabled={!sumOfVotes || loading || inProcess || proposalInActive}>Vote</Button>
         </div>
       </div>
 
@@ -1635,8 +1640,10 @@ const Vote = ({
             width={180}
           />
         }
-        <h3 className='vote-heading'>Vote Cast</h3>
-        <p className='vote-paira'>Transaction has been confiremed by the blockchain.</p>
+        {animationProcessing && <h3 className='vote-heading'>Processing Transaction</h3>}
+        {animationSuccess && <h3 className='vote-heading'>Transaction Successful</h3>}
+        {animationFailed && <h3 className='vote-heading'>Transaction Failed</h3>}
+        {animationSuccess && <p className='vote-paira'>Transaction has been confirmed by the blockchain.</p>}
       </Modal>
     </>
   )
