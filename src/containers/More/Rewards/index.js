@@ -169,6 +169,7 @@ const Rewards = ({
       title: 'Assets',
       dataIndex: "assets",
       key: "assets",
+      align: "left",
       render: (item) => (
         <>
           {item?.length > 0 ?
@@ -197,7 +198,7 @@ const Rewards = ({
                   <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
                 </div>
               )
-            : <div className="mt-1" >-</div>
+            : <div className="mt-1" >Not Eligible for External Incentives</div>
           }
 
         </>
@@ -211,21 +212,23 @@ const Rewards = ({
       className: 'justify-content-center',
       render: (item) => <>
         {
-          !item?.claimed ?
-            <Button type='primary'
-              className='btn-filled px-4'
-              onClick={() => claimReward(item?.proposal_id)}
-              loading={item?.proposal_id === rewardCurrent ? loading : false}
-              disabled={
-                loading ||
-                item?.total_incentive?.length <= 0
+          item?.total_incentive?.length === 0 ? "" :
+            !item?.claimed ?
+              <Button type='primary'
+                className='btn-filled px-4'
+                onClick={() => claimReward(item?.proposal_id)}
+                loading={item?.proposal_id === rewardCurrent ? loading : false}
+                disabled={
+                  loading ||
+                  item?.total_incentive?.length <= 0
 
-              }
-            >
-              Claim
-            </Button>
-            :
-            <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>
+                }
+              >
+                Claim
+              </Button>
+              :
+              <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>
+
         }
       </>,
       width: 140
@@ -255,19 +258,22 @@ const Rewards = ({
       title: 'Assets',
       dataIndex: "assets",
       key: "assets",
+      align: "left",
       render: (item) => (
         <>
-          <div className="bribe-container mt-1" >
-            <span className="assets-withicon">
-              <span className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom("uharbor")}
-                />
+          {item === "0" ? <div div className="mt-1" >Not Eligible for HARBOR Emissions</div> :
+            <div className="bribe-container mt-1" >
+              <span className="assets-withicon">
+                <span className="assets-icon">
+                  <SvgIcon
+                    name={iconNameFromDenom("uharbor")}
+                  />
+                </span>
               </span>
-            </span>
-            <span>{amountConversionWithComma(item, comdex?.coinDecimals)} {denomToSymbol("uharbor")} </span>
+              <span>{amountConversionWithComma(item, comdex?.coinDecimals)} {denomToSymbol("uharbor")} </span>
 
-          </div>
+            </div>
+          }
         </>
       ),
     },
@@ -279,17 +285,18 @@ const Rewards = ({
       className: 'justify-content-center',
       render: (item) => <>
         {
-          !item?.claimed ?
-            <Button type='primary'
-              className='btn-filled px-4'
-              onClick={() => claimRebase(item?.proposal_id)}
-              loading={item?.proposal_id === current ? loading : false}
-              disabled={loading}
-            >
-              Claim
-            </Button>
-            :
-            <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>
+          item?.rebase === "0" ? "" :
+            !item?.claimed ?
+              <Button type='primary'
+                className='btn-filled px-4'
+                onClick={() => claimRebase(item?.proposal_id)}
+                loading={item?.proposal_id === current ? loading : false}
+                disabled={loading}
+              >
+                Claim
+              </Button>
+              :
+              <div className='claimed-tag'><SvgIcon name='check-circle' viewbox='0 0 15 15' /> Claimed</div>
         }
       </>,
       width: 140
@@ -359,6 +366,22 @@ const Rewards = ({
         <Row>
           <Col md='6'>
             <Row className='mb-2'>
+              <Col >
+                <h2 className='incentives-heading'>Emission Rewards</h2>
+              </Col>
+            </Row>
+            <Table
+              className="custom-table reward-table"
+              dataSource={emissionRewardsdata}
+              columns={emissionRewardsColumns}
+              pagination={false}
+              loading={dataLoading}
+              scroll={{ x: "100%" }}
+              locale={{ emptyText: <NoDataIcon /> }}
+            />
+          </Col>
+          <Col md='6'>
+            <Row className='mb-2'>
               <Col>
                 <h2 className='incentives-heading'>External Incentives </h2>
               </Col>
@@ -387,22 +410,7 @@ const Rewards = ({
               locale={{ emptyText: <NoDataIcon /> }}
             />
           </Col>
-          <Col md='6'>
-            <Row className='mb-2'>
-              <Col >
-                <h2 className='incentives-heading'>Emission Rewards</h2>
-              </Col>
-            </Row>
-            <Table
-              className="custom-table reward-table"
-              dataSource={emissionRewardsdata}
-              columns={emissionRewardsColumns}
-              pagination={false}
-              loading={dataLoading}
-              scroll={{ x: "100%" }}
-              locale={{ emptyText: <NoDataIcon /> }}
-            />
-          </Col>
+
         </Row>
       </div>
     </>
