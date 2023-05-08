@@ -413,8 +413,8 @@
 
 .bribe-container {
   display: flex;
-  justify-content: center;
-  // justify-content: flex-start;
+  // justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   .dark-mode & {
     color: white;
