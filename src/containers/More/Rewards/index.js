@@ -23,6 +23,7 @@ import Snack from '../../../components/common/Snack';
 import { transactionForClaimRebase } from '../../../services/rebaseingContractWrite';
 import { transactionClaimAllRewards, transactionClaimRewards } from '../../../services/rewardContractsRead';
 import { setLockActiveTab } from "../../../actions/vesting";
+import TooltipIcon from '../../../components/TooltipIcon';
 
 const Rewards = ({
   lang,
@@ -367,7 +368,7 @@ const Rewards = ({
           <Col md='6'>
             <Row className='mb-2'>
               <Col >
-                <h2 className='incentives-heading'>Emission Rewards</h2>
+                <h2 className='incentives-heading'>Rebase Rewards <TooltipIcon text="You will receive these rewards at the end of the weekly emissions, and after claiming them, they will be staked." /></h2>
               </Col>
             </Row>
             <Table
@@ -383,7 +384,7 @@ const Rewards = ({
           <Col md='6'>
             <Row className='mb-2'>
               <Col>
-                <h2 className='incentives-heading'>External Incentives </h2>
+                <h2 className='incentives-heading'>External Incentives <TooltipIcon text="You will receive these incentives if you have voted on any vault/pool that had external incentives during the voting period" /> </h2>
               </Col>
               <Col className="text-right" style={{ flexGrow: "unset" }}>
                 <Button type='primary'

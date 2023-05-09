@@ -198,19 +198,22 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
   }, [address])
 
 
-  const calculateTotalVotes = (value) => {
+  const calculateTotalVotes = (id) => {
     let calculatePercentage = 0;
+    let totalVote = userCurrentProposalData?.filter((item) => item?.pair_id === id);
+    totalVote = totalVote?.[0]?.total_vote || 0
 
-    calculatePercentage = (Number(value) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
+    calculatePercentage = (amountConversion(Number(totalVote) || 0, comdex?.coinDecimals) / amountConversion(currentProposalAllData?.total_voted_weight || 0, DOLLAR_DECIMALS)) * 100;
     calculatePercentage = Number(calculatePercentage || 0).toFixed(DOLLAR_DECIMALS)
     return calculatePercentage;
   }
 
-  // *calculate user emission 
-  const calculateUserEmission = (_totalVoteOfPair) => {
-    // !formula = ((myBorrowed/TotalBorrowed) * (Total Vote of Particular Pair/total_vote_weight))*projected_emission
+  // *calculate Vault emission 
+  const calculateVaultEmission = (id) => {
+    // *formula = ((Total Vote of Particular Pair/total_vote_weight))*projected_emission
 
-    let totalVoteOfPair = _totalVoteOfPair || 0;
+    let totalVoteOfPair = userCurrentProposalData?.filter((item) => item?.pair_id === id);
+    totalVoteOfPair = totalVoteOfPair?.[0]?.total_vote || 0
     let totalWeight = currentProposalAllData?.total_voted_weight || 0;
     let projectedEmission = protectedEmission;
 
@@ -224,7 +227,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
 
   }
 
-  const calculateAPY = (_totalVoteRatio, _totalVote, _totalMintedCMST, extendedPairID) => {
+  const calculateAPY = (_totalVoteRatio, _totalVote, _totalMintedCMST, extendedPairID, pairName) => {
     // *formula = (365 * ((Harbor qty / 7)* harbor price)) / total cmst minted
     // !harbor qty formula=(total vote on particular vault * total week emission )/total vote
     // *harbor qty formula=(totalVoteOnIndivisualVault / TotalVoteOnAllVaults) * (TotalWeekEmission) 
@@ -234,7 +237,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     let harborQTY = ((Number(_totalVote) / 100) * Number(totalWeekEmission))
     let calculatedAPY = (365 * ((harborQTY / 7) * harborTokenPrice)) / Number(totalMintedCMST);
 
-    if (isNaN(calculatedAPY) || calculatedAPY === Infinity) {
+    if (isNaN(calculatedAPY) || calculatedAPY === Infinity || calculatedAPY === 0) {
       return 0;
     } else {
       allVaultApr[extendedPairID] = (Number(calculatedAPY) * 100).toFixed(DOLLAR_DECIMALS);
@@ -319,12 +322,12 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                           <Row>
                             <Col>
                               <p>Weekly Emission</p>
-                              <div className={calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0) ? "coins" : "conis dash-line"}>
+                              <div className={calculateVaultEmission(item?.id?.toNumber()) ? "coins" : "conis dash-line"}>
                                 {
-                                  calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0) ?
+                                  calculateVaultEmission(item?.id?.toNumber()) ?
                                     <span>
                                       {
-                                        userCurrentProposalData && formatNumber(calculateUserEmission(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0))
+                                        userCurrentProposalData && formatNumber(calculateVaultEmission(item?.id?.toNumber()))
                                       } {" "}
                                       <span>Harbor</span>
                                     </span>
@@ -337,21 +340,23 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                               {/* <div className="coins dash-line"></div> */}
                               <div className={calculateAPY(
                                 userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
+                                // calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
+                                calculateTotalVotes(item?.id?.toNumber()),
                                 calculateGlobalDebt(item),
-                                item?.id?.toNumber()
+                                item?.id?.toNumber(),
+                                item?.pairName
                               ) ? "coins" : "conis dash-line margin-left-auto"}>{
                                   calculateAPY(
                                     userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                    calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
-                                    calculateGlobalDebt(item),
-                                    item?.id?.toNumber()
+                                    calculateTotalVotes(item?.id?.toNumber()), calculateGlobalDebt(item),
+                                    item?.id?.toNumber(),
+                                    item?.pairName
                                   ) ?
                                     calculateAPY(
                                       userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                      calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
-                                      calculateGlobalDebt(item),
-                                      item?.id?.toNumber()
+                                      calculateTotalVotes(item?.id?.toNumber()), calculateGlobalDebt(item),
+                                      item?.id?.toNumber(),
+                                      item?.pairName
                                     ) + "%" : null
                                 }
                               </div>
