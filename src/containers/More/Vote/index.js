@@ -37,6 +37,7 @@ import failedAnimation from "../../../assets/lottefiles/failed.json";
 import Lottie from 'react-lottie';
 import { vestingIssuedTokens } from '../../../services/vestingContractsRead';
 import { MyTimer } from '../../../components/TimerForAirdrop';
+import TooltipIcon from '../../../components/TooltipIcon';
 
 const Vote = ({
   lang,
@@ -203,7 +204,6 @@ const Vote = ({
     time.setSeconds(time.getSeconds());
     return time;
   }
-  console.log(currentProposalAllData, "currentProposalAllData");
 
   const calculteVotingStartTime = () => {
     let startDate = currentProposalAllData?.voting_start_time;
@@ -564,7 +564,9 @@ const Vote = ({
     },
 
     {
-      title: "Your Emission",
+      title: <>
+        Your Emission <TooltipIcon text='This is the estimated emission for a user based on the overall voting. Users will receive this in their wallet once the emission is completed.' />
+      </>,
       counts: `${formatNumber(userEmission || 0)} HARBOR`
     },
 
@@ -1158,6 +1160,7 @@ const Vote = ({
     }
 
   }
+
   const calculateTotalveHARBOR = () => {
     let totalveHARBORLocked = 0;
     let tokens = vestingNFTId && vestingNFTId?.reverse().map((item) => {
@@ -1172,6 +1175,24 @@ const Vote = ({
     const length = combineColor.length;
     const wrappedIndex = index % length;
     return combineColor[wrappedIndex];
+  }
+
+  const calculateVaultEmission = (id) => {
+    // *formula = ((Total Vote of Particular Pair/total_vote_weight))*projected_emission
+
+    let totalVoteOfPair = userCurrentProposalData?.filter((item) => item?.pair_id === id);
+    totalVoteOfPair = totalVoteOfPair?.[0]?.total_vote || 0
+    let totalWeight = currentProposalAllData?.total_voted_weight || 0;
+    let projectedEmission = protectedEmission;
+
+    let calculatedEmission = ((Number(totalVoteOfPair) / Number(totalWeight)) * projectedEmission)
+
+    if (isNaN(calculatedEmission) || calculatedEmission === Infinity) {
+      return 0;
+    } else {
+      return Number(calculatedEmission);
+    }
+
   }
 
   useEffect(() => {
@@ -1329,7 +1350,9 @@ const Vote = ({
 
   const emissionVotingColumns = [
     {
-      title: 'Vaults/Pools',
+      title: <>
+        Vaults/Pools <TooltipIcon text="All vaults on Harbor (except for Stablemint) and CMST pools on Cswap, are eligible for emissions." />
+      </>,
       dataIndex: "assets",
       key: "assets",
       align: 'left',
@@ -1351,20 +1374,24 @@ const Vote = ({
       </>
     },
     {
-      title: 'My Borrowed/Farmed',
-      dataIndex: "my_borrowed",
-      key: "my_borrowed",
-      // width: 150,
+      title: 'Emission on each Vault/Pool (HARBOR)',
+      dataIndex: "emission_onEach_vault",
+      key: "emission_onEach_vault",
+      width: 200,
     },
     {
-      title: 'Total Votes (veHARBOR)',
+      title: <>
+        Total Votes (veHARBOR) <TooltipIcon text=" Total voting power for each vault. Please note that these numbers are subject to change based on voting." />
+      </>,
       dataIndex: "total_votes",
       key: "total_votes",
       align: 'center',
       // width: 150,
     },
     {
-      title: 'External Incentives',
+      title: <>
+        External Incentives <TooltipIcon text='External incentives provided by protocols to incentivize minting/providing liquidity for their asset. Users will receive these rewards by voting on the corresponding vaults/pools.' />
+      </>,
       dataIndex: "external_incentives",
       key: "external_incentives",
       align: 'center',
@@ -1403,15 +1430,21 @@ const Vote = ({
         </>
       ),
     },
+    // {
+    //   title: 'My Vote (veHARBOR)',
+    //   dataIndex: "my_vote",
+    //   key: "my_vote",
+    //   align: 'center',
+    //   // width: 150,
+    // },
     {
-      title: 'My Vote (veHARBOR)',
-      dataIndex: "my_vote",
-      key: "my_vote",
-      align: 'center',
+      title: 'My Borrowed/Farmed',
+      dataIndex: "my_borrowed",
+      key: "my_borrowed",
       // width: 150,
     },
     {
-      title: 'Vote',
+      title: 'Vote (veHARBOR)',
       dataIndex: "vote",
       key: "vote",
       align: 'center',
@@ -1424,14 +1457,16 @@ const Vote = ({
     return {
       key: item?.pair_id,
       assets: item,
-      my_borrowed: `$${Number(item?.user_position_value || 0).toFixed(DOLLAR_DECIMALS)}`,
+      emission_onEach_vault: formatNumber(calculateVaultEmission(item?.pair_id) || 0),
       total_votes:
-        <div>
-          {formatNumber(amountConversion(item?.total_vote || 0, DOLLAR_DECIMALS) || 0)} {" "}
+        <div div >
+          {formatNumber(amountConversion(item?.total_vote || 0, DOLLAR_DECIMALS) || 0)
+          } {" "}
           (<span style={{ textAlign: "end" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %</span>)
-        </div>,
+        </div >,
       external_incentives: item?.total_incentive,
-      my_vote: `${formatNumber(amountConversion(item?.user_vote || 0, DOLLAR_DECIMALS) || 0)}`,
+      my_borrowed: `$${Number(item?.user_position_value || 0).toFixed(DOLLAR_DECIMALS)}`,
+      // my_vote: `${formatNumber(amountConversion(item?.user_vote || 0, DOLLAR_DECIMALS) || 0)}`,
       vote: <div className='vote-slider' style={{ width: '130px' }}>
         <Slider
           min={0}
@@ -1442,7 +1477,7 @@ const Vote = ({
           tooltip={false}
           tooltipVisible={false}
         />
-        <div className='percents'>{Number(userVoteArray[item?.pair_id] || 0).toFixed(ZERO_DOLLAR_DECIMALS)}%</div>
+        <div className='percents'> {" "}{Number(userVoteArray[item?.pair_id] || 0).toFixed(ZERO_DOLLAR_DECIMALS)}% {"(" + formatNumber(amountConversion(item?.user_vote || 0, DOLLAR_DECIMALS) || 0) + ")"}</div>
       </div>
     }
   })
@@ -1477,8 +1512,6 @@ const Vote = ({
       else {
         setProposalInActive(false)
       }
-      console.log(counterEndTime, "counterEndTime");
-      console.log(currentUnixTime, "currentUnixTime");
 
     }
   }, [currentProposalAllData])
