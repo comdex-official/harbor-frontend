@@ -376,13 +376,13 @@ const Assets = ({
 
         <Row>
           <div className="mt-4">
-            <Tabs
+            {/* <Tabs
               defaultActiveKey="1"
               items={tabItems}
               activeKey={filterValue}
               onChange={onChange}
               className="comdex-tabs farm-details-tabmain"
-            />
+            /> */}
           </div>
           <Col className="assets-search-section">
             <div>
