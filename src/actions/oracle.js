@@ -1,4 +1,4 @@
-import { MARKET_LIST_SET, SET_COINGEKO_PRICE, SET_CSWAP_API_PRICE } from "../constants/oracle";
+import { LP_PRICES_SET, MARKET_LIST_SET, SET_COINGEKO_PRICE, SET_CSWAP_API_PRICE } from "../constants/oracle";
 
 export const setMarkets = (list, pagination) => {
   const map = list.reduce((map, obj) => {
@@ -28,5 +28,13 @@ export const setCswapApiPrice = (list) => {
   return {
     type: SET_CSWAP_API_PRICE,
     priceMap,
+  };
+};
+
+export const setLPPrices = (list, pagination) => {
+  return {
+    type: LP_PRICES_SET,
+    list,
+    pagination,
   };
 };

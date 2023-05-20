@@ -172,6 +172,9 @@ button {
     border-radius: 5px !important;
 
     .dark-mode & {
+      // background-color: $tooltip-bg-light;
+      // color: $tooltip-color-dark;
+
       background-color: #232231;
       border: 1px solid #fff;
       color: white;
@@ -1420,6 +1423,7 @@ button {
     }
   }
 }
+
 .comdex-steps,
 .ant-steps-horizontal:not(.ant-steps-label-vertical) {
   .ant-steps-item {
@@ -1822,4 +1826,11 @@ button {
       background: none !important;
     }
   }
+}
+
+.margin-left-3 {
+  margin-left: -1.3rem;
+}
+.margin-left-auto {
+  margin-left: auto;
 }

@@ -1,6 +1,6 @@
 import Long from "long";
 import { createQueryClient } from "../helper";
-import { QueryClientImpl } from "comdex-codec/build/comdex//locker/v1beta1/query";
+import { QueryClientImpl } from "comdex-codec/build/comdex/locker/v1beta1/query";
 import { PRODUCT_ID } from "../../constants/common";
 
 
