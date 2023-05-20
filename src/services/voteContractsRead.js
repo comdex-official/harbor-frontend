@@ -72,9 +72,9 @@ export const userCurrentProposal = async (address, productId) => {
     return await config;
 }
 
-export const emissiondata = (address,callback) => {
+export const emissiondata = (address, callback) => {
     axios
-        .get(`${EMISSION_API_URL}/api/v2/harbor/userEmissionVote/${address}`)
+        .get(`${EMISSION_API_URL}/api/v2/harbor/emissions/${address}`)
         .then((result) => {
             callback(null, result?.data);
         })

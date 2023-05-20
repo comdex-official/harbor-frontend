@@ -4,7 +4,7 @@ import { Col, Row, SvgIcon } from "../../../components/common";
 import './index.scss';
 import './EmissionDistributionAllModal/index.scss';
 import { connect } from "react-redux";
-import { Button, Input, List, message, Modal, Slider, Switch, Table } from "antd";
+import { Alert, Button, Input, List, message, Modal, notification, Slider, Switch, Table } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom, unixToGMTTime } from "../../../utils/string";
 import { amountConversion, amountConversionWithComma } from '../../../utils/coin';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DOLLAR_DECIMALS, PRODUCT_ID, ZERO_DOLLAR_DECIMALS } from '../../../constants/common';
@@ -576,10 +576,21 @@ const Vote = ({
     },
 
     {
-      title: `Week ${proposalId} Total Emission`,
+      title: `Week ${proposalId || "-"} Total Emission`,
       counts: `${formatNumber(protectedEmission || 0)} HARBOR`
     },
   ];
+
+  const checkProposalOverForAlert = () => {
+    let endDate = currentProposalAllData?.voting_end_time;
+    // Removing miliSec 
+    endDate = Math.floor(endDate / 1000000000);
+    var counterTime = moment().unix();
+    let isProposalOver = counterTime > endDate;
+    return isProposalOver;
+  }
+
+  checkProposalOverForAlert()
 
   const tableData =
     allProposalData && allProposalData.map((item, index) => {
@@ -1200,7 +1211,12 @@ const Vote = ({
     userCurrentProposalData && userCurrentProposalData?.map((item, index) => {
       totalUserEmission = totalUserEmission + calculateUserEmission(item?.user_position, item?.total_position, item?.total_vote)
     })
-    setUserEmission(totalUserEmission || 0)
+
+    if (isNaN(totalUserEmission) || totalUserEmission === Infinity) {
+      setUserEmission(0)
+    } else {
+      setUserEmission(totalUserEmission || 0)
+    }
   }, [userCurrentProposalData, currentProposalAllData, protectedEmission])
 
 
@@ -1482,6 +1498,8 @@ const Vote = ({
     }
   })
 
+  console.log(userCurrentProposalFilterData, "userCurrentProposalFilterData");
+
   useEffect(() => {
     let totalVotesSum = 0;
     Object.values(userVoteArray).forEach(function (key, index) {
@@ -1678,6 +1696,29 @@ const Vote = ({
         {animationFailed && <h3 className='vote-heading'>Transaction Failed</h3>}
         {animationSuccess && <p className='vote-paira'>Transaction has been confirmed by the blockchain.</p>}
       </Modal>
+
+
+      {checkProposalOverForAlert() && <div className="notification_alert_main_container">
+        <div className="notification_alert_container">
+          <div className="icon_container">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+            </svg>
+          </div>
+          {currentProposalAllData && !currentProposalAllData?.emission_completed &&
+            <div className="text_container">
+              {` Week ${ proposalId || "-"} Emission have ended. Rewards will be distributed in sometime.`}
+            </div>
+          }
+
+          {currentProposalAllData && currentProposalAllData?.emission_completed &&
+            <div className="text_container">
+              {`Week ${proposalId || "-"} Harbor emissions have been sent to users wallet. For Rebase & External Incentives, check Reward Page.`}
+            </div>
+          }
+        </div>
+      </div>
+      }
     </>
   )
 }

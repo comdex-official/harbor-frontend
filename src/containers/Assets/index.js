@@ -196,6 +196,7 @@ const Assets = ({
     if (denom === "ucmst") {
       return markets?.cswapApiPrice?.ucmst?.price || 0;
     }
+
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
 
