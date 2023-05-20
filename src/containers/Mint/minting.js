@@ -1,7 +1,7 @@
 import * as PropTypes from "prop-types";
 import { SvgIcon, Row, Col } from "../../components/common";
 import { connect } from "react-redux";
-import { message, Spin, Input } from "antd";
+import { message, Spin, Input, Tooltip } from "antd";
 import { useNavigate } from "react-router";
 import "./index.scss";
 import "./index.scss";
@@ -232,7 +232,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     // !harbor qty formula=(total vote on particular vault * total week emission )/total vote
     // *harbor qty formula=(totalVoteOnIndivisualVault / TotalVoteOnAllVaults) * (TotalWeekEmission) 
     let harborTokenPrice = harborPrice;
-    let totalMintedCMST = _totalMintedCMST.replace(',', '');;
+    let totalMintedCMST = _totalMintedCMST.replace(',', '');
     let totalWeekEmission = protectedEmission;
     let harborQTY = ((Number(_totalVote) / 100) * Number(totalWeekEmission))
     let calculatedAPY = (365 * ((harborQTY / 7) * harborTokenPrice)) / Number(totalMintedCMST);
@@ -245,6 +245,22 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     }
   }
 
+  const calculatePerDollorEmissioAmount = (_id, _totalMintedCMST) => {
+    let totalVoteOfPair = userCurrentProposalData?.filter((item) => item?.pair_id === _id);
+    totalVoteOfPair = totalVoteOfPair?.[0]?.total_vote || 0
+    let totalWeight = currentProposalAllData?.total_voted_weight || 0;
+    let projectedEmission = protectedEmission;
+    let totalMintedCMST = _totalMintedCMST.replace(',', '');
+    let calculatedEmission = ((Number(totalVoteOfPair) / Number(totalWeight)) * projectedEmission)
+    let calculatePerDollorValue = calculatedEmission / Number(totalMintedCMST);
+
+    if (isNaN(calculatePerDollorValue) || calculatePerDollorValue === Infinity) {
+      return "--";
+    } else {
+      return Number(calculatePerDollorValue).toFixed(DOLLAR_DECIMALS);
+    }
+
+  }
 
 
   useEffect(() => {
@@ -335,32 +351,39 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                                 }
                               </div>
                             </Col>
-                            <Col className='text-right'>
-                              <p>APY</p>
-                              {/* <div className="coins dash-line"></div> */}
-                              <div className={calculateAPY(
-                                userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                // calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
-                                calculateTotalVotes(item?.id?.toNumber()),
-                                calculateGlobalDebt(item),
-                                item?.id?.toNumber(),
-                                item?.pairName
-                              ) ? "coins" : "conis dash-line margin-left-auto"}>{
-                                  calculateAPY(
-                                    userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
-                                    calculateTotalVotes(item?.id?.toNumber()), calculateGlobalDebt(item),
-                                    item?.id?.toNumber(),
-                                    item?.pairName
-                                  ) ?
+                            <Tooltip
+                              title={`
+                              For every $1 of CMST minted, you will receive ${formatNumber(calculatePerDollorEmissioAmount(item?.id?.toNumber(), calculateGlobalDebt(item)) || 0)} amount of HARBOR HARBOR at the end of this week's emissions..
+                              `}
+                              overlayClassName="comdex-tooltip"
+                            >
+                              <Col className='text-right'>
+                                <p>APY</p>
+                                {/* <div className="coins dash-line"></div> */}
+                                <div className={calculateAPY(
+                                  userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                  // calculateTotalVotes(amountConversion(userCurrentProposalData?.[item?.id?.toNumber() - 1]?.total_vote || 0, 6 || 0)),
+                                  calculateTotalVotes(item?.id?.toNumber()),
+                                  calculateGlobalDebt(item),
+                                  item?.id?.toNumber(),
+                                  item?.pairName
+                                ) ? "coins" : "conis dash-line margin-left-auto"}>{
                                     calculateAPY(
                                       userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
                                       calculateTotalVotes(item?.id?.toNumber()), calculateGlobalDebt(item),
                                       item?.id?.toNumber(),
                                       item?.pairName
-                                    ) + "%" : null
-                                }
-                              </div>
-                            </Col>
+                                    ) ?
+                                      calculateAPY(
+                                        userCurrentProposalData?.[item?.id?.toNumber() - 1]?.user_vote_ratio || 0,
+                                        calculateTotalVotes(item?.id?.toNumber()), calculateGlobalDebt(item),
+                                        item?.id?.toNumber(),
+                                        item?.pairName
+                                      ) + "%" : null
+                                  }
+                                </div>
+                              </Col>
+                            </Tooltip>
                           </Row>
                         </div>
                         <div className="bottom-container">
