@@ -666,34 +666,65 @@ const Vote = ({
     }
   ];
 
-  const emissionDistributionData = topProposalData && topProposalData?.map((item, index) => {
-    if (index <= 3) {
-      return {
-        key: item?.pair_id,
-        assets_color: <div className='colorbox' style={{ backgroundColor: `${getColor(index)}` }}></div>,
-        assets: <div className="assets-withicon">
-          <div className="assets-icons">
-            <div className="assets-icon">
-              <SvgIcon
-                name={iconNameFromDenom(item?.base_coin)}
-              />
-            </div>
+  // const emissionDistributionData = topProposalData && topProposalData?.map((item, index) => {
+  //   if (index <= 3) {
+  //     return {
+  //       key: item?.pair_id,
+  //       assets_color: <div className='colorbox' style={{ backgroundColor: `${getColor(index)}` }}></div>,
+  //       assets: <div className="assets-withicon">
+  //         <div className="assets-icons">
+  //           <div className="assets-icon">
+  //             <SvgIcon
+  //               name={iconNameFromDenom(item?.base_coin)}
+  //             />
+  //           </div>
 
-            {item?.pair_name === "" && <div className="assets-icon">
-              <SvgIcon
-                name={iconNameFromDenom(item?.quote_coin)}
-              />
-            </div>}
+  //           {item?.pair_name === "" && <div className="assets-icon">
+  //             <SvgIcon
+  //               name={iconNameFromDenom(item?.quote_coin)}
+  //             />
+  //           </div>}
+  //         </div>
+  //         <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
+  //       </div>,
+  //       vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
+  //     }
+  //   }
+  // })
+
+  const emissionDistributionData = topProposalData
+    ? topProposalData
+      .filter((item, index) => index <= 3 && item) // Filter out null or undefined values
+      .map((item, index) => ({
+        key: item?.pair_id,
+        assets_color: (
+          <div className="colorbox" style={{ backgroundColor: `${getColor(index)}` }}></div>
+        ),
+        assets: (
+          <div className="assets-withicon">
+            <div className="assets-icons">
+              <div className="assets-icon">
+                <SvgIcon name={iconNameFromDenom(item?.base_coin)} />
+              </div>
+              {item?.pair_name === "" && (
+                <div className="assets-icon">
+                  <SvgIcon name={iconNameFromDenom(item?.quote_coin)} />
+                </div>
+              )}
+            </div>
+            <div className="name">
+              {item?.pair_name === ""
+                ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} `
+                : item?.pair_name}
+            </div>
           </div>
-          <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
-        </div>,
-        vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
-      }
-    }
-    // else {
-    //   return <h1>hello</h1>
-    // }
-  })
+        ),
+        vote: `${item?.total_vote
+          ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0)
+          : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
+      }))
+    : null;
+
 
   const emissionVotingColumns = [
     {
