@@ -353,8 +353,8 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                             </Col>
                             <Tooltip
                               title={`
-                              For every $1 of CMST minted, you will receive ${calculatePerDollorEmissioAmount(item?.id?.toNumber(), calculateGlobalDebt(item))} amount of HARBOR at the end of this week's emissions..
-                              `}
+                                    For every $1 of CMST minted, you will receive ${calculatePerDollorEmissioAmount(item?.id?.toNumber(), calculateGlobalDebt(item))} HARBOR at the end of this week's emissions.          
+                                  `}
                               overlayClassName="comdex-tooltip"
                             >
                               <Col className='text-right'>
