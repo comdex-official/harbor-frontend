@@ -9,7 +9,6 @@ export const CAMPAIGN_URL = "https://test-campaign.comdex.one";
 
 export const API_URL = envConfig?.apiUrl;
 
-// export const EMISSION_API_URL = "http://95.217.185.27:8000";
 export const EMISSION_API_URL = envConfig?.apiUrl;
 
 export const COINGECKO_API_URL = "https://api.coingecko.com/api/v3/simple/price?ids=comdex,cosmos,osmosis,axlusdc,axlweth&vs_currencies=usd";
