@@ -1707,13 +1707,13 @@ const Vote = ({
           </div>
           {currentProposalAllData && !currentProposalAllData?.emission_completed &&
             <div className="text_container">
-              {` Week ${ proposalId || "-"} Emission have ended. Rewards will be distributed in sometime.`}
+              {` Week ${proposalId ? proposalId - 1 : "-"} Emission have ended. Rewards will be distributed in sometime.`}
             </div>
           }
 
           {currentProposalAllData && currentProposalAllData?.emission_completed &&
             <div className="text_container">
-              {`Week ${proposalId || "-"} Harbor emissions have been sent to users wallet. For Rebase & External Incentives, check Reward Page.`}
+              {`Week ${proposalId ? proposalId - 1 : "-"} Harbor emissions have been sent to users wallet. For Rebase & External Incentives, check Reward Page.`}
             </div>
           }
         </div>

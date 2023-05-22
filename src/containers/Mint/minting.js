@@ -257,7 +257,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     if (isNaN(calculatePerDollorValue) || calculatePerDollorValue === Infinity) {
       return "--";
     } else {
-      return Number(calculatePerDollorValue).toFixed(DOLLAR_DECIMALS);
+      return formatNumber(Number(calculatePerDollorValue).toFixed(DOLLAR_DECIMALS));
     }
 
   }
@@ -353,7 +353,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                             </Col>
                             <Tooltip
                               title={`
-                              For every $1 of CMST minted, you will receive ${formatNumber(calculatePerDollorEmissioAmount(item?.id?.toNumber(), calculateGlobalDebt(item)) || 0)} amount of HARBOR HARBOR at the end of this week's emissions..
+                              For every $1 of CMST minted, you will receive ${calculatePerDollorEmissioAmount(item?.id?.toNumber(), calculateGlobalDebt(item))} amount of HARBOR at the end of this week's emissions..
                               `}
                               overlayClassName="comdex-tooltip"
                             >
