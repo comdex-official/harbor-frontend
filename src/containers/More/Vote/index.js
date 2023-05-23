@@ -95,6 +95,7 @@ const Vote = ({
   const [issuedveHARBOR, setIssuedveHARBOR] = useState(0);
   const [topProposalData, setTopProposalData] = useState()
   const [proposalInActive, setProposalInActive] = useState(true);
+  const [emissionDataLoading, setEmissionDataLoading] = useState(false)
 
   const processing = {
     loop: true,
@@ -224,57 +225,6 @@ const Vote = ({
     });
   };
 
-  const fetchQueryPairValut = (extendedPairId) => {
-    queryPairVault(extendedPairId, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setPairIdData((prevState) => ({
-        ...prevState, [extendedPairId]: data?.pairVault?.pairId?.toNumber()
-      }))
-      setPairValutData((prevState) => ({
-        ...prevState, [extendedPairId]: data?.pairVault?.pairName
-      }))
-    })
-  }
-
-  const fetchtotalBorrowed = (productId, extendedPairId) => {
-    queryMintedTokenSpecificVaultType(productId, extendedPairId, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setTotalBorrowed((prevState) => ({
-        ...prevState, [extendedPairId]: data?.tokenMinted
-      }))
-    })
-  }
-
-  const getOwnerVaultId = (productId, address, extentedPairId) => {
-    queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setVaultId((prevState) => ({
-        ...prevState, [extentedPairId]: data?.vaultId?.toNumber()
-      }))
-    })
-  }
-
-  const getOwnerVaultInfoByVaultId = (ownerVaultId) => {
-    queryOwnerVaultsInfo(ownerVaultId, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setMyBorrowed((prevData) => ({
-        ...prevData, [data?.vault?.extendedPairVaultId?.toNumber()]: data?.vault?.amountOut
-      }))
-    })
-  }
-
   const fetchTotalVTokens = (address, height) => {
     totalVTokens(address, height).then((res) => {
       setIssuedveHARBOR(Number(res))
@@ -282,18 +232,6 @@ const Vote = ({
     }).catch((error) => {
       console.log(error);
     })
-  }
-
-  const getIconFromPairName = (extendexPairVaultPairName) => {
-    let pairName = extendexPairVaultPairName;
-    pairName = pairName?.replace(/\s+/g, ' ').trim()
-    if (!pairName?.includes("-")) {
-      return pairName?.toLowerCase();
-    } else {
-      pairName = pairName?.slice(0, -2);
-      pairName = pairName?.toLowerCase()
-      return pairName;
-    }
   }
 
   const calculateTotalVotes = (value) => {
@@ -317,114 +255,10 @@ const Vote = ({
     }
   }, [address, proposalId, refreshBalance])
 
-  const getPairFromExtendedPair = () => {
-    allProposalData && allProposalData.map((item) => {
-      fetchQueryPairValut(item?.extended_pair_id)
-      getOwnerVaultId(PRODUCT_ID, address, item?.extended_pair_id)
-      fetchtotalBorrowed(PRODUCT_ID, item?.extended_pair_id)
-    })
-  }
-
-  const fetchProposalAllUpData = (address, proposalId) => {
-    setLoading(true)
-    userProposalAllUpData(address, proposalId,).then((res) => {
-      setAllProposalData(res?.proposal_pair_data)
-      setLoading(false)
-    }).catch((error) => {
-      setLoading(false)
-      console.log(error);
-    })
-  };
-
-
-  // *For pools 
-  const fetchProposalAllUpPoolData = (address, proposalId) => {
-    setLoading(true)
-    userProposalAllUpPoolData(address, proposalId,).then((res) => {
-      setAllProposalPoolData(res?.proposal_pair_data)
-      setLoading(false)
-    }).catch((error) => {
-      setLoading(false)
-      console.log(error);
-    })
-  };
-
-  const fetchPoolLists = () => {
-    queryPoolsList((error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setPoolList(data?.pools)
-    })
-  }
-
-  const fetchFarmer = (poolId, address, extendexPairId) => {
-    queryFarmer(poolId, address, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setUserPoolFarmedData((prevData) => ({
-        ...prevData, [extendexPairId]: data
-        // ...prevData, [extendexPairId]: data?.activePoolCoin?.amount
-      }))
-    })
-  }
-
-  const fetchFarmedPoolCoin = (poolId, extendexPairId) => {
-    queryFarmedPoolCoin(poolId, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      setTotalPoolFarmedData((prevData) => ({
-        ...prevData, [extendexPairId]: data?.coin?.amount
-      }))
-    })
-  }
-
-  const fetchTotalActiveAndQueuedPoolCoin = (extendexPairId) => {
-    queryTotalActiveAndQueuedPoolCoin((error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-
-      setTotalPoolFarmedData(data?.totalActiveAndQueuedCoins)
-    })
-  }
-
-  const getPoolId = (value) => {
-    let extendedPairId = value;
-    let divisor = 10 ** comdex?.coinDecimals
-    let result = extendedPairId % divisor;
-    return result;
-  }
-
-  const getUserFarmData = (address) => {
-    allProposalPoolData?.map((item) => {
-      fetchFarmer(getPoolId(item?.extended_pair_id), address, item?.extended_pair_id)
-      // fetchFarmedPoolCoin(getPoolId(item?.extended_pair_id), item?.extended_pair_id)
-      // fetchTotalActiveAndQueuedPoolCoin(item?.extended_pair_id)
-    })
-  }
-
-  useEffect(() => {
-    getUserFarmData(address)
-  }, [allProposalPoolData, address])
-
-  useEffect(() => {
-    proposalExtenderPair && proposalExtenderPair.map((item) => {
-      getOwnerVaultInfoByVaultId(vaultId[item])
-    })
-  }, [vaultId, refreshBalance])
 
   useEffect(() => {
     if (proposalId) {
-      fetchProposalAllUpData(address, proposalId);
       fetchuserProposalProjectedEmission(proposalId)
-      fetchProposalAllUpPoolData(address, proposalId)
     }
   }, [address, proposalId, refreshBalance])
 
@@ -443,119 +277,15 @@ const Vote = ({
       true,
       false
     );
-    fetchPoolLists()
     fetchRestPrices((error, result) => {
       if (error) {
         console.log(error, "Price Error");
       }
       setCswapPrice(result)
     })
-    fetchTotalActiveAndQueuedPoolCoin()
   }, [address])
 
-  useEffect(() => {
-    getPairFromExtendedPair()
-  }, [allProposalData, refreshBalance])
 
-  const columns = [
-    {
-      title: (
-        <>
-          Vault Pair
-        </>
-      ),
-      dataIndex: "asset",
-      key: "asset",
-      width: 230,
-    },
-    {
-      title: (
-        <>
-          My Borrowed{" "}
-        </>
-      ),
-      dataIndex: "my_borrowed",
-      key: "my_borrowed",
-      width: 150,
-    },
-
-    {
-      title: (
-        <>
-          Total Votes
-        </>
-      ),
-      dataIndex: "total_votes",
-      key: "total_votes",
-      width: 200,
-    },
-
-    {
-      title: (
-        <>
-          External Incentives
-        </>
-      ),
-      dataIndex: "bribe",
-      key: "bribe",
-      width: 250,
-      render: (item) => (
-        <>
-          {item?.length > 0 ?
-            (item?.length == 1) ?
-              <div className="bribe-container mt-1" >
-                <span className="assets-withicon">
-                  <span className="assets-icon">
-                    <SvgIcon
-                      name={iconNameFromDenom(item[0]?.denom)}
-                    />
-                  </span>
-                </span>
-                <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
-
-              </div>
-              : (
-                <div className="bribe-container mt-1" >
-                  <span className="assets-withicon">
-                    <span className="assets-icon">
-                      <SvgIcon
-                        name={iconNameFromDenom(item[0]?.denom)}
-                      />
-                    </span>
-                  </span>
-                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
-                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
-                </div>
-              )
-            : <div className="mt-1" >0</div>
-          }
-
-        </>
-      ),
-    },
-    {
-      title: (
-        <>
-          My Vote
-        </>
-      ),
-      dataIndex: "my_vote",
-      key: "my_vote",
-      align: "center",
-      width: 200,
-    },
-    {
-      title: (
-        <>
-          Action
-        </>
-      ),
-      dataIndex: "action",
-      key: "action",
-      align: "centre",
-      width: 130,
-    },
-  ];
 
   const data = [
     {
@@ -592,413 +322,8 @@ const Vote = ({
 
   checkProposalOverForAlert()
 
-  const tableData =
-    allProposalData && allProposalData.map((item, index) => {
-      return {
-        key: index,
-        asset: (
-          <>
-            <div className="assets-withicon">
-              <div className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom(
-                    symbolToDenom(getIconFromPairName(pairVaultData[item?.extended_pair_id]))
-                  )}
-                />
-              </div>
-              {pairVaultData[item?.extended_pair_id]}
-            </div>
-          </>
-        ),
-        my_borrowed: (
-          <>
-            <div className="assets-withicon display-center">
-              {myBorrowed[item?.extended_pair_id] ? amountConversionWithComma(myBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS) : Number(0).toFixed(2)}
-              {" "}{denomToSymbol("ucmst")}
-            </div>
-          </>
-        ),
-        total_borrowed:
-          <div>
-            {totalBorrowed[item?.extended_pair_id] ? amountConversionWithComma(
-              totalBorrowed[item?.extended_pair_id], DOLLAR_DECIMALS
-            ) : Number(0).toFixed(2)} {denomToSymbol("ucmst")}
-          </div>,
-        total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div style={{ fontSize: "12px" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
-        bribe: item?.bribe,
-        my_vote: <div>{item?.my_vote ? amountConversion(item?.my_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR</div>,
-        action: <>
-          <Button
-            type="primary"
-            className="btn-filled"
-            size="sm"
-            loading={index === btnLoading ? inProcess : false}
-            onClick={() => handleVote(item?.extended_pair_id, index)}
-            disabled={disableVoteBtn}
-          >
-            Vote
-          </Button>
-        </>,
-      }
-    })
 
-  const poolColumns = [
-    {
-      title: (
-        <>
-          Vault Pair
-        </>
-      ),
-      dataIndex: "asset",
-      key: "asset",
-      width: 150,
-    },
-    {
-      title: (
-        <>
-          My Borrowed{" "}
-        </>
-      ),
-      dataIndex: "my_borrowed",
-      key: "my_borrowed",
-      width: 150,
-    },
-    {
-      title: (
-        <>
-          Total Borrowed
-        </>
-      ),
-      dataIndex: "total_borrowed",
-      key: "total_borrowed",
-      width: 200,
-    },
-    {
-      title: (
-        <>
-          Total Votes
-        </>
-      ),
-      dataIndex: "total_votes",
-      key: "total_votes",
-      width: 200,
-    },
-    {
-      title: (
-        <>
-          External Incentives
-        </>
-      ),
-      dataIndex: "bribe",
-      key: "bribe",
-      width: 200,
-      render: (item) => (
-        <>
-          {item?.length > 0 ?
-            item && item?.map((singleBribe, index) => {
-              return <div className="endtime-badge mt-1" key={index}>{amountConversionWithComma(singleBribe?.amount, DOLLAR_DECIMALS)} {denomToSymbol(singleBribe?.denom)}</div>
-            })
-            : <div className="endtime-badge mt-1" >{""}</div>
-          }
-        </>
-      ),
-    },
-    {
-      title: (
-        <>
-          My Vote
-        </>
-      ),
-      dataIndex: "my_vote",
-      key: "my_vote",
-      align: "center",
-      width: 100,
-    },
-    {
-      title: (
-        <>
-          Action
-        </>
-      ),
-      dataIndex: "action",
-      key: "action",
-      align: "centre",
-      width: 130,
-    },
-  ];
 
-  const tabsItem = [
-    {
-      label: "Vaults", key: "1", children: (
-        <Row>
-          <Col>
-            <div className="composite-card ">
-              <div className="card-content">
-                <Table
-                  className="custom-table liquidation-table"
-                  dataSource={tableData}
-                  columns={columns}
-                  loading={loading}
-                  pagination={false}
-                  scroll={{ x: "100%" }}
-                  locale={{ emptyText: <NoDataIcon /> }}
-                />
-              </div>
-            </div>
-
-          </Col>
-        </Row>
-      )
-    },
-    {
-      label: "Pools", key: "2", children: <Pool cswapPrice={cswapPrice} assetMap={assetMap} />
-    },
-  ]
-
-  // *Pool data Column row for showing pair Pools in up container 
-  const upPoolColumns = [
-    {
-      title: (
-        <>
-
-        </>
-      ),
-      dataIndex: "asset_color",
-      key: "asset_color",
-    },
-    {
-      title: (
-        <>
-          Pools/Vault
-        </>
-      ),
-      dataIndex: "pools",
-      key: "pools",
-      // width: 150,
-    },
-    {
-      title: (
-        <>
-          Amount (HARBOR)
-        </>
-      ),
-      dataIndex: "amount",
-      key: "amount",
-      // width: 150,
-    },
-  ];
-
-  // *Pool data table row for showing pair Pools in up container 
-  const upPoolTableData =
-    allProposalPoolData && allProposalPoolData.map((item, index) => {
-      if (
-        (index) < 2
-      ) {
-        return {
-          key: index,
-          asset_color: <>
-            <div className="asset_color" style={{ backgroundColor: `${poolColor[index]}` }}></div>
-          </>,
-          pools: (
-            <>
-              <div className="assets-withicon">
-                <div className="assets-icon">
-                  <SvgIcon
-                    name={iconNameFromDenom(poolList && poolList[index]?.balances?.baseCoin?.denom)}
-                  />
-                </div>
-                <div className="assets-icon" style={{ marginLeft: "-22px" }}>
-                  <SvgIcon
-                    name={iconNameFromDenom(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
-                  />
-                </div>
-                {denomToSymbol(poolList && poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
-              </div>
-            </>
-          ),
-          amount:
-            <div >
-              <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))} </span>) </div>
-            </div>,
-        }
-      }
-    })
-
-  const upPoolTableDataForModal =
-    allProposalPoolData && allProposalPoolData.map((item, index) => {
-      return {
-        key: index,
-        asset_color: <>
-          <div className="asset_color" style={{ backgroundColor: `${poolColor[index]}` }}></div>
-        </>,
-        pools: (
-          <>
-            <div className="assets-withicon">
-              <div className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.baseCoin?.denom)}
-                />
-              </div>
-              <div className="assets-icon" style={{ marginLeft: "-22px" }}>
-                <SvgIcon
-                  name={iconNameFromDenom(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
-                />
-              </div>
-              {denomToSymbol(poolList && poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
-            </div>
-          </>
-        ),
-        amount:
-          <div >
-            <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber(calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission) : Number(0).toFixed(DOLLAR_DECIMALS))}</span>) </div>
-          </div>,
-      }
-    })
-
-  // *vault data Column row for showing pair vault in up container 
-  const upVaultColumns = [
-    {
-      title: (
-        <>
-
-        </>
-      ),
-      dataIndex: "asset_color",
-      key: "asset_color",
-    },
-    {
-      title: (
-        <>
-          Vaults
-        </>
-      ),
-      dataIndex: "vaults",
-      key: "vaults",
-      // width: 150,
-    },
-    {
-      title: (
-        <>
-          Amount
-        </>
-      ),
-      dataIndex: "amount",
-      key: "amount",
-      // width: 150,
-    },
-  ];
-
-  // *vault data table row for showing pair vault in up container 
-  const upVaultTableData =
-    allProposalData && allProposalData.map((item, index) => {
-      if (
-        (index) < 2
-      ) {
-        return {
-          key: index,
-          asset_color: <>
-            <div className="asset_color" style={{ backgroundColor: `${vaultColor[index]}` }}></div>
-          </>,
-          vaults: (
-            <>
-              <div className="assets-withicon">
-                <div className="assets-icon">
-                  <SvgIcon
-                    name={iconNameFromDenom(
-                      symbolToDenom(getIconFromPairName(pairVaultData[item?.extended_pair_id]))
-                    )}
-                  />
-                </div>
-                <div className="assets-icon" style={{ marginLeft: "-22px" }}>
-                  <SvgIcon
-                    name={iconNameFromDenom("")}
-                  />
-                </div>
-                {pairVaultData[item?.extended_pair_id]}
-              </div>
-            </>
-          ),
-          amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))}</span>)</div>,
-        }
-      }
-    })
-
-  const upVaultTableDataForModal =
-    allProposalData && allProposalData.map((item, index) => {
-      return {
-        key: index,
-        asset_color: <>
-          <div className="asset_color" style={{ backgroundColor: `${vaultColor[index]}` }}></div>
-        </>,
-        vaults: (
-          <>
-            <div className="assets-withicon">
-              <div className="assets-icon">
-                <SvgIcon
-                  name={iconNameFromDenom(
-                    symbolToDenom(getIconFromPairName(pairVaultData[item?.extended_pair_id]))
-                  )}
-                />
-              </div>
-              <div className="assets-icon" style={{ marginLeft: "-22px" }}>
-                <SvgIcon
-                  name={iconNameFromDenom("")}
-                />
-              </div>
-              {pairVaultData[item?.extended_pair_id]}
-            </div>
-          </>
-        ),
-        amount: <div>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}% (<span>{(item?.total_vote ? formatNumber((calculateTotalVotes(amountConversion(item?.total_vote || 0, comdex?.coinDecimals) || 0) * protectedEmission)) : Number(0).toFixed(DOLLAR_DECIMALS))}</span>)</div>,
-      }
-    })
-
-  const calculateToatalUserFarmedToken = (tokens) => {
-    let activePoolCoins = Number(tokens?.activePoolCoin?.amount) || 0;
-    let quedPoolCoins = 0;
-    let totalUserPoolCoin = 0;
-    let quedPoolCoinsArray = tokens?.queuedPoolCoin?.map((item) => {
-      let amount = Number(item?.poolCoin?.amount)
-      quedPoolCoins += amount;
-    })
-    totalUserPoolCoin = activePoolCoins + quedPoolCoins
-    return activePoolCoins;
-  }
-
-  useEffect(() => {
-    let concatedData = allProposalData?.concat(allProposalPoolData)
-    setConcatedExtendedPair(concatedData)
-  }, [allProposalData, allProposalPoolData])
-
-  useEffect(() => {
-    if (poolList && poolsName) {
-      let concatedData = { ...pairVaultData, ...poolsName };
-      setConcatedPairName(concatedData)
-    }
-  }, [pairVaultData, poolsName])
-
-  useEffect(() => {
-    if (concatedExtendedPair) {
-      concatedExtendedPair?.length > 0 && concatedExtendedPair?.map((item) => {
-        setAllPairTotalVote((prevData) => ({ ...prevData, [item?.extendedPairId]: calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) * protectedEmission }))
-      })
-    }
-  }, [concatedExtendedPair, concatedPairName])
-
-  // *Concating pools name with extended pair id 
-
-  useEffect(() => {
-
-    if (poolList) {
-      poolList?.map((item) => {
-        setPoolsName((prevState) => ({
-          ...prevState, [(item?.id?.toNumber()) + 1000000]: item?.balances
-        }))
-      })
-
-    }
-
-  }, [poolList])
 
 
 
@@ -1055,8 +380,11 @@ const Vote = ({
   };
 
   const fetchEmissiondata = (address) => {
+    setEmissionDataLoading(true)
     emissiondata(address, (error, result) => {
+
       if (error) {
+        setEmissionDataLoading(false)
         message.error(error);
         return;
       }
@@ -1069,7 +397,7 @@ const Vote = ({
 
       setUserCurrentProposalData(result?.data)
       setUserCurrentProposalFilterData(result?.data)
-
+      setEmissionDataLoading(false)
     });
   }
 
@@ -1338,31 +666,65 @@ const Vote = ({
     }
   ];
 
-  const emissionDistributionData = topProposalData && topProposalData?.map((item, index) => {
-    if (index <= 3) {
-      return {
-        key: item?.pair_id,
-        assets_color: <div className='colorbox' style={{ backgroundColor: `${getColor(index)}` }}></div>,
-        assets: <div className="assets-withicon">
-          <div className="assets-icons">
-            <div className="assets-icon">
-              <SvgIcon
-                name={iconNameFromDenom(item?.base_coin)}
-              />
-            </div>
+  // const emissionDistributionData = topProposalData && topProposalData?.map((item, index) => {
+  //   if (index <= 3) {
+  //     return {
+  //       key: item?.pair_id,
+  //       assets_color: <div className='colorbox' style={{ backgroundColor: `${getColor(index)}` }}></div>,
+  //       assets: <div className="assets-withicon">
+  //         <div className="assets-icons">
+  //           <div className="assets-icon">
+  //             <SvgIcon
+  //               name={iconNameFromDenom(item?.base_coin)}
+  //             />
+  //           </div>
 
-            {item?.pair_name === "" && <div className="assets-icon">
-              <SvgIcon
-                name={iconNameFromDenom(item?.quote_coin)}
-              />
-            </div>}
+  //           {item?.pair_name === "" && <div className="assets-icon">
+  //             <SvgIcon
+  //               name={iconNameFromDenom(item?.quote_coin)}
+  //             />
+  //           </div>}
+  //         </div>
+  //         <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
+  //       </div>,
+  //       vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
+  //     }
+  //   }
+  // })
+
+  const emissionDistributionData = topProposalData
+    ? topProposalData
+      .filter((item, index) => index <= 3 && item) // Filter out null or undefined values
+      .map((item, index) => ({
+        key: item?.pair_id,
+        assets_color: (
+          <div className="colorbox" style={{ backgroundColor: `${getColor(index)}` }}></div>
+        ),
+        assets: (
+          <div className="assets-withicon">
+            <div className="assets-icons">
+              <div className="assets-icon">
+                <SvgIcon name={iconNameFromDenom(item?.base_coin)} />
+              </div>
+              {item?.pair_name === "" && (
+                <div className="assets-icon">
+                  <SvgIcon name={iconNameFromDenom(item?.quote_coin)} />
+                </div>
+              )}
+            </div>
+            <div className="name">
+              {item?.pair_name === ""
+                ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} `
+                : item?.pair_name}
+            </div>
           </div>
-          <div className='name'>{item?.pair_name === "" ? `${denomToSymbol(item?.base_coin)}/${denomToSymbol(item?.quote_coin)} ` : item?.pair_name}</div>
-        </div>,
-        vote: `${item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
-      }
-    }
-  })
+        ),
+        vote: `${item?.total_vote
+          ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0)
+          : Number(0).toFixed(DOLLAR_DECIMALS)} %`,
+      }))
+    : null;
+
 
   const emissionVotingColumns = [
     {
@@ -1498,7 +860,6 @@ const Vote = ({
     }
   })
 
-  console.log(userCurrentProposalFilterData, "userCurrentProposalFilterData");
 
   useEffect(() => {
     let totalVotesSum = 0;
@@ -1604,7 +965,7 @@ const Vote = ({
                             className="custom-table emission-distribution-table"
                             dataSource={emissionDistributionData}
                             columns={emissionDistributionColumns}
-                            loading={loading}
+                            loading={emissionDataLoading}
                             pagination={false}
                             scroll={{ x: "100%" }}
                           />
@@ -1643,7 +1004,7 @@ const Vote = ({
               columns={emissionVotingColumns}
               pagination={false}
               scroll={{ x: "100%" }}
-              loading={loading}
+              loading={emissionDataLoading}
               locale={{ emptyText: <NoDataIcon /> }}
               style={{ marginBottom: "5rem" }}
             />

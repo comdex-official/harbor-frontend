@@ -98,6 +98,7 @@ const MyPositions = ({ address, balances }) => {
       setHistoryTab(true);
     }
   };
+
   const data = [
     {
       title: (
