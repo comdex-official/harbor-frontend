@@ -32,8 +32,6 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const allVaultApr = {};
-  let topFiveAprVault = useRef(null)
 
   const extenedPairVaultList = useSelector(
     (state) => state.locker.extenedPairVaultList[0]
@@ -52,6 +50,8 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
   const [currentProposalAllData, setCurrentProposalAllData] = useState();
   const [proposalExtenderPair, setProposalExtenderPair] = useState();
   const [userCurrentProposalData, setUserCurrentProposalData] = useState();
+  const [allVaultApr, setAllVaultApr] = useState();
+  const [topFiveVaultApr, setTopFiveValutApr] = useState()
 
 
   const navigateToMint = (path) => {
@@ -240,7 +240,6 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
     if (isNaN(calculatedAPY) || calculatedAPY === Infinity || calculatedAPY === 0) {
       return 0;
     } else {
-      allVaultApr[extendedPairID] = (Number(calculatedAPY) * 100).toFixed(DOLLAR_DECIMALS);
       return (Number(calculatedAPY) * 100).toFixed(DOLLAR_DECIMALS);
     }
   }
@@ -263,14 +262,38 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
   }
 
 
-  useEffect(() => {
-    const topVault = Object.fromEntries(
-      Object.entries(allVaultApr)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 3)
-    );
 
-    topFiveAprVault.current = { ...topVault };
+  useEffect(() => {
+    extenedPairVaultList?.map((item) => {
+      let harborTokenPrice = harborPrice;
+      let totalMintedCMST = calculateGlobalDebt(item);
+      totalMintedCMST = totalMintedCMST.replace(',', '');
+      let totalWeekEmission = protectedEmission;
+      let harborQTY = ((Number(calculateTotalVotes(item?.id?.toNumber())) / 100) * Number(totalWeekEmission))
+      let calculatedAPY = (365 * ((harborQTY / 7) * harborTokenPrice)) / Number(totalMintedCMST);
+
+      if (isNaN(calculatedAPY) || calculatedAPY === Infinity || calculatedAPY === 0) {
+        return 0;
+      } else {
+        setAllVaultApr(prevAllVaultApr => ({
+          ...prevAllVaultApr,
+          [item?.id?.toNumber()]: (Number(calculatedAPY) * 100).toFixed(DOLLAR_DECIMALS),
+        }));
+      }
+
+    })
+  }, [extenedPairVaultList, protectedEmission, vaultDebt, harborPrice, userCurrentProposalData])
+
+
+  useEffect(() => {
+    if (allVaultApr) {
+      const topVault = Object.fromEntries(
+        Object.entries(allVaultApr)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 5)
+      );
+      setTopFiveValutApr({ ...topVault })
+    }
   }, [allVaultApr])
 
 
@@ -310,7 +333,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                         }}
                       >
                         {
-                          topFiveAprVault && topFiveAprVault.current?.[item?.id?.toNumber()] ?
+                          topFiveVaultApr && topFiveVaultApr?.[item?.id?.toNumber()] ?
                             <div className="hot-tag hot-tag1">
                               Hot <img src={HotIcon} alt="Hot" />
                             </div>
