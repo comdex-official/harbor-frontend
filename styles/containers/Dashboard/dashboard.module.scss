@@ -1,0 +1,146 @@
+@import "../../../assets/scss/variables.scss";
+
+.dashboard_main_container {
+  //   height: 82vh;
+  .dashboard_container {
+    .top_container {
+      .image_container {
+        img {
+          width: 100%;
+          @media only screen and (min-width: 1800px) {
+            object-fit: fill;
+            height: 22rem;
+          }
+          @media only screen and (min-width: 2000px) {
+            object-fit: cover;
+          }
+        }
+      }
+    }
+    .bottom_container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      @media only screen and (max-width: 930px) {
+        flex-direction: column;
+        row-gap: 0.8rem;
+      }
+      .total_value_container {
+        display: flex;
+        justify-content: space-between;
+        .total_value_box {
+          .heading {
+            color: $text-color;
+            font-family: "Montserrat";
+            font-style: normal;
+            font-weight: 400;
+            font-size: 1rem;
+            line-height: 20px;
+          }
+          .value {
+            font-family: "Montserrat";
+            font-style: normal;
+            font-weight: 700;
+            font-size: 1.5rem;
+            line-height: 29px;
+          }
+        }
+        .view_all_btn {
+          text-decoration: underline;
+          color: #aeabd8;
+          cursor: pointer;
+        }
+      }
+      .wrapper {
+        display: flex;
+        justify-content: space-between;
+        @media only screen and (max-width: 510px) {
+          flex-direction: column;
+          row-gap: 0.8rem;
+        }
+        .char {
+          flex-basis: 50%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .table {
+          flex-basis: 50%;
+          .dashboard_table {
+            // max-width: 305px;
+            .ant-table-container {
+              .ant-table-content {
+                .ant-table-thead {
+                  .ant-table-cell {
+                    &::before {
+                      background-color: unset !important;
+                    }
+                  }
+                }
+              }
+            }
+            .ant-table {
+              table {
+                .ant-table-thead {
+                  tr {
+                    th {
+                      padding: 2px 5px !important;
+                      font-weight: 700 !important;
+                      line-height: 1;
+                    }
+                  }
+                }
+                .ant-table-tbody {
+                  tr {
+                    box-shadow: none !important;
+                    background: none !important;
+                    td {
+                      border: 0 !important;
+                      padding: 1px 5px !important;
+                      font-weight: 600;
+                      .colorbox {
+                        width: 15px;
+                        height: 15px;
+                        border-radius: 1px;
+                        display: inline-block;
+                      }
+                      .assets-withicon {
+                        display: flex;
+                        align-items: center;
+                        .assets-icons {
+                          display: flex;
+                          min-width: 30px;
+                        }
+                        .assets-icon {
+                          margin: 0;
+                          width: 25px;
+                          height: 25px;
+                          &:nth-child(2) {
+                            margin-left: -8px;
+                            position: relative;
+                            z-index: 1;
+                          }
+                        }
+                        .name {
+                          padding-left: 5px;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      .left_container {
+        flex-basis: 49%;
+        // background-color: seagreen;
+      }
+      .right_container {
+        flex-basis: 49%;
+        // background-color: slateblue;
+      }
+    }
+  }
+}

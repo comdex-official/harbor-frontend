@@ -6,16 +6,16 @@
   margin: 0;
 }
 
+// component
 
-
-// component 
-
-@import './components/common/CautionNotice/CautionNotice.module.scss';
-@import './components/Copy/Copy.module.scss';
-
+@import "./components/common/CautionNotice/CautionNotice.module.scss";
+@import "./components/Copy/Copy.module.scss";
 
 // Container
-@import './containers/NavigationBar/NavigationBar.module.scss';
-@import './containers/SideBar/SideBar.module.scss';
-@import './containers/Footer/Footer.module.scss';
-@import './containers/Modal/Modal.module.scss';
+@import "./containers/NavigationBar/NavigationBar.module.scss";
+@import "./containers/SideBar/SideBar.module.scss";
+@import "./containers/Footer/Footer.module.scss";
+@import "./containers/Modal/Modal.module.scss";
+@import "./containers/Dashboard/dashboard.module.scss";
+@import "./containers/Dashboard/TVLModal/tvl.module.scss";
+

@@ -204,11 +204,15 @@
               position: relative;
               padding: 1px;
               text-transform: uppercase;
-              height: calc(100% / 11.4);
+              height: calc(100% / 12.3);
 
               @media screen and (min-width: 1200px) {
-                height: calc(100% / 11.3);
-                min-height: 60px;
+                height: calc(100% / 12.3);
+                min-height: 50px;
+              }
+              @media screen and (min-height: 1000px) {
+                height: calc(100% / 10.8);
+                min-height: 55px;
               }
               .tab-inner {
                 padding: 10px 20px;

@@ -1845,13 +1845,13 @@ button {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #665aa6;
+  background: $background-dark1;
   border-radius: 6px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(#665aa6, 0.8);
+  background: rgba($background-dark1, 0.8);
 }
 
 .dropconnect-overlay {
@@ -1867,3 +1867,38 @@ button {
     }
   }
 }
+
+// card container
+.card_container {
+  padding: 1.4rem;
+  background: $background-dark1;
+  border-radius: 10px;
+}
+
+// for empty pie chart
+
+.totalvalue-chart {
+  .highcharts-empty-series {
+    fill: #c0c0c0;
+  }
+}
+
+// .assets-withicon {
+//   .assets-icons {
+//     display: flex;
+//     min-width: 44px;
+//   }
+//   .assets-icon {
+//     margin: 0;
+//     width: 25px;
+//     height: 25px;
+//     &:nth-child(2) {
+//       margin-left: -8px;
+//       position: relative;
+//       z-index: 1;
+//     }
+//   }
+//   .name {
+//     padding-left: 5px;
+//   }
+// }

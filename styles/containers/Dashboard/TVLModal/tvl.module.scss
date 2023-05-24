@@ -1,0 +1,143 @@
+@import "../../../../assets/scss/variables.scss";
+
+.ant-modal {
+  &.dashboard_tvl_modal {
+    .ant-modal-content {
+      padding: 2rem;
+      font-family: "Montserrat";
+      .ant-modal-close {
+        top: 18px;
+        right: 18px;
+        .icon {
+          width: 13px;
+          .dark-mode & {
+            fill: $white;
+          }
+        }
+      }
+      .ant-modal-header {
+        margin-bottom: 1.8rem;
+        .ant-modal-title {
+          font-size: 1.5rem;
+          font-weight: 800;
+        }
+      }
+      .dark-mode & {
+        background: $background-dark1;
+        border: 0;
+        box-shadow: none;
+      }
+      .tvl-card {
+        background: none;
+        box-shadow: none;
+      }
+      .ant-modal-body {
+        .vote-heading {
+          text-align: center;
+          margin-top: 5px;
+          .dark-mode & {
+            color: white;
+          }
+        }
+        .vote-paira {
+          text-align: center;
+          margin-bottom: 1rem;
+          .dark-mode & {
+            color: white;
+          }
+        }
+      }
+    }
+
+    .total_value_box {
+      .heading {
+        color: $text-color;
+        font-family: "Montserrat";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 20px;
+      }
+      .value {
+        font-family: "Montserrat";
+        font-style: normal;
+        font-weight: 700;
+        font-size: 1.5rem;
+        line-height: 29px;
+      }
+    }
+    .chart-graph-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+  }
+}
+
+.card-content {
+  .dashboard_tvl_table {
+    // max-width: 305px;
+    .ant-table-container {
+      .ant-table-content {
+        .ant-table-thead {
+          .ant-table-cell {
+            &::before {
+              background-color: unset !important;
+            }
+          }
+        }
+      }
+    }
+    .ant-table {
+      table {
+        .ant-table-thead {
+          tr {
+            th {
+              padding: 2px 5px !important;
+              font-weight: 700 !important;
+              line-height: 1;
+            }
+          }
+        }
+        .ant-table-tbody {
+          tr {
+            box-shadow: none !important;
+            background: none !important;
+            td {
+              border: 0 !important;
+              padding: 1px 5px !important;
+              font-weight: 600;
+              .colorbox {
+                width: 15px;
+                height: 15px;
+                border-radius: 1px;
+                display: inline-block;
+              }
+              .assets-withicon {
+                display: flex;
+                align-items: center;
+                .assets-icons {
+                  display: flex;
+                  min-width: 30px;
+                }
+                .assets-icon {
+                  margin: 0;
+                  width: 25px;
+                  height: 25px;
+                  &:nth-child(2) {
+                    margin-left: -8px;
+                    position: relative;
+                    z-index: 1;
+                  }
+                }
+                .name {
+                  padding-left: 5px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
