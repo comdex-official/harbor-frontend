@@ -1,6 +1,6 @@
 import React from "react";
 import { SvgIcon } from "../";
-import "./index.scss";
+// import "./index.scss";
 
 const NoDataIcon = ({ text }) => {
   return (
