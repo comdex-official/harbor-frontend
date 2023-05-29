@@ -623,9 +623,28 @@ button {
               padding: 10px 15px 0 15px;
               font-size: $font-size-sm + 3;
               color: $dark-color;
-              text-align: center;
+              text-align: left;
               .dark-mode & {
                 color: $text-color-white;
+              }
+              .ant-table-column-sorters {
+                display: block;
+                // display: flex !important;
+                // justify-content: flex-start !important;
+                // align-items: center !important;
+
+                .ant-table-column-title {
+                  // flex: none !important;
+                }
+
+                .ant-table-column-sorter {
+                  color: $white;
+                  .ant-table-column-sorter-inner {
+                    .active {
+                      color: $secondary-color;
+                    }
+                  }
+                }
               }
             }
             td {
@@ -635,12 +654,18 @@ button {
             th:nth-child(1) {
               text-align: left !important;
             }
+
             th:last-child {
               text-align: right !important;
             }
             td {
               background: transparent;
               border: none;
+            }
+          }
+          .ant-table-cell {
+            &::before {
+              background-color: unset !important;
             }
           }
         }
@@ -664,15 +689,17 @@ button {
               color: $text-color-light2;
               border-top: 1px solid;
               border-bottom: 1px solid;
-              border: 1.5px solid $border-color-base;
+              // border: 1.5px solid $border-color-base;
+              border: none;
               border-left: 0;
               border-right: 0;
               padding: 8px 15px;
-              font-size: $font-size-lg - 1;
+              font-size: 1rem;
               line-height: 1;
               border-color: transparent;
               background: none;
               text-align: center;
+              font-weight: 600;
               &:last-child {
                 text-align: right !important;
               }
@@ -680,7 +707,7 @@ button {
                 border-radius: 15px 0 0 15px;
                 text-align: start;
                 .dark-mode & {
-                  border-left: 1px solid $border-dark;
+                  // border-left: 1px solid $border-dark;
                 }
               }
 
@@ -688,7 +715,7 @@ button {
                 border-radius: 0 15px 15px 0;
                 text-align: end;
                 .dark-mode & {
-                  border-right: 1px solid $border-dark;
+                  // border-right: 1px solid $border-dark;
                 }
               }
 
