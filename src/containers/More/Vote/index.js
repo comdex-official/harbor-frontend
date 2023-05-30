@@ -96,6 +96,7 @@ const Vote = ({
   const [topProposalData, setTopProposalData] = useState()
   const [proposalInActive, setProposalInActive] = useState(true);
   const [emissionDataLoading, setEmissionDataLoading] = useState(false)
+  const [hideZeroBalance, setHideZeroBalance] = useState(false)
 
   const processing = {
     loop: true,
@@ -395,8 +396,15 @@ const Vote = ({
         }))
       })
 
+      if (hideZeroBalance) {
+        let searchedName = result?.data?.filter((item) => Number(item?.user_position) > 0)
+        setUserCurrentProposalFilterData(searchedName)
+      } else {
+        setUserCurrentProposalFilterData(result?.data)
+      }
+
       setUserCurrentProposalData(result?.data)
-      setUserCurrentProposalFilterData(result?.data)
+      // setUserCurrentProposalFilterData(result?.data)
       setEmissionDataLoading(false)
     });
   }
@@ -470,6 +478,8 @@ const Vote = ({
   }
 
   const handleSwitchChange = (value) => {
+    console.log(value);
+    setHideZeroBalance(value)
     if (value) {
       let searchedName = userCurrentProposalData?.filter((item) => Number(item?.user_position) > 0)
       setUserCurrentProposalFilterData(searchedName)
@@ -755,11 +765,11 @@ const Vote = ({
       title: 'Emission on each Vault/Pool (HARBOR)',
       dataIndex: "emission_onEach_vault",
       key: "emission_onEach_vault",
-      width: 200,
+      width: 180,
     },
     {
       title: <>
-        Total Votes (veHARBOR) <TooltipIcon text=" Total voting power for each vault. Please note that these numbers are subject to change based on voting." />
+        Total Votes(veHARBOR) <TooltipIcon text=" Total voting power for each vault. Please note that these numbers are subject to change based on voting." />
       </>,
       dataIndex: "total_votes",
       key: "total_votes",
@@ -822,7 +832,7 @@ const Vote = ({
       // width: 150,
     },
     {
-      title: 'Vote (veHARBOR)',
+      title: 'My Vote (veHARBOR)',
       dataIndex: "vote",
       key: "vote",
       align: 'center',
