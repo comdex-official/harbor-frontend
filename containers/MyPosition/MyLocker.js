@@ -15,7 +15,7 @@ import {
 import { queryAssets } from '../../services/asset/query';
 import { queryUserLockerHistory } from "../../services/locker/query";
 import { amountConversion, amountConversionWithComma } from "../../utils/coin";
-import "./index.scss";
+import "../../styles/containers/MyPositions/MyPositions.module.scss";
 
 const MyEarn = ({ address }) => {
   const dispatch = useDispatch();
@@ -109,12 +109,14 @@ const MyEarn = ({ address }) => {
       ),
       dataIndex: "transaction",
       key: "balance",
+      align:"left",
       width: 300,
     },
     {
       title: "Date of Transaction",
       dataIndex: "date",
       key: "date",
+      align: "left",
       width: 300,
     },
     {

@@ -17,7 +17,7 @@ import { queryCollectorInformation } from "../../services/collector";
 import { queryUserVaultsStats } from "../../services/vault/query";
 import { decimalConversion } from "../../utils/number";
 import { cmst } from "../../config/network";
-import "./index.scss";
+import "../../styles/containers/MyPositions/MyPositions.module.scss";
 
 
 const MyPositions = ({ address, balances }) => {
@@ -27,9 +27,10 @@ const MyPositions = ({ address, balances }) => {
   const [lockerInfo, setLockerInfo] = useState();
   const [vaultsInfo, setVaultsInfo] = useState();
   const [collectorInfo, setCollectorInfo] = useState();
+  const [activeKey, setActiveKey] = useState(1);
 
   const tabsItem = [
-    { label: "Vaults", key: "1", children: <Borrow /> },
+    { label: "Vaults", key: "1", children: <Borrow activeKey={activeKey} /> },
     { label: "Locker", key: "2", children: <MyEarn /> },
     { label: "History", key: "3", children: <History /> },
   ]
@@ -80,6 +81,7 @@ const MyPositions = ({ address, balances }) => {
   };
 
   const callback = (key) => {
+    setActiveKey(key)
     if (key === "1") {
       setHistoryTab(false);
       setVaultTab(true);
@@ -280,8 +282,8 @@ const MyPositions = ({ address, balances }) => {
     <div className="app-content-wrapper">
       <Row>
         <Col>
-          <div className="composite-card myhome-upper earn-deposite-card">
-            <div className="myhome-upper-left">
+          <div className=" myhome-upper  card_container">
+            {/* <div className="myhome-upper-left">
               <List
                 grid={{
                   gutter: 16,
@@ -302,38 +304,151 @@ const MyPositions = ({ address, balances }) => {
                   </List.Item>
                 )}
               />
-            </div>
+            </div> */}
 
-            {vaultTab && (
-              <div className="myhome-upper-right">
-                <div className="borrow-limit-bar">
-                  <div className="borrow-limit-upper">
-                    <div>
-                      <h4>
-                        Average Collateral Ratio:{" "}
+            <div className="myhome_upper_main_container">
+              <div className="myhome_upper_container">
 
+                <div className="myhome_upper_stats">
+                  <div className="stats_heading primary_heading">
+                    {earnTab && (
+                      <>
+                        Locker Balance{" "}
+                        <TooltipIcon text="Current balance of Composite deposited in Locker" />
+                      </>
+                    )}
+                    {vaultTab && (
+                      <>
+                        Collateral Locked{" "}
+                        <TooltipIcon text="Total amount of collateral locked across all vaults" />
+                      </>
+                    )}
+                    {historyTab && (
+                      <>
+                        No. of Deposit Transactions{" "}
+                        <TooltipIcon text="" />
+                      </>
+                    )}
+                  </div>
+                  <div className="stats_values primary_values">
+                    {/* $1,081,131.90 */}
+                    {earnTab && (
+                      <>
+                        {/* Locker Balance */}
+                        {amountConversionWithComma(lockerInfo?.netBalance || 0, DOLLAR_DECIMALS)}{" "}  <span>CMST</span>
+                      </>
+                    )}
+                    {vaultTab && (
+                      <>
+                        {/* Collateral Locked */}
+                        $
+                        {amountConversionWithComma(
+                          Number(vaultsInfo?.collateralLocked || 0), DOLLAR_DECIMALS
+                        )}
+                      </>
+                    )}
+                    {historyTab && (
+                      <>
+                        {/* Locker Balance */}
+                        {/* {amountConversionWithComma(lockerInfo?.netBalance || 0, DOLLAR_DECIMALS)}{" "} <span>CMST</span> */}
+                        287
+                      </>
+                    )}
+                  </div>
+                </div>
 
-                        {vaultsInfo?.averageCrRatio
-                          ? Number(Number(decimalConversion(vaultsInfo?.averageCrRatio || 0)) * 100).toFixed(DOLLAR_DECIMALS)
+                <div className="myhome_upper_stats">
+                  <div className="stats_heading primary_heading">
+                    {earnTab && (
+                      <>
+                        Total Rewards Earned{" "}
+                        <TooltipIcon text="Total interest accumulated till date from Locker" />
+                      </>
+                    )}
+                    {vaultTab && (
+                      <>
+                        Total Borrowed{" "}
+                        <TooltipIcon text="Composite Debt owed across all vaults which is a sum of Composite borrowed and interest accrued" />
+                      </>
+                    )}
+                    {historyTab && (
+                      <>
+                        No. of Withdraw transactions{" "}
+                        <TooltipIcon text="" />
+                      </>
+                    )}
+                  </div>
+                  <div className="stats_values primary_values">
+                    {/* 1,081,131.90 CMST */}
+                    {earnTab && (
+                      <>
+                        {/* Total Rewards Earned */}
+                        {amountConversionWithComma(lockerInfo?.returnsAccumulated || 0)} {" "}
+                        <span>CMST</span>
+                      </>
+                    )}
+                    {vaultTab && (
+                      <>
+                        {/* Total Borrowed */}
+                        {amountConversionWithComma(Number(vaultsInfo?.totalDue || 0), DOLLAR_DECIMALS)} {" "}
+                        <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
+                      </>
+                    )}
+                    {historyTab && (
+                      <>
+                        {/* Collateral Locked */}
+                        287
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="myhome_upper_stats">
+                  <div className="stats_heading primary_heading">
+                    {earnTab && (
+                      <>
+                        Reward rate {" "}
+                        <TooltipIcon text="Current annual interest rate of Locker" />
+                      </>
+                    )}
+                    {vaultTab && (
+                      <>
+                        Available To Borrow{" "}
+                        <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
+                      </>
+                    )}
+                    {/* {historyTab && (
+                      <>
+                        Total Borrowed{" "}
+                        <TooltipIcon text="Total amount of Composite available to borrow adhering to vault safety limits" />
+                      </>
+                    )} */}
+                  </div>
+                  <div className="stats_values primary_values">
+                    {/* 1,081,131.90 CMST */}
+                    {earnTab && (
+                      <>
+                        {/* Reward rate */}
+                        {collectorInfo?.lockerSavingRate
+                          ? Number(
+                            decimalConversion(collectorInfo?.lockerSavingRate || 0) * 100
+                          ).toFixed(DOLLAR_DECIMALS)
                           : Number().toFixed(DOLLAR_DECIMALS)}
                         %
-                      </h4>
-                    </div>
-                  </div>
-                  <div className="borrow-limit-middle">
-                    <Progress
-                      percent={
-                        vaultsInfo?.averageCrRatio
-                          ? calculateProgressPercentage(Number(decimalConversion((vaultsInfo?.averageCrRatio || 0)) * 100))
-                          : 0
-                      }
-                      showInfo={false}
-                      size="small"
-                    />
+                      </>
+                    )}
+                    {vaultTab && (
+                      <>
+                        {/* Available to borrow */}
+                        {amountConversionWithComma(Number(vaultsInfo?.availableToBorrow || 0), DOLLAR_DECIMALS)} {" "}
+                        <span>{denomConversion(cmst?.coinMinimalDenom)}</span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
-            )}
+            </div>
+
           </div>
         </Col>
       </Row>

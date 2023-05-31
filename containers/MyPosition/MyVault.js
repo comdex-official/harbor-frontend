@@ -1,20 +1,20 @@
 import * as PropTypes from "prop-types";
 import { Col, Row } from "../../components/common";
 import { connect } from "react-redux";
-import { Button, Table, Progress, message } from "antd";
-import "./index.scss";
+import { Button, Table, Progress, message, Slider, Tooltip } from "antd";
+import "../../styles/containers/MyPositions/MyPositions.module.scss";
 import TooltipIcon from "../../components/TooltipIcon";
 import { useEffect, useState } from "react";
 import { queryUserVaults } from "../../services/vault/query";
 import { amountConversion, amountConversionWithComma, denomConversion } from "../../utils/coin";
-import { useNavigate } from "react-router";
-import { DOLLAR_DECIMALS } from "../../constants/common";
+import { DOLLAR_DECIMALS, ZERO_DOLLAR_DECIMALS } from "../../constants/common";
 import { decimalConversion } from "../../utils/number";
 import NoDataIcon from "../../components/common/NoDataIcon";
+import { useRouter } from "next/router";
 
-const MyVault = ({ address }) => {
+const MyVault = ({ address, activeKey }) => {
   const [vaults, setVaults] = useState();
-  const navigate = useNavigate();
+  const navigate = useRouter();
   const [inProgress, setInProgress] = useState(false);
 
   useEffect(() => {
@@ -54,13 +54,14 @@ const MyVault = ({ address }) => {
     {
       title: (
         <>
-          Debt{" "}
+          Debt <br /> (CMST){" "}
           <TooltipIcon text="Composite Debt owed for this vault which is a sum of Composite borrowed and interest accrued" />
         </>
       ),
       dataIndex: "debt",
       key: "debt",
       width: 150,
+      align: "left",
     },
     {
       title: (
@@ -72,7 +73,20 @@ const MyVault = ({ address }) => {
       dataIndex: "apy",
       key: "apy",
       width: 150,
+      align: "left",
       render: (apy) => <>{Number((apy * 100) || 0).toFixed(DOLLAR_DECIMALS)}%</>,
+    },
+    {
+      title: (
+        <>
+          Liquidation Price{" "}
+          <TooltipIcon text="" />
+        </>
+      ),
+      dataIndex: "liquidationPrice",
+      key: "liquidationPrice",
+      width: 150,
+      align: "left"
     },
     {
       title: (
@@ -83,11 +97,11 @@ const MyVault = ({ address }) => {
       ),
       dataIndex: "health",
       key: "health",
-      width: 200,
-      align: "center",
+      width: 150,
+      align: "left",
       render: (ratio) => (
         <>
-          <span>{Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
+          {/* <span>{Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS) || 0}%</span>
           <Progress
             className="health-progress ml-2"
             style={{ width: 130 }}
@@ -95,38 +109,69 @@ const MyVault = ({ address }) => {
             showInfo={false}
             size="small"
             strokeColor={((Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(DOLLAR_DECIMALS)) < (Number(((decimalConversion(ratio?.minCr) * 100) || 0).toFixed(DOLLAR_DECIMALS)) + 50)) ? "orange" : ""}
+          /> */}
 
+          <Slider
+            className={
+              "comdex-slider myPosition_slider " +
+              (100 <= 120
+                ? " red-track"
+                : 150 < 100
+                  ? " red-track"
+                  : 200 < 150
+                    ? " orange-track"
+                    : 150 >= 200
+                      ? " green-track"
+                      : " ")
+            }
+            value={Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(ZERO_DOLLAR_DECIMALS) || 0}
+            max={400}
+            // handleStyle={handleSliderStyle}
+            marks={{
+              140: "Risky",
+              300: "Safe",
+            }}
+            // min={170 + 5}
+            tooltip={{ open: activeKey === 1 ? true : false }}
+            tipFormatter={(value) => (
+              <Tooltip
+                className="myposition_tooltip"
+              >
+                <span>{Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(ZERO_DOLLAR_DECIMALS) || 0}%</span>
+              </Tooltip>
+            )}
           />
         </>
       ),
     },
-    {
-      title: (
-        <>
-          Action{" "}
-        </>
-      ),
-      dataIndex: "action",
-      key: "action",
-      align: "right",
-      width: 200,
-      render: (item) => (
-        <>
-          <Button
-            type="primary"
-            className="btn-filled"
-            size="small"
-            onClick={() => handleRouteChange(item)}
-          >
-            Manage
-          </Button>
-        </>
-      ),
-    },
+
+    // {
+    //   title: (
+    //     <>
+    //       Action{" "}
+    //     </>
+    //   ),
+    //   dataIndex: "action",
+    //   key: "action",
+    //   align: "right",
+    //   width: 200,
+    //   render: (item) => (
+    //     <>
+    //       <Button
+    //         type="primary"
+    //         className="btn-filled"
+    //         size="small"
+    //         onClick={() => handleRouteChange(item)}
+    //       >
+    //         Manage
+    //       </Button>
+    //     </>
+    //   ),
+    // },
   ];
 
   const handleRouteChange = (item) => {
-    navigate(`/mint/vault/${item?.extendedPairId?.toNumber()}`);
+    navigate.push(`/mint/vault/${item?.extendedPairId?.toNumber()}`)
   };
 
 
@@ -144,6 +189,7 @@ const MyVault = ({ address }) => {
         debt: <> {amountConversionWithComma(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
         apy: decimalConversion(item?.interestRate || 0),
         health: (item ? item : 0),
+        liquidationPrice: "$123",
         action: item,
       };
     });

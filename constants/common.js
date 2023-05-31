@@ -1,6 +1,6 @@
 import { envConfig } from "../config/envConfig";
 
-let app = process.env.REACT_APP_APP;
+let app = process.env.NEXT_PUBLIC_APP_APP;
 
 export const DEFAULT_PAGE_NUMBER = 1;
 export const DEFAULT_PAGE_SIZE = 10;

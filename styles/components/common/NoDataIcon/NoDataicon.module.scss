@@ -1,4 +1,12 @@
-@import "../../../assets/scss/variables.scss";
+@import "../../../../assets/scss/variables.scss";
+
+.no_data {
+  text-align: center;
+  width: 100%;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
 
 .no-data-card {
   text-align: center;
