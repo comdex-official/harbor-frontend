@@ -1,4 +1,4 @@
-@import "../../assets/scss/style.scss";
+@import "../../../assets/scss/variables.scss";
 
 .assets-withicon {
   display: flex;
@@ -268,16 +268,36 @@
   }
 }
 
-.composite-card.myhome-upper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 48px 40px 40px 35px;
+.myhome-upper {
+  // display: flex;
+  // justify-content: space-between;
+  // align-items: center;
+  // padding: 48px 40px 40px 35px;
   margin-bottom: 2rem;
-  @media only screen and (max-width: 850px) {
-    flex-direction: column;
-  }
-  .dark-mode & {
+  // width: 100%;
+  // @media only screen and (max-width: 850px) {
+  //   flex-direction: column;
+  // }
+  // .dark-mode & {
+  // }
+
+  .myhome_upper_main_container {
+    .myhome_upper_container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 20px 10px;
+      @media only screen and (max-width: 700px) {
+        flex-wrap: wrap;
+      }
+      .myhome_upper_stats {
+        .stats_heading {
+        }
+        .stats_values {
+        }
+      }
+    }
   }
   .myhome-upper-left {
     width: 60%;
@@ -335,6 +355,10 @@
         }
       }
       .ant-row {
+        // & div {
+        //   justify-content: center;
+        //   display: flex;
+        // }
         @media only screen and (max-width: 760px) {
           row-gap: 12px;
         }
@@ -467,6 +491,7 @@
               border-color: transparent;
               background: none;
               text-align: center;
+              border: none;
               &:last-child {
                 text-align: right !important;
               }
@@ -474,7 +499,7 @@
                 border-radius: 15px 0 0 15px;
                 text-align: start;
                 .dark-mode & {
-                  border-left: 1px solid $border-dark;
+                  // border-left: 1px solid $border-dark;
                 }
               }
 
@@ -488,12 +513,13 @@
 
               .dark-mode & {
                 color: $white;
-                border-color: $border-dark;
+                // border-color: $border-dark;
               }
               a {
                 color: $text-color-light2;
                 .dark-mode & {
                   color: white;
+                  color: #4361ee;
                 }
               }
             }
@@ -552,6 +578,122 @@
           }
         }
       }
+    }
+  }
+}
+
+.ant-slider {
+  &.myPosition_slider {
+    margin-top: 0;
+    .ant-slider-handle {
+      // display: none;
+    }
+
+    .ant-slider-rail {
+      background: #5d6a82;
+      height: 8px;
+      border-radius: 15px;
+    }
+    .ant-slider-track {
+      // background: #13a356;
+      background: linear-gradient(90.04deg, #9bf32c -8.56%, #185509 120.28%);
+      height: 8px;
+      border-radius: 15px;
+    }
+    .ant-slider-handle {
+      background-color: transparent;
+      border-color: transparent;
+      // @media screen and (max-width: 991px) {
+      //   display: block;
+      // }
+      &::after,
+      &::before {
+        visibility: hidden;
+      }
+    }
+
+    .ant-slider-step {
+      .ant-slider-dot {
+        width: 1.5px;
+        height: 13px;
+        border: 0;
+        top: -3px;
+        background: $silver-color;
+        border-radius: 0%;
+        &.ant-slider-dot-active {
+          // background: $secondary-color;
+          background: $silver-color;
+        }
+        &:first-child {
+          // margin-left: 0;
+          // height: 30px;
+        }
+        // &:nth-child(2) {
+        //   margin-left: -1px;
+        // }
+        // &:last-child {
+        //   margin-left: -1px;
+        // }
+      }
+    }
+    .ant-slider-mark {
+      top: 13px;
+      span {
+        font-size: $font-size-sm - 2;
+        font-weight: 300;
+
+        .dark-mode & {
+          color: $text-color;
+        }
+      }
+    }
+  }
+}
+
+.ant-slider-tooltip {
+  top: 365.312px !important;
+  .ant-tooltip-content {
+    transform: translateY();
+    font-size: $font-size-base - 4;
+    .ant-tooltip-arrow {
+      display: none;
+    }
+    .ant-tooltip-inner {
+      background: #232231;
+      border: 1px solid white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $white;
+      font-size: 13px;
+      font-weight: 500;
+
+      background: none;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      min-height: auto;
+      .dark-mode & {
+        color: $white;
+      }
+    }
+    .ant-tooltip-arrow {
+      display: block;
+      --antd-arrow-background-color: rgba($secondary-color, 0.3);
+      .dark-mode & {
+        --antd-arrow-background-color: $secondary-color;
+      }
+      .ant-tooltip-arrow-content {
+        transform: translateY(-13px) rotate(223deg);
+        background: $secondary-color;
+      }
+    }
+  }
+  .ant-tooltip-arrow {
+    &::before {
+      background: white;
+      height: 6px;
     }
   }
 }

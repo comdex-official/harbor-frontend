@@ -440,40 +440,40 @@ button {
   }
 }
 
-.ant-slider-tooltip {
-  .ant-tooltip-content {
-    transform: translateY();
-    font-size: $font-size-base - 4;
-    .ant-tooltip-arrow {
-      display: none;
-    }
-    .ant-tooltip-inner {
-      background: #232231;
-      border: 1px solid white;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: $white;
-      font-size: 13px;
-      font-weight: 500;
-      .dark-mode & {
-        color: $white;
-      }
-    }
-    .ant-tooltip-arrow {
-      display: block;
-      --antd-arrow-background-color: rgba($secondary-color, 0.3);
-      .dark-mode & {
-        --antd-arrow-background-color: $secondary-color;
-      }
-      .ant-tooltip-arrow-content {
-        transform: translateY(-13px) rotate(223deg);
-        background: $secondary-color;
-      }
-    }
-  }
-}
+// .ant-slider-tooltip {
+//   .ant-tooltip-content {
+//     transform: translateY();
+//     font-size: $font-size-base - 4;
+//     .ant-tooltip-arrow {
+//       display: none;
+//     }
+//     .ant-tooltip-inner {
+//       background: #232231;
+//       border: 1px solid white;
+//       border-radius: 10px;
+//       display: flex;
+//       align-items: center;
+//       justify-content: center;
+//       color: $white;
+//       font-size: 13px;
+//       font-weight: 500;
+//       .dark-mode & {
+//         color: $white;
+//       }
+//     }
+//     .ant-tooltip-arrow {
+//       display: block;
+//       --antd-arrow-background-color: rgba($secondary-color, 0.3);
+//       .dark-mode & {
+//         --antd-arrow-background-color: $secondary-color;
+//       }
+//       .ant-tooltip-arrow-content {
+//         transform: translateY(-13px) rotate(223deg);
+//         background: $secondary-color;
+//       }
+//     }
+//   }
+// }
 
 .earn-tabs {
   .ant-tabs-nav {
@@ -495,11 +495,11 @@ button {
       .ant-tabs-nav-list {
         border-radius: 20px;
         border: 1px solid rgba($secondary-color, 0.3);
-        padding: 5px;
+        padding: 0;
         background: $background-light;
         .dark-mode & {
-          border: 1px solid $background-light;
-          background: transparent;
+          border: none;
+          background: $tab-background;
         }
         .ant-tabs-ink-bar {
           display: none;
@@ -509,13 +509,16 @@ button {
           width: 100%;
           text-align: center;
           color: $secondary-color;
-          font-weight: 300;
-          font-size: $font-size-base - 2;
+          font-weight: 600;
+          font-size: $font-size-base - 1;
           margin-left: 0;
-          padding: 4px 18px;
+          padding: 9px 25px;
           border-radius: 20px;
           background: none;
           border: 0;
+          line-height: 17px;
+          font-family: "Montserrat";
+          transition: all 0.3s ease-in-out;
           .ant-tabs-tab-btn {
             width: 100%;
             color: $text-color-dark2;
@@ -578,9 +581,15 @@ button {
 }
 
 .tooltip-icon {
-  width: 10px;
-  height: 10px;
-  fill: #486480;
+  // width: 10px;
+  // height: 10px;
+  // fill: #486480;
+  svg {
+    width: 13px;
+    margin-left: 0.4rem;
+    height: 12px;
+    fill: #486480;
+  }
 }
 
 .ant-tooltip {
@@ -618,14 +627,16 @@ button {
           tr {
             th {
               background: none;
-              font-weight: 300;
+              font-weight: 400;
+              line-height: 17px;
               border: 0;
               padding: 10px 15px 0 15px;
               font-size: $font-size-sm + 3;
               color: $dark-color;
               text-align: left;
               .dark-mode & {
-                color: $text-color-white;
+                // color: $text-color-white;
+                color: $text-color;
               }
               .ant-table-column-sorters {
                 display: block;
@@ -694,6 +705,7 @@ button {
               border-left: 0;
               border-right: 0;
               padding: 8px 15px;
+              height: 60px;
               font-size: 1rem;
               line-height: 1;
               border-color: transparent;
@@ -1785,6 +1797,16 @@ button {
 
 .ant-pagination {
   margin: 5px 0 !important;
+  .ant-pagination-prev,
+  .ant-pagination-next {
+    background: #d9d7ff;
+    border-radius: 50%;
+    .anticon {
+      svg {
+        fill: black;
+      }
+    }
+  }
   .ant-select-selector {
     background: transparent !important;
     border-radius: 10px !important;
@@ -1805,6 +1827,9 @@ button {
       background: none;
       color: $text-color-dark;
       font-weight: 700;
+      .dark-mode & {
+        color: white;
+      }
       &:hover {
         color: $secondary-color;
       }
@@ -1815,8 +1840,19 @@ button {
       .dark-mode & {
         color: $white;
       }
+      .ant-pagination-item-container {
+        .ant-pagination-item-link-icon {
+          color: #aba5fb;
+        }
+        .ant-pagination-item-ellipsis {
+          color: white;
+        }
+      }
     }
     &.ant-pagination-item-active {
+      border-radius: 50%;
+      background: #aba5fb;
+      border-color: #aba5fb;
       a {
         color: $secondary-color;
         .dark-mode & {
@@ -1897,7 +1933,7 @@ button {
 
 // card container
 .card_container {
-  padding: 1.4rem;
+  padding: 2.3rem 1.8rem;
   background: $background-dark1;
   border-radius: 10px;
 }
@@ -1910,6 +1946,26 @@ button {
   }
 }
 
+// Primart Title
+
+.primary_heading {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 20px;
+  color: $text-color;
+}
+
+// Primary Vaules
+
+.primary_values {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 29px;
+}
 // .assets-withicon {
 //   .assets-icons {
 //     display: flex;

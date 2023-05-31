@@ -11,7 +11,7 @@ import { abbreviateMessage, fetchTxHistory } from "../../services/transaction";
 import { generateHash, truncateString } from "../../utils/string";
 import Date from "./Date";
 
-import "./index.scss";
+import "../../styles/containers/MyPositions/MyPositions.module.scss";
 import NoDataIcon from "../../components/common/NoDataIcon";
 import { HALF_DEFAULT_PAGE_SIZE } from "../../constants/common";
 
@@ -64,20 +64,22 @@ const History = ({ address, setTransactionHistory, history }) => {
       title: "Type",
       dataIndex: "type",
       key: "type",
-      width: 300,
+      // width: 300,
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      width: 300,
+      // width: 300,
+      align:"left",
       render: (height) => <Date height={height} />,
     },
     {
       title: "Block Height",
       dataIndex: "block_height",
       key: "block_height",
-      width: 300,
+      // width: 300,
+      align: "left",
     },
     {
       title: "Tx Hash",
@@ -115,7 +117,7 @@ const History = ({ address, setTransactionHistory, history }) => {
           <div className="composite-card">
             <div className="card-content">
               <Table
-                className=" position-history-table"
+                className="custom-table position-history-table"
                 dataSource={tableData}
                 columns={columns}
                 scroll={{ x: "100%" }}

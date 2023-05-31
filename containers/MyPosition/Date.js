@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTransactionTimeFromHeight } from "../../services/transaction";
 import moment from "moment";
+import "../../styles/containers/MyPositions/MyPositions.module.scss";
 
 const Date = ({ height }) => {
   const [timestamp, setTimestamp] = useState();
