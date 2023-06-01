@@ -483,8 +483,8 @@ button {
 
 .comdex-tabs {
   .ant-tabs-nav {
-    margin-bottom: 10px;
-    padding: 0 15px;
+    margin-bottom: 30px;
+    // padding: 0 15px;
     &:before {
       display: none;
     }
@@ -1931,6 +1931,64 @@ button {
   }
 }
 
+.custom-input {
+  &.ant-input {
+    border: 0;
+    background: none;
+    font-size: 1.3rem;
+    line-height: 1;
+    // margin-top: 8px;
+    text-align: right;
+    max-width: 160px;
+    margin-left: auto;
+    margin-bottom: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color: $text-color-dark2;
+    padding-right: 0;
+
+    @media screen and (max-width: 480px) {
+      width: 100%;
+      max-width: unset;
+      text-align: left;
+    }
+    &::-webkit-placeholder {
+      color: $text-color-dark2;
+    }
+
+    &::placeholder {
+      color: $text-color-dark2;
+    }
+
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    &[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    .dark-mode & {
+      color: $white;
+
+      &::-webkit-placeholder {
+        color: $white;
+      }
+
+      &::placeholder {
+        color: $white;
+      }
+    }
+  }
+}
+
 // card container
 .card_container {
   padding: 2.3rem 1.8rem;
@@ -1966,22 +2024,22 @@ button {
   font-size: 1.5rem;
   line-height: 29px;
 }
-// .assets-withicon {
-//   .assets-icons {
-//     display: flex;
-//     min-width: 44px;
-//   }
-//   .assets-icon {
-//     margin: 0;
-//     width: 25px;
-//     height: 25px;
-//     &:nth-child(2) {
-//       margin-left: -8px;
-//       position: relative;
-//       z-index: 1;
-//     }
-//   }
-//   .name {
-//     padding-left: 5px;
-//   }
-// }
+.assets-withicon {
+  .assets-icons {
+    display: flex;
+    min-width: 44px;
+  }
+  .assets-icon {
+    margin: 0;
+    width: 25px;
+    height: 25px;
+    &:nth-child(2) {
+      margin-left: -8px;
+      position: relative;
+      z-index: 1;
+    }
+  }
+  .name {
+    padding-left: 5px;
+  }
+}

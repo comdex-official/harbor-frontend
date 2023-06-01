@@ -5,6 +5,7 @@ import { Row } from '@/components/common';
 import { Col, Tabs } from 'antd';
 import Deposit from './deposit';
 import Withdraw from './withdraw';
+import '../../styles/containers/Locker/locker.module.scss';
 
 const Locker = () => {
     const tabItems =
@@ -21,7 +22,7 @@ const Locker = () => {
             <div className="locker_main_container">
                 <div className="locker_container">
                     <Row>
-                        <Col>
+                        <Col style={{ width: "100%" }}>
                             <Tabs
                                 className="comdex-tabs"
                                 defaultActiveKey="1"

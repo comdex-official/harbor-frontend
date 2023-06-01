@@ -1,4 +1,7 @@
 import CustomInput from '@/components/CustomInput'
+import { ATOM } from '@/components/image'
+import { Icon } from '@/components/image/Icon'
+import { NextImage } from '@/components/image/NextImage'
 import { Button } from 'antd'
 import React from 'react'
 
@@ -15,13 +18,25 @@ const Deposit = () => {
                                     <div className="number">01</div>
                                     <div className="text">Input Deposit Amount</div>
                                 </div>
-                                <div className="input_container">
+                                <div className="input_container_box">
                                     <div className="amount_container">
-                                        <Button> MAX</Button>
-                                        <span>7 CMST</span>
+                                        <Button className='maxhalf'> MAX</Button>
+                                        <span className='amount'>7 CMST</span>
                                     </div>
                                     <div className="input_container">
-                                        <CustomInput />
+                                        <div className="icon_container">
+                                            <div className="assets-withicon">
+                                                <div className="assets-icons">
+                                                    <NextImage src={ATOM} height={35} width={35} />
+                                                </div>
+                                                <div className="name">
+                                                    CMST
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <CustomInput
+                                            className='custom-input'
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -31,17 +46,27 @@ const Deposit = () => {
                                     <div className="number">02</div>
                                     <div className="text">Reward Rate</div>
                                 </div>
+                                <div className="value_container">
+                                    <div className="title">Current Reward Rate</div>
+                                    <div className="value">0.00%</div>
+                                </div>
                             </div>
                             <div className="earn_reward_container">
                                 <div className="title_container">
                                     <div className="number">03</div>
                                     <div className="text">Earn Rewards</div>
                                 </div>
+                                <div className="value_container">
+                                    <div className="title">Your Rewards</div>
+                                    <div className="value">20 CMST</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div className="locker_deposit_btn_container">
-
+                        <Button type='primary' className='btn-filled'>
+                            Deposit
+                        </Button>
                     </div>
                 </div>
             </div>

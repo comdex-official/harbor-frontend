@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
                         <NavigationBar />
                         {/* <Router />  */}
                         {/* <Dashbard /> */}
-                        <div className="p-4" style={{ height: "100%", width: "100%" }}>
+                        <div style={{ height: "100%", width: "100%", padding: "1.5rem 3.8rem" }}>
                             {children}
                         </div>
                     </div>
