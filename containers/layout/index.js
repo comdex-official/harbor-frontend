@@ -29,7 +29,7 @@ const Layout = ({ children }) => {
         <>
             <Provider store={store}>
                 {/* <BrowserRouter> */}
-                {/* <SvgSprite url={"/public/images/svg/svg-sprite.svg"} /> */}
+                <SvgSprite url={"./images/svg/svg-sprite.svg"} />
                 <div className="main_wrapper">
                     <SideBar />
                     <div className="main-container">
