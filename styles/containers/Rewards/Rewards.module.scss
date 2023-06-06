@@ -1,0 +1,116 @@
+@import "../../../assets/scss/variables.scss";
+
+.custom-table {
+  &.reward-table {
+    .ant-table {
+      .ant-table-thead {
+        tr {
+          th {
+            &.ant-table-cell {
+              &::before {
+                background-color: unset !important;
+              }
+              &.justify-content-center {
+                text-align: center !important;
+              }
+            }
+          }
+        }
+      }
+
+      .ant-table-tbody {
+        tr {
+          height: 3.5rem;
+          td {
+            &.ant-table-cell {
+              &.justify-content-center {
+                text-align: center !important;
+              }
+            }
+          }
+        }
+      }
+
+      .claimed-tag {
+        display: flex;
+        align-items: center;
+
+        .icon {
+          fill: $success-color;
+          width: 16px;
+          height: 16px;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}
+
+.reward-card {
+  padding: 3.5rem 2.3rem;
+  border-radius: 20px;
+  margin-bottom: 1.85rem;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right;
+  background-image: url("../../../public/images/reward-bg.jpg");
+  .ant-btn {
+    &.ant-btn-primary {
+      padding: 0 30px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 17px;
+
+      text-align: center;
+      letter-spacing: -0.02em;
+
+      color: rgba(140, 137, 180, 0.9);
+    }
+  }
+  h2 {
+    margin-bottom: 0.6rem;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 30px;
+    line-height: 126.8%;
+  }
+  p {
+    margin-bottom: 0.7rem;
+    font-family: "Montserrat";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 140%;
+    width: 60%;
+    /* or 20px */
+
+    letter-spacing: 0.06em;
+
+    color: #ffffff;
+
+    opacity: 0.8;
+  }
+}
+
+.incentives-heading {
+  @media only screen and (min-width: 765px) and (max-width: 800px) {
+    font-size: 1.4rem;
+  }
+}
+
+.ant-modal {
+  &.external-incentives-mdoal {
+    .ant-modal-header {
+      margin-bottom: 0.2rem !important;
+    }
+    .assets-withicon {
+      .assets-icons {
+        .assets-icon {
+          width: 36px !important;
+          height: 36px !important;
+          border-radius: 36px !important;
+        }
+      }
+    }
+  }
+}

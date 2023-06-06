@@ -29,14 +29,14 @@ const Layout = ({ children }) => {
         <>
             <Provider store={store}>
                 {/* <BrowserRouter> */}
-                {/* <SvgSprite url={"/public/images/svg/svg-sprite.svg"} /> */}
+                <SvgSprite url={"./images/svg/svg-sprite.svg"} />
                 <div className="main_wrapper">
                     <SideBar />
                     <div className="main-container">
                         <NavigationBar />
                         {/* <Router />  */}
                         {/* <Dashbard /> */}
-                        <div style={{ height: "100%", width: "100%", padding: "1.5rem 3.8rem" }}>
+                        <div style={{ height: "100%", width: "100%", padding: "1.5rem 3rem" }}>
                             {children}
                         </div>
                     </div>
