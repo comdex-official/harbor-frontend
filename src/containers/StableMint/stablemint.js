@@ -143,9 +143,9 @@ const StableMint = ({
 
     return (
         <>
-            <div className="app-content-wrapper vault-mint-main-container">
-                <div className="card-main-container">
-                    {Object.keys(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList)?.length > 0 ? <h1 className="choose-vault">Choose Your Stable Mint Vault Type</h1> : ""}
+            <div className="app-content-wrapper vault-mint-main-container stable-vault-mint-main-container">
+                <div className="card-main-container mint-card-list">
+                    {/* {Object.keys(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList)?.length > 0 ? <h1 className="choose-vault">Choose Your Stable Mint Vault Type</h1> : ""} */}
                     {Object.keys(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList)?.length > 0 ? (
                         Object.values(stableMintExtenedPairVaultList && stableMintExtenedPairVaultList).map((item, index) => {
                             if (
@@ -158,7 +158,7 @@ const StableMint = ({
                                         {item &&
                                             (
                                                 <div
-                                                    className="card-container "
+                                                    className="card-container stable-card-container"
                                                     onClick={() => {
                                                         dispatch(setCurrentPairID(item?.pairId?.toNumber()));
                                                         dispatch(setSelectedExtentedPairvault(item));
