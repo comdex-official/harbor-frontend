@@ -3,33 +3,47 @@ import { Button, List, message, Select, Spin } from "antd";
 import * as PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { proposalStatusMap, stringTagParser } from "../../../utils/string";
+import { stringTagParser } from "../../../utils/string";
 import { DOLLAR_DECIMALS } from "../../../constants/common";
 // import style from "./Govern.moduleOld.scss";
 import { Progress } from "@mantine/core";
 import { useTimer } from "react-timer-hook";
 // import MyTimer from "../../../shared/components/governTimer";
-// import { formatTime } from "../../../utils/date";
+import { formatTime } from "../../../utils/date";
+import MyTimer from "@/components/governTimer";
 
 const { Option } = Select;
 
 const GovernPastProposal = ({ proposals }) => {
     const router = useRouter();
 
-
-    const calculateVotes = useCallback((value, final_tally_result) => {
-        let yes = Number(final_tally_result?.yes);
-        let no = Number(final_tally_result?.no);
-        let veto = Number(final_tally_result?.no_with_veto);
-        let abstain = Number(final_tally_result?.abstain);
+    const calculateYesVote = (proposalData, voteOf) => {
+        let value = proposalData?.votes;
+        let yes = Number(value?.yes);
+        let no = Number(value?.no);
+        let veto = Number(value?.veto);
+        let abstain = Number(value?.abstain);
         let totalValue = yes + no + abstain + veto;
 
-        let result = Number((Number(value) / totalValue || 0) * 100).toFixed(
-            DOLLAR_DECIMALS
-        );
+        yes = Number(((yes / totalValue) * 100) || 0).toFixed(2)
+        no = Number(((no / totalValue) * 100) || 0).toFixed(2)
+        veto = Number(((veto / totalValue) * 100) || 0).toFixed(2)
+        abstain = Number(((abstain / totalValue) * 100) || 0).toFixed(2)
 
-        return result;
-    }, []);
+        if (voteOf === "yes") {
+            return Number(yes);
+        }
+        else if (voteOf === "no") {
+            return Number(no)
+        }
+        else if (voteOf === "veto") {
+            return Number(veto);
+        }
+        else if (voteOf === "abstain") {
+            return Number(abstain);
+        }
+    }
+
 
     const parsedVotingStatustext = (text) => {
         if (text === "open") {
@@ -38,17 +52,10 @@ const GovernPastProposal = ({ proposals }) => {
         return text;
     }
 
-    const proposalEndDate = (_date) => {
-        const enddate = new Date(_date);
-        enddate.setSeconds(enddate.getSeconds());
-        return enddate;
-
-    }
-
 
     return (
         <>
-            <div className={`mt-4`}>
+            <div>
 
                 <div className="govern_main_container">
                     <div className="govern_container">
@@ -62,23 +69,20 @@ const GovernPastProposal = ({ proposals }) => {
                             {proposals?.length > 0 ?
                                 proposals?.map((item) => {
                                     return (
-                                        <div className="proposal_main_container" key={item?.proposal_id} onClick={() =>
-                                            router.push(`/govern/${item?.proposal_id}`)
+                                        <div className="proposal_main_container card_container" key={item?.proposal_id} onClick={() =>
+                                            router.push(`/govern/${item?.id}`)
                                         } >
                                             <div className="proposal_container">
                                                 {/* Id and Timer Container  */}
                                                 <div className="id_timer_container">
-                                                    <div className="proposal_id">#{item?.proposal_id}</div>
-                                                    <div className="proposal_timer">
+                                                    <div className="proposal_id">#{item?.id}</div>
+                                                    <div className="proposal-status-container">
+                                                        <div className={item?.status === "open" ? "proposal-status open-color"
+                                                            : item?.status === "passed" || item?.status === "executed" ? "proposal-status passed-color"
+                                                                : item?.status === "rejected" ? "proposal-status reject-color"
+                                                                    : item?.status === "pending" ? "proposal-status pending-color" : "proposal-status"
 
-                                                        <div className="proposal-status-container">
-                                                            <div className={proposalStatusMap[item?.status] === "Open" ? "proposal-status open-color"
-                                                                : proposalStatusMap[item?.status] === "Passed" || proposalStatusMap[item?.status] === "Executed" ? "proposal-status passed-color"
-                                                                    : proposalStatusMap[item?.status] === "Rejected" || proposalStatusMap[item?.status] === "Failed" ? "proposal-status reject-color"
-                                                                        : proposalStatusMap[item?.status] === "Pending" || proposalStatusMap[item?.status] === "Deposit Period" ? "proposal-status pending-color" : "proposal-status"
-
-                                                            }> {item ? proposalStatusMap[item?.status] : "-" || "-"}</div>
-                                                        </div>
+                                                        }> {item ? parsedVotingStatustext(item?.status) : "-" || "-"}</div>
                                                     </div>
                                                 </div>
 
@@ -86,14 +90,14 @@ const GovernPastProposal = ({ proposals }) => {
 
                                                 <div className="haeading_container">
                                                     <div className="heading">
-                                                        {item?.content?.title}
+                                                        {item?.title}
                                                     </div>
                                                 </div>
 
                                                 {/* Pairagraph container  */}
                                                 <div className="para_main_container">
                                                     <div className="para_container">
-                                                        {stringTagParser(item?.content?.description.substring(0, 150) || " ") + "......"}                                               </div>
+                                                        {stringTagParser(item?.description.substring(0, 150) || " ") + "......"}                                               </div>
                                                 </div>
 
                                                 {/* Progress bar container  */}
@@ -105,41 +109,28 @@ const GovernPastProposal = ({ proposals }) => {
                                                                 <div className="color" style={{ backgroundColor: "#52B788" }}></div>
                                                                 <div className="data_container">
                                                                     <div className="title">Yes</div>
-                                                                    <div className="value">  {`${calculateVotes(
-                                                                        item?.final_tally_result?.yes,
-                                                                        item?.final_tally_result
-                                                                    )}%`}</div>
+                                                                    <div className="value">  {calculateYesVote(item, "yes")}%</div>
                                                                 </div>
                                                             </div>
                                                             <div className="stats_container">
                                                                 <div className="color" style={{ backgroundColor: "#D74A4A" }}></div>
                                                                 <div className="data_container">
                                                                     <div className="title">No</div>
-                                                                    <div className="value">{`${calculateVotes(
-                                                                        item?.final_tally_result?.no,
-                                                                        item?.final_tally_result
-                                                                    )}%`}</div>
+                                                                    <div className="value">{calculateYesVote(item, "no")}%</div>
                                                                 </div>
                                                             </div>
                                                             <div className="stats_container">
                                                                 <div className="color" style={{ backgroundColor: "#C2A3A3" }}></div>
                                                                 <div className="data_container">
                                                                     <div className="title">No With Veto</div>
-                                                                    <div className="value">  {`${calculateVotes(
-                                                                        item?.final_tally_result
-                                                                            ?.no_with_veto,
-                                                                        item?.final_tally_result
-                                                                    )}%`}</div>
+                                                                    <div className="value">  {calculateYesVote(item, "yeto")}%</div>
                                                                 </div>
                                                             </div>
                                                             <div className="stats_container">
                                                                 <div className="color" style={{ backgroundColor: "#C58E3D" }}></div>
                                                                 <div className="data_container">
                                                                     <div className="title">Abstain</div>
-                                                                    <div className="value">   {`${calculateVotes(
-                                                                        item?.final_tally_result?.abstain,
-                                                                        item?.final_tally_result
-                                                                    )}%`}</div>
+                                                                    <div className="value">   {calculateYesVote(item, "abstain")}%</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -152,61 +143,10 @@ const GovernPastProposal = ({ proposals }) => {
                                                                         radius="xl"
                                                                         size={10}
                                                                         sections={[
-                                                                            {
-                                                                                value: Number(
-                                                                                    calculateVotes(
-                                                                                        item?.final_tally_result?.yes,
-                                                                                        item?.final_tally_result
-                                                                                    )
-                                                                                ),
-                                                                                color: "#52B788",
-                                                                                tooltip: `Yes ${calculateVotes(
-                                                                                    item?.final_tally_result?.yes,
-                                                                                    item?.final_tally_result
-                                                                                )} %`,
-                                                                            },
-                                                                            {
-                                                                                value: Number(
-                                                                                    calculateVotes(
-                                                                                        item?.final_tally_result?.no,
-                                                                                        item?.final_tally_result
-                                                                                    )
-                                                                                ),
-                                                                                color: "#D74A4A",
-                                                                                tooltip: `No ${calculateVotes(
-                                                                                    item?.final_tally_result?.no,
-                                                                                    item?.final_tally_result
-                                                                                )} %`,
-                                                                            },
-                                                                            {
-                                                                                value: Number(
-                                                                                    calculateVotes(
-                                                                                        item?.final_tally_result
-                                                                                            ?.no_with_veto,
-                                                                                        item?.final_tally_result
-                                                                                    )
-                                                                                ),
-                                                                                color: "#C2A3A3",
-
-                                                                                tooltip: `No With Veto ${calculateVotes(
-                                                                                    item?.final_tally_result?.no_with_veto,
-                                                                                    item?.final_tally_result
-                                                                                )} %`,
-                                                                            },
-                                                                            {
-                                                                                value: Number(
-                                                                                    calculateVotes(
-                                                                                        item?.final_tally_result?.abstain,
-                                                                                        item?.final_tally_result
-                                                                                    )
-                                                                                ),
-                                                                                color: "#C58E3D",
-
-                                                                                tooltip: `Abstain ${calculateVotes(
-                                                                                    item?.final_tally_result?.abstain,
-                                                                                    item?.final_tally_result
-                                                                                )} %`,
-                                                                            },
+                                                                            { value: calculateYesVote(item, "yes"), color: '#52B788', tooltip: 'Yes' + " " + calculateYesVote(item, "yes") + "%" },
+                                                                            { value: calculateYesVote(item, "no"), color: '#D74A4A', tooltip: 'No' + " " + calculateYesVote(item, "no") + "%", },
+                                                                            { value: calculateYesVote(item, "veto"), color: '#C2A3A3', tooltip: 'No With Veto' + " " + calculateYesVote(item, "veto") + "%" },
+                                                                            { value: calculateYesVote(item, "abstain"), color: '#C58E3D', tooltip: 'Abstain' + " " + calculateYesVote(item, "abstain") + "%" },
                                                                         ]}
                                                                     />
                                                                 </div>

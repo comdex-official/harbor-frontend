@@ -182,14 +182,14 @@ button {
 .ant-btn {
   border: 0;
   font-size: $font-size-base;
-  padding: 0 22px;
+  padding: 0 30px;
   color: $white;
   background: $btn-bg-dark;
   border-radius: $base-border-radius;
   cursor: pointer;
   transition: all 300ms ease-in-out;
-  height: 36px;
-  line-height: 36px;
+  height: 33px;
+  line-height: 33px;
 
   &:not(.ant-btn-round) {
     border-radius: 0;

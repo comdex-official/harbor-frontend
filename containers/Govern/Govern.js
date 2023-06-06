@@ -16,6 +16,7 @@ import { fetchParticipationStats, fetchProposalUpData, totalProposal, totalveHar
 import { amountConversionWithComma } from "../../utils/coin";
 import { stringTagParser } from "../../utils/string";
 import { useRouter } from "next/router";
+import '../../styles/containers/Govern/Govern.module.scss'
 
 const { Option } = Select;
 
@@ -239,19 +240,19 @@ const Govern = ({
   };
 
   const handleTabChange = (key) => {
-    let openProposal = proposals?.filter(
-      (item) => item?.status === "PROPOSAL_STATUS_VOTING_PERIOD"
-    );
-    let pastProposal = proposals?.filter(
-      (item) => item?.status !== "PROPOSAL_STATUS_VOTING_PERIOD"
-    );
-    if (key === "1") {
-      setFilteredProposal(openProposal);
-      setActiveProposals(openProposal);
-    } else {
-      setFilteredProposal(pastProposal);
-      setPastProposals(pastProposal);
-    }
+    //   let openProposal = proposals?.filter(
+    //     (item) => item?.status === "PROPOSAL_STATUS_VOTING_PERIOD"
+    //   );
+    //   let pastProposal = proposals?.filter(
+    //     (item) => item?.status !== "PROPOSAL_STATUS_VOTING_PERIOD"
+    //   );
+    //   if (key === "1") {
+    //     setFilteredProposal(openProposal);
+    //     setActiveProposals(openProposal);
+    //   } else {
+    //     setFilteredProposal(pastProposal);
+    //     setPastProposals(pastProposal);
+    //   }
     setActiveKey(key);
   };
 
@@ -298,7 +299,7 @@ const Govern = ({
                     className="select-primary filter-select govern-filter-search"
                     style={{ width: 150 }}
                     onChange={(e) => filterAllProposal(e)}
-                    suffixIcon={<Icon className={"bi bi-chevron-down"} />}
+                  // suffixIcon={<Icon className={"bi bi-chevron-down"} />}
                   >
                     <Option value="all" className="govern-select-option">
                       All

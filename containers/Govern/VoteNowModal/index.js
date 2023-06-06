@@ -1,18 +1,30 @@
-import { Button, message, Modal, Radio, Space } from "antd";
-import Long from "long";
 import * as PropTypes from "prop-types";
-import React, { useState } from "react";
+import { Button, Radio, Modal, Space, message } from "antd";
+import { Row, Col } from "../../../components/common";
 import { connect } from "react-redux";
-import Snack from "../../../shared/components/Snack/index";
-import { signAndBroadcastTransaction } from "../../../services/helper";
-import { defaultFee } from "../../../services/transaction";
-import { errorMessageMappingParser } from "../../../utils/string";
+import React, { useState } from "react";
+// import "./index.scss"
+import { transactionForVote } from '../../../services/contractsWrite'
+import { useParams } from "react-router";
+import { setVoteCount } from "../../../actions/govern";
+import Snack from "../../../components/common/Snack";
 import variables from "../../../utils/variables";
-import { Icon } from "../../../shared/image/Icon";
+import { comdex } from "../../../config/network";
+import { useRouter } from "next/router";
 
-const VoteNowModal = ({ address, proposal, lang, refreshVote }) => {
+const VoteNowModal = ({
+  lang,
+  address,
+  currentProposal,
+  voteCount,
+  setVoteCount,
+  votingPower
+}) => {
+  const router = useRouter();
+  const { proposalId } = router.query;
+  let currentProposalId = Number(proposalId);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inProgress, setInProgress] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [userVote, setUserVote] = useState();
 
   const showModal = () => {
@@ -20,118 +32,101 @@ const VoteNowModal = ({ address, proposal, lang, refreshVote }) => {
   };
 
   const handleOk = () => {
-    setInProgress(true);
-    signAndBroadcastTransaction(
-      {
-        message: {
-          typeUrl: "/cosmos.gov.v1beta1.MsgVote",
-          value: {
-            option: userVote,
-            proposalId: Long.fromNumber(proposal?.proposal_id),
-            voter: address,
-          },
-        },
-        fee: defaultFee(),
-        memo: "",
-      },
-      address,
-      (error, result) => {
-        setInProgress(false);
-        setIsModalOpen(false);
-        setUserVote();
-        if (error) {
-          message.error(error);
-          return;
-        }
-
-        if (result?.code) {
-          message.info(errorMessageMappingParser(result?.rawLog));
-          return;
-        }
-
-        refreshVote();
-        message.success(
-          <Snack
-            message={variables[lang].tx_success}
-            hash={result?.transactionHash}
-          />
-        );
+    setLoading(true)
+    if (address) {
+      if (userVote) {
+        transactionForVote(address, currentProposalId, userVote, (error, result) => {
+          if (error) {
+            message.error(error?.rawLog || "Transaction Failed")
+            setLoading(false)
+            return;
+          }
+          setVoteCount(voteCount + 1)
+          message.success(
+            < Snack
+              message={variables[lang].tx_success}
+              explorerUrlToTx={comdex?.explorerUrlToTx}
+              hash={result?.transactionHash}
+            />
+          )
+          setLoading(false)
+          setIsModalOpen(false);
+        })
+      } else {
+        setLoading(false)
+        message.error("Please select a vote option")
       }
-    );
+    }
+    else {
+      setLoading(false)
+      message.error("Please Connect Wallet")
+    }
+
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setUserVote();
   };
 
   return (
     <>
-      <Button
-        type="primary"
-        className="btn-filled voote__now"
-        onClick={showModal}
-        loading={inProgress}
-        disabled={proposal?.status !== "PROPOSAL_STATUS_VOTING_PERIOD"}
-      >
-        Vote Now
-      </Button>
+      <div>
+        {/* <Button type="primary" className="btn-filled mb-n4" onClick={showModal} disabled={currentProposal?.status !== "open" || votingPower === "0.000000"} >Vote Now</Button> */}
+        <Button type="primary" className="btn-filled mb-n4" onClick={showModal}  >Vote Now</Button>
+      </div>
       <Modal
         centered={true}
-        className="vote-now-modal"
+        className="votenow-modal"
         footer={null}
         header={null}
         open={isModalOpen}
-        width={550}
+        width={450}
+        closable={false}
         onOk={handleOk}
         onCancel={handleCancel}
-        closeIcon={<Icon className={"bi bi-x-lg"} />}
+        closeIcon={null}
       >
         <div className="votenow-modal-inner">
-          <div>
-            <div sm="12">
-              <h3>Your Vote</h3>
-              <p>
-                #{proposal?.proposal_id} {proposal?.content?.title}
-              </p>
-              <Radio.Group
-                value={userVote}
-                name="radiogroup"
-                onChange={(e) => {
-                  setUserVote(e.target.value);
-                }}
-              >
+          <Row>
+            <Col sm="12">
+              <h3>Vote Now</h3>
+              {/* <p>#{currentProposal?.id || "-"} {currentProposal?.title || "---"}</p> */}
+              <Radio.Group name="radiogroup" onChange={(e) => {
+                setUserVote(e.target.value)
+              }}>
                 <Space direction="vertical">
-                  <Radio value={1}>Yes</Radio>
-                  <Radio value={3}>No</Radio>
-                  <Radio value={4}>No With Veto</Radio>
-                  <Radio value={2}>Abstain</Radio>
+                  {/* <Radio value="yes">Yes</Radio>
+                  <Radio value="no">No</Radio>
+                  <Radio value="veto">NoWithVeto</Radio>
+                  <Radio value="abstain">Abstain</Radio> */}
+                  <Radio.Group defaultValue="a" buttonStyle="solid">
+                    <div >
+                      <Radio.Button value="yes">Yes</Radio.Button>
+                    </div>
+                    <div>
+                      <Radio.Button value="no">No</Radio.Button>
+                    </div>
+                    <div>
+                      <Radio.Button value="veto">NoWithVeto</Radio.Button>
+                    </div>
+                    <div>
+                      <Radio.Button value="abstain">Abstain</Radio.Button>
+                    </div>
+                  </Radio.Group>
                 </Space>
               </Radio.Group>
-            </div>
-          </div>
-          <div className="p-0">
-            <div className="text-right mt-3">
-              <Button
-                type="primary"
-                className="px-5 mr-3"
-                size="large"
-                onClick={handleCancel}
-              >
+            </Col>
+          </Row>
+          <Row className="p-0">
+            <Col className="text-right mt-3">
+              <Button type="primary" className="px-5 mr-3" size="large" onClick={handleCancel} disabled={loading}>
                 Cancel
               </Button>
-              <Button
-                type="primary"
-                loading={inProgress}
-                disabled={inProgress || !userVote}
-                className="btn-filled px-5"
-                size="large"
-                onClick={handleOk}
-              >
+              <Button type="primary" className="btn-filled px-5" size="large" onClick={handleOk} loading={loading} disabled={loading} >
                 Confirm
               </Button>
-            </div>
-          </div>
+            </Col>
+          </Row>
         </div>
       </Modal>
     </>
@@ -140,17 +135,22 @@ const VoteNowModal = ({ address, proposal, lang, refreshVote }) => {
 
 VoteNowModal.propTypes = {
   lang: PropTypes.string.isRequired,
-  refreshVote: PropTypes.func.isRequired,
-  address: PropTypes.string,
+  address: PropTypes.string.isRequired,
+  currentProposal: PropTypes.array.isRequired,
+  voteCount: PropTypes.number.isRequired
 };
 
 const stateToProps = (state) => {
   return {
     lang: state.language,
     address: state.account.address,
+    currentProposal: state.govern.currentProposal,
+    voteCount: state.govern.voteCount,
   };
 };
 
-const actionsToProps = {};
+const actionsToProps = {
+  setVoteCount,
+};
 
 export default connect(stateToProps, actionsToProps)(VoteNowModal);

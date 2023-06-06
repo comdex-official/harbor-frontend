@@ -20,7 +20,7 @@
     .bottom_container {
       display: flex;
       justify-content: space-between;
-      margin-top: 0.5rem;
+      margin-top: 02rem;
       @media only screen and (max-width: 930px) {
         flex-direction: column;
         row-gap: 0.8rem;
@@ -73,7 +73,7 @@
                 .ant-table-thead {
                   .ant-table-cell {
                     &::before {
-                      background-color: unset ;
+                      background-color: unset;
                     }
                   }
                 }
@@ -98,6 +98,7 @@
                       border: 0 !important;
                       padding: 1px 5px !important;
                       font-weight: 600;
+                      height: auto;
                       .colorbox {
                         width: 15px;
                         height: 15px;

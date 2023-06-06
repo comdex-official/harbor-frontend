@@ -1,343 +1,174 @@
-// import style from "./Govern.moduleOld.scss";
-import { useRouter } from "next/router";
-import { Button, List, Spin } from "antd";
+import * as PropTypes from "prop-types";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import Link from "next/link";
-import Copy from "../../shared/components/Copy";
-import VoteNowModal from "./VoteNowModal";
-import * as PropTypes from "prop-types";
-import { useCallback, useEffect, useState } from "react";
+import { Col, Row, SvgIcon } from "../../components/common";
 import { connect } from "react-redux";
-import { Progress } from "@mantine/core";
-import {
-    setProposal,
-    setProposalTally,
-    setProposer,
-} from "../../actions/govern";
-import { comdex } from "../../config/network";
-import { DOLLAR_DECIMALS } from "../../constants/common";
-import {
-    fetchRestBondexTokens,
-    fetchRestProposal,
-    fetchRestProposalTally,
-    fetchRestProposer,
-    fetchRestTallyParamsProposer,
-    queryUserVote,
-} from "../../services/govern/query";
-import { amountConversion, denomConversion, fixedDecimal } from "../../utils/coin";
-import { formatTime } from "../../utils/date";
-import { formatNumber } from "../../utils/number";
-import {
-    proposalOptionMap,
-    proposalStatusMap,
-    stringTagParser,
-    truncateString,
-} from "../../utils/string";
+import { Button, List, Spin } from "antd";
+// import "./index.scss";
+import VoteNowModal from "./VoteNowModal";
+import Link from "next/link";
+import { useParams } from "react-router";
+import { checkUserVote, fetchSpecificProposalData } from "../../services/contractsRead";
+import { useEffect } from "react";
+import { setCurrentProposal, setUserVote } from "../../actions/govern";
+import { stringTagParser, truncateString } from "../../utils/string";
+import Copy from "../../components/Copy";
+import { useState } from "react";
 import moment from "moment";
+import { formatNumber } from "../../utils/number";
+import { amountConversion, amountConversionWithComma } from "../../utils/coin";
+import { DOLLAR_DECIMALS } from "../../constants/common";
+import { totalVTokens } from "../../services/voteContractsRead";
+import { MyTimer } from "../../components/TimerForAirdrop";
+import TooltipIcon from "../../components/TooltipIcon";
+import { useRouter } from "next/router";
+import { Progress } from "@mantine/core";
 
 const GovernViewPage = ({
+    lang,
     address,
-    setProposal,
-    proposalMap,
-    setProposer,
-    proposerMap,
-    setProposalTally,
-    proposalTallyMap,
+    currentProposal,
+    setCurrentProposal,
+    userVote,
+    setUserVote,
+    voteCount,
 
 }) => {
+
     const router = useRouter();
-
-    const [tallyParams, setTallyParams] = useState();
-    const [bondedTokens, setBondedTokens] = useState();
-
-
-    const { id } = router.query;
-    const [inProgress, setInProgress] = useState(false);
-
-
-    const [votedOption, setVotedOption] = useState();
+    const { proposalId } = router.query;
+    let currentProposalId = Number(proposalId);
+    const [loading, setLoading] = useState()
     const [getVotes, setGetVotes] = useState({
         yes: 0,
         no: 0,
         veto: 0,
-        abstain: 0,
+        abstain: 0
     });
+    const [totalVoteVotingPower, setVoteTotalVotingPower] = useState(0);
 
-    let proposal = proposalMap?.[id];
-    let proposer = proposerMap?.[id];
-    let proposalTally = proposalTallyMap?.[id];
-
-
-    const data = [
-        {
-            title: "Voting Starts",
-            counts: proposal?.voting_start_time
-                ? formatTime(proposal?.voting_start_time)
-                : "--/--/-- 00:00:00",
-        },
-        {
-            title: "Voting Ends",
-            counts: proposal?.voting_end_time
-                ? formatTime(proposal?.voting_end_time)
-                : "--/--/-- 00:00:00",
-        },
-        {
-            title: "Proposer",
-            counts: (
-                <>
-                    {proposer ? (
-                        <p className="wrap__proposer">
-                            <span className="mr-1">{truncateString(proposer, 6, 6)}</span>
-                            <Copy text={proposer} />
-                        </p>
-                    ) : (
-                        "------"
-                    )}
-                </>
-            ),
-        },
-    ];
-
-    const fetchTallyParamsProposer = useCallback(() => {
-        setInProgress(true);
-        fetchRestTallyParamsProposer((error, result) => {
-            setInProgress(false);
-            if (error) {
-                message.error(error);
-                return;
-            }
-            setTallyParams(result)
-        });
-    }, []);
-
-    const fetchBondexTokens = useCallback(() => {
-        setInProgress(true);
-        fetchRestBondexTokens((error, result) => {
-            setInProgress(false);
-            if (error) {
-                message.error(error);
-                return;
-            }
-            setBondedTokens(result)
-        });
-    }, []);
-
-
-    const calculateQuoremThreshold = () => {
-        let bondedToken = bondedTokens?.pool?.bonded_tokens;
-        let quorem = tallyParams?.tally_params?.quorum;
-        let calculateQuoremThreshold = bondedToken * quorem;
-        calculateQuoremThreshold = formatNumber(amountConversion(calculateQuoremThreshold || 0))
-        return calculateQuoremThreshold;
+    const fetchSpecificProposal = (proposalId) => {
+        fetchSpecificProposalData(proposalId).then((res) => {
+            setCurrentProposal(res);
+        }).catch((err) => {
+        })
+    }
+    const fetchUserVote = (proposalId, address) => {
+        setLoading(true)
+        checkUserVote(proposalId, address).then((res) => {
+            setUserVote(res.vote)
+            setLoading(false)
+        }).catch((err) => {
+            setLoading(false)
+        })
     }
 
-    const calculateCurrentThreshold = () => {
-        let yes = Number(proposalTally?.yes);
-        let no = Number(proposalTally?.no);
-        let veto = Number(proposalTally?.no_with_veto);
-        let abstain = Number(proposalTally?.abstain);
-
-        let totalValue = yes + no + abstain + veto;
-
-        let bondedToken = bondedTokens?.pool?.bonded_tokens;
-        let quorem = tallyParams?.tally_params?.quorum;
-        let calculateQuoremThreshold = bondedToken * quorem;
-
-
-        totalValue = amountConversion(totalValue || 0);
-        calculateQuoremThreshold = amountConversion(calculateQuoremThreshold || 0);
-
-        let calculateCurrentThresholdData = (Number(totalValue) / Number(calculateQuoremThreshold)) * 100;
-        if (isNaN(calculateCurrentThresholdData) || calculateCurrentThresholdData == "Infinity") {
-            return 0
-        }
-        if (Number(calculateCurrentThresholdData) > 100) {
-            calculateCurrentThresholdData = 100;
-        }
-        return fixedDecimal(calculateCurrentThresholdData || 0);
-
-
+    const fetchTotalVTokens = (address, height) => {
+        totalVTokens(address, height).then((res) => {
+            setVoteTotalVotingPower(res)
+        }).catch((error) => {
+            console.log(error);
+        })
     }
 
     useEffect(() => {
-        fetchTallyParamsProposer()
-        fetchBondexTokens()
-    }, [])
-
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
-
-    useEffect(() => {
-        setInProgress(true);
-        if (id) {
-            fetchRestProposal(id, (error, result) => {
-                if (error) {
-                    return;
-                }
-                setInProgress(false);
-                setProposal(result?.proposal);
-            });
-            fetchRestProposalTally(id, (error, result) => {
-                if (error) {
-                    return;
-                }
-
-                setProposalTally(result?.tally, id);
-            });
-
-            fetchRestProposer(id, (error, result) => {
-                if (error) {
-                    return;
-                }
-
-                if (result?.tx_responses?.[0]?.tx?.body?.messages?.[0]?.proposer) {
-                    setProposer(
-                        result?.tx_responses?.[0]?.tx?.body?.messages?.[0]?.proposer,
-                        id
-                    );
-                }
-            });
+        if (currentProposalId) {
+            fetchSpecificProposal(currentProposalId)
         }
-    }, [id, setProposal, setProposer, setProposalTally]);
+    }, [currentProposalId, voteCount])
 
-    const fetchVote = useCallback(() => {
-        queryUserVote(address, proposal?.proposal_id, (error, result) => {
-            if (error) {
-                return;
+    useEffect(() => {
+        if (currentProposalId && address) {
+            fetchUserVote(currentProposalId, address)
+            if (currentProposal?.start_height) {
+                fetchTotalVTokens(address, currentProposal?.start_height)
             }
+        }
+    }, [address, currentProposal])
 
-            setVotedOption(result?.vote?.option);
-        });
-    }, [address, proposal?.proposal_id]);
 
     useEffect(() => {
-        if (proposal?.proposal_id) {
-            fetchVote();
-        }
-    }, [address, id, proposal, fetchVote]);
+        calculateVotes()
+    }, [address, currentProposal])
+
 
     const calculateTotalValue = () => {
-        let yes = Number(proposalTally?.yes);
-        let no = Number(proposalTally?.no);
-        let veto = Number(proposalTally?.no_with_veto);
-        let abstain = Number(proposalTally?.abstain);
-
-        let totalValue = yes + no + abstain + veto;
-
-        totalValue = totalValue / 1000000;
-        totalValue = formatNumber(totalValue);
+        let value = currentProposal?.votes;
+        let yes = Number(value?.yes);
+        let no = Number(value?.no);
+        let veto = Number(value?.veto);
+        let abstain = Number(value?.abstain);
+        let totalValue = yes + no + abstain + veto
+        totalValue = (totalValue / 1000000)
+        totalValue = formatNumber(totalValue)
         return totalValue;
-    };
+    }
 
-    const calculateVotes = useCallback(() => {
-        let yes = Number(proposalTally?.yes);
-        let no = Number(proposalTally?.no);
-        let veto = Number(proposalTally?.no_with_veto);
-        let abstain = Number(proposalTally?.abstain);
+    const calculateQuorem = () => {
+        let value = currentProposal;
+        let totalWeight = value?.total_weight;
+        let quoremWeight = value?.threshold?.threshold_quorum?.quorum;
+        let quorem = Number(totalWeight) * Number(quoremWeight);
+        quorem = formatNumber(amountConversion(quorem, DOLLAR_DECIMALS))
+        return quorem;
+
+    }
+
+    const calculateVotes = () => {
+        let value = currentProposal?.votes;
+        let yes = Number(value?.yes);
+        let no = Number(value?.no);
+        let veto = Number(value?.veto);
+        let abstain = Number(value?.abstain);
         let totalValue = yes + no + abstain + veto;
 
-        yes = Number((yes / totalValue || 0) * 100).toFixed(DOLLAR_DECIMALS);
-        no = Number((no / totalValue || 0) * 100).toFixed(DOLLAR_DECIMALS);
-        veto = Number((veto / totalValue || 0) * 100).toFixed(DOLLAR_DECIMALS);
-        abstain = Number((abstain / totalValue || 0) * 100).toFixed(
-            DOLLAR_DECIMALS
-        );
-
+        yes = Number(((yes / totalValue) * 100) || 0).toFixed(2)
+        no = Number(((no / totalValue) * 100) || 0).toFixed(2)
+        veto = Number(((veto / totalValue) * 100) || 0).toFixed(2)
+        abstain = Number(((abstain / totalValue) * 100) || 0).toFixed(2)
         setGetVotes({
             ...getVotes,
-            yes: yes || 0,
-            no: no || 0,
-            veto: veto || 0,
-            abstain: abstain || 0,
-        });
-    }, [proposalTally]);
+            yes: yes,
+            no: no,
+            veto: veto,
+            abstain: abstain
+        })
+    }
 
-    useEffect(() => {
-        if (proposalTally?.yes) {
-            calculateVotes();
+    const unixToGMTTime = (time) => {
+        // *Removing miliSec from unix time 
+        let newTime = Math.floor(time / 1000000000);
+        var timestamp = moment.unix(newTime);
+        timestamp = timestamp.format("DD-MM-YYYY ")
+        return timestamp;
+    }
+    const votingStartTime = unixToGMTTime(currentProposal?.start_time);
+    const votingEndTime = unixToGMTTime(currentProposal?.expires?.at_time);
+
+    let time = currentProposal?.expires?.at_time;
+    time = (time / 1000000);
+
+
+
+    const getUserVote = (vote) => {
+        if (vote === "veto") {
+            return "No with veto"
         }
-    }, [proposalTallyMap, calculateVotes, proposalTally?.yes]);
+        else {
+            return vote
+        }
+    }
 
-    const Options = {
-        chart: {
-            type: "pie",
-            backgroundColor: null,
-            height: 180,
-            width: 220,
-            margin: 5,
-        },
-        credits: {
-            enabled: false,
-        },
-        title: {
-            text: null,
-        },
-        subtitle: {
-            floating: true,
-            style: {
-                fontSize: "25px",
-                fontWeight: "500",
-                fontFamily: "Lexend Deca",
-                color: "#fff",
-            },
-            y: 70,
-        },
-        plotOptions: {
-            pie: {
-                showInLegend: false,
-                size: "105%",
-                innerSize: "75%",
-                borderWidth: 0,
-                className: "highchart_chart",
-                dataLabels: {
-                    enabled: false,
-                    distance: -14,
-                    style: {
-                        fontsize: 50,
-                    },
-                },
-            },
-        },
-        series: [
-            {
-                states: {
-                    hover: {
-                        enabled: true,
-                    },
-                },
-                name: "",
-                data: [
-                    {
-                        name: "Yes",
-                        y: Number(getVotes?.yes || 0),
-                        color: "#52B788",
-                    },
-                    {
-                        name: "No",
-                        y: Number(getVotes?.no || 0),
-                        color: "#F76872",
-                    },
-                    {
-                        name: "No With Veto",
-                        y: Number(getVotes?.veto || 0),
-                        color: "#AACBB9",
-                    },
-                    {
-                        name: "Abstain",
-                        y: Number(getVotes?.abstain || 0),
-                        color: "#6A7B6C",
-                    },
-                ],
-            },
-        ],
-    };
 
-    if (inProgress) {
-        return <div className="no_data"> <Spin /></div>
+    const parsedVotingStatustext = (text) => {
+        if (text === "open") {
+            return "voting Period"
+        }
+        return text;
+    }
+
+    if (loading) {
+        return <div className="spinner"><Spin /></div>
     }
 
     return (
@@ -351,51 +182,46 @@ const GovernViewPage = ({
             <div className="govern_view_main_container mt-4 ">
                 <div className="govern_view_container">
 
-                    <div className="proposal_detail_main_container">
+                    <div className="proposal_detail_main_container card_container">
                         <div className="proposal_detail_container">
-                            <div className="proposal_id"> #{proposal?.proposal_id || "-"}</div>
-                            <div className="proposal_title">{proposal?.content?.title || "------"}</div>
+                            <div className="proposal_id"> #{currentProposal?.id || "-"}</div>
+                            <div className="proposal_title">{currentProposal?.title || "------"}</div>
                             <div className="proposal_overview_container">
                                 <div className="proposal_stats_container">
                                     <div className="title">Voting Starts</div>
-                                    <div className="value">{
-                                        proposal?.voting_start_time
-                                            ? moment(proposal?.voting_start_time).format("DD-MM-YYYY")
-                                            : "--/--/--"
-                                    }</div>
+                                    <div className="value">
+                                        {votingStartTime !== "Invalid date" ? `${votingStartTime} ` : "--/--/-- 00:00:00"}
+                                    </div>
                                 </div>
                                 <div className="proposal_stats_container">
                                     <div className="title">Voting Ends</div>
                                     <div className="value">
                                         {
-                                            proposal?.voting_end_time
-                                                ? moment(proposal?.voting_end_time).format("DD-MM-YYYY")
-                                                : "--/--/--"
+                                            votingEndTime !== "Invalid date" ? `${votingEndTime} ` : "--/--/-- 00:00:00"
                                         }
                                     </div>
                                 </div>
                                 <div className="proposal_stats_container">
                                     <div className="title">Proposer</div>
-                                    <div className="value">{truncateString(proposer, 6, 6)}</div>
+                                    <div className="value">{currentProposal?.proposer ? truncateString(currentProposal?.proposer, 6, 6) : "------"}</div>
                                 </div>
                                 <div className="proposal_stats_container">
                                     <div className="title">My Voting power</div>
-                                    <div className="value">0 CMDX</div>
+                                    <div className="value">{amountConversionWithComma(totalVoteVotingPower) || 0} veHARBOR</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="proposal_vote_details_main_container">
+                    <div className="proposal_vote_details_main_container card_container">
 
                         <div className="proposal_vote_details_container">
                             <div className="title_and_user_vote_container">
                                 <div className="vote_title">Vote Details</div>
-                                {/* <div className="user_vote">Your Vote: <span>Yes</span></div> */}
-                                <div className="user_vote"> {proposalOptionMap?.[votedOption] && (
+                                <div className="user_vote"> {address && userVote !== null && (
                                     <span>
                                         Your Vote :{" "}
-                                        <span> {proposalOptionMap[votedOption]}</span>
+                                        <span> {getUserVote(userVote?.vote)}</span>
                                     </span>
                                 )}</div>
 
@@ -407,18 +233,15 @@ const GovernViewPage = ({
                                         <div className="title">Total Votes</div>
                                         <div className="value">
                                             <div >
-                                                {`${calculateTotalValue() || "0"
-                                                    } ${denomConversion(comdex?.coinMinimalDenom)}`}
+                                                {currentProposal ? `${(calculateTotalValue() || "0") + " " + "veHARBOR"}` : 0}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="proposal_quorem_container">
                                         <div className="total_quorem">
-                                            <div className="title">Current Quorum</div>
-                                            {/* <div className="title">Current Quorum: {calculateCurrentThreshold() || 0} %</div> */}
-                                            {/* <div className="value">{calculateQuoremThreshold() || 0} CMDX</div> */}
-                                            <div className={calculateCurrentThreshold() < 100 ? "value error-color" : "value green-color"}> {calculateCurrentThreshold() || 0} %</div>
+                                            <div className="title">Current Quorum: 8%</div>
+                                            <div className="value primary_values">1.47M veHARBOR</div>
                                         </div>
                                     </div>
                                 </div>
@@ -463,7 +286,7 @@ const GovernViewPage = ({
                                                 <Progress
                                                     className="vote-progress-bar"
                                                     radius="xl"
-                                                    size={10}
+                                                    size={13}
                                                     sections={[
                                                         {
                                                             value: Number(getVotes?.yes || 0),
@@ -491,25 +314,6 @@ const GovernViewPage = ({
                                                 />
                                             </div>
                                             <div className="mask_container">
-                                                {/* <div className="quorem_container">
-                                                    <div className="line"></div>
-                                                    <div className="arrow">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
-                                                            <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
-                                                        </svg>
-                                                    </div>
-                                                    <div className="value">Quorum: 33%</div>
-                                                </div> */}
-
-                                                {/* <div className="quorem_container threshold_container">
-                                                    <div className="line"></div>
-                                                    <div className="arrow">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
-                                                            <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
-                                                        </svg>
-                                                    </div>
-                                                    <div className="value">Threshold: 50%</div>
-                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
@@ -518,8 +322,7 @@ const GovernViewPage = ({
                                 <div className="proposal_vote_btn_container">
                                     {/* <Button type="primary" className="btn-filled"> Vote</Button> */}
                                     <VoteNowModal
-                                        refreshVote={fetchVote}
-                                        proposal={proposal}
+                                        votingPower={amountConversionWithComma(totalVoteVotingPower) || 0}
                                     />
                                 </div>
 
@@ -533,7 +336,7 @@ const GovernViewPage = ({
                             Description
                         </div>
                         <div className="proposal_para">
-                            {stringTagParser(proposal?.content?.description || " ")}
+                            {stringTagParser(currentProposal?.description || " ")}
                         </div>
 
                         <div className="proposal_suggest_box">
@@ -552,29 +355,25 @@ const GovernViewPage = ({
 
 GovernViewPage.propTypes = {
     lang: PropTypes.string.isRequired,
-    setProposal: PropTypes.func.isRequired,
-    setProposalTally: PropTypes.func.isRequired,
-    setProposer: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
-    proposalMap: PropTypes.object,
-    proposalTallyMap: PropTypes.object,
-    proposerMap: PropTypes.object,
+    currentProposal: PropTypes.array.isRequired,
+    userVote: PropTypes.array.isRequired,
+    voteCount: PropTypes.number.isRequired
 };
 
 const stateToProps = (state) => {
     return {
         lang: state.language,
         address: state.account.address,
-        proposalMap: state.govern.proposalMap,
-        proposerMap: state.govern.proposerMap,
-        proposalTallyMap: state.govern.proposalTallyMap,
+        currentProposal: state.govern.currentProposal,
+        userVote: state.govern.userVote,
+        voteCount: state.govern.voteCount,
     };
 };
 
 const actionsToProps = {
-    setProposal,
-    setProposer,
-    setProposalTally,
+    setCurrentProposal,
+    setUserVote,
 };
 
 export default connect(stateToProps, actionsToProps)(GovernViewPage)
