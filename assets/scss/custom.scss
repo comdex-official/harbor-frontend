@@ -710,10 +710,10 @@ button {
               line-height: 1;
               border-color: transparent;
               background: none;
-              text-align: center;
+              // text-align: center;
               font-weight: 600;
               &:last-child {
-                text-align: right !important;
+                text-align: right;
               }
               &:first-child {
                 border-radius: 15px 0 0 15px;
@@ -767,12 +767,12 @@ button {
                 box-shadow: none;
               }
               &:hover {
-                box-shadow: $box-shadow-inner-light;
-                background: rgba($secondary-color, 0.3);
-                .dark-mode & {
-                  background: rgba($secondary-color, 0.6);
-                  box-shadow: none;
-                }
+                // box-shadow: $box-shadow-inner-light;
+                // background: rgba($secondary-color, 0.3);
+                // .dark-mode & {
+                //   background: rgba($secondary-color, 0.6);
+                //   box-shadow: none;
+                // }
               }
             }
 
@@ -785,19 +785,26 @@ button {
                 box-shadow: none;
               }
               &:hover {
-                box-shadow: $box-shadow-inner-light-hover;
-                background: rgba($secondary-color, 0.3);
+                // box-shadow: $box-shadow-inner-light-hover;
+                // background: rgba($secondary-color, 0.3);
 
-                .dark-mode & {
-                  background: rgba($secondary-color, 0.6);
-                  box-shadow: none;
-                }
+                // .dark-mode & {
+                //   background: rgba($secondary-color, 0.6);
+                //   box-shadow: none;
+                // }
               }
             }
           }
         }
       }
     }
+  }
+}
+
+.custom-table-with-hover {
+  cursor: pointer;
+  &:hover {
+    background: rgba($secondary-color, 0.4) !important;
   }
 }
 
@@ -850,12 +857,10 @@ button {
     border-radius: 15px;
     padding: 50px 30px;
     background: $background-light;
-    box-shadow: $box-shadow-inner-light;
 
     .dark-mode & {
       background: $background-dark1;
-      box-shadow: $box-shadow-inner-dark;
-      border: 2px solid $border-dark;
+      border: none;
     }
 
     .modal-btn {
@@ -1875,7 +1880,10 @@ button {
 
 .alert-label {
   color: $error-color;
+  text-align: end;
+  font-weight: 400;
   font-size: 12px;
+  line-height: 15px;
 }
 
 .claim-tx-btn {
@@ -2041,5 +2049,69 @@ button {
   }
   .name {
     padding-left: 5px;
+  }
+}
+
+.maxhalf {
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+  justify-content: center;
+
+  &.ant-btn {
+    font-size: $font-size-sm - 1;
+    padding: 1px 0;
+    margin-left: 4px;
+    line-height: 1;
+    text-align: center;
+    cursor: pointer;
+    text-transform: capitalize;
+    width: 50px;
+    height: 20px;
+    background: rgba(99, 89, 233, 0.5);
+    border: 0.3px solid #6359e9;
+    border-radius: 2px;
+    color: white;
+    &.active {
+      .dark-mode & {
+        background: $secondary-color;
+      }
+
+      span {
+        .dark-mode & {
+          color: $white;
+        }
+      }
+    }
+    &:hover {
+      color: white;
+      border-color: #6359e9;
+    }
+  }
+}
+
+.input_with_icon_container {
+  .input_container {
+    display: flex;
+    align-items: center;
+    background: #0f0f3d;
+    padding: 0.8rem;
+    border-radius: 10px;
+    margin-top: 10px;
+    justify-content: space-between;
+    .icon_container {
+      color: white;
+      .assets-withicon {
+        .assets-icons {
+        }
+        .name {
+          font-family: "Montserrat";
+          font-style: normal;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 20px;
+        }
+      }
+    }
   }
 }

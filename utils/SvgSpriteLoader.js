@@ -7,8 +7,7 @@ const SvgSprite = (props) => {
   const [isErrored, setIsErrored] = useState(false);
 
   useEffect(() => {
-    const svgVersion = "0.0.1";
-    console.log(props);
+    const svgVersion = "0.0.7";
     const isLocalStorage =
       "localStorage" in window && window.localStorage !== null;
     let data;

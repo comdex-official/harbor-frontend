@@ -9,7 +9,7 @@ export const tabsList = [
   // },
   {
     name: "My Positions",
-    value: "myPosition",
+    value: "home",
     langKey: "positions",
     path: "myPositions",
     active: "myPositions",
@@ -58,7 +58,7 @@ export const tabsList = [
   },
   {
     name: "emission",
-    value: "emission",
+    value: "emission-icon",
     langKey: "emission",
     path: "emission",
     active: "emission",
@@ -66,7 +66,7 @@ export const tabsList = [
   },
   {
     name: "stake",
-    value: "stake",
+    value: "stake-icon",
     langKey: "stake",
     path: "stake",
     active: "stake",
@@ -74,7 +74,7 @@ export const tabsList = [
   },
   {
     name: "rewards",
-    value: "rewards",
+    value: "reward-icon",
     langKey: "rewards",
     path: "rewards",
     active: "rewards",
@@ -82,7 +82,7 @@ export const tabsList = [
   },
   {
     name: "locker",
-    value: "locker",
+    value: "locker-icon",
     langKey: "locker",
     path: "locker",
     active: "locker",
@@ -91,7 +91,7 @@ export const tabsList = [
 
   {
     name: "bridge",
-    value: "bridge",
+    value: "bridge-icon",
     langKey: "bridge",
     path: "bridge",
     active: "bridge",
