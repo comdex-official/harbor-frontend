@@ -2,6 +2,9 @@ import React from "react";
 import { comdex } from "../../config/network";
 import * as PropTypes from "prop-types";
 import { Input } from "antd";
+import {
+  DOLLAR_DECIMALS,
+} from "../../constants/common";
 
 const CustomInput = ({
   type = "number",
@@ -26,7 +29,7 @@ const CustomInput = ({
         className={className}
         disabled={disabled}
         placeholder={
-          placeholder || Number().toFixed(decimals || comdex.coinDecimals)
+          placeholder || Number().toFixed(decimals || DOLLAR_DECIMALS)
         }
         onChange={onChange}
         onFocus={onFocus}

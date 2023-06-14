@@ -50,17 +50,13 @@
 
 .emission-card {
   padding: 20px 20px 10px 20px !important;
-  border-radius: 15px;
-  background-color: #fff;
-  box-shadow: 3px 3px 10px rgb(174 174 192 / 40%),
-    -8px -8px 12px rgb(174 174 192 / 25%);
-  border: 0.5px solid rgba(255, 255, 255, 0.7);
+  background: #191947;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   .dark-mode & {
-    box-shadow: none;
-    background-color: #211d33 !important;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: #191947;
+    border-radius: 20px;
   }
   .card-header {
     font-weight: 600;
@@ -143,6 +139,7 @@
               border: 0 !important;
               padding: 1px 5px !important;
               font-weight: 600;
+              height: auto;
               .colorbox {
                 width: 15px;
                 height: 15px;
@@ -661,7 +658,10 @@
     width: 43%;
     margin: auto;
     position: absolute;
-    bottom: 86%;
+    // bottom: 86%;
+    // bottom: 93%;
+    top: 6rem;
+    height: fit-content;
     z-index: 10;
     left: 27%;
     border-radius: 5px;
@@ -670,7 +670,7 @@
     align-items: center;
     column-gap: 10px;
     @media only screen and (max-width: 940px) {
-      bottom: 90%;
+      // bottom: 90%;
     }
     @media only screen and (max-width: 740px) {
       width: 50%;
@@ -683,7 +683,7 @@
     @media only screen and (max-width: 400px) {
       width: 90%;
       left: 4%;
-      bottom: 89.2%;
+      // bottom: 89.2%;
       padding: 8px;
     }
     .icon_container {
@@ -701,6 +701,78 @@
       }
       @media only screen and (max-width: 400px) {
         font-size: 0.52rem;
+      }
+    }
+  }
+}
+
+// Emission Distribution Modal
+
+.ant-modal {
+  &.emission-modal {
+    .ant-modal-content {
+      padding: 2rem;
+      font-family: "Montserrat";
+      .ant-modal-close {
+        top: 18px;
+        right: 18px;
+        .icon {
+          width: 13px;
+          .dark-mode & {
+            fill: $white;
+          }
+        }
+      }
+      .ant-modal-header {
+        margin-bottom: 1.8rem;
+        .ant-modal-title {
+          font-size: 1.5rem;
+          font-weight: 800;
+        }
+      }
+      .dark-mode & {
+        // background: #282441;
+        border: 0;
+        box-shadow: none;
+      }
+      .emission-card {
+        background: none !important;
+        box-shadow: none;
+      }
+      .ant-modal-body {
+        .vote-heading {
+          text-align: center;
+          margin-top: 5px;
+          .dark-mode & {
+            color: white;
+          }
+        }
+        .vote-paira {
+          text-align: center;
+          margin-bottom: 1rem;
+          .dark-mode & {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}
+
+// External Incentive modal
+
+.ant-modal {
+  &.external-incentives-mdoal {
+    .ant-modal-header {
+      margin-bottom: 0.2rem !important;
+    }
+    .assets-withicon {
+      .assets-icons {
+        .assets-icon {
+          width: 36px !important;
+          height: 36px !important;
+          border-radius: 36px !important;
+        }
       }
     }
   }

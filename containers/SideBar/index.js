@@ -70,18 +70,14 @@ const SideBar = ({ lang, isDarkMode }) => {
                 navigate.push("/")
               }
             >
-              {isDarkMode ? (
-                <SvgIcon name="harbor-logo" />
-              ) : (
-                <SvgIcon name="harbor-logo-light" />
-              )}
+              <SvgIcon name="harbor-logo" />
             </div>
-            {/* <Scrollbars> */}
-            <div className="side_bar_inner">
-              <Tabs onClick={toggle} />
-            </div>
-            {/* </Scrollbars> */}
-            {/* <Footer /> */}
+            <Scrollbars>
+              <div className="side_bar_inner">
+                <Tabs onClick={toggle} />
+              </div>
+            </Scrollbars>
+            <Footer />
           </div>
         </Sider>
       </Layout>

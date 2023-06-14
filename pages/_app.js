@@ -1,7 +1,7 @@
 "use client";
 import Head from "next/head";
-import "../styles/globals.scss";
 import "antd/dist/reset.css";
+import "../styles/globals.scss";
 import Layout from "@/containers/layout";
 import "bootstrap-icons/font/bootstrap-icons.css";
 

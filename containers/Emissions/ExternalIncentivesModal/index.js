@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Col, Row, SvgIcon } from "../../../../components/common";
+import { Col, Row, SvgIcon } from "../../../components/common";
 import { Modal, Table, Button } from "antd";
 // import './index.scss'
 

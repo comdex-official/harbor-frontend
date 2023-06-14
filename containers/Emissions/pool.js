@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import * as PropTypes from "prop-types";
 import { Col, Row, SvgIcon } from "../../../components/common";
-import './index.scss';
+// import './index.scss';
 import { connect } from "react-redux";
 import { Button, message, Table, Tabs } from "antd";
 import { denomToSymbol, iconNameFromDenom, symbolToDenom } from "../../../utils/string";

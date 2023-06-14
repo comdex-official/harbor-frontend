@@ -18,39 +18,7 @@ const Footer = () => {
           rel="noreferrer"
           href="https://bit.ly/ComdexOfficialDiscord"
         >
-          <SvgIcon name={localStorage.getItem("isDarkMode") === "false"
-            ? "discord-light"
-            : "discord"} viewbox="0 0 29.539 22.155" />
-        </a>
-        <a
-          aria-label="Telegram"
-          target="_blank"
-          rel="noreferrer"
-          href="https://t.me/Composite_Money"
-        >
-          <SvgIcon name={localStorage.getItem("isDarkMode") === "false"
-            ? "telegram-light"
-            : "telegram"} viewbox="0 0 24.635 20.66" />
-        </a>
-        <a
-          aria-label="Twitter"
-          target="_blank"
-          rel="noreferrer"
-          href="https://twitter.com/Harbor_Protocol"
-        >
-          <SvgIcon name={localStorage.getItem("isDarkMode") === "false"
-            ? "twitter-light"
-            : "twitter"} viewbox="0 0 25.617 20.825" />
-        </a>
-        <a
-          aria-label="Medium"
-          target="_blank"
-          rel="noreferrer"
-          href="https://medium.com/@Harbor_Protocol"
-        >
-          <SvgIcon name={localStorage.getItem("isDarkMode") === "false"
-            ? "medium-light"
-            : "medium"} viewbox="0 0 25.825 20.66" />
+          <SvgIcon name="discord" viewbox="0 0 29.539 22.155" />
         </a>
 
         <a
@@ -59,10 +27,36 @@ const Footer = () => {
           rel="noreferrer"
           href="https://github.com/comdex-official"
         >
-          <SvgIcon name={localStorage.getItem("isDarkMode") === "false"
-            ? "github-light"
-            : "github"} viewbox="0 0 25.825 20.66" />
+          <SvgIcon name="github" viewbox="0 0 25.825 20.66" />
         </a>
+
+        <a
+          aria-label="Telegram"
+          target="_blank"
+          rel="noreferrer"
+          href="https://t.me/Composite_Money"
+        >
+          <SvgIcon name="telegram" viewbox="0 0 24.635 20.66" />
+        </a>
+
+        <a
+          aria-label="Twitter"
+          target="_blank"
+          rel="noreferrer"
+          href="https://twitter.com/Harbor_Protocol"
+        >
+          <SvgIcon name="twitter" viewbox="0 0 25.617 20.825" />
+        </a>
+
+        <a
+          aria-label="Medium"
+          target="_blank"
+          rel="noreferrer"
+          href="https://medium.com/@Harbor_Protocol"
+        >
+          <SvgIcon name="medium" viewbox="0 0 25.825 20.66" />
+        </a>
+
       </div>
     </div>
   );

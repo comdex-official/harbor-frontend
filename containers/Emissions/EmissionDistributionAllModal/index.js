@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Row, SvgIcon } from "../../../../components/common";
+import { Col, Row, SvgIcon } from "../../../components/common";
 import { Modal, Table } from "antd";
-import { denomToSymbol, iconNameFromDenom } from "../../../../utils/string";
+import { denomToSymbol, iconNameFromDenom } from "../../../utils/string";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { combineColor, poolColor, vaultColor } from '../color';
 // import './index.scss'
-import { amountConversion } from '../../../../utils/coin';
-import { votingCurrentProposal } from '../../../../services/voteContractsRead';
-import { DOLLAR_DECIMALS } from '../../../../constants/common';
+import { amountConversion } from '../../../utils/coin';
+import { votingCurrentProposal } from '../../../services/voteContractsRead';
+import { DOLLAR_DECIMALS } from '../../../constants/common';
 
 const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposalAllData }) => {
 

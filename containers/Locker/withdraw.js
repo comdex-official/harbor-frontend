@@ -34,9 +34,11 @@ const Withdraw = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <CustomInput
-                                            className='custom-input'
-                                        />
+                                        <div>
+                                            <CustomInput
+                                                className='custom-input'
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
