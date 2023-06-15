@@ -561,6 +561,7 @@ const Vote = ({
   useEffect(() => {
     if (address) {
       // fetchuserCurrentProposal(address, PRODUCT_ID)
+      // Emissiom Data from api 
       fetchEmissiondata(address)
     }
   }, [address, refreshBalance])
@@ -977,6 +978,7 @@ const Vote = ({
                             columns={emissionDistributionColumns}
                             loading={emissionDataLoading}
                             pagination={false}
+                            locale={{ emptyText: <NoDataIcon /> }}
                             scroll={{ x: "100%" }}
                           />
                         </div>
