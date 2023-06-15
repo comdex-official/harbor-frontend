@@ -129,6 +129,7 @@ const MyVault = ({ address }) => {
     navigate(`/mint/vault/${item?.extendedPairId?.toNumber()}`);
   };
 
+
   const tableData =
     vaults &&
     vaults?.length > 0 &&

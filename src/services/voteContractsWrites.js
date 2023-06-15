@@ -22,7 +22,8 @@ const customFees = {
     },
 }
 
-export const transactionForVotePairProposal = async (address, productId, proposalId, extendedPairId, callback) => {
+
+export const transactionForVotePairProposal = async (address, productId, proposalId, extendedPairId, ratio, callback) => {
 
     const httpUrl = comdex?.rpc;
     let walletAddress = address;
@@ -32,6 +33,7 @@ export const transactionForVotePairProposal = async (address, productId, proposa
             "app_id": productId,
             "proposal_id": proposalId,
             "extended_pair": extendedPairId,
+            "ratio": ratio,
 
         }
     };

@@ -1524,4 +1524,30 @@
 
 
     </svg>
+        <symbol id='hot-tag1' viewBox="0 0 76 77" fill="none">
+            <g filter="url(#filter0_d_1404_5235)">
+                <path d="M62.2857 0H13.7143C8.37143 0 4 3.45 4 7.66667V69L38 57.5L72 69V7.66667C72 3.45 67.6286 0 62.2857 0Z" fill="url(#paint0_linear_1404_5235)" />
+            </g>
+            <defs>
+                <filter id="filter0_d_1404_5235" x="0" y="0" width="76" height="77"
+                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix"
+                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="2" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix"
+                        values="0 0 0 0 0.807843 0 0 0 0 0.0745098 0 0 0 0 0.905882 0 0 0 0.11 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1404_5235" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1404_5235"
+                        result="shape" />
+                </filter>
+                <linearGradient id="paint0_linear_1404_5235" x1="77.2308" y1="98.4265" x2="5.21882"
+                    y2="-38.4605" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#CE13E7" />
+                    <stop offset="1" stop-color="#E84D13" />
+                </linearGradient>
+            </defs>
+        </symbol>
 </div>

@@ -72,6 +72,9 @@
         }
       }
     }
+    .lp-token-assets-withicon {
+      justify-content: center;
+    }
     .assets-table {
       .assets-withicon {
         display: flex;
@@ -302,6 +305,14 @@
       .dark-mode & {
         background: $secondary-color;
       }
+    }
+  }
+}
+
+.ant-tabs {
+  &.assets-tab{
+    .ant-tabs-nav{
+      margin-bottom: 0;
     }
   }
 }
