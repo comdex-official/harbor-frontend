@@ -17,6 +17,7 @@ const getIbcDenomToDenomMap = () => {
   return myMap;
 };
 
+
 let ibcDenomToDenomMap = getIbcDenomToDenomMap();
 
 const encoding = require("@cosmjs/encoding");
@@ -186,9 +187,9 @@ const iconMap = {
   [ibcDenoms["stuluna"]]: "stuluna-icon",
   [ibcDenoms["stevmos"]]: "stevmos-icon",
   [ibcDenoms["arb-wei"]]: "arb-icon",
+  [ibcDenoms["stucmdx"]]: "stCmdx-icon",
 };
 
-console.log(ibcDenoms, "ibcDenoms");
 
 export const iconNameFromDenom = (key) => {
   return iconMap[key];

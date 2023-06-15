@@ -712,7 +712,6 @@ const Mint = ({
                   debtValidationError?.message ||
                   Number(collateralRatio) < minCrRatio
                 }
-                loading={inProgress}
                 type="primary"
                 className={ownerVaultId ? "btn-filled mt-4" : "btn-filled"}
                 onClick={() => handleCreate()}
