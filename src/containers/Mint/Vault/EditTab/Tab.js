@@ -321,7 +321,7 @@ const Edit = ({
     if (withdrawableAmount < 0) {
       withdrawableAmount = "0";
     }
-    return commaSeparator(withdrawableAmount || 0);
+    return withdrawableAmount;
   }
 
   const availableToBorrow = () => {
@@ -338,7 +338,7 @@ const Edit = ({
     if (calculatedAmount < 0) {
       calculatedAmount = "0";
     }
-    return commaSeparator(calculatedAmount || 0);
+    return calculatedAmount;
   }
 
   const getDepositMax = () => {
@@ -544,7 +544,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom(pair && pair?.denomIn)} />
                   </div>
                 </div>
-                <h2>{withdrawableCollateral() || "0"} {denomToSymbol(pair && pair?.denomIn)}</h2>
+                <h2>{commaSeparator(withdrawableCollateral() || "0")} {denomToSymbol(pair && pair?.denomIn)}</h2>
               </div>
             </div>
             <div className="borrowedithead-colum">
@@ -555,7 +555,7 @@ const Edit = ({
                     <SvgIcon name={iconNameFromDenom("ucmst")} />
                   </div>
                 </div>
-                <h2>{availableToBorrow() || "0"} {denomToSymbol(pair && pair?.denomOut)}</h2>
+                <h2>{commaSeparator(availableToBorrow() || "0")} {denomToSymbol(pair && pair?.denomOut)}</h2>
               </div>
             </div>
           </div>
@@ -604,7 +604,7 @@ const Edit = ({
                   {showWithdrawMax && <span className="ml-1" onClick={() => {
                     getWithdrawMax()
                   }}>
-                    <span className="available">Avl.</span>   {formatNumber(Number(withdrawableCollateral()).toFixed(DOLLAR_DECIMALS))} {" "}{denomToSymbol(pair && pair?.denomIn)}
+                    <span className="available">Avl.</span>   {formatNumber(Number(withdrawableCollateral()).toFixed(DOLLAR_DECIMALS)) || 0} {" "}{denomToSymbol(pair && pair?.denomIn)}
                   </span>}
                 </div>
                 <CustomInput

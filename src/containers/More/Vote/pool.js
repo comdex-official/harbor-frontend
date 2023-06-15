@@ -20,14 +20,18 @@ import variables from '../../../utils/variables';
 import { comdex } from '../../../config/network';
 import NoDataIcon from '../../../components/common/NoDataIcon';
 import CustomSkelton from '../../../components/CustomSkelton';
-import { queryFarmedPoolCoin, queryFarmer, queryPoolsList } from '../../../services/pools/query';
+import { queryDeserializePoolCoin, queryFarmedPoolCoin, queryFarmer, queryPoolsList } from '../../../services/pools/query';
 import { formatNumber } from '../../../utils/number';
+import { fetchRestPrices } from '../../../services/oracle/query';
+import ViewAllToolTip from './viewAllModal';
 
 const Pool = ({
     lang,
     address,
     refreshBalance,
     setBalanceRefresh,
+    cswapPrice,
+    assetMap,
 }) => {
     const [loading, setLoading] = useState(false);
     const [inProcess, setInProcess] = useState(false);
@@ -46,6 +50,7 @@ const Pool = ({
     const [myBorrowed, setMyBorrowed] = useState({});
     const [userPoolFarmedData, setUserPoolFarmedData] = useState({})
     const [totalPoolFarmedData, setTotalPoolFarmedData] = useState({})
+    const [deserializePoolCoin, setDeserializePoolCoin] = useState({})
 
     const [poolList, setPoolList] = useState();
 
@@ -121,6 +126,7 @@ const Pool = ({
             }))
         })
     }
+
     const getOwnerVaultId = (productId, address, extentedPairId) => {
         queryOwnerVaults(productId, address, extentedPairId, (error, data) => {
             if (error) {
@@ -222,6 +228,7 @@ const Pool = ({
         })
     }
 
+
     const fetchFarmer = (poolId, address, extendexPairId) => {
         queryFarmer(poolId, address, (error, data) => {
             if (error) {
@@ -229,10 +236,12 @@ const Pool = ({
                 return;
             }
             setUserPoolFarmedData((prevData) => ({
-                ...prevData, [extendexPairId]: data?.activePoolCoin?.amount
+                ...prevData, [extendexPairId]: data
+                // ...prevData, [extendexPairId]: data?.activePoolCoin?.amount
             }))
         })
     }
+
     const fetchFarmedPoolCoin = (poolId, extendexPairId) => {
         queryFarmedPoolCoin(poolId, (error, data) => {
             if (error) {
@@ -240,7 +249,8 @@ const Pool = ({
                 return;
             }
             setTotalPoolFarmedData((prevData) => ({
-                ...prevData, [extendexPairId]: data?.coin?.amount
+                ...prevData, [extendexPairId]: data
+                // ...prevData, [extendexPairId]: data?.coin?.amount
             }))
         })
     }
@@ -341,6 +351,59 @@ const Pool = ({
         getPairFromExtendedPair()
     }, [allProposalData, refreshBalance])
 
+    const calculateToatalUserFarmedToken = (tokens) => {
+        let activePoolCoins = Number(tokens?.activePoolCoin?.amount) || 0;
+        let quedPoolCoins = 0;
+        let totalUserPoolCoin = 0;
+        let quedPoolCoinsArray = tokens?.queuedPoolCoin?.map((item) => {
+            let amount = Number(item?.poolCoin?.amount)
+            quedPoolCoins += amount;
+        })
+        totalUserPoolCoin = activePoolCoins + quedPoolCoins
+        return totalUserPoolCoin;
+    }
+
+    useEffect(() => {
+        if (userPoolFarmedData) {
+            Object.keys(userPoolFarmedData).forEach(function (singleUserPoolData, index) {
+                let calculatedPoolAmount = calculateToatalUserFarmedToken(userPoolFarmedData[singleUserPoolData])
+                queryDeserializePoolCoin(Number(singleUserPoolData) % 1000000, calculatedPoolAmount, (error, result) => {
+                    if (error) {
+                        message.error(error);
+                        return;
+                    }
+                    setDeserializePoolCoin((prevData) => ({
+                        ...prevData, [singleUserPoolData]: result
+                    }))
+                })
+            });
+        }
+    }, [userPoolFarmedData])
+
+
+    const calculateFarmedTokenInDollorTerm = (singleCoins) => {
+        let coinA = singleCoins?.coins[0];
+        let coinB = singleCoins?.coins[1];
+        let coinATokens = () => {
+            let amount = amountConversion(coinA?.amount, comdex.coinDecimals, assetMap[coinA?.denom]?.decimals);
+            let denom = denomToSymbol(coinA?.denom);
+            let price = cswapPrice?.filter((item) => item.symbol == denom)
+            let tokenPrice = Number(amount) * (price[0]?.price || 0)
+            return tokenPrice;
+        };
+        let coinBTokens = () => {
+            let amount = amountConversion(coinB?.amount, comdex.coinDecimals, assetMap[coinB?.denom]?.decimals);
+            let denom = denomToSymbol(coinB?.denom);
+            let price = cswapPrice?.filter((item) => item.symbol == denom)
+            let tokenPrice = Number(amount) * (price[0]?.price || 0)
+            return tokenPrice;
+        };
+        let tokenADollorvalue = coinATokens();
+        let tokenBDollorvalue = coinBTokens();
+        let totalDollorValue = Math.floor((Number(tokenADollorvalue) + Number(tokenBDollorvalue)) * Math.pow(10, DOLLAR_DECIMALS)) / Math.pow(10, DOLLAR_DECIMALS);
+        return totalDollorValue;
+    }
+
     const poolColumns = [
         {
             title: (
@@ -350,7 +413,7 @@ const Pool = ({
             ),
             dataIndex: "asset",
             key: "asset",
-            width: 250,
+            width: 230,
         },
         {
             title: (
@@ -362,16 +425,16 @@ const Pool = ({
             key: "my_borrowed",
             width: 150,
         },
-        {
-            title: (
-                <>
-                    Total Farmed
-                </>
-            ),
-            dataIndex: "total_borrowed",
-            key: "total_borrowed",
-            width: 200,
-        },
+        // {
+        //     title: (
+        //         <>
+        //             Total Farmed
+        //         </>
+        //     ),
+        //     dataIndex: "total_borrowed",
+        //     key: "total_borrowed",
+        //     width: 200,
+        // },
         {
             title: (
                 <>
@@ -391,14 +454,36 @@ const Pool = ({
             ),
             dataIndex: "bribe",
             key: "bribe",
-            width: 200,
+            width: 250,
             render: (item) => (
                 <>
                     {item?.length > 0 ?
-                        item && item?.map((singleBribe, index) => {
-                            return <div className="endtime-badge mt-1" key={index}>{amountConversionWithComma(singleBribe?.amount, DOLLAR_DECIMALS)} {denomToSymbol(singleBribe?.denom)}</div>
-                        })
-                        : <div className="endtime-badge mt-1" >{"       "}</div>
+                        (item?.length == 1) ?
+                            <div className="bribe-container mt-1" >
+                                <span className="assets-withicon">
+                                    <span className="assets-icon">
+                                        <SvgIcon
+                                            name={iconNameFromDenom(item[0]?.denom)}
+                                        />
+                                    </span>
+                                </span>
+                                <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+
+                            </div>
+                            : (
+                                <div className="bribe-container mt-1" >
+                                    <span className="assets-withicon">
+                                        <span className="assets-icon">
+                                            <SvgIcon
+                                                name={iconNameFromDenom(item[0]?.denom)}
+                                            />
+                                        </span>
+                                    </span>
+                                    <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+                                    <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
+                                </div>
+                            )
+                        : <div className="mt-1" >0</div>
 
                     }
 
@@ -414,7 +499,7 @@ const Pool = ({
             dataIndex: "my_vote",
             key: "my_vote",
             align: "center",
-            width: 100,
+            width: 200,
         },
         {
             title: (
@@ -438,22 +523,22 @@ const Pool = ({
                         <div className="assets-withicon">
                             <div className="assets-icon">
                                 <SvgIcon
-                                    name={iconNameFromDenom(poolList[index]?.balances[0]?.denom)}
+                                    name={iconNameFromDenom(poolList && poolList[index]?.balances?.baseCoin?.denom)}
                                 />
                             </div>
                             <div className="assets-icon" style={{ marginLeft: "-22px" }}>
                                 <SvgIcon
-                                    name={iconNameFromDenom(poolList[index]?.balances[1]?.denom)}
+                                    name={iconNameFromDenom(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
                                 />
                             </div>
-                            {denomToSymbol(poolList[index]?.balances[0]?.denom)} - {denomToSymbol(poolList[index]?.balances[1]?.denom)}
+                            {denomToSymbol(poolList && poolList[index]?.balances?.baseCoin?.denom)} - {denomToSymbol(poolList && poolList[index]?.balances?.quoteCoin?.denom)}
                         </div>
                     </>
                 ),
                 my_borrowed: (
                     <>
                         <div className="assets-withicon display-center">
-                            {userPoolFarmedData[item?.extended_pair_id] ? formatNumber(userPoolFarmedData[item?.extended_pair_id]) : Number(0).toFixed(2)}
+                            ${deserializePoolCoin[item?.extended_pair_id] ? formatNumber(calculateFarmedTokenInDollorTerm(deserializePoolCoin[item?.extended_pair_id])) : Number(0).toFixed(2)}
                         </div>
                     </>
                 ),
@@ -461,7 +546,8 @@ const Pool = ({
                     <div>
                         {totalPoolFarmedData[item?.extended_pair_id] ? formatNumber(totalPoolFarmedData[item?.extended_pair_id]) : Number(0).toFixed(2)}
                     </div>,
-                total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div style={{ fontSize: "12px" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
+                // total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR <div style={{ fontSize: "12px" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)}%</div></div>,
+                total_votes: <div >{item?.total_vote ? amountConversionWithComma(item?.total_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR</div>,
                 bribe: item?.bribe,
                 my_vote: <div>{item?.my_vote ? amountConversion(item?.my_vote, DOLLAR_DECIMALS) : Number(0).toFixed(DOLLAR_DECIMALS)} veHARBOR</div>,
                 action: <>
