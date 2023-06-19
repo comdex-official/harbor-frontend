@@ -95,10 +95,7 @@
       display: block;
       padding: 30px 25px 10px 25px;
       min-height: 78px;
-
-      .dark-mode & {
-        // background: $primary-gradient;
-      }
+      margin-bottom: 1rem;
 
       .icon {
         width: 100%;
@@ -202,9 +199,10 @@
               margin-bottom: 3px;
               font-size: $font-size-sm - 1;
               position: relative;
-              padding: 1px;
-              text-transform: uppercase;
+              padding: 1px 20px;
               height: calc(100% / 12.3);
+              font-family: "Montserrat";
+              font-weight: 400;
 
               @media screen and (min-width: 1200px) {
                 height: calc(100% / 12.3);
@@ -215,7 +213,7 @@
                 min-height: 55px;
               }
               .tab-inner {
-                padding: 10px 20px;
+                padding: 10px 14px;
                 display: flex;
                 align-items: center;
                 // flex-direction: column;
@@ -260,66 +258,57 @@
                   fill: #fff;
                 }
               }
+
+              &:hover {
+                .tab-inner {
+                  color: white;
+                  color: $secondary-color;
+                  background: $secondary-color;
+                  border-radius: 10px;
+                  .dark-mode & {
+                    background: $secondary-color;
+                  }
+                  .dark-mode & {
+                    color: white;
+                  }
+                  .icon {
+                    fill: white;
+                  }
+                }
+  
+                .icon {
+                  fill: $secondary-color;
+                }
+              }
+              &.active_tab {
+                width: auto;
+  
+                .tab-inner {
+                  background: $secondary-color;
+                  color: $white;
+                  border-radius: 10px;
+                }
+  
+                .icon {
+                  fill: $secondary-color;
+                  .dark-mode & {
+                    fill: white;
+                  }
+                }
+              }
             }
             &.disable-side-links {
               cursor: not-allowed;
             }
 
-            &.active_tab {
-              color: #1b1b1b;
-              margin: 0 20px 3px 20px;
-              width: auto;
-              background: $secondary-color;
-              border-radius: 10px;
-              .dark-mode & {
-                background: $secondary-color;
-                color: $secondary-color;
-              }
-
-              .tab-inner {
-                color: $secondary-color;
-                padding: 10px 0px;
-                .dark-mode & {
-                  color: white;
-                  background: transparent;
-                }
-              }
-
-              .icon {
-                fill: $secondary-color;
-                .dark-mode & {
-                  fill: white;
-                }
-              }
-            }
-
-            &:hover {
-              color: $secondary-color;
-              background: $secondary-color;
-              margin: 0 20px 3px 20px;
-              width: auto;
-              border-radius: 10px;
-              .dark-mode & {
-                background: $secondary-color;
-              }
-              .tab-inner {
-                color: white;
-                padding: 10px 0px;
-                .dark-mode & {
-                  color: white;
-                }
-                .icon {
-                  fill: white;
-                }
-              }
-
-              .icon {
-                fill: $secondary-color;
-              }
-            }
           }
         }
       }
+    }
+  }
+  .menuScroll {
+    & > div {
+      overflow-x: initial !important;
     }
   }
 }

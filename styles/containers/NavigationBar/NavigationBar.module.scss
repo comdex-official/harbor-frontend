@@ -7,7 +7,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  column-gap: 2rem;
+  column-gap: 1.4rem;
   position: sticky;
   top: 0;
   z-index: 99;
@@ -120,6 +120,7 @@
         background-color: rgba($color: $secondary-color, $alpha: 0.3);
         padding: 5px 12px;
         border-radius: 20px;
+        height: 38px;
         color: black;
         cursor: pointer;
         .dark-mode & {
@@ -143,30 +144,31 @@
 }
 
 .notification {
-  height: 2.2rem;
-  width: 2.2rem;
-  background-color: $secondary-color-hover;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  .icon {
-    svg {
-      color: #8e8ea0;
+  .ant-btn {
+    height: 40px;
+    width: 40px;
+    background-color: $secondary-color-hover;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0;
+    border: 0;
+    .red-dot {
+      border-radius: 50%;
+      background-color: #e93737;
+      position: absolute;
+      height: 0.4rem;
+      width: 0.4rem;
+      display: block;
+      box-shadow: 0px 0px 4px 1px #e93737;
+      top: -2px;
+      right: -2px;
     }
-  }
-  &::after {
-    content: "";
-    display: block;
-    height: 0.4rem;
-    width: 0.4rem;
-    box-shadow: 0px 0px 4px 1px #e93737;
-    border-radius: 50%;
-    background-color: #e93737;
-    position: absolute;
-    top: -2px;
-    right: -2px;
+    .icon {
+      fill: rgba($white, 0.5);
+    }
   }
 }
 
@@ -175,6 +177,7 @@
     display: flex;
     align-items: center;
     column-gap: 10px;
+    height: 38px;
   }
 }
 
@@ -247,4 +250,10 @@
       background: $secondary-color-light;
     }
   }
+}
+
+.connectbtn {
+  height: 38px;
+  line-height: 38px;
+  border-radius: 38px;
 }

@@ -12,7 +12,6 @@ import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import { Icon } from "@/components/image/Icon";
 
-
 const { Sider } = Layout;
 
 const SideBar = ({ lang, isDarkMode }) => {
@@ -70,9 +69,9 @@ const SideBar = ({ lang, isDarkMode }) => {
                 navigate.push("/")
               }
             >
-              <SvgIcon name="harbor-logo" />
+              <img src='/images/logo.svg' alt="logo" />
             </div>
-            <Scrollbars>
+            <Scrollbars autoHide={true} className="menuScroll" style={{ maxHeight: '100%' }}>
               <div className="side_bar_inner">
                 <Tabs onClick={toggle} />
               </div>

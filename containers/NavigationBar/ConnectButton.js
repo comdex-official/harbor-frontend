@@ -285,7 +285,7 @@ const ConnectButton = ({
             trigger={["click"]}
             overlayClassName="dropconnect-overlay"
           >
-            <Button shape="round" type="primary">
+            <Button shape="round" className="connectbtn" type="primary">
               {variables[lang].connect}
             </Button>
           </Dropdown>
