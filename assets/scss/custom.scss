@@ -1030,7 +1030,7 @@ button {
     border-radius: 4px;
 
     .dark-mode & {
-      background: $background-dark2;
+      background: $secondary-color-light;
     }
 
     .ant-select-item {
@@ -1084,11 +1084,10 @@ button {
 
       &.ant-select-item-option-selected,
       &.ant-select-item-option-active {
-        background: $background-light;
+        background: transparent;
         font-weight: normal;
 
         .dark-mode & {
-          background: $background-select-hover-dark;
         }
       }
     }

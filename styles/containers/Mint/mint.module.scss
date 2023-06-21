@@ -1,0 +1,44 @@
+@import "../../../assets/scss/variables.scss";
+
+.mint_outside_modal {
+  .ant-modal-content {
+    padding: 25px 30px;
+    .ant-modal-close {
+    }
+    .ant-modal-body {
+      .mint_modal_main_container {
+        .mint_modal_container {
+          .title {
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 20px;
+            color: #ffffff;
+            margin-bottom: 10px;
+          }
+          .text {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            color: #aeabd8;
+          }
+          .dropdown_main_container {
+            .dropdown_container {
+              .ant-select {
+                .ant-select-selector {
+                  background-color: $background-dark2;
+                  border: none;
+                  height: 40px;
+                }
+                .ant-select-arrow {
+                  .icon {
+                    fill: white;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
