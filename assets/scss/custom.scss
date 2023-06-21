@@ -2114,3 +2114,106 @@ button {
     }
   }
 }
+
+.notification_drawer {
+  background: $primary-gradient !important;
+  font-family: "Montserrat";
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .ant-btn {
+      border: 0;
+      background: none;
+      color: #6359E9;
+      padding: 0;
+      &:focus {
+        box-shadow: none !important;
+      }
+    }
+  }
+  .ant-tabs {
+    .ant-tabs-nav {
+      &::before {
+        border-bottom: 2px solid rgba(#D9D9D9, 0.5);
+      }
+      .ant-tabs-nav-wrap {
+        .ant-tabs-nav-list {
+          .ant-tabs-tab {
+            .ant-tabs-tab-btn {
+              font-size: 16px;
+              color: rgba($white, 0.8);
+              display: flex;
+              align-items: center;
+              .tab-count {
+                background: $secondary-color;
+                color: $white;
+                min-width: 16px;
+                height: 16px;
+                text-align: center;
+                font-size: 10px;
+                display: inline-block;
+                border-radius: 3px;
+                margin-left: 6px;
+              }
+            }
+            &.ant-tabs-tab-active {
+              .ant-tabs-tab-btn {
+                color: $white;
+              }
+            }
+          }
+          .ant-tabs-ink-bar {
+            background: $secondary-color;
+          }
+        }
+      }
+    }
+  }
+  .tabs-data {
+    font-family: "Montserrat";
+    .heading-title {
+      font-size: 11px;
+      color: #B7B1E5;
+      font-weight: 500;
+    }
+    .ant-list {
+      margin-bottom: 0.5rem;
+      .ant-list-items {
+        .ant-list-item {
+          .ant-list-item-meta-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 38px;
+            .icon {
+              width: 38px;
+              height: 38px;
+            }
+          }
+          .ant-list-item-meta-content {
+            font-family: "Montserrat";
+            .ant-list-item-meta-title {
+              color: $white;
+              font-size: 15px;
+              margin-bottom: 0;
+            }
+            .ant-list-item-meta-description {
+              color: rgba($white, 0.8);
+              font-size: 12px;
+            }
+          }
+          .right-time {
+            color: #B7B1E5;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}
