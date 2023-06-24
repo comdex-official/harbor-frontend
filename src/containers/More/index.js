@@ -304,7 +304,7 @@ const More = ({
         </Col>
 
         {/* Airdrop  */}
-        <Col lg="6" md="6" sm="12" className="mb-3">
+        {/* <Col lg="6" md="6" sm="12" className="mb-3">
           <div className="more-card">
             <div className="more-card-inner">
               <div className="morecard-left">
@@ -325,7 +325,7 @@ const More = ({
               </div>
             </div>
           </div>
-        </Col>
+        </Col> */}
 
         {/* stake  */}
         <Col lg="6" md="6" sm="12" className="mb-3">
@@ -364,6 +364,7 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("./vote")}
+                    disabled={true}
                   >
                     Vote
                   </Button>
@@ -387,6 +388,7 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("./rewards")}
+                    disabled={true}
                   >
                     Claim
                   </Button>
