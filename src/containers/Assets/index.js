@@ -194,7 +194,7 @@ const Assets = ({
       return harborPrice;
     }
     if (denom === "ucmst") {
-      return markets?.cswapApiPrice?.ucmst?.price || 0;
+      return markets?.coingekoPrice?.composite?.usd || 0;
     }
 
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;

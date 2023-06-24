@@ -8,10 +8,9 @@ export const getPriceChartURL = (range) => {
 export const CAMPAIGN_URL = "https://test-campaign.comdex.one";
 
 export const API_URL = envConfig?.apiUrl;
+export const COINGECKO_API_URL = "https://api.coingecko.com/api/v3/simple/price?ids=comdex,cosmos,osmosis,axlusdc,composite,axlweth&vs_currencies=usd";
 
 export const EMISSION_API_URL = envConfig?.apiUrl;
-
-export const COINGECKO_API_URL = "https://api.coingecko.com/api/v3/simple/price?ids=comdex,cosmos,osmosis,axlusdc,axlweth&vs_currencies=usd";
 export const HARBOR_AIRDROP_API_URL = envConfig?.harbor?.harborAirdropApiUrl;
 export const DASHBOARD_TVL_DOLLOR_DATA = envConfig?.harbor?.harborDashboardTVLApiUrl;
 export const DASHBOARD_TVL_MINTED_DATA = envConfig?.harbor?.harborDashboardTVLApiUrl;

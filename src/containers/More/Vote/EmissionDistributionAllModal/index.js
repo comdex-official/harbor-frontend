@@ -9,6 +9,7 @@ import './index.scss'
 import { amountConversion } from '../../../../utils/coin';
 import { votingCurrentProposal } from '../../../../services/voteContractsRead';
 import { DOLLAR_DECIMALS } from '../../../../constants/common';
+import NoDataIcon from '../../../../components/common/NoDataIcon';
 
 const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposalAllData }) => {
 
@@ -217,6 +218,7 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
                               dataSource={emissionDistributionData}
                               columns={emissionDistributionColumns}
                               pagination={false}
+                              locale={{ emptyText: <NoDataIcon /> }}
                               scroll={{ x: "100%" }}
                             />
                           </div>

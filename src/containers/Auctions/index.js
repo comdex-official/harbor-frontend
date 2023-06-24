@@ -129,14 +129,6 @@ const Auctions = ({
     <>
       <div className="app-content-wrapper auction-extra-tab-btn-relative">
         <Row>
-          <Col>
-            <Tabs
-              className="comdex-tabs auction-extra-tabs"
-              onChange={callback}
-              activeKey={activeKey}
-              items={tabItems}
-            />
-          </Col>
 
           {activeKey === "1" && <div className="auction-extra-tab-btn">
             <Col>
@@ -159,6 +151,17 @@ const Auctions = ({
               </Row>
             </Col>
           </div>}
+
+          <Col>
+            <Tabs
+              className="comdex-tabs auction-extra-tabs"
+              onChange={callback}
+              activeKey={activeKey}
+              items={tabItems}
+            />
+          </Col>
+
+
         </Row>
       </div>
     </>
