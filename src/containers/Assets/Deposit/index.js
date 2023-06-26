@@ -31,7 +31,7 @@ import variables from "../../../utils/variables";
 import "./index.scss";
 
 
-const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) => {
+const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap, disable = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sourceAddress, setSourceAddress] = useState("");
   const [inProgress, setInProgress] = useState(false);
@@ -432,6 +432,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
         size="small"
         onClick={showModal}
         className="asset-ibc-btn-container"
+        disabled={disable}
       >
         {variables[lang].deposit} <span className="asset-ibc-btn"> &#62;</span>
       </Button>
