@@ -477,6 +477,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
   );
 };
 
+
 Deposit.propTypes = {
   lang: PropTypes.string.isRequired,
   handleRefresh: PropTypes.func.isRequired,
