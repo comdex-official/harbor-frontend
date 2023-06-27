@@ -39,9 +39,6 @@ const Assets = ({
   const [searchKey, setSearchKey] = useState("");
   const [filterValue, setFilterValue] = useState("1");
 
-  const [isLedgerAccount, setIsLedgerAccount] = useState(false);
-  const [walletType, setWalletType] = useState("")
-
   const tabItems = [
     {
       key: "1",
@@ -53,41 +50,6 @@ const Assets = ({
     },
   ];
 
-
-  window.addEventListener("keplr_keystorechange", () => {
-    checkAccountType();
-  });
-
-  useEffect(() => {
-    let wallet = localStorage.getItem("loginType")
-    setWalletType(wallet)
-
-  })
-
-  const checkAccountType = async () => {
-    const chainId = comdex?.chainId;
-
-    const walletWindowName = walletType;
-    const key = window[walletWindowName]?.getKey;
-
-    if (walletType === "keplr") {
-      if (key) {
-        const account = await key(chainId);
-        setIsLedgerAccount(account?.isNanoLedger || false);
-      } else {
-        setIsLedgerAccount(false);
-      }
-    }
-    else {
-      if (walletType === "ledger") {
-        setIsLedgerAccount(true);
-      }
-    }
-  };
-
-  useEffect(() => {
-    checkAccountType();
-  }, [walletType]);
 
   const handleBalanceRefresh = () => {
     setLoading(true);
@@ -185,7 +147,6 @@ const Assets = ({
               chain={value}
               balances={balances}
               handleRefresh={handleBalanceRefresh}
-              disable={isLedgerAccount === true && value?.chainInfo?.chainName === "stride" ? true : false}
             />
           );
         }
