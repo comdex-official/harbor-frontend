@@ -15,7 +15,11 @@ import {
   commaSeparatorWithRounding,
   denomConversion,
 } from "../../utils/coin";
-import { commaSeparator, formateNumberDecimalsAuto, marketPrice } from "../../utils/number";
+import {
+  commaSeparator,
+  formateNumberDecimalsAuto,
+  marketPrice,
+} from "../../utils/number";
 import { iconNameFromDenom } from "../../utils/string";
 import variables from "../../utils/variables";
 import Deposit from "./Deposit";
@@ -100,9 +104,7 @@ const Assets = ({
       key: "oraclePrice",
       align: "center",
       render: (price) => (
-        <>
-          ${formateNumberDecimalsAuto({ price: Number(price) || 0 })}
-        </>
+        <>${formateNumberDecimalsAuto({ price: Number(price) || 0 })}</>
       ),
     },
     {
@@ -112,7 +114,15 @@ const Assets = ({
       align: "center",
       render: (amount) => (
         <>
-          <p>${commaSeparator(Number(Math.floor(amount * Math.pow(10, DOLLAR_DECIMALS)) / Math.pow(10, DOLLAR_DECIMALS)))}</p>
+          <p>
+            $
+            {commaSeparator(
+              Number(
+                Math.floor(amount * Math.pow(10, DOLLAR_DECIMALS)) /
+                  Math.pow(10, DOLLAR_DECIMALS)
+              )
+            )}
+          </p>
         </>
       ),
     },
@@ -188,14 +198,13 @@ const Assets = ({
     },
   ];
 
-
   const getPrice = (denom) => {
     if (denom === harbor?.coinMinimalDenom) {
       return harborPrice;
     }
-    if (denom === "ucmst") {
-      return markets?.coingekoPrice?.composite?.usd || 0;
-    }
+    // if (denom === "ucmst") {
+    //   return markets?.coingekoPrice?.composite?.usd || 0;
+    // }
 
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
@@ -211,10 +220,10 @@ const Assets = ({
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-            ibcBalance.amount,
-            comdex?.coinDecimals,
-            assetMap[ibcBalance?.denom]?.decimals
-          )
+              ibcBalance.amount,
+              comdex?.coinDecimals,
+              assetMap[ibcBalance?.denom]?.decimals
+            )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },
@@ -334,9 +343,11 @@ const Assets = ({
     ? allTableData?.filter((item) => Number(item?.noOfTokens) > 0)
     : allTableData;
 
-  tableData = searchKey ? tableData?.filter((item) => {
-    return ((item?.symbol).toLowerCase()).includes(searchKey.toLowerCase())
-  }) : tableData;
+  tableData = searchKey
+    ? tableData?.filter((item) => {
+        return (item?.symbol).toLowerCase().includes(searchKey.toLowerCase());
+      })
+    : tableData;
 
   let balanceExists = allTableData?.find(
     (item) => Number(item?.noOfTokens) > 0
@@ -400,7 +411,6 @@ const Assets = ({
             />
           </Col>
         </Row>
-
 
         <Row>
           <Col>
