@@ -119,7 +119,7 @@ const Assets = ({
             {commaSeparator(
               Number(
                 Math.floor(amount * Math.pow(10, DOLLAR_DECIMALS)) /
-                  Math.pow(10, DOLLAR_DECIMALS)
+                Math.pow(10, DOLLAR_DECIMALS)
               )
             )}
           </p>
@@ -199,12 +199,21 @@ const Assets = ({
   ];
 
   const getPrice = (denom) => {
+    const value = markets?.map[assetMap[denom]?.id]
     if (denom === harbor?.coinMinimalDenom) {
       return harborPrice;
     }
     // if (denom === "ucmst") {
     //   return markets?.coingekoPrice?.composite?.usd || 0;
     // }
+
+    if (denom === "ucmst") {
+      if (value && value?.twa && value?.isPriceActive) {
+        return value?.twa?.toNumber() / 1000000;
+      } else {
+        return 0;
+      }
+    }
 
     return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
   };
@@ -220,10 +229,10 @@ const Assets = ({
       balance: {
         amount: ibcBalance?.amount
           ? amountConversion(
-              ibcBalance.amount,
-              comdex?.coinDecimals,
-              assetMap[ibcBalance?.denom]?.decimals
-            )
+            ibcBalance.amount,
+            comdex?.coinDecimals,
+            assetMap[ibcBalance?.denom]?.decimals
+          )
           : 0,
         price: getPrice(ibcBalance?.denom) || 0,
       },
@@ -345,8 +354,8 @@ const Assets = ({
 
   tableData = searchKey
     ? tableData?.filter((item) => {
-        return (item?.symbol).toLowerCase().includes(searchKey.toLowerCase());
-      })
+      return (item?.symbol).toLowerCase().includes(searchKey.toLowerCase());
+    })
     : tableData;
 
   let balanceExists = allTableData?.find(
