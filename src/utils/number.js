@@ -37,7 +37,7 @@ export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPri
   const value = marketsMap?.map[assetId]
 
   if (denom === "ucmst") {
-    return 1
+    return 1;
   }
 
   if (value && value?.twa && value?.isPriceActive) {
