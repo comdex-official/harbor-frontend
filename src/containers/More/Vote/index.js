@@ -296,10 +296,16 @@ const Vote = ({
 
     {
       title: <>
-        Your Emission <TooltipIcon text='This is the estimated emission for a user based on the overall voting. Users will receive this in their wallet once the emission is completed.' />
+        Week No.
       </>,
-      counts: `${formatNumber(userEmission || 0)} HARBOR`
+      counts: proposalId || 0
     },
+    // {
+    //   title: <>
+    //     Your Emission <TooltipIcon text='This is the estimated emission for a user based on the overall voting. Users will receive this in their wallet once the emission is completed.' />
+    //   </>,
+    //   counts: `${formatNumber(userEmission || 0)} HARBOR`
+    // },
 
     {
       title: "My Voting Power",
@@ -307,9 +313,14 @@ const Vote = ({
     },
 
     {
-      title: `Week ${proposalId || "-"} Total Emission`,
+      title: `Total Emission`,
       counts: `${formatNumber(protectedEmission || 0)} HARBOR`
     },
+
+    // {
+    //   title: `Week ${proposalId || "-"} Total Emission`,
+    //   counts: `${formatNumber(protectedEmission || 0)} HARBOR`
+    // },
   ];
 
   const checkProposalOverForAlert = () => {
@@ -826,12 +837,12 @@ const Vote = ({
     //   align: 'center',
     //   // width: 150,
     // },
-    {
-      title: 'My Borrowed/Farmed',
-      dataIndex: "my_borrowed",
-      key: "my_borrowed",
-      // width: 150,
-    },
+    // {
+    //   title: 'My Borrowed/Farmed',
+    //   dataIndex: "my_borrowed",
+    //   key: "my_borrowed",
+    //   // width: 150,
+    // },
     {
       title: 'My Vote (veHARBOR)',
       dataIndex: "vote",
@@ -854,7 +865,7 @@ const Vote = ({
           (<span style={{ textAlign: "end" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %</span>)
         </div >,
       external_incentives: item?.total_incentive,
-      my_borrowed: `$${Number(item?.user_position_value || 0).toFixed(DOLLAR_DECIMALS)}`,
+      // my_borrowed: `$${Number(item?.user_position_value || 0).toFixed(DOLLAR_DECIMALS)}`,
       // my_vote: `${formatNumber(amountConversion(item?.user_vote || 0, DOLLAR_DECIMALS) || 0)}`,
       vote: <div className='vote-slider' style={{ width: '130px' }}>
         <Slider
@@ -1080,13 +1091,13 @@ const Vote = ({
           </div>
           {currentProposalAllData && !currentProposalAllData?.emission_completed &&
             <div className="text_container">
-              {` Week ${proposalId ? proposalId - 1 : "-"} Emission have ended. Rewards will be distributed in sometime.`}
+              {` Week ${proposalId ? proposalId : "-"} Emission have ended. Rewards will be distributed in sometime.`}
             </div>
           }
 
           {currentProposalAllData && currentProposalAllData?.emission_completed &&
             <div className="text_container">
-              {`Week ${proposalId ? proposalId - 1 : "-"} Harbor emissions have been sent to users wallet. For Rebase & External Incentives, check Reward Page.`}
+              {`Week ${proposalId ? proposalId : "-"} Harbor emissions have been sent to users wallet. For Rebase & External Incentives, check Reward Page.`}
             </div>
           }
         </div>

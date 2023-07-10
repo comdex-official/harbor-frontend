@@ -69,14 +69,14 @@ const routes = [
     path: "/more/vesting",
     element: <Vesting />,
   },
-  // {
-  //   path: "/more/vote",
-  //   element: <Vote />,
-  // },
-  // {
-  //   path: "/more/rewards",
-  //   element: <Rewards />,
-  // },
+  {
+    path: "/more/vote",
+    element: <Vote />,
+  },
+  {
+    path: "/more/rewards",
+    element: <Rewards />,
+  },
   // {
   //   path: "/more/airdrop",
   //   element: <Airdrop />,
