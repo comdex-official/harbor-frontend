@@ -364,7 +364,6 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("./vote")}
-                    disabled={true}
                   >
                     Vote
                   </Button>
@@ -388,7 +387,6 @@ const More = ({
                     type="primary"
                     className="btn-filled"
                     onClick={() => handleRouteChange("./rewards")}
-                    disabled={true}
                   >
                     Claim
                   </Button>
