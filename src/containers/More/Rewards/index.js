@@ -262,7 +262,7 @@ const Rewards = ({
       align: "left",
       render: (item) => (
         <>
-          {item === "0" ? <div div className="mt-1" >Not Eligible for HARBOR Emissions</div> :
+          {item === "0" ? <div div className="mt-1" >Not Eligible for Rebase Rewards</div> :
             <div className="bribe-container mt-1" >
               <span className="assets-withicon">
                 <span className="assets-icon">

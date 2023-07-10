@@ -193,7 +193,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
 
   useEffect(() => {
     if (address) {
-      // fetchEmissiondata(address)
+      fetchEmissiondata(address)
     }
   }, [address])
 
