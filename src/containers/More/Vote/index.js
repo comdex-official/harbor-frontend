@@ -35,7 +35,7 @@ import processingAnimation from "../../../assets/lottefiles/processing.json";
 import successAnimation from "../../../assets/lottefiles/success.json";
 import failedAnimation from "../../../assets/lottefiles/failed.json";
 import Lottie from 'react-lottie';
-import { vestingIssuedTokens } from '../../../services/vestingContractsRead';
+import { emissionInfo, vestingIssuedTokens } from '../../../services/vestingContractsRead';
 import { MyTimer } from '../../../components/TimerForAirdrop';
 import TooltipIcon from '../../../components/TooltipIcon';
 
@@ -97,6 +97,7 @@ const Vote = ({
   const [proposalInActive, setProposalInActive] = useState(true);
   const [emissionDataLoading, setEmissionDataLoading] = useState(false)
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
+  const [totalEmission, setTotalEmission] = useState(0)
 
   const processing = {
     loop: true,
@@ -314,7 +315,7 @@ const Vote = ({
 
     {
       title: `Total Emission`,
-      counts: `${formatNumber(protectedEmission || 0)} HARBOR`
+      counts: `${formatNumber(totalEmission || 0)} HARBOR`
     },
 
     // {
@@ -427,6 +428,17 @@ const Vote = ({
       setInProcess(false)
     }).catch((error) => {
       setVestingNFTId('')
+      setInProcess(false)
+      console.log(error);
+    })
+  }
+  const fetchEmissionInfo = (appId) => {
+    setInProcess(true)
+    emissionInfo(appId).then((res) => {
+      let totalEmission = Number(res?.emission_rate) * amountConversion(Number(res?.rewards_pending));
+      setTotalEmission(totalEmission)
+      setInProcess(false)
+    }).catch((error) => {
       setInProcess(false)
       console.log(error);
     })
@@ -572,6 +584,7 @@ const Vote = ({
   useEffect(() => {
     if (address) {
       // fetchuserCurrentProposal(address, PRODUCT_ID)
+
       // Emissiom Data from api 
       fetchEmissiondata(address)
     }
@@ -582,6 +595,11 @@ const Vote = ({
       fetchVestingLockNFTData(address)
     }
   }, [address])
+
+  useEffect(() => {
+    fetchEmissionInfo(PRODUCT_ID)
+  }, [])
+
 
   useEffect(() => {
     if (userCurrentProposalData) {
