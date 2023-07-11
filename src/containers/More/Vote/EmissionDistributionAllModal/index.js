@@ -204,12 +204,12 @@ const EmissionDistributionAllModal = ({ userCurrentProposalData, currentProposal
               <div className="emission-card">
                 <div className="graph-container">
                   <Row>
-                    <Col sm='6'>
+                    <Col sm='5'>
                       <div className="graph-container">
                         <HighchartsReact highcharts={Highcharts} options={PieChart1} />
                       </div>
                     </Col>
-                    <Col sm='6'>
+                    <Col sm='7'>
                       <div className="asset-container emission-distribution-modal-asset-container">
                         <div className="composite-card ">
                           <div className="card-content">
