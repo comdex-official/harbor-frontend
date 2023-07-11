@@ -29,3 +29,9 @@ export const withdrawableHarbor = async (address) => {
     const config = await client.queryContractSmart(lockingContractAddress, { "withdrawable": { "denom": "uharbor", "address": address } });
     return await config;
 }
+
+export const emissionInfo = async (appId) => {
+    const client = await CosmWasmClient.connect(configin.rpcEndpoint);
+    const config = await client.queryContractSmart(lockingContractAddress, { "emission": { "app_id": appId } });
+    return await config;
+}
