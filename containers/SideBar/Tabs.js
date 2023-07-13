@@ -104,7 +104,6 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
               }
               value={item.value}
               onClick={() => {
-                console.log("clicked on link");
                 if (item?.path === "mint") {
                   return showModal()
                 }
@@ -141,37 +140,6 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
               <div className="text">Select the asset to see vaults associated with it.</div>
               <div className="dropdown_main_container">
                 <div className="dropdown_container">
-                  {/* <Select
-                    showSearch
-                    placeholder="Asset"
-                    optionFilterProp="children"
-                    onChange={onChange}
-                    style={{
-                      width: "100%",
-                      marginTop: "20px"
-                    }}
-                    onSearch={onSearch}
-                    filterOption={(input, option) =>
-                      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                    }
-                    options={[
-                      {
-                        value: 'jack',
-                        label:
-                          <>
-
-                          </>,
-                      },
-                      {
-                        value: 'lucy',
-                        label: 'Lucy',
-                      },
-                      {
-                        value: 'tom',
-                        label: 'Tom',
-                      },
-                    ]}
-                  /> */}
 
                   <Select
                     // className="assets-select"
