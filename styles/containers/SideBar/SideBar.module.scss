@@ -275,20 +275,20 @@
                     fill: white;
                   }
                 }
-  
+
                 .icon {
                   fill: $secondary-color;
                 }
               }
               &.active_tab {
                 width: auto;
-  
+
                 .tab-inner {
                   background: $secondary-color;
                   color: $white;
                   border-radius: 10px;
                 }
-  
+
                 .icon {
                   fill: $secondary-color;
                   .dark-mode & {
@@ -300,7 +300,6 @@
             &.disable-side-links {
               cursor: not-allowed;
             }
-
           }
         }
       }
@@ -336,5 +335,85 @@
     max-width: 100% !important;
     min-width: 100% !important;
     width: 100% !important;
+  }
+}
+
+.web_sidebar_main_container {
+  height: 100vh;
+  width: 16rem;
+  display: flex;
+  .web_sidebar_container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    .logo {
+      display: flex;
+      justify-content: center;
+    }
+    .links_main_container {
+      border-radius: 0.625rem;
+      background: rgba(217, 217, 217, 0.05);
+      backdrop-filter: blur(5px);
+      margin-left: 15px;
+      ul {
+        margin-bottom: 0;
+        li {
+          list-style: none;
+          padding: 17px 22px;
+          .links {
+            display: flex;
+            align-items: center;
+            column-gap: 10px;
+            color: #dbdbdb;
+            font-family: Montserrat;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 400;
+            cursor: pointer;
+            text-transform: capitalize;
+            .icon {
+              height: 18px;
+              width: 18px;
+              fill: white;
+            }
+          }
+        }
+        .active {
+          border-left: 5px solid;
+          border-image: linear-gradient(90deg, #6359e9 -50%, #7209b7 100%) 1;
+          position: relative;
+          &::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 3px;
+            width: 9px;
+            height: 108%;
+            z-index: -1;
+            filter: blur(11px);
+            background: linear-gradient(90deg, #6359e9 -50%, #7209b7 100%);
+          }
+          .links {
+            background: linear-gradient(90deg, #6359e9, #7209b7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: 600;
+            .icon {
+              fill: #6359e9;
+            }
+          }
+        }
+      }
+    }
+    .social_icons_main_container {
+      display: flex;
+      justify-content: center;
+      .icon {
+        height: 16px;
+      }
+    }
   }
 }
