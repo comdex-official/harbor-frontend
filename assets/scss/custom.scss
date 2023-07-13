@@ -831,6 +831,7 @@ button {
       width: 26px;
       height: 26px;
       line-height: 26px;
+      color: white;
     }
 
     .icon {
@@ -1255,7 +1256,7 @@ button {
           font-size: $font-size-sm - 1;
           padding: 1px 0;
           margin-left: 4px;
-          line-height: 1;
+          line-height: 2px;
           text-align: center;
           width: 30px;
           height: 15px;
@@ -2061,7 +2062,7 @@ button {
     font-size: $font-size-sm - 1;
     padding: 1px 0;
     margin-left: 4px;
-    line-height: 1;
+    line-height: 2px;
     text-align: center;
     cursor: pointer;
     text-transform: capitalize;
@@ -2131,7 +2132,7 @@ button {
     .ant-btn {
       border: 0;
       background: none;
-      color: #6359E9;
+      color: #6359e9;
       padding: 0;
       &:focus {
         box-shadow: none !important;
@@ -2141,7 +2142,7 @@ button {
   .ant-tabs {
     .ant-tabs-nav {
       &::before {
-        border-bottom: 2px solid rgba(#D9D9D9, 0.5);
+        border-bottom: 2px solid rgba(#d9d9d9, 0.5);
       }
       .ant-tabs-nav-wrap {
         .ant-tabs-nav-list {
@@ -2180,7 +2181,7 @@ button {
     font-family: "Montserrat";
     .heading-title {
       font-size: 11px;
-      color: #B7B1E5;
+      color: #b7b1e5;
       font-weight: 500;
     }
     .ant-list {
@@ -2209,7 +2210,7 @@ button {
             }
           }
           .right-time {
-            color: #B7B1E5;
+            color: #b7b1e5;
             font-size: 12px;
           }
         }

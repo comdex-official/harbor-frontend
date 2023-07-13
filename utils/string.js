@@ -19,6 +19,7 @@ const getIbcDenomToDenomMap = () => {
 
 let ibcDenomToDenomMap = getIbcDenomToDenomMap();
 
+
 const encoding = require("@cosmjs/encoding");
 
 export const decode = (hash) =>

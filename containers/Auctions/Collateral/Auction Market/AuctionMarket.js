@@ -26,7 +26,7 @@ const AuctionMarket = ({
         {
             title: (
                 <>
-                    Auctioned Asset <TooltipIcon text="Asset to be sold in the auction" />
+                    Auction Asset <TooltipIcon text="Asset to be sold in the auction" />
                 </>
             ),
             dataIndex: "auctioned_asset",
@@ -47,7 +47,7 @@ const AuctionMarket = ({
         {
             title: (
                 <>
-                    Pool Size<TooltipIcon text="Auction closing time" />
+                    Bid Value<TooltipIcon text="Auction closing time" />
                 </>
             ),
             dataIndex: "pool_size",
@@ -63,15 +63,15 @@ const AuctionMarket = ({
             key: "max_discount",
             width: 180,
         },
-        {
-            title: (
-                <>
-                    Health <TooltipIcon text="Current price of auction asset" />
-                </>
-            ),
-            dataIndex: "health",
-            key: "health",
-        },
+        // {
+        //     title: (
+        //         <>
+        //             Health <TooltipIcon text="Current price of auction asset" />
+        //         </>
+        //     ),
+        //     dataIndex: "health",
+        //     key: "health",
+        // },
         {
             title: (
                 <>
@@ -122,7 +122,7 @@ const AuctionMarket = ({
                     ),
                     pool_size: "40.50k",
                     max_discount: "30%",
-                    health: "$140.50",
+                    // health: "$140.50",
                     your_bid: "0.00",
                     action: item,
                 };

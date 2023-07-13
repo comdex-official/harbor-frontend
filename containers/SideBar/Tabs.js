@@ -42,7 +42,9 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
   };
 
   const onChange = (value) => {
-    console.log(`selected ${value}`);
+    handleOk()
+    navigate.push('/mint')
+
   };
 
   const onSearch = (value) => {
@@ -173,7 +175,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
 
                   <Select
                     // className="assets-select"
-                    popupClassName="asset-select-dropdown"
+                    popupClassName="asset-select-dropdown mint-select-dropdown"
                     // value={value}
                     style={{
                       width: "100%",
@@ -184,7 +186,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
                         <div className="circle-icon">
                           <div className="circle-icon-inner" />
                         </div>
-                        Select
+                        Asset
                       </div>
                     }
                     onChange={onChange}
@@ -201,10 +203,21 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
                         <div className="svg-icon">
                           <div className="svg-icon-inner">
                             {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
-                            <NextImage src={ATOM} height={35} width={35} />
+                            <NextImage src={ATOM} height={35} width={35} alt="logo" />
                           </div>
                         </div>
                         <div className="name">{denomConversion("uatom")}</div>
+                      </div>
+                    </Option>
+                    <Option key={2} value={2}>
+                      <div className="select-inner">
+                        <div className="svg-icon">
+                          <div className="svg-icon-inner">
+                            {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
+                            <NextImage src={ATOM} height={35} width={35} alt="logo" />
+                          </div>
+                        </div>
+                        <div className="name">{denomConversion("ucmst")}</div>
                       </div>
                     </Option>
                     );

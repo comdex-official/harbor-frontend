@@ -444,7 +444,7 @@ const CollateralAuctions = ({ markets, updateBtnLoading, setPairs, auctions, set
           {/* Auction Market  */}
 
           <div className="more-bottom mt-3">
-            <h3 className="title ">Auction Market</h3>
+            <h3 className="title ">Limit Order Bid</h3>
             <div className="more-bottom-card">
               <Row>
                 <Col>

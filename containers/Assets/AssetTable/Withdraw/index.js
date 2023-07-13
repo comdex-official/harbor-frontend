@@ -240,7 +240,7 @@ const Withdraw = ({ lang, chain, address, balances, handleRefresh, assetMap }) =
       >
         {variables[lang].withdraw} <span className="asset-ibc-btn"> &#62;</span>
       </Button> */}
-      <div className="ibc_modal_btn" style={{ color: "#ABA5FB" }}>
+      <div className="ibc_modal_btn" style={{ color: "#ABA5FB" }} onClick={showModal}>
         {variables[lang].withdraw}
       </div>
       <Modal

@@ -5,7 +5,7 @@ import { Button, Table, Progress, message, Slider, Tooltip } from "antd";
 import "../../styles/containers/MyPositions/MyPositions.module.scss";
 import TooltipIcon from "../../components/TooltipIcon";
 import { useEffect, useState } from "react";
-import { queryUserVaults } from "../../services/vault/query";
+import { fetchVaultInfoOfOwnerByApp, queryUserVaults } from "../../services/vault/query";
 import { amountConversion, amountConversionWithComma, denomConversion } from "../../utils/coin";
 import { DOLLAR_DECIMALS, ZERO_DOLLAR_DECIMALS } from "../../constants/common";
 import { decimalConversion } from "../../utils/number";
@@ -20,6 +20,7 @@ const MyVault = ({ address, activeKey }) => {
   useEffect(() => {
     if (address) {
       fetchVaults();
+      queryVaultInfoOfOwnerByApp(address)
     }
   }, [address]);
 
@@ -31,7 +32,21 @@ const MyVault = ({ address, activeKey }) => {
         message.error(error);
         return;
       }
-      setVaults(result?.vaultsInfo);
+      // setVaults(result?.vaultsInfo);
+      console.log(result?.vaultsInfo, "result?.vaultsInfo");
+    });
+  };
+
+  const queryVaultInfoOfOwnerByApp = (address) => {
+    fetchVaultInfoOfOwnerByApp(address, (error, result) => {
+      if (error) {
+        console.log("Error in fetchVaultInfoOfOwnerByApp api");
+        return;
+      }
+      if (result) {
+        console.log(result?.data, "queryVaultInfoOfOwnerByApp");
+        setVaults(result?.data)
+      }
     });
   };
 
@@ -124,7 +139,7 @@ const MyVault = ({ address, activeKey }) => {
                       ? " green-track"
                       : " ")
             }
-            value={Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(ZERO_DOLLAR_DECIMALS) || 0}
+            value={Number(((ratio?.collateralization_ratio) * 100) || 0).toFixed(ZERO_DOLLAR_DECIMALS) || 0}
             max={400}
             // handleStyle={handleSliderStyle}
             marks={{
@@ -132,14 +147,16 @@ const MyVault = ({ address, activeKey }) => {
               300: "Safe",
             }}
             // min={170 + 5}
-            tooltip={{ open: activeKey === 1 ? true : false }}
-            tipFormatter={(value) => (
-              <Tooltip
-                className="myposition_tooltip"
-              >
-                <span>{Number((decimalConversion(ratio?.collateralizationRatio) * 100) || 0).toFixed(ZERO_DOLLAR_DECIMALS) || 0}%</span>
-              </Tooltip>
-            )}
+            tooltip={{
+              open: activeKey === "1" ? true : false,
+              formatter: (value) => (
+                <div className="myposition_tooltip_overlay_class">
+                  <Tooltip className="myposition_tooltip">
+                    <span>{Number(((ratio?.collateralization_ratio) * 100) || 0).toFixed(ZERO_DOLLAR_DECIMALS) || 0}%</span>
+                  </Tooltip>
+                </div>
+              ),
+            }}
           />
         </>
       ),
@@ -175,6 +192,7 @@ const MyVault = ({ address, activeKey }) => {
   };
 
 
+
   const tableData =
     vaults &&
     vaults?.length > 0 &&
@@ -183,13 +201,13 @@ const MyVault = ({ address, activeKey }) => {
         key: item?.id,
         vault: (
           <>
-            <div className="assets-withicon">{item?.extendedPairName || ""}</div>
+            <div className="assets-withicon">{item?.extended_pair_name || ""}</div>
           </>
         ),
-        debt: <> {amountConversionWithComma(item?.debt || 0)} {denomConversion(item?.assetOutDenom)} </>,
-        apy: decimalConversion(item?.interestRate || 0),
+        debt: <> {amountConversionWithComma(item?.debt || 0)} {denomConversion(item?.asset_out_denom)} </>,
+        apy: (item?.interest_rate || 0),
+        liquidationPrice: `$${(Number(item?.liquidation_price || 0)).toFixed(DOLLAR_DECIMALS)}`,
         health: (item ? item : 0),
-        liquidationPrice: "$123",
         action: item,
       };
     });
