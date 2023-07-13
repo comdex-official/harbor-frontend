@@ -46,7 +46,7 @@ export const MsgSendTokens = (
 };
 
 export const createQueryClient = (callback) => {
-  return newQueryClientRPC(comdex.rpc, callback);
+  return newQueryClientRPC(comdex?.rpc, callback);
 };
 
 export const newQueryClientRPC = (rpc, callback) => {
@@ -65,7 +65,7 @@ export const newQueryClientRPC = (rpc, callback) => {
     });
 };
 
-export const KeplrWallet = async (chainID = comdex.chainId) => {
+export const KeplrWallet = async (chainID = comdex?.chainId) => {
   let walletType = localStorage.getItem("loginType");
 
   walletType === "keplr"
@@ -288,16 +288,16 @@ export const aminoSignIBCTx = (config, transaction, callback) => {
     let walletType = localStorage.getItem("loginType");
 
     (walletType === "keplr" ? await window.keplr : await window.wallet) &&
-    walletType === "keplr"
+      walletType === "keplr"
       ? window.keplr.enable(config.chainId)
       : window.leap.enable(config.chainId);
 
     const offlineSigner =
       walletType === "keplr"
         ? window.getOfflineSignerOnlyAmino &&
-          window.getOfflineSignerOnlyAmino(config.chainId)
+        window.getOfflineSignerOnlyAmino(config.chainId)
         : window?.leap?.getOfflineSignerOnlyAmino &&
-          window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
+        window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
 
     const client = await SigningStargateClient.connectWithSigner(
       config.rpc,

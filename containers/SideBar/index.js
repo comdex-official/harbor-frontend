@@ -42,17 +42,15 @@ const SideBar = ({ lang, isDarkMode }) => {
           onClick={toggle}
         >
           {isMobile ? (
-            // <SvgIcon
-            //   className={isOpen ? "open" : ""}
-            //   name={isOpen ? "sidebar-menu" : "sidebar-close"}
-            // />
-            <Icon className={isOpen ? "bi bi-list open" : ""} />
+            <SvgIcon
+              className={isOpen ? "open" : ""}
+              name={isOpen ? "sidebar-menu" : "sidebar-close"}
+            />
           ) : (
-            // <SvgIcon
-            //   className={isOpen ? "open" : ""}
-            //   name={isOpen ? "sidebar-open" : "sidebar-close"}
-            // />
-            <Icon className={isOpen ? "bi bi-list open" : ""} />
+            <SvgIcon
+              className={isOpen ? "open" : ""}
+              name={isOpen ? "sidebar-open" : "sidebar-close"}
+            />
           )}
         </button>
         <Sider

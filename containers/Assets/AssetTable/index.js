@@ -7,7 +7,7 @@ import { IoReload } from "react-icons/io5";
 import { connect, useDispatch } from "react-redux";
 import { Col, Row, SvgIcon } from "../../../components/common";
 import NoDataIcon from "../../../components/common/NoDataIcon";
-import AssetList from "../../../config/ibc_assets.json";
+// import AssetList from "../../../config/ibc_assets.json";
 import { cmst, comdex, harbor } from "../../../config/network";
 import { DOLLAR_DECIMALS } from "../../../constants/common";
 import { getChainConfig } from "../../../services/keplr";
@@ -23,6 +23,7 @@ import Deposit from "./Deposit";
 // import "./index.scss";
 // import LPAsssets from "./LPAassets";
 import Withdraw from "./Withdraw";
+import { NextImage } from '../../../components/image/NextImage'
 
 const AssetsTable = ({
     lang,
@@ -33,7 +34,9 @@ const AssetsTable = ({
     assetMap,
     harborPrice,
     loading,
-    setLoading
+    setLoading,
+    AssetList,
+    iconList,
 }) => {
     const dispatch = useDispatch();
 
@@ -265,7 +268,7 @@ const AssetsTable = ({
         return marketPrice(markets, denom, assetMap[denom]?.id) || 0;
     };
 
-    let ibcBalances = AssetList?.tokens.map((token) => {
+    let ibcBalances = AssetList?.tokens?.map((token) => {
         const ibcBalance = balances.find(
             (item) => item.denom === token?.ibcDenomHash
         );
@@ -376,7 +379,7 @@ const AssetsTable = ({
 
     const tableIBCData =
         ibcBalances &&
-        ibcBalances.map((item) => {
+        ibcBalances?.map((item) => {
             return {
                 key: item?.symbol,
                 favorite: selectedRowKeys?.includes(item?.symbol),
@@ -385,7 +388,8 @@ const AssetsTable = ({
                     <>
                         <div className="assets-withicon">
                             <div className="assets-icon">
-                                <SvgIcon name={iconNameFromDenom(item?.ibcDenomHash)} />
+                                {/* <SvgIcon name={iconNameFromDenom(item?.ibcDenomHash)} /> */}
+                                <NextImage src={iconList?.[item?.ibcDenomHash]?.coinImageUrl} width={35} height={35} alt="" />
                             </div>
                             {denomConversion(item?.ibcDenomHash)}{" "}
                         </div>
@@ -400,7 +404,7 @@ const AssetsTable = ({
         });
 
     // Sort the tableIBCData array based on the favorite property
-    tableIBCData.sort((a, b) => {
+    tableIBCData?.sort((a, b) => {
         // Check if either item is a favorite
         if (a.favorite && !b.favorite) {
             return -1; // a is favorite, b is not favorite, so a comes first
@@ -412,12 +416,13 @@ const AssetsTable = ({
     });
 
 
-    const favoriteIBCData = tableIBCData.filter((item) => item.favorite);
-    const nonFavoriteIBCData = tableIBCData.filter((item) => !item.favorite);
+    const favoriteIBCData = tableIBCData?.filter((item) => item.favorite);
+    const nonFavoriteIBCData = tableIBCData?.filter((item) => !item.favorite);
 
-    console.log(favoriteIBCData, "favoriteIBCData");
-    console.log(nonFavoriteIBCData, "nonFavoriteIBCData");
-    console.log(selectedRowKeys, "selectedRowKeys");
+    // console.log(favoriteIBCData, "favoriteIBCData");
+    // console.log(nonFavoriteIBCData, "nonFavoriteIBCData");
+    // console.log(selectedRowKeys, "selectedRowKeys");
+
 
 
     let allTableData = Lodash.concat(currentChainData, tableIBCData);
@@ -444,69 +449,16 @@ const AssetsTable = ({
 
 
 
-    const TableRow = ({ data }) => {
-        const [isFavorite, setIsFavorite] = useState(false);
-
-        const handleFavoriteClick = () => {
-            setIsFavorite(!isFavorite);
-        };
-
-        return (
-            <div>
-                <span>{data.symbol}</span>
-                <div className="assets-withicon">
-                    <div className="assets-icon">
-                        <SvgIcon name={iconNameFromDenom(data.ibcDenomHash)} />
-                    </div>
-                    {denomConversion(data.ibcDenomHash)}{" "}
-                </div>
-                <span>{data.noOfTokens}</span>
-                <span>{data.oraclePrice}</span>
-                <span>{data.amount}</span>
-                <div onClick={handleFavoriteClick}>
-                    {isFavorite ? <StarFilled /> : <StarOutlined />}
-                </div>
-                {/* <Table
-                    className="custom-table assets-table"
-                    dataSource={tableIBCData}
-                    columns={columns}
-                    loading={loading}
-                    pagination={false}
-                    scroll={{ x: "100%" }}
-                    locale={{ emptyText: <NoDataIcon /> }}
-                /> */}
-            </div>
-        );
-    };
 
     // const [selectedRowKeys, setSelectedRowKeys] = useState(['CMDX', 'CMST', "HARBOR","OSMO"]);
     // const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectionType, setSelectionType] = useState('checkbox');
 
 
-    const saveFavoritesToLocalStorage = (favorites) => {
-        localStorage.setItem('favoriteTokens', JSON.stringify(favorites));
-    };
-
-    const handleFavoriteClick = (coinMinimalDenom) => {
-        const updatedIBCData = ibcBalances.map((item) => {
-            if (item.coinMinimalDenom === coinMinimalDenom) {
-                return {
-                    ...item,
-                    favorite: !item.favorite,
-                };
-            }
-            return item;
-        });
-
-        ibcBalances = updatedIBCData;
-        saveFavoritesToLocalStorage(updatedIBCData.filter((item) => item.favorite));
-    };
-
     useEffect(() => {
         const favoritesFromLocalStorage = JSON.parse(localStorage.getItem('favoriteTokens')) || [];
 
-        const updatedIBCData = ibcBalances.map((item) => {
+        const updatedIBCData = ibcBalances?.map((item) => {
             return {
                 ...item,
                 favorite: favoritesFromLocalStorage.includes(item.coinMinimalDenom),
@@ -530,10 +482,10 @@ const AssetsTable = ({
         }
     }, []);
 
-    const onSelectChange = (newSelectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
+    // const onSelectChange = (newSelectedRowKeys) => {
+    //     console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+    //     setSelectedRowKeys(newSelectedRowKeys);
+    // };
 
     useEffect(() => {
         // Load selected row keys from local storage on component mount
@@ -546,7 +498,11 @@ const AssetsTable = ({
 
     useEffect(() => {
         // Save selected row keys to local storage whenever it changes
-        localStorage.setItem('favoriteTokens', JSON.stringify(selectedRowKeys));
+        console.log(selectedRowKeys, "selectedRowKeys");
+
+        if (selectedRowKeys.length > 0) {
+            localStorage.setItem('favoriteTokens', JSON.stringify(selectedRowKeys));
+        }
     }, [selectedRowKeys]);
 
     const rowSelection = {
@@ -560,10 +516,10 @@ const AssetsTable = ({
             },
         }),
         renderCell: (checked, record) => {
-            const isSelected = selectedRowKeys.includes(record.key);
+            const isSelected = selectedRowKeys.includes(record?.key);
 
             return (
-                <div onClick={() => handleRowSelection(record.key)} style={{ cursor: "pointer" }}>
+                <div onClick={() => handleRowSelection(record?.key)} style={{ cursor: "pointer" }}>
                     {isSelected ? (
                         <StarFilled style={{ color: 'gold' }} />
                     ) : (
@@ -665,6 +621,7 @@ AssetsTable.propTypes = {
         })
     ),
     markets: PropTypes.object,
+    AssetList: PropTypes.array,
 };
 
 const stateToProps = (state) => {
@@ -676,6 +633,8 @@ const stateToProps = (state) => {
         refreshBalance: state.account.refreshBalance,
         assetMap: state.asset.map,
         harborPrice: state.liquidity.harborPrice,
+        AssetList: state.config.AssetList,
+        iconList: state.config?.iconList,
     };
 };
 

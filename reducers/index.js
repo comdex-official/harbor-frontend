@@ -17,9 +17,11 @@ import ledger from "./ledger";
 import vesting from "./vesting";
 import stableMint from "./stableMint"
 import airdrop from "./airdrop";
+import config from "./config";
 
 const app = combineReducers({
   language,
+  config,
   account,
   asset,
   dashboard,

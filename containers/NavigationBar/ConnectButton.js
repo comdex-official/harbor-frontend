@@ -27,6 +27,8 @@ import DisConnectModal from "../DisConnectModal";
 import ConnectModal from "../Modal";
 import { amountConversion } from "../../utils/coin";
 import { encode } from "js-base64";
+import { queryEnvConfig, queryIbcAssets, queryIconsUrl } from "../../services/config/query";
+import { setEnvConfig, setIbcList, setIconList } from "../../actions/config";
 
 const ConnectButton = ({
   setAccountAddress,
@@ -46,6 +48,9 @@ const ConnectButton = ({
   harborPrice,
   setCoingekoPrice,
   setCswapApiPrice,
+  setEnvConfig,
+  setIbcList,
+  setIconList
 }) => {
   const dispatch = useDispatch();
   const [addressFromLocal, setAddressFromLocal] = useState()
@@ -266,6 +271,32 @@ const ConnectButton = ({
     });
   };
 
+  useEffect(() => {
+    queryEnvConfig()
+      .then((result) => {
+        setEnvConfig(result?.envConfig);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    queryIbcAssets()
+      .then((result) => {
+        setIbcList(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    queryIconsUrl()
+      .then((result) => {
+        setIconList(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   const items = [
     { label: <ConnectModal />, key: 'item-1' }
   ];
@@ -357,6 +388,9 @@ const actionsToProps = {
   setHarborPrice,
   setCoingekoPrice,
   setCswapApiPrice,
+  setEnvConfig,
+  setIbcList,
+  setIconList
 };
 
 export default connect(stateToProps, actionsToProps)(ConnectButton);

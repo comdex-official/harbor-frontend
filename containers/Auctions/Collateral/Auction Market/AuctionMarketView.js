@@ -20,7 +20,7 @@ const AuctionMarketView = () => {
       type: "column",
       inverted: false,
       polar: false,
-      height: 435,
+      height: 300,
       backgroundColor: 'transparent',
     },
     title: {
@@ -240,7 +240,7 @@ const AuctionMarketView = () => {
                   <HighchartsReact highcharts={Highcharts} options={options} />
                 </div>
                 <div className="right_box">
-                  <div className="pool_value_container card_container">
+                  {/* <div className="pool_value_container card_container">
                     <div className="total_pool_value_container">
                       <div className="title">Total Pool Value</div>
                       <div className="value">513.9 CMST</div>
@@ -249,7 +249,7 @@ const AuctionMarketView = () => {
                       <div className="title">Total Locked Collateral Value</div>
                       <div className="value">23.2k</div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="bid_container card_container">
                     <div className="title">Place Bid</div>
                     <div className="discount_container">
@@ -281,23 +281,29 @@ const AuctionMarketView = () => {
                     </div>
                   </div>
                 </div>
+
+                <div className="pool_value_container card_container">
+                  <div className="total_pool_value_container">
+                    <div className="pool_value_title">Total Pool Value</div>
+                    <div className="pool_value_value">513.9 CMST</div>
+                  </div>
+                  <div className="total_collateral_value_container">
+                    <div className="pool_value_title">Total Locked Collateral Value</div>
+                    <div className="pool_value_value">23.2k</div>
+                  </div>
+                </div> 
+
               </div>
             </div>
           </div>
+
+         
 
           <div className="more-bottom mt-3">
             <h3 className="title ">Your Bids</h3>
             <div className="more-bottom-card">
               <Row>
                 <Col>
-                  {/* <Tabs
-                    className="commodo-tabs mt-2"
-                    onChange={callback}
-                    activeKey={activeKey}
-                    items={tabItems}
-                  /> */}
-
-                  {/* <InActiveBidding address={address} refreshBalance={refreshBalance} assetMap={assetMap} /> */}
                   <UserBidTable />
                 </Col>
               </Row>

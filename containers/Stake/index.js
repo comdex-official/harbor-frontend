@@ -1,43 +1,46 @@
-import { Button, Table } from 'antd';
-import React from 'react'
+import { Button, Modal, Radio, Table } from 'antd';
+import React, { useState } from 'react'
+import CustomInput from '../../components/CustomInput';
 
 const Stake = () => {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const dataSource = [
         {
             key: '1',
-            name: 'Mike',
-            age: 32,
-            address: '10 Downing Street',
+            lockedHarbor: 0.50,
+            issuedveHarbor: 32,
+            lockedDate: 'Apr 12, 2023',
             unlocakDate: "Apr 20,2023"
         },
         {
             key: '2',
-            name: 'John',
-            age: 42,
-            address: '10 Downing Street',
+            lockedHarbor: 10.50,
+            issuedveHarbor: 42,
+            lockedDate: 'Apr 12, 2023',
             unlocakDate: "Apr 20,2023"
         },
     ];
 
     const columns = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Locked HARBOR',
+            dataIndex: 'lockedHarbor',
+            key: 'lockedHarbor',
             width: 200
         },
         {
-            title: 'Age',
-            dataIndex: 'age',
-            key: 'age',
+            title: 'Issued veHARBOR',
+            dataIndex: 'issuedveHarbor',
+            key: 'issuedveHarbor',
             align: "left",
             width: 200
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
-            key: 'address',
+            title: 'Locked Data',
+            dataIndex: 'lockedDate',
+            key: 'lockedDate',
             align: "left",
             width: 200
         },
@@ -49,46 +52,70 @@ const Stake = () => {
         },
     ];
 
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <>
             <div className="stake_main_container">
                 <div className="stake_container">
-                    <div className="stake_position_main_container card_container">
-                        <div className="title">Stake Position</div>
+                    <div className="stake_position_main_container ">
                         <div className="stake_position_container">
-                            <div className="column_1">
-                                <div className="upper_column">
-                                    <div className="text primary_heading">NFT ID</div>
-                                    <div className="value primary_values">1894</div>
-                                </div>
-                                <div className="lower_column">
-                                    <div className="text primary_heading">Claimed HARBOR</div>
-                                    <div className="value primary_values">1894</div>
+                            <div className="box_1 card_container" >
+
+                                <div className="box_1_title_container">
+                                    <div className="title">Stake Position</div>
+                                    <div className="id">NFT ID <span> 1783</span></div>
                                 </div>
 
-                            </div>
-                            <div className="column_2">
-                                <div className="upper_column">
-                                    <div className="text primary_heading">My HARBOR</div>
-                                    <div className="value primary_values">05 HARBOR</div>
+                                <div className="data_container">
+                                    <div className="data_1">
+                                        <div className="text">My HARBOR</div>
+                                        <div className="value">189,805</div>
+                                    </div>
+                                    <div className="data_2">
+                                        <div className="text">My veHARBOR</div>
+                                        <div className="value">205,890</div>
+                                    </div>
                                 </div>
-                                <div className="lower_column">
-                                    <div className="text primary_heading">My veHARBOR</div>
-                                    <div className="value primary_values">05 veHARBOR</div>
+                                <div className="btn_container">
+                                    <Button type='primary' className='btn-filled' onClick={showModal}>Stake</Button>
                                 </div>
                             </div>
-                            <div className="column_3">
-                                <div className="button">
-                                    <Button type='primary' className='btn-filled'>Stake</Button>
+                            <div className="box_2 card_container">
+
+                                <div className="box_1_title_container">
+                                    <div className="title">Claim HARBOR</div>
+                                </div>
+
+                                <div className="data_container">
+                                    <div className="data_1">
+                                        <div className="text">Unlocked Harbor</div>
+                                        <div className="value">25</div>
+                                    </div>
+                                    <div className="data_2">
+                                        <div className="text">Claimed HARBOR</div>
+                                        <div className="value">05</div>
+                                    </div>
+                                </div>
+                                <div className="btn_container">
+                                    <Button type='primary' className='btn-filled'>Claim</Button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="stake_harbor_container">
                         <div className="text">Staked Harbor</div>
-                        <div className="button">
+                        {/* <div className="button">
                             <Button type='primary'>Claim</Button>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="stake_harbor_table_container">
                         <div className="stakeHarbor_table">
@@ -100,6 +127,61 @@ const Stake = () => {
                             />
                         </div>
                     </div>
+
+                    {/* Stake Modal  */}
+                    <Modal title="Create Stake Position"
+                        open={isModalOpen}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                        centered={true}
+                        footer={false}
+                        className='stake_modal'
+                    >
+                        <div className="stake_modal_main_container">
+                            <div className="stake_modal_container">
+                                <div className="max_amount_container">
+                                    <div className="amount">Amount</div>
+                                    <div className="max_container">
+                                        <div className="btn_container">
+                                            <Button className='maxhalf'>Max</Button>
+                                        </div>
+                                        <div className="value">123 HARBOR </div>
+                                    </div>
+                                </div>
+                                <div className="input_container">
+                                    <CustomInput className='stake_input_box' value={123.00} />
+                                </div>
+
+                                <div className="expires_container">
+                                    <div className="title">Expires</div>
+                                    <div className="input_select_radio">
+                                        <Radio.Group>
+                                            <Radio value="t1" >1 Month </Radio>
+                                            <Radio value="t2" >4 Month </Radio>
+                                        </Radio.Group>
+                                    </div>
+                                    <div className="paragraph_container">
+                                        1 HARBOR locked for 1 month = 0.25 veHARBOR
+                                    </div>
+                                </div>
+
+                                <div className="unlock_data_container">
+                                    <div className="title">Unlock Date </div>
+                                    <div className="value"> 17-August-2023</div>
+                                </div>
+
+                                <div className="voting_power_container">
+                                    <div className="title">Your voting power will be</div>
+                                    <div className="value">0 veHARBOR</div>
+                                </div>
+
+                                <div className="btn_container_stake">
+                                    <Button type='primary' className='btn-filled'>Stake</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
+
                 </div>
             </div>
         </>

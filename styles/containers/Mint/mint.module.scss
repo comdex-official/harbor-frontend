@@ -1,0 +1,91 @@
+@import "../../../assets/scss/variables.scss";
+
+.mint_outside_modal {
+  .ant-modal-content {
+    padding: 25px 30px;
+    .ant-modal-close {
+    }
+    .ant-modal-body {
+      .mint_modal_main_container {
+        .mint_modal_container {
+          .title {
+            font-weight: 700;
+            font-size: 16px;
+            line-height: 20px;
+            color: #ffffff;
+            margin-bottom: 10px;
+          }
+          .text {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 17px;
+            color: #aeabd8;
+          }
+          .dropdown_main_container {
+            .dropdown_container {
+              .ant-select {
+                .ant-select-selector {
+                  background-color: $background-dark2;
+                  border: none;
+                  height: 50px;
+                  padding: 7px 11px;
+                  .ant-select-selection-search {
+                  }
+                  .ant-select-selection-placeholder {
+                    .select-placeholder {
+                      color: $text-color;
+                      font-weight: 400;
+                      font-size: 16px;
+                    }
+                  }
+                  .ant-select-selection-item {
+                    .select-inner {
+                      display: flex;
+                      align-items: center;
+                      color: white;
+                      column-gap: 10px;
+                    }
+                  }
+                }
+                .ant-select-arrow {
+                  .icon {
+                    fill: white;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.mint-select-dropdown {
+  .ant-select-item-option {
+    &:hover {
+      background: $background-dark1 !important;
+    }
+  }
+}
+
+// Mint Page Style
+
+.mint_main_container {
+  .mint_container {
+    .mint_carousel_main_container {
+      .mint_carousel_container {
+        .button_main_container {
+          .button_content {
+            border: 1.5px solid #aca9da;
+            display: flex;
+            align-items: center;
+            .icon_container {
+            }
+            .text_container {
+            }
+          }
+        }
+      }
+    }
+  }
+}

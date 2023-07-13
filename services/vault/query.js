@@ -2,6 +2,8 @@ import Long from "long";
 import { createQueryClient } from "../helper";
 import { QueryClientImpl } from 'comdex-codec/build/comdex/vault/v1beta1/query'
 import { PRODUCT_ID } from "../../constants/common";
+import axios from "axios";
+import { API_URL } from "@/constants/url";
 
 let myClient = null;
 
@@ -388,4 +390,16 @@ export const queryPairsLockedAndMintedStatistic = (
                 callback(error?.message);
             });
     });
+};
+
+
+export const fetchVaultInfoOfOwnerByApp = (address, callback) => {
+    axios
+        .get(`${API_URL}/api/v2/harbor/vault_info_of_owner/${address}`)
+        .then((result) => {
+            callback(null, result?.data);
+        })
+        .catch((error) => {
+            callback(error?.message);
+        });
 };

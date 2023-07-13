@@ -1,7 +1,24 @@
 import { comdex, ibcDenoms } from "../config/network";
 import { commaSeparator, getExponent } from "./number";
 import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
+import { queryIbcAssets } from "../services/config/query";
 import AssetList from "../config/ibc_assets.json";
+
+// const getDenomToDisplaySymbolMap = () => {
+//   let myMap = {};
+
+//   queryIbcAssets().then((result) => {
+//     for (let i = 0; i < result?.tokens?.length; i++) {
+//       if (myMap[result?.tokens[i].ibcDenomHash] === undefined) {
+//         myMap[result?.tokens[i].ibcDenomHash] = result?.tokens[i]?.symbol;
+//       }
+//     }
+//   }).catch((error) => {
+//     console.log(error, "error in assetList Api");
+//   });
+
+//   return myMap;
+// };
 
 const getDenomToDisplaySymbolMap = () => {
   let myMap = {};
@@ -16,6 +33,7 @@ const getDenomToDisplaySymbolMap = () => {
 };
 
 let denomToDisplaySymbol = getDenomToDisplaySymbolMap();
+
 
 export const getAmount = (selectedAmount, coinDecimals) =>
   (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
@@ -63,6 +81,10 @@ export const orderPriceReverseConversion = (amount) => {
 };
 
 export const denomConversion = (denom) => {
+  // Remove: below if for local testing
+  // if (denom === 'weth-wei') {
+  //   return 'WETH';
+  // }
 
   if (denomToDisplaySymbol[denom]) {
     return denomToDisplaySymbol[denom];

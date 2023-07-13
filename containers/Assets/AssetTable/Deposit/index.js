@@ -374,7 +374,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
       >
         {variables[lang].deposit} <span className="asset-ibc-btn"> &#62;</span>
       </Button> */}
-      <div className="ibc_modal_btn" style={{ color: "#ABA5FB" }}>
+      <div className="ibc_modal_btn" style={{ color: "#ABA5FB" }} onClick={showModal}>
         {variables[lang].deposit}
       </div>
       <Modal

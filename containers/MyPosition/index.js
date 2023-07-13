@@ -27,7 +27,7 @@ const MyPositions = ({ address, balances }) => {
   const [lockerInfo, setLockerInfo] = useState();
   const [vaultsInfo, setVaultsInfo] = useState();
   const [collectorInfo, setCollectorInfo] = useState();
-  const [activeKey, setActiveKey] = useState(1);
+  const [activeKey, setActiveKey] = useState("1");
 
   const tabsItem = [
     { label: "Vaults", key: "1", children: <Borrow activeKey={activeKey} /> },

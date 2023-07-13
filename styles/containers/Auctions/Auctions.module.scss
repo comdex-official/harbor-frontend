@@ -37,13 +37,15 @@
     }
   }
 }
-.title {
-  color: #000;
-  font-size: 20px;
-  font-weight: 600;
-  padding: 0 0 1px 10px;
-  .dark-mode & {
-    color: #fff;
+.more-bottom {
+  .title {
+    color: #000;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 0 0 1px 10px;
+    .dark-mode & {
+      color: #fff;
+    }
   }
 }
 
@@ -368,46 +370,28 @@
       margin-top: 1rem;
       .bottom_container_main_container {
         .bottom_container_main {
-          display: flex;
-          gap: 2rem;
+          // display: flex;
+          // gap: 2rem;
+
+          display: grid;
+          grid-template-columns: 2.5fr 1fr;
+          grid-template-rows: 2.5fr 1fr;
+          grid-gap: 2rem;
           .left_box {
             flex: 2.2;
           }
           .right_box {
             flex: 1;
-            .pool_value_container {
-              padding: 20px;
-              .title {
-                font-weight: 400;
-                font-size: 16px;
-                line-height: 20px;
-                color: #8c89b4;
-                padding: 0;
-                margin-bottom: 5px;
-              }
-              .value {
-                font-style: normal;
-                font-weight: 700;
-                font-size: 24px;
-                line-height: 29px;
-                text-transform: capitalize;
-              }
-              .total_pool_value_container {
-              }
-              .total_collateral_value_container {
-                .title {
-                  margin-top: 1rem;
-                }
-              }
-            }
             .bid_container {
-              margin-top: 1.5rem;
+              // margin-top: 1.5rem;
               padding: 20px;
+              height: 100%;
               .title {
                 font-weight: 700;
                 font-size: 16px;
                 line-height: 20px;
                 padding: 0;
+                margin-bottom: 1.4rem;
               }
               .discount_container {
                 .discount_title {
@@ -420,7 +404,7 @@
                 .discount_input_container {
                   display: flex;
                   align-items: center;
-                  margin: 15px 0;
+                  margin: 15px 0 20px 0;
                   .add_btn {
                     background: #cbc9ea;
                     color: black;
@@ -467,7 +451,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
                 .available_title {
                 }
                 .available_box {
@@ -514,9 +498,226 @@
               .bid_btn_container {
                 display: flex;
                 justify-content: center;
+                margin-top: 2.5rem;
+              }
+            }
+          }
+          .pool_value_container {
+            padding: 25px;
+            display: flex;
+            height: max-content;
+            column-gap: 3rem;
+            .pool_value_title {
+              font-weight: 400;
+              font-size: 16px;
+              line-height: 20px;
+              color: #8c89b4;
+              padding: 0;
+              margin-bottom: 5px;
+            }
+            .pool_value_value {
+              font-style: normal;
+              font-weight: 700;
+              font-size: 24px;
+              line-height: 29px;
+              text-transform: capitalize;
+            }
+            .total_pool_value_container {
+            }
+            .total_collateral_value_container {
+              .title {
                 margin-top: 1rem;
               }
             }
+          }
+        }
+      }
+    }
+  }
+}
+
+.live_auction_bid_table {
+  .ant-table {
+    .ant-table-container {
+      .ant-table-content {
+        .ant-table-tbody {
+          tr {
+            td {
+              .your_bid_action_button {
+                display: flex;
+                column-gap: 10px;
+                .bid_btn_withdraw {
+                  color: #aba5fb !important;
+                  text-align: center;
+                  font-family: Montserrat;
+                  font-size: 0.75rem !important;
+                  font-style: normal;
+                  font-weight: 600 !important;
+                  line-height: normal;
+                  text-transform: capitalize;
+                  border: 1px solid #aba5fb;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.auction_cancle_modal {
+  .ant-modal-content {
+    padding: 30px 30px;
+  }
+  .cancel_bid_ttitle {
+    color: #fff;
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.5rem;
+    width: 16rem;
+    margin: auto;
+  }
+  .cancle_button_container {
+    display: flex;
+    justify-content: center;
+    column-gap: 1rem;
+    margin-top: 1rem;
+    .yes_button {
+      .ant-btn {
+        width: 7.5rem;
+        height: 1.75rem;
+        font-size: 0.75rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        letter-spacing: -0.015rem;
+      }
+    }
+    .no_button {
+      .ant-btn {
+        width: 7.5rem;
+        height: 1.75rem;
+        font-size: 0.75rem;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        letter-spacing: -0.015rem;
+      }
+    }
+  }
+}
+
+.auction_withdraw_modal {
+  .ant-modal-content {
+    padding: 30px 30px;
+    .ant-modal-header {
+      .withdraw_bid_ttitle {
+        color: #fff;
+        font-family: Montserrat;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+      }
+    }
+    .ant-modal-body {
+      .auction_bid_widthraw_bid_modal_main_container {
+        .auction_bid_widthraw_bid_modal_container {
+          .amount_title {
+            color: #aeabd8;
+            font-family: Montserrat;
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+          }
+          .slider_container {
+            .ant-slider {
+              &.auction_withdraw_slider {
+                .ant-slider-rail {
+                  height: 0.6875rem;
+                  border-radius: 6.25rem;
+                }
+                .ant-slider-track {
+                  height: 0.6875rem;
+                  background: linear-gradient(90deg, #6359e9 0%, #7209b7 100%);
+                  border-radius: 6.25rem;
+                }
+                .ant-slider-handle {
+                  border: none;
+                  background: transparent;
+                  &::before {
+                    background: linear-gradient(
+                      135deg,
+                      #7209b7 0%,
+                      #6359e9 100%
+                    );
+                    border-radius: 50%;
+                    inset-inline-start: -3px;
+                    inset-block-start: 1px;
+                  }
+                  &::after {
+                    box-shadow: none;
+                    background: transparent;
+                  }
+                  &:hover {
+                    top: 0%;
+                  }
+                }
+              }
+            }
+          }
+          .input_container {
+            position: relative;
+            margin-top: 2rem;
+            .input_box {
+              .auction_withdraw_bid_input {
+                background: #0f0f3d;
+                border-radius: 5px;
+                padding: 11px;
+                text-align: end;
+                font-weight: 600;
+                font-size: 18px;
+                line-height: 22px;
+                padding-right: 23%;
+                // margin: 0 10px;
+                border: none;
+                &:hover {
+                  border-color: transparent;
+                }
+                &::-webkit-inner-spin-button,
+                &::-webkit-outer-spin-button {
+                  margin: 0;
+                  display: none;
+                }
+              }
+            }
+            .denom_box {
+              position: absolute;
+              top: 22%;
+              right: 5%;
+              font-weight: 600;
+              font-size: 18px;
+              color: white;
+            }
+          }
+          .note_container {
+            color: #8c89b4;
+            font-family: Montserrat;
+            font-size: 0.625rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            margin: 1rem 0;
+          }
+          .withdraw_btn_container {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
           }
         }
       }
