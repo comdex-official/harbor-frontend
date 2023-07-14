@@ -62,7 +62,7 @@
   }
 
   .side_bar {
-    width: 100%;
+    width: 230px;
     height: 100vh;
     background-color: $white;
     display: flex;
@@ -162,7 +162,7 @@
       ul {
         &.tabs_content {
           padding: 0;
-          height: 100%;
+          height: auto;
           margin-bottom: 0;
           margin-top: 0;
 
@@ -201,7 +201,7 @@
               position: relative;
               padding: 1px 20px;
               height: calc(100% / 12.3);
-              font-family: "Montserrat";
+              font-family: "Montserrat","sans-serif";
               font-weight: 400;
 
               @media screen and (min-width: 1200px) {
