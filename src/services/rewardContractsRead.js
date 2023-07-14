@@ -1,6 +1,7 @@
 import { SigningCosmWasmClient } from "cosmwasm";
 import { comdex } from '../config/network'
-import { KeplrWallet, lockingContractAddress } from "./keplr";
+import {  lockingContractAddress } from "./keplr";
+import { KeplrWallet } from "./helper";
 
 
 const customFees = {
