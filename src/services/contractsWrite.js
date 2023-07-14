@@ -1,7 +1,8 @@
 import { SigningCosmWasmClient } from "cosmwasm";
 import { decode } from "js-base64";
 import { comdex } from '../config/network'
-import { KeplrWallet, contractAddress } from "./keplr";
+import { contractAddress } from "./keplr";
+import { KeplrWallet } from "./helper";
 
 const customFees = {
     upload: {
@@ -22,7 +23,7 @@ const customFees = {
     },
 }
 
-export const transactionForVote = async (address,proposalId, vote, callback) => {
+export const transactionForVote = async (address, proposalId, vote, callback) => {
 
     const httpUrl = comdex?.rpc;
     let walletAddress = address;
