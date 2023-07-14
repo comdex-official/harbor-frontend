@@ -1,7 +1,8 @@
 import { SigningCosmWasmClient } from "cosmwasm";
 import { decode } from "js-base64";
 import { comdex } from '../config/network'
-import { KeplrWallet, lockingContractAddress } from "./keplr";
+import {  lockingContractAddress } from "./keplr";
+import { KeplrWallet } from "./helper";
 
 const customFees = {
     upload: {
