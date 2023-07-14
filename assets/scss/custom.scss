@@ -517,7 +517,7 @@ button {
           background: none;
           border: 0;
           line-height: 17px;
-          font-family: "Montserrat", sans-serif;
+
           transition: all 0.3s ease-in-out;
           .ant-tabs-tab-btn {
             width: 100%;
@@ -2015,7 +2015,6 @@ button {
 // Primart Title
 
 .primary_heading {
-  font-family: "Montserrat", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 1rem;
@@ -2026,7 +2025,6 @@ button {
 // Primary Vaules
 
 .primary_values {
-  font-family: "Montserrat", sans-serif;
   font-style: normal;
   font-weight: 700;
   font-size: 1.5rem;
@@ -2105,7 +2103,6 @@ button {
         .assets-icons {
         }
         .name {
-          font-family: "Montserrat", sans-serif;
           font-style: normal;
           font-weight: 600;
           font-size: 16px;
@@ -2118,7 +2115,7 @@ button {
 
 .notification_drawer {
   background: $primary-gradient !important;
-  font-family: "Montserrat", sans-serif;
+
   .header {
     display: flex;
     align-items: center;
@@ -2178,7 +2175,6 @@ button {
     }
   }
   .tabs-data {
-    font-family: "Montserrat", sans-serif;
     .heading-title {
       font-size: 11px;
       color: #b7b1e5;
@@ -2198,7 +2194,6 @@ button {
             }
           }
           .ant-list-item-meta-content {
-            font-family: "Montserrat", sans-serif;
             .ant-list-item-meta-title {
               color: $white;
               font-size: 15px;
