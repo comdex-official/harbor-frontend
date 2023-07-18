@@ -315,7 +315,7 @@ const Vote = ({
 
     {
       title: `Total Emission`,
-      counts: `${formatNumber(totalEmission || 0)} HARBOR`
+      counts: `${formatNumber(Number(totalEmission || 0).toFixed(DOLLAR_DECIMALS))} HARBOR`
     },
 
     // {
@@ -826,7 +826,7 @@ const Vote = ({
                     />
                   </span>
                 </span>
-                <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
+                <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS, assetMap[item[0]?.denom]?.decimals)} {denomToSymbol(item[0]?.denom)} </span>
 
               </div>
               : (
@@ -838,8 +838,8 @@ const Vote = ({
                       />
                     </span>
                   </span>
-                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
-                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
+                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS, assetMap[item[0]?.denom]?.decimals)} {denomToSymbol(item[0]?.denom)} </span>
+                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} assetMap={assetMap} /></span>
                 </div>
               )
             : <div className="mt-1" >-</div>
@@ -875,10 +875,10 @@ const Vote = ({
     return {
       key: item?.pair_id,
       assets: item,
-      emission_onEach_vault: formatNumber(calculateVaultEmission(item?.pair_id) || 0),
+      emission_onEach_vault: formatNumber(Number(calculateVaultEmission(item?.pair_id) || 0).toFixed(DOLLAR_DECIMALS)),
       total_votes:
         <div div >
-          {formatNumber(amountConversion(item?.total_vote || 0, DOLLAR_DECIMALS) || 0)
+          {formatNumber(Number(amountConversion(item?.total_vote || 0, DOLLAR_DECIMALS) || 0).toFixed(DOLLAR_DECIMALS))
           } {" "}
           (<span style={{ textAlign: "end" }}>{item?.total_vote ? calculateTotalVotes(amountConversion(item?.total_vote || 0, 6) || 0) : Number(0).toFixed(DOLLAR_DECIMALS)} %</span>)
         </div >,

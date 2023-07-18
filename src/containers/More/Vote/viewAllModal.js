@@ -46,7 +46,7 @@ const ViewAllToolTip = (props) => {
                                         />
                                     </span>
                                 </span>
-                                <span>{amountConversionWithComma(bribe?.amount, DOLLAR_DECIMALS)} {denomToSymbol(bribe?.denom)} </span>
+                                <span>{amountConversionWithComma(bribe?.amount, DOLLAR_DECIMALS, props?.assetMap[bribe?.denom]?.decimals)} {denomToSymbol(bribe?.denom)} </span>
 
                             </div>
                         })
