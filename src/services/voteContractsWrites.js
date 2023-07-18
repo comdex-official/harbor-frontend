@@ -1,7 +1,7 @@
 import { SigningCosmWasmClient } from "cosmwasm";
 import { decode } from "js-base64";
 import { comdex } from '../config/network'
-import {  lockingContractAddress } from "./keplr";
+import { lockingContractAddress } from "./keplr";
 import { KeplrWallet } from "./helper";
 
 const customFees = {
@@ -15,7 +15,7 @@ const customFees = {
     },
     exec: {
         amount: [{ amount: "500000", denom: "ucmdx" }],
-        gas: "500000",
+        gas: "5000000",
     },
     send: {
         amount: [{ amount: "80000", denom: "ucmdx" }],
