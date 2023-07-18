@@ -366,7 +366,7 @@ const Minting = ({ address, refreshBalance, harborPrice, }) => {
                                   calculateVaultEmission(item?.id?.toNumber()) ?
                                     <span>
                                       {
-                                        userCurrentProposalData && formatNumber(calculateVaultEmission(item?.id?.toNumber()))
+                                        userCurrentProposalData && formatNumber(Number(calculateVaultEmission(item?.id?.toNumber())).toFixed(DOLLAR_DECIMALS))
                                       } {" "}
                                       <span>Harbor</span>
                                     </span>
