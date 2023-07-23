@@ -30,7 +30,8 @@ const Rewards = ({
   address,
   refreshBalance,
   setBalanceRefresh,
-  setLockActiveTab
+  setLockActiveTab,
+  assetMap
 }) => {
   const [claimableRewardsData, setClaimableRewardsData] = useState()
   const [loading, setLoading] = useState(false);
@@ -183,7 +184,7 @@ const Rewards = ({
                     />
                   </span>
                 </span>
-                <span>{amountConversionWithComma(item[0]?.amount, comdex?.coinDecimals)} {denomToSymbol(item[0]?.denom)} </span>
+                <span>{amountConversionWithComma(item[0]?.amount, comdex?.coinDecimals, assetMap[item[0]?.denom]?.decimals)} {denomToSymbol(item[0]?.denom)} </span>
 
               </div>
               : (
@@ -195,8 +196,8 @@ const Rewards = ({
                       />
                     </span>
                   </span>
-                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS)} {denomToSymbol(item[0]?.denom)} </span>
-                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} /></span>
+                  <span>{amountConversionWithComma(item[0]?.amount, DOLLAR_DECIMALS, assetMap[item[0]?.denom]?.decimals)} {denomToSymbol(item[0]?.denom)} </span>
+                  <span> <ViewAllToolTip btnText={"View All"} bribes={item} assetMap={assetMap} /></span>
                 </div>
               )
             : <div className="mt-1" >Not Eligible for External Incentives</div>
@@ -423,6 +424,7 @@ Rewards.propTypes = {
   lang: PropTypes.string.isRequired,
   address: PropTypes.string,
   refreshBalance: PropTypes.number.isRequired,
+  assetMap: PropTypes.object,
 };
 
 const stateToProps = (state) => {
@@ -430,6 +432,7 @@ const stateToProps = (state) => {
     lang: state.language,
     address: state.account.address,
     refreshBalance: state.account.refreshBalance,
+    assetMap: state.asset.map,
   };
 };
 const actionsToProps = {
