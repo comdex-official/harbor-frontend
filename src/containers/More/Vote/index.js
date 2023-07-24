@@ -1025,12 +1025,12 @@ const Vote = ({
             <h2 className='mt-4'>Emission Voting</h2>
           </Col>
           <Col className="assets-search-section">
-            <div>
+            {/* <div>
               Hide 0 Balances{" "}
               <Switch
                 onChange={handleSwitchChange}
               />
-            </div>
+            </div> */}
             <Input
               placeholder="Search"
               value={inputSearch}
