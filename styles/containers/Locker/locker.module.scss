@@ -2,6 +2,40 @@
 .locker_main_container {
   .locker_container {
   }
+  .stablemint_vault_details_main_container {
+    .stablemint_vault_details_container {
+      color: white;
+      padding: 1.7rem 1.8rem;
+      .stablemint_title {
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        margin-bottom: 0.7rem;
+      }
+
+      .stablemint_detail_container {
+        display: flex;
+        justify-content: space-between;
+        .data_box {
+          .stable_data_title {
+            color: #8c89b4;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+          }
+          .stable_data_value {
+            color: #fff;
+            font-size: 1.3rem;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+          }
+        }
+      }
+    }
+  }
 }
 
 .locker_deposit_main_container {
@@ -98,6 +132,7 @@
               padding: 0.8rem;
               border-radius: 10px;
               margin-top: 10px;
+              justify-content: space-between;
               .icon_container {
                 .assets-withicon {
                   .assets-icons {
@@ -150,6 +185,7 @@
             font-weight: 400;
             font-size: 1rem;
             line-height: 20px;
+            margin-bottom: 0.3rem;
           }
           .value {
             font-style: normal;
@@ -194,6 +230,7 @@
             font-weight: 400;
             font-size: 1rem;
             line-height: 20px;
+            margin-bottom: 0.3rem;
           }
           .value {
             font-style: normal;
