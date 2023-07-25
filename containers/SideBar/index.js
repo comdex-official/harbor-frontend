@@ -61,53 +61,57 @@ const SideBar = ({ lang, isDarkMode }) => {
   console.log(isMobile, "isMobile");
   return (
     <>
-      {!isMobile ? <div className="web_sidebar_main_container">
-        <div className="web_sidebar_container">
-          <div
-            className="logo"
-            onClick={() =>
-              navigate.push("/")
-            }
-          >
-            <img src='/images/logo.svg' alt="logo" />
-          </div>
-          <div className="links_main_container">
-            <ul>
-              {tabsList?.map((item) => {
-                return (
-                  <li className={
-                    item.path === "dashboard" && route === '/'
-                      ? "active"
-                      : item.active === route
+      {!isMobile ?
+
+        <div className="web_sidebar_main_container">
+          <div className="web_sidebar_container">
+            <div
+              className="logo"
+              onClick={() =>
+                navigate.push("/")
+              }
+            >
+              <img src='/images/logo.svg' alt="logo" />
+            </div>
+            <div className="links_main_container">
+              <ul>
+                {tabsList?.map((item) => {
+                  return (
+                    <li className={
+                      item.path === "dashboard" && route === '/'
                         ? "active"
-                        : ""
-                  }>
-                    <div className="links"
-                      onClick={() => {
-                        if (item?.path === "mint") {
-                          return showModal()
-                        }
-                        navigate.push("/" + item.path)
-                        // onClick();
-                      }}
-                    >
-                      <SvgIcon name={item.value} />
-                      {item?.name}
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-          <div className="social_icons_main_container">
-            {/* <SvgIcon name="home" />
+                        : item.active === route
+                          ? "active"
+                          : ""
+                    }>
+                      <div className="links"
+                        onClick={() => {
+                          if (item?.path === "mint") {
+                            return showModal()
+                          }
+                          navigate.push("/" + item.path)
+                          // onClick();
+                        }}
+                      >
+                        <SvgIcon name={item.value} />
+                        {item?.name}
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+            <div className="social_icons_main_container">
+              {/* <SvgIcon name="home" />
             <SvgIcon name="home" />
             <SvgIcon name="home" />
             <SvgIcon name="home" /> */}
-            <Footer />
+              <Footer />
+            </div>
           </div>
         </div>
-      </div> :
+        :
+
         <div>
           <Layout
             className={isOpen ? "sidebar-wrapper" : "sidebar-open sidebar-wrapper"}
@@ -160,87 +164,88 @@ const SideBar = ({ lang, isDarkMode }) => {
             {isMobile && !isOpen && <div className="sidebar-overlay" />}
           </div>
         </div>
+
       }
 
-      {!isMobile && (
-        <Modal
-          centered={true}
-          className="mint_outside_modal"
-          footer={null}
-          header={null}
-          open={isModalOpen}
-          width={500}
-          // closable={(width < 650) ? true : null}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          closeIcon={null}
-        >
-          <>
-            <div className="mint_modal_main_container">
-              <div className="mint_modal_container">
-                <div className="title">Select Collateral Asset</div>
-                <div className="text">Select the asset to see vaults associated with it.</div>
-                <div className="dropdown_main_container">
-                  <div className="dropdown_container">
+      {/* {!isMobile && ( */}
+      <Modal
+        centered={true}
+        className="mint_outside_modal"
+        footer={null}
+        header={null}
+        open={isModalOpen}
+        width={500}
+        // closable={(width < 650) ? true : null}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        closeIcon={null}
+      >
+        <>
+          <div className="mint_modal_main_container">
+            <div className="mint_modal_container">
+              <div className="title">Select Collateral Asset</div>
+              <div className="text">Select the asset to see vaults associated with it.</div>
+              <div className="dropdown_main_container">
+                <div className="dropdown_container">
 
-                    <Select
-                      // className="assets-select"
-                      popupClassName="asset-select-dropdown mint-select-dropdown"
-                      // value={value}
-                      style={{
-                        width: "100%",
-                        marginTop: "20px"
-                      }}
-                      placeholder={
-                        <div className="select-placeholder">
-                          <div className="circle-icon">
-                            <div className="circle-icon-inner" />
-                          </div>
-                          Asset
+                  <Select
+                    // className="assets-select"
+                    popupClassName="asset-select-dropdown mint-select-dropdown"
+                    // value={value}
+                    style={{
+                      width: "100%",
+                      marginTop: "20px"
+                    }}
+                    placeholder={
+                      <div className="select-placeholder">
+                        <div className="circle-icon">
+                          <div className="circle-icon-inner" />
                         </div>
-                      }
-                      onChange={onChange}
-                      defaultActiveFirstOption={true}
-                      suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />}
-                    >
-                      {/* {list &&
+                        Asset
+                      </div>
+                    }
+                    onChange={onChange}
+                    defaultActiveFirstOption={true}
+                    suffixIcon={<SvgIcon name="arrow-down" viewbox="0 0 19.244 10.483" />}
+                  >
+                    {/* {list &&
                       list.map((record) => {
                         const item = record?.denom ? record?.denom : record;
 
                         return ( */}
-                      <Option key={1} value={1}>
-                        <div className="select-inner">
-                          <div className="svg-icon">
-                            <div className="svg-icon-inner">
-                              {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
-                              <NextImage src={ATOM} height={35} width={35} alt="logo" />
-                            </div>
+                    <Option key={1} value={1}>
+                      <div className="select-inner">
+                        <div className="svg-icon">
+                          <div className="svg-icon-inner">
+                            {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
+                            <NextImage src={ATOM} height={35} width={35} alt="logo" />
                           </div>
-                          <div className="name">{denomConversion("uatom")}</div>
                         </div>
-                      </Option>
-                      <Option key={2} value={2}>
-                        <div className="select-inner">
-                          <div className="svg-icon">
-                            <div className="svg-icon-inner">
-                              {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
-                              <NextImage src={ATOM} height={35} width={35} alt="logo" />
-                            </div>
+                        <div className="name">{denomConversion("uatom")}</div>
+                      </div>
+                    </Option>
+                    <Option key={2} value={2}>
+                      <div className="select-inner">
+                        <div className="svg-icon">
+                          <div className="svg-icon-inner">
+                            {/* <SvgIcon name={iconNameFromDenom("uatom")} /> */}
+                            <NextImage src={ATOM} height={35} width={35} alt="logo" />
                           </div>
-                          <div className="name">{denomConversion("ucmst")}</div>
                         </div>
-                      </Option>
-                      );
-                      {/* })} */}
-                    </Select>
-                  </div>
+                        <div className="name">{denomConversion("ucmst")}</div>
+                      </div>
+                    </Option>
+                    {/* ); */}
+                    {/* })} */}
+                  </Select>
                 </div>
               </div>
             </div>
-          </>
+          </div>
+        </>
 
-        </Modal>
-      )}
+      </Modal>
+      {/* )} */}
 
     </>
   );

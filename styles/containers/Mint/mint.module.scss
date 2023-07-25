@@ -75,13 +75,773 @@
     .mint_carousel_main_container {
       .mint_carousel_container {
         .button_main_container {
-          .button_content {
-            border: 1.5px solid #aca9da;
-            display: flex;
-            align-items: center;
-            .icon_container {
+          .slick-slider {
+            .slick-arrow {
             }
-            .text_container {
+            .slick-prev {
+            }
+            .slick-list {
+              .slick-track {
+                .slick-slide {
+                  .button_content {
+                    border: 1.5px solid #aca9da;
+                    display: flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    width: 9.5rem !important;
+                    // width: max-content !important;
+                    border-radius: 10px;
+                    padding: 5px 10px;
+                    column-gap: 5px;
+                    cursor: pointer;
+                    .icon_container {
+                      img {
+                        height: 1.8rem;
+                        width: 2rem;
+                      }
+                    }
+                    .text_container {
+                      font-weight: 500;
+                    }
+                    &:hover {
+                      background: linear-gradient(to right, #6359e9, #7209b7);
+                      border: none;
+                    }
+                  }
+                  .active_button_content {
+                    background: linear-gradient(to right, #6359e9, #7209b7);
+                    // border: none;
+                  }
+                }
+              }
+            }
+            .slick-next {
+            }
+          }
+        }
+      }
+    }
+
+    .selected_vault_main_container {
+      .selected_valut_container {
+        .title_and_search_container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: 1rem 0;
+        }
+        .short_search_container {
+          display: flex;
+          // align-items: center;
+          column-gap: 15px;
+        }
+        .mint-search-section {
+          text-align: right;
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+
+          .ant-input-affix-wrapper {
+            border: 1px solid $secondary-color;
+            background: none;
+            border-radius: 30px;
+            height: 38px;
+            padding: 4px 18px;
+            max-width: 260px;
+
+            @media screen and (max-width: 576px) {
+              max-width: 100%;
+            }
+
+            &:hover {
+              border-color: $border-light;
+            }
+
+            input {
+              background: none;
+              font-weight: 400;
+
+              .dark-mode & {
+                color: $white;
+              }
+
+              &::placeholder {
+                color: #303950;
+                opacity: 1;
+                font-weight: 400;
+                .dark-mode & {
+                  color: white;
+                }
+              }
+            }
+
+            .ant-input-suffix {
+              .icon {
+                fill: $border-dark;
+                .dark-mode & {
+                  fill: $secondary-color;
+                }
+              }
+            }
+          }
+        }
+
+        .select_vault_title {
+          font-size: 1.125rem;
+          font-style: normal;
+          font-weight: 600;
+          margin: 2rem 0;
+        }
+        .vault_container_wrapper {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          grid-gap: 30px;
+
+          @media screen and (max-width: 1440px) {
+            grid-gap: 20px;
+          }
+          @media screen and (max-width: 1280px) {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          @media screen and (max-width: 700px) {
+            grid-template-columns: repeat(1, 1fr);
+          }
+
+          .vault_container {
+            padding: 25px;
+            border-radius: $base-border-radius;
+            position: relative;
+            background: $background-dark1;
+            box-shadow: none;
+            cursor: pointer;
+            .hot-tag {
+              position: absolute;
+              top: -8px;
+              right: 12px;
+              text-align: center;
+              background-size: 100%;
+              width: 3.2875rem;
+              height: 3.0125rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 0.75rem;
+              font-style: normal;
+              font-weight: 600;
+              img {
+                width: 12px;
+                margin-left: 5px;
+                height: 17px;
+              }
+              &.hot-tag1 {
+                background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzYiIGhlaWdodD0iNzciIHZpZXdCb3g9IjAgMCA3NiA3NyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZF8xNDAxXzQ4NzUpIj4KPHBhdGggZD0iTTYyLjI4NTcgMEgxMy43MTQzQzguMzcxNDMgMCA0IDMuNDUgNCA3LjY2NjY3VjY5TDM4IDU3LjVMNzIgNjlWNy42NjY2N0M3MiAzLjQ1IDY3LjYyODYgMCA2Mi4yODU3IDBaIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfMTQwMV80ODc1KSIvPgo8L2c+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2RfMTQwMV80ODc1IiB4PSIwIiB5PSIwIiB3aWR0aD0iNzYiIGhlaWdodD0iNzciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CjxmZU9mZnNldCBkeT0iNCIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+CjxmZUNvbXBvc2l0ZSBpbjI9ImhhcmRBbHBoYSIgb3BlcmF0b3I9Im91dCIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwLjgwNzg0MyAwIDAgMCAwIDAuMDc0NTA5OCAwIDAgMCAwIDAuOTA1ODgyIDAgMCAwIDAuMTEgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18xNDAxXzQ4NzUiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3dfMTQwMV80ODc1IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMTQwMV80ODc1IiB4MT0iNzcuMjMwOCIgeTE9Ijk4LjQyNjUiIHgyPSI1LjIxODgyIiB5Mj0iLTM4LjQ2MDUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzRFMTRGRiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNDRTEzRTciLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K);
+                background-repeat: no-repeat;
+              }
+            }
+
+            .icon_name_row {
+              display: flex;
+              align-items: center;
+              column-gap: 15px;
+              margin-bottom: 1.2rem;
+              .pair_icon {
+                img {
+                  width: 2.25rem;
+                  height: 2.25rem;
+                  @media screen and (max-width: 1440px) {
+                    width: 2.65rem;
+                    height: 2.65rem;
+                  }
+                }
+              }
+              .name {
+                font-size: 1.125rem;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+              }
+            }
+            .emossion_apr_row {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1.2rem;
+              .emission_container {
+                .emission_title {
+                  font-size: 0.75rem;
+                  font-style: normal;
+                  font-weight: 500;
+                  margin-bottom: 0.2rem;
+                }
+                .emission_value {
+                  font-size: 0.875rem;
+                  font-style: normal;
+                  font-weight: 800;
+                  line-height: normal;
+                  letter-spacing: 0.0175rem;
+                  background: $text-gradient;
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                  span {
+                    font-size: 0.7rem;
+                    font-weight: 500;
+                  }
+                }
+              }
+              .apr_container {
+                .apr_title {
+                  font-size: 0.75rem;
+                  font-style: normal;
+                  font-weight: 500;
+                  margin-bottom: 0.2rem;
+                }
+                .apr_value {
+                  font-size: 0.875rem;
+                  font-style: normal;
+                  font-weight: 800;
+                  line-height: normal;
+                  letter-spacing: 0.0175rem;
+                  background: $text-gradient;
+                  -webkit-background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                }
+              }
+              .dash_line {
+                height: 3px;
+                width: 30px;
+                background: $text-gradient;
+                display: flex;
+                margin-top: 0.8rem;
+              }
+            }
+            .contenet_container {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin: 0.8rem 0;
+              .content_title {
+                font-size: 0.75rem;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                color: #8c89b4;
+              }
+              .content_value {
+                font-size: 0.75rem;
+                font-style: normal;
+                font-weight: 600;
+              }
+            }
+          }
+          a {
+            color: white;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+    .pagination_container {
+      display: flex;
+      justify-content: flex-end;
+      margin: 1rem 0;
+    }
+  }
+}
+
+// Mint Vault page
+
+.mint_vault_main_container {
+  .mint_feature_button_main_container {
+    .mint_feature_button_container {
+      display: flex;
+      column-gap: 1rem;
+      justify-content: flex-end;
+      margin: 1rem 0 2rem 0;
+      .button_container {
+        .ant-btn-primary {
+          width: 9.3125rem;
+          height: 2.4375rem;
+          padding: 0%;
+          line-height: 1;
+
+          color: rgba(255, 255, 255, 0.9);
+          text-align: center;
+          font-size: 0.875rem;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+          letter-spacing: -0.0175rem;
+          &:hover,
+          &:focus,
+          &:active {
+            background-color: transparent;
+          }
+        }
+
+        .btn-filled {
+          width: 9.3125rem;
+          height: 2.4375rem;
+          padding: 0%;
+          line-height: 1;
+          background-color: #38387e;
+          border-color: #38387e;
+
+          color: rgba(255, 255, 255, 0.9);
+          text-align: center;
+          font-size: 0.875rem;
+          font-style: normal;
+          font-weight: 500;
+          line-height: normal;
+          letter-spacing: -0.0175rem;
+          &:hover,
+          &:focus,
+          &:active {
+            background-color: #38387e;
+            border-color: #38387e;
+          }
+        }
+      }
+    }
+  }
+  .mint_vault_up_container {
+    .locker_deposit_main_container {
+      .locker_deposit_container {
+        .locker_deposit_data_container {
+          .locker_deposit_data {
+            column-gap: 4rem;
+            .deposit_amount_container {
+              margin-right: 0rem;
+            }
+            .reward_rate_container {
+              margin-right: 0rem;
+              flex-basis: 36%;
+              .title_container {
+              }
+              .value_container {
+                display: flex;
+                column-gap: 1rem;
+                align-items: center;
+                .slider_main_container {
+                  width: 100%;
+                }
+                .input_box_container {
+                  width: 5rem;
+                  display: flex;
+                  align-items: center;
+                  position: relative;
+                  .ant-input {
+                    width: 5.125rem;
+                    // height: 1.5rem;
+                    background: #0f0f3d;
+                    border-radius: 5px;
+                    padding: 11px;
+                    text-align: end;
+                    font-weight: 600;
+                    font-size: 18px;
+                    line-height: 22px;
+                    // margin: 0 10px;
+                    border: none;
+                    padding-right: 30%;
+                    color: white;
+                    &:hover {
+                      border-color: transparent;
+                    }
+                    &::-webkit-outer-spin-button,
+                    &::-webkit-inner-spin-button {
+                      margin: 0;
+                      display: none;
+                    }
+                  }
+                  .collateral_percentage {
+                    position: absolute;
+                    top: 28%;
+                    right: 10%;
+                    font-weight: 600;
+                    font-size: 18px;
+                  }
+                }
+              }
+            }
+
+            .earn_reward_container {
+              flex-basis: 30%;
+              .deposit_amount_container {
+                .title_container {
+                }
+                .input_container_box {
+                  .amount_container {
+                    &.title_comtainer_box {
+                      justify-content: flex-start;
+                      .title {
+                        color: #8c89b4;
+                        font-size: 0.75rem;
+                        font-style: normal;
+                        font-weight: 400;
+                        text-align: start;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // Mint Middle Container
+  .mint_vault_user_details_main_container {
+    .mint_vault_user_details_container {
+      .details_title_container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        align-items: center;
+        .details_title {
+          color: #fff;
+          font-size: 1rem;
+          font-style: normal;
+          font-weight: 700;
+        }
+        .details_id {
+          color: #d7d7d7;
+          font-size: 0.9rem;
+          font-style: normal;
+          font-weight: 500;
+        }
+      }
+      .user_detail_main_box {
+        display: flex;
+        justify-content: space-between;
+        .user_details_box {
+          .detail_name {
+            color: #8c89b4;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 400;
+          }
+          .detail_value {
+            color: #fff;
+            font-size: 1.4rem;
+            font-style: normal;
+            font-weight: 700;
+          }
+        }
+      }
+    }
+  }
+
+  // Mint Bottom Container
+
+  .mint_vault_details_main_container {
+    .mint_vault_details_container {
+      .details_title_container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        align-items: center;
+        .details_title {
+          color: #fff;
+          font-size: 1rem;
+          font-style: normal;
+          font-weight: 700;
+        }
+        .details_id {
+          color: #d7d7d7;
+          font-size: 0.9rem;
+          font-style: normal;
+          font-weight: 500;
+        }
+      }
+      .user_detail_main_box {
+        display: grid;
+        // justify-content: space-between;
+        // flex-wrap: wrap;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 1.5rem 0.5rem;
+        .user_details_box {
+          // flex-basis: 25%;
+          .detail_name {
+            color: #8c89b4;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 400;
+          }
+          .detail_value {
+            color: #fff;
+            font-size: 1.4rem;
+            font-style: normal;
+            font-weight: 700;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Mint Modals
+
+.mint_modal {
+  .ant-modal-content {
+    .ant-modal-close {
+    }
+    .ant-modal-header {
+      .ant-modal-title {
+        color: #fff;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+      }
+    }
+    .ant-modal-body {
+      color: white;
+      .adjust_collateral_modal_main_container {
+        .adjust_collateral_modal_container {
+          .adjust_collateral_title {
+            color: #aeabd8;
+            font-size: 0.875rem;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            margin-top: 1.4rem;
+          }
+          .adjust_collateral_slider_container {
+            margin-top: 1.5rem;
+            .slider_and_input_container {
+              display: flex;
+              column-gap: 1rem;
+              align-items: center;
+              .slider_main_container {
+                width: 100%;
+              }
+              .input_box_container {
+                width: 5rem;
+                display: flex;
+                align-items: center;
+                position: relative;
+                .ant-input {
+                  width: 5.125rem;
+                  // height: 1.5rem;
+                  background: #0f0f3d;
+                  border-radius: 5px;
+                  padding: 11px;
+                  text-align: end;
+                  font-weight: 600;
+                  font-size: 18px;
+                  line-height: 22px;
+                  // margin: 0 10px;
+                  height: 2.3rem;
+                  border: none;
+                  padding-right: 38%;
+                  color: white;
+                  &:hover {
+                    border-color: transparent;
+                  }
+                  &::-webkit-outer-spin-button,
+                  &::-webkit-inner-spin-button {
+                    margin: 0;
+                    display: none;
+                  }
+                }
+                .collateral_percentage {
+                  position: absolute;
+                  top: 14%;
+                  right: 10%;
+                  font-weight: 600;
+                  font-size: 18px;
+                }
+              }
+            }
+          }
+          .input_icon_container {
+            .input_container_box {
+              margin-top: 1.85rem;
+              .amount_container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-left: 3px;
+                .title_container {
+                  color: #aeabd8;
+                  font-size: 0.875rem;
+                  font-style: normal;
+                  font-weight: 400;
+                  line-height: normal;
+                }
+                .btn_container {
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                  margin-right: 15px;
+                }
+                .maxhalf {
+                  display: flex;
+                  align-items: center;
+                  margin-left: 4px;
+
+                  &.ant-btn {
+                    font-size: $font-size-sm;
+                    padding: 1px 0;
+                    margin-right: 5px;
+                    line-height: 1;
+                    text-align: center;
+                    font-weight: 400;
+                    width: 50px;
+                    height: 20px;
+                    border: 0;
+                    cursor: pointer;
+                    border-radius: 2px;
+                    background: #fff;
+                    text-transform: capitalize;
+                    justify-content: center;
+                    .dark-mode & {
+                      color: $white;
+                      background: rgba(99, 89, 233, 0.5);
+                      border: 0.3px solid #6359e9;
+                    }
+
+                    &.active {
+                      .dark-mode & {
+                        background: $secondary-color;
+                      }
+
+                      span {
+                        .dark-mode & {
+                          color: $white;
+                        }
+                      }
+                    }
+                  }
+                }
+                .amount {
+                  color: #aeabd8;
+                  text-transform: uppercase;
+                  font-style: normal;
+                  font-weight: 700;
+                  font-size: 12px;
+                  line-height: 15px;
+                }
+              }
+              .input_container {
+                display: flex;
+                align-items: center;
+                background: #0f0f3d;
+                padding: 0.8rem;
+                border-radius: 10px;
+                margin-top: 10px;
+                justify-content: space-between;
+                .icon_container {
+                  .assets-withicon {
+                    .assets-icons {
+                    }
+                    .name {
+                      font-style: normal;
+                      font-weight: 600;
+                      font-size: 16px;
+                      line-height: 20px;
+                      text-transform: uppercase;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .vault_debt_details_main_container {
+            .vault_debt_details_container {
+              margin-top: 1.6rem;
+              .details_row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .details_title {
+                  color: #cbc9ea;
+                  font-size: 0.75rem;
+                  font-style: normal;
+                  font-weight: 400;
+                  line-height: normal;
+                }
+                .details_value {
+                  display: flex;
+                  align-items: baseline;
+                  column-gap: 3px;
+                  color: #cbc9ea;
+                  font-size: 0.75rem;
+                  font-style: normal;
+                  font-weight: 400;
+                  text-transform: uppercase;
+                  .arrow {
+                    font-size: 1.2rem;
+                  }
+                }
+              }
+            }
+          }
+          .deposit_btn_container {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.4rem;
+            .btn-filled {
+              width: 9.3125rem;
+              height: 2.3125rem;
+            }
+          }
+        }
+      }
+
+      // Close Modal
+
+      .mint_close_modal_main_container {
+        margin-top: 1.5rem;
+        .mint_close_modal_container {
+          .details_main_container {
+            margin: 1.5rem 0;
+            .details_title {
+              color: #aeabd8;
+              font-size: 0.875rem;
+              font-style: normal;
+              font-weight: 400;
+              line-height: normal;
+            }
+            .icon_with_number_container {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-top: 12px;
+              .asset_and_icon {
+                display: flex;
+                align-items: center;
+                column-gap: 10px;
+                .assets-icons {
+                }
+                .name {
+                  color: #fff;
+                  text-transform: uppercase;
+                  font-size: 1rem;
+                  font-style: normal;
+                  font-weight: 600;
+                  line-height: normal;
+                }
+              }
+              .asset_value {
+                color: #eeedff;
+                font-size: 1rem;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+              }
+            }
+          }
+          .deposit_btn_container {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.4rem;
+            .btn-filled {
+              width: 9.3125rem;
+              height: 2.3125rem;
             }
           }
         }
