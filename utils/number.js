@@ -1,5 +1,5 @@
 import { Decimal } from "@cosmjs/math";
-import { ibcDenoms } from "../config/network";
+import { comdex, ibcDenoms } from "../config/network";
 import { DOLLAR_DECIMALS } from "../constants/common";
 import { denomToCoingeckoTokenId } from "./string";
 
@@ -117,3 +117,7 @@ export const formateNumberDecimals = (price, decimals = 2) => {
     maximumFractionDigits: decimals,
   }).format(price);
 };
+
+export const fixedDecimalNumber=(number,decimals)=>{
+  return Math.floor(number * Math.pow(10, decimals || comdex.coinDecimals)) / Math.pow(10, decimals || comdex.coinDecimals)
+}

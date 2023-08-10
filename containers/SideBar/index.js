@@ -58,7 +58,6 @@ const SideBar = ({ lang, isDarkMode }) => {
 
   };
 
-  console.log(isMobile, "isMobile");
   return (
     <>
       {!isMobile ?
@@ -75,7 +74,7 @@ const SideBar = ({ lang, isDarkMode }) => {
             </div>
             <div className="links_main_container">
               <ul>
-                {tabsList?.map((item) => {
+                {tabsList?.map((item, index) => {
                   return (
                     <li className={
                       item.path === "dashboard" && route === '/'
@@ -83,7 +82,9 @@ const SideBar = ({ lang, isDarkMode }) => {
                         : item.active === route
                           ? "active"
                           : ""
-                    }>
+                    }
+                      key={index}
+                    >
                       <div className="links"
                         onClick={() => {
                           if (item?.path === "mint") {

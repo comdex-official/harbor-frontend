@@ -1,5 +1,5 @@
 import React from 'react'
-import AuctionMarketView from '../../../containers/Auctions/Collateral/Auction Market/AuctionMarketView'
+import AuctionMarketView from '../../containers/Auctions/Collateral/Auction Market/AuctionMarketView'
 
 const AuctionMarketPage = () => {
     return (

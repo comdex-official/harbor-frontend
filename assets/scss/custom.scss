@@ -16,7 +16,6 @@ body {
   font-feature-settings: normal !important;
   font-variant: normal !important;
   font-weight: 300;
-  background: $body-background-light !important;
   height: auto !important;
   margin: 0;
   padding: 0;
@@ -517,6 +516,8 @@ button {
           background: none;
           border: 0;
           line-height: 17px;
+          width: 8.9375rem;
+          height: 2.4375rem;
 
           transition: all 0.3s ease-in-out;
           .ant-tabs-tab-btn {
@@ -529,15 +530,17 @@ button {
           }
 
           &:hover {
-            background: rgba($secondary-color, 0.5);
+            // background: rgba($secondary-color, 0.5);
+            background: linear-gradient(45deg, #6359e975, #7109b765);
           }
 
           &.ant-tabs-tab-active {
-            background: $secondary-color;
+            // background: $secondary-color;
             border-color: $secondary-color;
+            background: linear-gradient(45deg, #6359e9, #7209b7);
 
             .ant-tabs-tab-btn {
-              font-weight: 400;
+              // font-weight: 400;
               color: $white;
             }
           }

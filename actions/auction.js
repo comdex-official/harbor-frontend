@@ -5,6 +5,7 @@ import {
   CURRENT_AUCTION_SET,
   SET_AUCTION_PAGE_NUMBER,
   SET_AUCTION_PAGE_SIZE,
+  SET_FILTERED_MARKET_BID_DATA,
   SET_SELECTED_AUCTIONED_ASSET,
 } from "../constants/auction";
 
@@ -54,6 +55,14 @@ export const setBidAmount = (value) => {
 export const setSelectedFilterAuctionAsset = (value) => {
   return {
     type: SET_SELECTED_AUCTIONED_ASSET,
+    value,
+  };
+};
+
+
+export const setFilteredMarketBidData = (value) => {
+  return {
+    type: SET_FILTERED_MARKET_BID_DATA,
     value,
   };
 };

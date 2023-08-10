@@ -7,7 +7,7 @@ import moment from "moment";
 import { comdex } from "../../../config/network";
 // import { queryDutchBiddingList } from "../../../services/auction";
 import { useEffect, useState } from "react";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DUTCH_AUCTION_BIDDING_TYPE, HALF_DEFAULT_PAGE_SIZE } from "../../../constants/common";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, ENGLISH_AUCTION_BIDDING_TYPE, HALF_DEFAULT_PAGE_SIZE } from "../../../constants/common";
 import NoDataIcon from "../../../components/common/NoDataIcon";
 import { fetchUserBiddingList, queryDutchBiddingList } from "../../../services/auctionV2/query";
 import { NextImage } from "../../../components/image/NextImage";
@@ -22,26 +22,6 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap, iconList })
 
 
 
-    // const fetchBiddings = (bidType, address, offset, limit, countTotal, reverse, history) => {
-    //     setInProgress(true);
-    //     queryDutchBiddingList(bidType, address, offset, limit, countTotal, reverse, history, (error, result) => {
-    //         setInProgress(false);
-
-    //         if (error) {
-    //             console.log(error);
-    //             message.error(error);
-    //             return;
-    //         }
-    //         if (result?.bids?.length > 0) {
-    //             let reverseData = result && result.bids;
-    //             setBiddingList(reverseData);
-    //             setBiddingsTotalCounts(result?.pagination?.total?.toNumber());
-    //         } else {
-    //             setBiddingList("");
-    //         }
-    //     });
-    // };
-
     const userBidList = (address, bidType, history) => {
         setInProgress(true);
         fetchUserBiddingList(address, bidType, history, (error, result) => {
@@ -51,6 +31,7 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap, iconList })
                 message.error(error);
             }
             setInProgress(false);
+            console.log(result, "Bids User");
             if (result?.bids?.length > 0) {
                 let reverseData = result && result.bids;
                 setBiddingList(reverseData);
@@ -68,7 +49,7 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap, iconList })
     useEffect(() => {
         if (address) {
             // fetchBiddings(DUTCH_AUCTION_BIDDING_TYPE, address, (pageNumber - 1) * pageSize, pageSize, true, true, true);
-            userBidList(address, DUTCH_AUCTION_BIDDING_TYPE, true)
+            userBidList(address, ENGLISH_AUCTION_BIDDING_TYPE, true)
         }
     }, [address, refreshBalance])
 
@@ -142,7 +123,6 @@ export const InActiveBidding = ({ address, refreshBalance, assetMap, iconList })
         },
     ];
 
-    console.log(biddingList, "biddingList");
     const tableBiddingData =
         biddingList &&
         biddingList.length > 0 &&
