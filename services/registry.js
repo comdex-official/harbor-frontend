@@ -1,6 +1,7 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { defaultRegistryTypes } from "@cosmjs/stargate";
 import { MsgPlaceDebtBidRequest, MsgPlaceDutchBidRequest, MsgPlaceSurplusBidRequest } from 'comdex-codec/build/comdex/auction/v1beta1/tx';
+import { MsgDepositLimitBidRequest, MsgCancelLimitBidRequest, MsgWithdrawLimitBidRequest, MsgPlaceMarketBidRequest } from 'comdex-codec/build/comdex/auctionsv2/v1beta1/tx';
 import { MsgCloseLockerRequest, MsgCreateLockerRequest, MsgDepositAssetRequest, MsgLockerRewardCalcRequest, MsgWithdrawAssetRequest } from 'comdex-codec/build/comdex/locker/v1beta1/tx';
 import { MsgCloseRequest, MsgCreateRequest, MsgDepositAndDrawRequest, MsgDepositRequest, MsgDepositStableMintRequest, MsgDrawRequest, MsgRepayRequest, MsgVaultInterestCalcRequest, MsgWithdrawRequest, MsgWithdrawStableMintRequest } from 'comdex-codec/build/comdex/vault/v1beta1/tx';
 
@@ -26,6 +27,12 @@ export const myRegistry = new Registry([
   ["/comdex.auction.v1beta1.MsgPlaceSurplusBidRequest", MsgPlaceSurplusBidRequest],
   ["/comdex.auction.v1beta1.MsgPlaceDebtBidRequest", MsgPlaceDebtBidRequest],
   ["/comdex.auction.v1beta1.MsgPlaceDutchBidRequest", MsgPlaceDutchBidRequest],
+
+
+  ["/comdex.auctionsV2.v1beta1.MsgPlaceMarketBidRequest", MsgPlaceMarketBidRequest],
+  ["/comdex.auctionsV2.v1beta1.MsgDepositLimitBidRequest", MsgDepositLimitBidRequest],
+  ["/comdex.auctionsV2.v1beta1.MsgCancelLimitBidRequest", MsgCancelLimitBidRequest],
+  ["/comdex.auctionsV2.v1beta1.MsgWithdrawLimitBidRequest", MsgWithdrawLimitBidRequest],
 
 ]);
 

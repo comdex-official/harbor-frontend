@@ -6,6 +6,7 @@ import {
   CURRENT_AUCTION_SET,
   SET_AUCTION_PAGE_NUMBER,
   SET_AUCTION_PAGE_SIZE,
+  SET_FILTERED_MARKET_BID_DATA,
   SET_SELECTED_AUCTIONED_ASSET,
 } from "../constants/auction";
 
@@ -79,6 +80,14 @@ const bidding = (
   return state;
 };
 
+const filteredMarketBidData = (state = [], action) => {
+  if (action.type === SET_FILTERED_MARKET_BID_DATA) {
+    return action.value;
+  }
+
+  return state;
+};
+
 export default combineReducers({
   auctions,
   _,
@@ -86,5 +95,6 @@ export default combineReducers({
   bidding,
   selectedAuctionedAsset,
   auctionsPageSize,
-  auctionsPageNumber
+  auctionsPageNumber,
+  filteredMarketBidData
 });

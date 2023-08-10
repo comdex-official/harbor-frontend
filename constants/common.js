@@ -11,6 +11,11 @@ export const ZERO_DOLLAR_DECIMALS = 0;
 export const TOTAL_ACTIVITY = 5;
 export const TOTAL_VEHARBOR_ACTIVITY = 4;
 export const DEFAULT_CHAIN_ID_FOR_CLAIM_AIRDROP = 1;
+export const DUTCH_AUCTION_TYPE=1;
+export const SURPLUS_AUCTION_TYPE=2;
+export const DEBT_AUCTION_TYPE=3;
+export const DUTCH_AUCTION_BIDDING_TYPE=1;
+export const ENGLISH_AUCTION_BIDDING_TYPE=2;
 
 
 export const PRODUCT_ID = Number(envConfig?.[app]?.appId);

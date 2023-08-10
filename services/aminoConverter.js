@@ -389,43 +389,168 @@ export const customAminoTypes = {
       };
     },
   },
-  "/comdex.auction.v1beta1.MsgPlaceDutchBidRequest": {
-    aminoType: "comdex/auction/MsgPlaceDutchBidRequest",
+  // "/comdex.auction.v1beta1.MsgPlaceDutchBidRequest": {
+  //   aminoType: "comdex/auction/MsgPlaceDutchBidRequest",
+  //   toAmino: ({
+  //     bidder,
+  //     max,
+  //     amount,
+  //     auctionId,
+  //     appId,
+  //     auctionMappingId,
+  //   }) => {
+  //     return {
+  //       bidder,
+  //       max,
+  //       amount: amount,
+  //       auction_id: String(auctionId),
+  //       app_id: String(appId),
+  //       auction_mapping_id: String(auctionMappingId),
+  //     };
+  //   },
+  //   fromAmino: ({
+  //     bidder,
+  //     max,
+  //     amount,
+  //     auction_id,
+  //     app_id,
+  //     auction_mapping_id,
+  //   }) => {
+  //     return {
+  //       bidder,
+  //       max,
+  //       amount: amount,
+  //       auctionId: Number(auction_id),
+  //       appId: Number(app_id),
+  //       auctionMappingId: Number(auction_mapping_id),
+  //     };
+  //   },
+  // },
+
+  "/comdex.auctionsV2.v1beta1.MsgPlaceMarketBidRequest": {
+    aminoType: "comdex/auctionsV2/MsgPlaceMarketBidRequest",
     toAmino: ({
       bidder,
-      max,
-      amount,
       auctionId,
-      appId,
-      auctionMappingId,
+      amount,
     }) => {
       return {
         bidder,
-        max,
-        amount: amount,
         auction_id: String(auctionId),
-        app_id: String(appId),
-        auction_mapping_id: String(auctionMappingId),
+        amount: amount,
       };
     },
     fromAmino: ({
       bidder,
-      max,
-      amount,
       auction_id,
-      app_id,
-      auction_mapping_id,
+      amount,
     }) => {
       return {
         bidder,
-        max,
-        amount: amount,
         auctionId: Number(auction_id),
-        appId: Number(app_id),
-        auctionMappingId: Number(auction_mapping_id),
+        amount: amount,
       };
     },
   },
+
+  "/comdex.auctionsV2.v1beta1.MsgDepositLimitBidRequest": {
+    aminoType: "comdex/auctionsV2/MsgDepositLimitBidRequest",
+    toAmino: ({
+      bidder,
+      collateralTokenId,
+      debtTokenId,
+      premiumDiscount,
+      amount,
+    }) => {
+      return {
+        bidder,
+        collateral_token_id: String(collateralTokenId),
+        debt_token_id: String(debtTokenId),
+        premium_discount: premiumDiscount,
+        amount: amount,
+      };
+    },
+    fromAmino: ({
+      bidder,
+      collateral_token_id,
+      debt_token_id,
+      premium_discount,
+      amount,
+    }) => {
+      return {
+        bidder,
+        collateralTokenId: Number(collateral_token_id),
+        debtTokenId: Number(debt_token_id),
+        premium_discount: premium_discount,
+        amount: amount,
+      };
+    },
+  },
+
+  "/comdex.auctionsV2.v1beta1.MsgWithdrawLimitBidRequest": {
+    aminoType: "comdex/auctionsV2/MsgWithdrawLimitBidRequest",
+    toAmino: ({
+      bidder,
+      collateralTokenId,
+      debtTokenId,
+      premiumDiscount,
+      amount,
+    }) => {
+      return {
+        bidder,
+        collateral_token_id: String(collateralTokenId),
+        debt_token_id: String(debtTokenId),
+        premium_discount: premiumDiscount,
+        amount: amount,
+      };
+    },
+    fromAmino: ({
+      bidder,
+      collateral_token_id,
+      debt_token_id,
+      premium_discount,
+      amount,
+    }) => {
+      return {
+        bidder,
+        collateralTokenId: Number(collateral_token_id),
+        debtTokenId: Number(debt_token_id),
+        premium_discount: premium_discount,
+        amount: amount,
+      };
+    },
+  },
+
+  "/comdex.auctionsV2.v1beta1.MsgCancelLimitBidRequest": {
+    aminoType: "comdex/auctionsV2/MsgCancelLimitBidRequest",
+    toAmino: ({
+      bidder,
+      collateralTokenId,
+      debtTokenId,
+      premiumDiscount,
+    }) => {
+      return {
+        bidder,
+        collateral_token_id: String(collateralTokenId),
+        debt_token_id: String(debtTokenId),
+        premium_discount: premiumDiscount,
+      };
+    },
+    fromAmino: ({
+      bidder,
+      collateral_token_id,
+      debt_token_id,
+      premium_discount,
+    }) => {
+      return {
+        bidder,
+        collateralTokenId: Number(collateral_token_id),
+        debtTokenId: Number(debt_token_id),
+        premium_discount: premium_discount,
+      };
+    },
+  },
+
   "/comdex.locker.v1beta1.MsgCloseLockerRequest": {
     aminoType: "comdex/locker/MsgCloseLockerRequest",
     toAmino: ({

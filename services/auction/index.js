@@ -58,6 +58,7 @@ export const queryDutchAuctionList = (
       });
   });
 };
+
 export const querySingleDutchAuction = (
   auctionId,
   auctionMappingId,

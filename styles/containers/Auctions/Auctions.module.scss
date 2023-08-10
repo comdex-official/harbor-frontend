@@ -304,6 +304,11 @@
                   }
                 }
                 .input_container {
+                  .custom_input_container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                  }
                 }
               }
             }
@@ -426,6 +431,32 @@
                     &:hover {
                       border-color: transparent;
                     }
+                    .ant-input {
+                      background: transparent;
+                      text-align: end;
+                      width: 50%;
+                      &::-webkit-outer-spin-button,
+                      &::-webkit-inner-spin-button {
+                        display: none;
+                      }
+                      &::placeholder {
+                        /* Chrome, Firefox, Opera, Safari 10.1+ */
+                        color: white;
+                      }
+
+                      &::-ms-input-placeholder {
+                        /* Internet Explorer 10-11 */
+                        color: white;
+                      }
+
+                      &::-ms-input-placeholder {
+                        /* Microsoft Edge */
+                        color: white;
+                      }
+                    }
+                    .ant-input-suffix {
+                      color: white;
+                    }
                   }
                   .subtract_btn {
                     background: #cbc9ea;
@@ -469,9 +500,35 @@
                     line-height: 22px;
                     // margin: 0 10px;
                     border: none;
-                    padding-right: 27%;
+                    // padding-right: 4rem;
                     &:hover {
                       border-color: transparent;
+                    }
+                    .ant-input {
+                      background: transparent;
+                      text-align: end;
+                      // width: 50%;
+                      &::-webkit-outer-spin-button,
+                      &::-webkit-inner-spin-button {
+                        display: none;
+                      }
+                      &::placeholder {
+                        /* Chrome, Firefox, Opera, Safari 10.1+ */
+                        color: white;
+                      }
+
+                      &::-ms-input-placeholder {
+                        /* Internet Explorer 10-11 */
+                        color: white;
+                      }
+
+                      &::-ms-input-placeholder {
+                        /* Microsoft Edge */
+                        color: white;
+                      }
+                    }
+                    .ant-input-suffix {
+                      color: white;
                     }
                   }
                 }
@@ -663,6 +720,63 @@
                   }
                 }
               }
+            }
+          }
+          .bid_input_container {
+            margin-bottom: 10px;
+            margin-top: 25px;
+            position: relative;
+            .input_box {
+              .input_with_no_border {
+                // width: 186px;
+                // height: 51px;
+                background: #0f0f3d;
+                border-radius: 5px;
+                padding: 11px;
+                text-align: end;
+                font-weight: 600;
+                font-size: 18px;
+                line-height: 22px;
+                // margin: 0 10px;
+                border: none;
+                // padding-right: 4rem;
+                &:hover {
+                  border-color: transparent;
+                }
+                .ant-input {
+                  background: transparent;
+                  text-align: end;
+                  // width: 50%;
+                  &::-webkit-outer-spin-button,
+                  &::-webkit-inner-spin-button {
+                    display: none;
+                  }
+                  &::placeholder {
+                    /* Chrome, Firefox, Opera, Safari 10.1+ */
+                    color: white;
+                  }
+
+                  &::-ms-input-placeholder {
+                    /* Internet Explorer 10-11 */
+                    color: white;
+                  }
+
+                  &::-ms-input-placeholder {
+                    /* Microsoft Edge */
+                    color: white;
+                  }
+                }
+                .ant-input-suffix {
+                  color: white;
+                }
+              }
+            }
+            .denom_box {
+              position: absolute;
+              top: 28%;
+              right: 5%;
+              font-weight: 600;
+              font-size: 18px;
             }
           }
           .input_container {

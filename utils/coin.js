@@ -36,7 +36,9 @@ let denomToDisplaySymbol = getDenomToDisplaySymbolMap();
 
 
 export const getAmount = (selectedAmount, coinDecimals) =>
-  (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
+  // (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
+  (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toLocaleString().replace(/,/g, '');
+
 
 export const amountConversionWithComma = (amount, decimals, chainDecimals) => {
 

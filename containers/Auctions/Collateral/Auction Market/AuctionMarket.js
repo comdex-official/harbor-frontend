@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import * as PropTypes from "prop-types";
 import TooltipIcon from '../../../../components/TooltipIcon';
-import { commaSeparator, decimalConversion, marketPrice } from '../../../../utils/number';
+import { commaSeparator, decimalConversion, formatNumber, marketPrice } from '../../../../utils/number';
 import { amountConversion, amountConversionWithComma, denomConversion } from '../../../../utils/coin';
 import { DOLLAR_DECIMALS } from '../../../../constants/common';
 import { Col, Row, SvgIcon } from '../../../../components/common';
@@ -12,15 +12,22 @@ import { comdex } from '../../../../config/network';
 import NoDataIcon from '../../../../components/common/NoDataIcon';
 import { Table } from 'antd';
 import { useRouter } from 'next/router';
+import { queryUserLimitBidsByAssetID } from '@/services/auctionV2/query';
+import { NextImage } from '@/components/image/NextImage';
 
 const AuctionMarket = ({
+    marketInProgress,
     address,
     refreshBalance,
     assetMap,
-    auctions,
-    markets
+    limitBidOrderList,
+    markets,
+    marketAuctionPageSize,
+    marketAuctionPageNumber,
+    iconList
 }) => {
     const router = useRouter()
+
 
     const columns = [
         {
@@ -87,8 +94,8 @@ const AuctionMarket = ({
 
 
     const tableData =
-        auctions && auctions?.auctions?.length > 0
-            ? auctions?.auctions?.map((item, index) => {
+        limitBidOrderList && limitBidOrderList?.length > 0
+            ? limitBidOrderList?.map((item, index) => {
                 return {
                     key: index,
                     id: item.id,
@@ -96,13 +103,9 @@ const AuctionMarket = ({
                         <>
                             <div className="assets-withicon">
                                 <div className="assets-icon">
-                                    <SvgIcon
-                                        name={iconNameFromDenom(
-                                            item?.outflowTokenInitAmount?.denom
-                                        )}
-                                    />
+                                    <NextImage src={iconList?.[item?.collateralAssetDenom]?.coinImageUrl} height={30} width={30} alt="@icon" />
                                 </div>
-                                {denomConversion(item?.outflowTokenInitAmount?.denom)}
+                                {denomConversion(item?.collateralAssetDenom)}
                             </div>
                         </>
                     ),
@@ -110,20 +113,17 @@ const AuctionMarket = ({
                         <>
                             <div className="assets-withicon ">
                                 <div className="assets-icon">
-                                    <SvgIcon
-                                        name={iconNameFromDenom(
-                                            item?.inflowTokenCurrentAmount?.denom
-                                        )}
-                                    />
+                                    <NextImage src={iconList?.[item?.debtAssetDenom]?.coinImageUrl} height={30} width={30} alt="@icon" />
                                 </div>
-                                {denomConversion(item?.inflowTokenCurrentAmount?.denom)}
+                                {denomConversion(item?.debtAssetDenom)}
                             </div>
                         </>
                     ),
-                    pool_size: "40.50k",
-                    max_discount: "30%",
-                    // health: "$140.50",
-                    your_bid: "0.00",
+                    pool_size: commaSeparator(formatNumber(amountConversion(item?.bidValue || 0, DOLLAR_DECIMALS, assetMap[item?.debtAssetDenom]?.decimals))),
+                    max_discount: `${decimalConversion(item?.maxDiscount)}%`,
+                    // health: "$140.50", 
+                    // your_bid: getTotalUserBid(item?.collateralAssetId.toNumber(), item?.debtAssetId.toNumber(), item?.collateralAssetDenom) || "0.00",
+                    your_bid: commaSeparator(formatNumber(amountConversion(item?.userBidValue || 0, DOLLAR_DECIMALS, assetMap[item?.debtAssetDenom]?.decimals))),
                     action: item,
                 };
             })
@@ -131,7 +131,7 @@ const AuctionMarket = ({
 
     const handelClickAuctionMarketTable = (record, index) => {
         console.log(record, index);
-        router.push('/auctions/1')
+        router.push(`/limitBid?id=${record?.action?.collateralAssetId?.toNumber()}&id=${record?.action?.debtAssetId?.toNumber()}`)
     }
 
     return (
@@ -139,12 +139,13 @@ const AuctionMarket = ({
             <div className="app-content-wrapper">
                 <Row>
                     <Col>
-                        <div className={auctions?.auctions?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16"}>
+                        <div className={limitBidOrderList?.limitBidOrderList?.length > 0 ? "composite-card py-3" : "composite-card py-3 height-16"}>
                             <div className="card-content">
                                 <Table
                                     className="custom-table liquidation-table"
                                     dataSource={tableData}
                                     columns={columns}
+                                    loading={marketInProgress}
                                     onRow={(record, rowIndex) => {
                                         return {
                                             onClick: () => handelClickAuctionMarketTable(record, rowIndex),
@@ -168,7 +169,7 @@ AuctionMarket.propTypes = {
     lang: PropTypes.string.isRequired,
     setPairs: PropTypes.func.isRequired,
     address: PropTypes.string,
-    auctions: PropTypes.string.isRequired,
+    limitBidOrderList: PropTypes.string.isRequired,
     assetMap: PropTypes.object,
     refreshBalance: PropTypes.number.isRequired,
     auctionsPageSize: PropTypes.number.isRequired,
@@ -180,7 +181,6 @@ const stateToProps = (state) => {
     return {
         lang: state.language,
         address: state.account.address,
-        auctions: state.auction.auctions,
         auctionsPageSize: state.auction.auctionsPageSize,
         auctionsPageNumber: state.auction.auctionsPageNumber,
         assetMap: state.asset.map,

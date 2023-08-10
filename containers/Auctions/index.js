@@ -1,17 +1,18 @@
 import * as PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { Button, message, Tabs } from "antd";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { Col, Row } from "../../components/common";
 import SurplusAuction from "./Surplus";
 import DebtAuction from "./Debt";
 import { setPairs } from "../../actions/asset";
 import { setAuctionsPageSize, setAuctionsPageNumber } from "../../actions/auction";
 import Collateral from "./Collateral";
-import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from "../../constants/common";
+import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, DUTCH_AUCTION_TYPE } from "../../constants/common";
 import { setAuctions } from "../../actions/auction";
-import { queryDutchAuctionList, queryFilterDutchAuctions } from "../../services/auction";
 import TooltipIcon from "../../components/TooltipIcon";
+import { queryAuctionsList } from "@/services/auctionV2/query";
+import { queryDutchAuctionsList } from "../../services/auctionV2/query";
 
 const Auctions = ({
   auctions,
@@ -21,8 +22,6 @@ const Auctions = ({
   setAuctionsPageSize,
   setAuctionsPageNumber,
 }) => {
-  const dispatch = useDispatch()
-  const selectedAuctionedAsset = useSelector((state) => state.auction.selectedAuctionedAsset);
 
   const [activeKey, setActiveKey] = useState("1");
   const [disableFetchBtn, setdisableFetchBtn] = useState(false);
@@ -47,9 +46,10 @@ const Auctions = ({
   };
 
 
-  const fetchAuctions = (offset, limit, isTotal, isReverse) => {
+  const fetchAuctions = (auctionType,offset, limit, isTotal, isReverse) => {
     setUpdateBtnLoadiing(true)
-    queryDutchAuctionList(
+    queryDutchAuctionsList(
+      auctionType,
       offset,
       limit,
       isTotal,
@@ -72,23 +72,9 @@ const Auctions = ({
     );
   };
 
-  const fetchFilteredDutchAuctions = (offset, limit, countTotal, reverse, asset) => {
-    queryFilterDutchAuctions(offset, limit, countTotal, reverse, asset, (error, data) => {
-      if (error) {
-        message.error(error);
-        return;
-      }
-      dispatch(setAuctions(data));
-    });
-  };
-
   const fetchLatestPrice = () => {
     setdisableFetchBtn(true)
-    if (selectedAuctionedAsset?.length > 0) {
-      fetchFilteredDutchAuctions((auctionsPageNumber - 1) * auctionsPageSize, auctionsPageSize, true, false, selectedAuctionedAsset)
-    } else {
-      fetchAuctions((auctionsPageNumber - 1) * auctionsPageSize, auctionsPageSize, true, true)
-    }
+    fetchAuctions(DUTCH_AUCTION_TYPE,(auctionsPageNumber - 1) * auctionsPageSize, auctionsPageSize, true, true)
   }
 
   useEffect(() => {
@@ -100,30 +86,6 @@ const Auctions = ({
     }
   }, [disableFetchBtn])
 
-
-  const refreshAuctionButton = {
-    right: (
-      <>
-        <Row >
-          <div className="locker-up-main-container">
-            <div className="locker-up-container mr-4">
-              <div className="claim-container ">
-                <div className="claim-btn">
-                  <Button
-                    type="primary"
-                    className="btn-filled mr-1"
-                    disabled={disableFetchBtn}
-                    onClick={() => fetchLatestPrice()}
-                  >Update Auction Price </Button> <TooltipIcon text="The price of the auction changes every block, click on the button to update the price for placing accurate bids." />
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </Row>
-      </>
-    ),
-  };
 
   return (
     <>

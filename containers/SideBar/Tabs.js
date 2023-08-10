@@ -90,10 +90,10 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
   return (
     <div className="vertical_tabs">
       <ul className="tabs_content">
-        {tabsList.map((item) => {
+        {tabsList.map((item, index) => {
           return (
             <li
-              key={item.index}
+              key={index}
               className={
                 "tab " +
                 (item.path === "dashboard" && route === '/'
@@ -188,7 +188,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
                         <div className="name">{denomConversion("ucmst")}</div>
                       </div>
                     </Option>
-                    );
+                    {/* ); */}
                     {/* })} */}
                   </Select>
                 </div>
