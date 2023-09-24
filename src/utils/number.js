@@ -40,6 +40,14 @@ export const marketPrice = (marketsMap, denom, assetId, coinGeckoPrice, cswapPri
     return 1;
   }
 
+  if (denom === "ucmdx") {
+    return 900000 / 1000000;
+  }
+
+  if (denom === "weth-wei") {
+    return 10
+  }
+
   if (value && value?.twa && value?.isPriceActive) {
     return value?.twa?.toNumber() / 1000000;
   }

@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import Snack from "../../../components/common/Snack";
 import variables from "../../../utils/variables";
 import { comdex } from "../../../config/network";
+import TestOneClick from "./TestOneClick";
 
 const { TabPane } = Tabs;
 
@@ -40,8 +41,9 @@ const Vesting = ({
         [
             { label: "Create", key: "1", children: <Create /> },
             { label: "Staked HARBOR", key: "2", disabled: !issuedToken?.length > 0, children: <Lock /> },
+            { label: "One Click", key: "3", children: <TestOneClick /> },
         ]
-
+    console.log(issuedToken, "issuedToken");
     const callback = (key) => {
         setActiveKey(key)
     };

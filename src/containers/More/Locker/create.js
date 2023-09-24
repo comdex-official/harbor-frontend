@@ -18,6 +18,8 @@ import { amountConversion, amountConversionWithComma, denomConversion, getAmount
 import { toDecimals } from '../../../utils/string';
 import variables from '../../../utils/variables';
 
+import { coins, DirectSecp256k1HdWallet, SigningCosmWasmClient } from "cosmwasm";
+
 
 const Create = ({
     lang,
@@ -145,6 +147,99 @@ const Create = ({
     useEffect(() => {
         fetchVestingCreateWeightage()
     }, [address, refreshBalance])
+
+
+    const handleOneClickStake = async (productId, lockingPeriod, amount) => {
+        const wallet = await DirectSecp256k1HdWallet.fromMnemonic(
+            "enroll giraffe battle jump okay window boat wire sauce replace science cause",
+            { prefix: "comdex" }
+        );
+
+        const account = await wallet.getAccounts();
+
+        const handleMsg = {
+            "lock":
+            {
+                "app_id": productId,
+                "locking_period": lockingPeriod,
+
+            }
+        };
+
+        const msg = {
+            typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+            value: {
+                sender: walletAddress,
+                contract: lockingContractAddress,
+                msg: new TextEncoder().encode(JSON.stringify(handleMsg)),
+                funds: fundsValues
+            }
+        }
+        const fundsValues = [
+            {
+                "denom": "uharbor",
+                "amount": getAmount(amount)
+            }
+        ]
+
+        const fee = {
+            amount: coins(2000, "ucmdx"),
+            gas: "200000",
+        };
+
+        const cosmJS = await SigningCosmWasmClient.connect(
+            comdex?.rpc,
+        );
+
+        const { accountNumber, sequence } = await cosmJS.getSequence(account[0].address);
+        const clientChain = await cosmJS.getChainId();
+
+        // // Sign a message
+        const signed = await offline?.sign(account[0].address, [msg], fee, {
+            accountNumber,
+            sequence: Number(sequence),
+            chainId: clientChain,
+        });
+
+        const [offlineSigner] = await KeplrWallet(comdex?.chainId);
+
+        await SigningCosmWasmClient.connectWithSigner(
+            httpUrl,
+            offlineSigner)
+            .then((client) => {
+                client.signAndBroadcast(
+                    walletAddress,
+                    [{
+                        typeUrl: "/cosmwasm.wasm.v1.MsgExecuteContract",
+                        value: {
+                            sender: walletAddress,
+                            contract: lockingContractAddress,
+                            msg: new TextEncoder().encode(JSON.stringify(handleMsg)),
+                            funds: fundsValues
+                        }
+                    }],
+                    customFees.exec,
+                ).then((response) => {
+                    if (!response?.code) {
+                        // callback(null, response)
+
+                        console.log(response);
+
+                    }
+                    else {
+                        console.log(response?.rawLog);
+                        // callback(response)
+
+                    }
+
+                }).catch((err) => {
+                    console.log(err);
+                    // callback(err)
+                })
+            }).catch((error) => {
+                // callback(error)
+            });
+    }
 
     return (
         <>
