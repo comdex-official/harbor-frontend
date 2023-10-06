@@ -93,7 +93,7 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
       message.info("Please connect your wallet");
       return;
     }
-    
+
     initialize();
     setIsModalOpen(true);
   };
@@ -235,7 +235,8 @@ const Deposit = ({ lang, chain, address, handleRefresh, balances, assetMap }) =>
           timeout_timestamp: undefined,
         },
       },
-      fee: { amount: [{ denom: chain.denom, amount: "25000" }], gas: "200000" },
+      // fee: { amount: [{ denom: chain.denom, amount: "25000" }], gas: "200000" },
+      fee: { amount: [{ denom: chain.coinMinimalDenom, amount: "25000" }], gas: "200000" },
       memo: "",
     };
 

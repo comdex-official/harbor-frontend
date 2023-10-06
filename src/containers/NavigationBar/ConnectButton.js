@@ -100,13 +100,22 @@ const ConnectButton = ({
   useEffect(() => {
     const savedAddress = localStorage.getItem("ac");
     const userAddress = savedAddress ? decode(savedAddress) : address;
+    const walletType = localStorage.getItem('loginType');
 
     if (userAddress) {
       setAccountAddress(userAddress);
 
-      fetchKeplrAccountName().then((name) => {
-        setAccountName(name);
-      });
+      // fetchKeplrAccountName().then((name) => {
+      //   setAccountName(name);
+      // });
+
+      if (walletType === "metamask") {
+        setAccountName("Metamask");
+      } else {
+        fetchKeplrAccountName().then((name) => {
+          setAccountName(name);
+        });
+      }
     }
   }, [address, refreshBalance]);
 
@@ -136,9 +145,13 @@ const ConnectButton = ({
           return;
         }
         setAccountAddress(account.address);
-        fetchKeplrAccountName().then((name) => {
-          setAccountName(name);
-        })
+        if (walletType === "metamask") {
+          setAccountName("Metamask");
+        } else {
+          fetchKeplrAccountName().then((name) => {
+            setAccountName(name);
+          })
+        }
         localStorage.setItem("ac", encode(account.address));
         localStorage.setItem("loginType", walletType || "keplr")
       });

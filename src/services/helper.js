@@ -2,6 +2,7 @@ import { LedgerSigner } from "@cosmjs/ledger-amino";
 import {
   AminoTypes,
   createProtobufRpcClient,
+  GasPrice,
   QueryClient,
   SigningStargateClient
 } from "@cosmjs/stargate";
@@ -14,6 +15,8 @@ import { makeHdPath, trimWhiteSpaces } from "../utils/string";
 import { customAminoTypes } from "./aminoConverter";
 import { strideAccountParser } from "./parser";
 import { myRegistry } from "./registry";
+import { CosmjsOfflineSigner } from '@leapwallet/cosmos-snap-provider';
+
 
 const aminoTypes = new AminoTypes(customAminoTypes);
 
@@ -65,20 +68,40 @@ export const newQueryClientRPC = (rpc, callback) => {
     });
 };
 
+// export const KeplrWallet = async (chainID = comdex.chainId) => {
+//   let walletType = localStorage.getItem("loginType");
+
+//   walletType === "keplr"
+//     ? await window.keplr.enable(chainID)
+//     : await window.leap.enable(chainID);
+
+//   const offlineSigner =
+//     walletType === "keplr"
+//       ? await window.getOfflineSignerAuto(chainID)
+//       : await window?.leap?.getOfflineSignerAuto(chainID);
+
+//   const accounts = await offlineSigner.getAccounts();
+//   return [offlineSigner, accounts];
+// };
+
 export const KeplrWallet = async (chainID = comdex.chainId) => {
   let walletType = localStorage.getItem("loginType");
-
-  walletType === "keplr"
-    ? await window.keplr.enable(chainID)
-    : await window.leap.enable(chainID);
-
-  const offlineSigner =
+  if (walletType === "metamask") {
+    const offlineSigner = new CosmjsOfflineSigner(comdex?.chainId);
+    const accounts = await offlineSigner.getAccounts();
+    return [offlineSigner, accounts];
+  } else {
     walletType === "keplr"
-      ? await window.getOfflineSignerAuto(chainID)
-      : await window?.leap?.getOfflineSignerAuto(chainID);
+      ? await window.keplr.enable(chainID)
+      : await window.leap.enable(chainID);
 
-  const accounts = await offlineSigner.getAccounts();
-  return [offlineSigner, accounts];
+    const offlineSigner =
+      walletType === "keplr"
+        ? await window.getOfflineSignerAuto(chainID)
+        : await window?.leap?.getOfflineSignerAuto(chainID);
+    const accounts = await offlineSigner.getAccounts();
+    return [offlineSigner, accounts];
+  }
 };
 
 export const signAndBroadcastTransaction = (transaction, address, callback) => {
@@ -148,36 +171,106 @@ export const magicTransactionWithKeplr = async (
       callback(error && error.message);
     });
 };
+// export const TransactionWithKeplr = async (transaction, address, callback) => {
+//   const [offlineSigner, accounts] = await KeplrWallet(comdex?.chainId);
+//   if (address !== accounts[0].address) {
+//     const error = "Connected account is not active in Keplr";
+//     callback(error);
+//     return;
+//   }
+
+//   SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
+//     registry: myRegistry,
+//     aminoTypes: aminoTypes,
+//   })
+//     .then((client) => {
+//       client
+//         .signAndBroadcast(
+//           address,
+//           [transaction.message],
+//           transaction.fee,
+//           transaction.memo
+//         )
+//         .then((result) => {
+//           callback(null, result);
+//         })
+//         .catch((error) => {
+//           callback(error?.message);
+//         });
+//     })
+//     .catch((error) => {
+//       callback(error && error.message);
+//     });
+// };
 export const TransactionWithKeplr = async (transaction, address, callback) => {
-  const [offlineSigner, accounts] = await KeplrWallet(comdex?.chainId);
-  if (address !== accounts[0].address) {
-    const error = "Connected account is not active in Keplr";
-    callback(error);
-    return;
+  if (localStorage.getItem('loginType') === 'metamask') {
+    const offlineSigner = new CosmjsOfflineSigner(comdex?.chainId);
+    const accounts = await offlineSigner.getAccounts();
+
+
+    if (address !== accounts[0].address) {
+      const error = 'Connected account is not active in Keplr';
+      callback(error);
+      return;
+    }
+
+    SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
+      registry: myRegistry,
+      aminoTypes: aminoTypes,
+      preferNoSetFee: true,
+    })
+      .then((client) => {
+        client
+          .signAndBroadcast(
+            address,
+            [transaction.message],
+            transaction.fee,
+            transaction.memo
+          )
+          .then((result) => {
+            callback(null, result);
+          })
+          .catch((error) => {
+            callback(error?.message);
+          });
+      })
+      .catch((error) => {
+        callback(error && error.message);
+      });
+
+  } else {
+    const [offlineSigner, accounts] = await KeplrWallet(comdex.chainId);
+    if (address !== accounts[0].address) {
+      const error = 'Connected account is not active in Keplr';
+      callback(error);
+      return;
+    }
+
+    SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
+      registry: myRegistry,
+      aminoTypes: aminoTypes,
+      preferNoSetFee: true,
+    })
+      .then((client) => {
+        client
+          .signAndBroadcast(
+            address,
+            [transaction.message],
+            transaction.fee,
+            transaction.memo
+          )
+          .then((result) => {
+            callback(null, result);
+          })
+          .catch((error) => {
+            callback(error?.message);
+          });
+      })
+      .catch((error) => {
+        callback(error && error.message);
+      });
   }
 
-  SigningStargateClient.connectWithSigner(comdex.rpc, offlineSigner, {
-    registry: myRegistry,
-    aminoTypes: aminoTypes,
-  })
-    .then((client) => {
-      client
-        .signAndBroadcast(
-          address,
-          [transaction.message],
-          transaction.fee,
-          transaction.memo
-        )
-        .then((result) => {
-          callback(null, result);
-        })
-        .catch((error) => {
-          callback(error?.message);
-        });
-    })
-    .catch((error) => {
-      callback(error && error.message);
-    });
 };
 
 async function LedgerWallet(hdpath, prefix) {
@@ -283,52 +376,139 @@ async function Transaction(wallet, signerAddress, msgs, fee, memo = "") {
   return cosmJS.broadcastTx(txBytes);
 }
 
+// export const aminoSignIBCTx = (config, transaction, callback) => {
+//   (async () => {
+//     let walletType = localStorage.getItem("loginType");
+
+//     (walletType === "keplr" ? await window.keplr : await window.wallet) &&
+//       walletType === "keplr"
+//       ? window.keplr.enable(config.chainId)
+//       : window.leap.enable(config.chainId);
+
+//     const offlineSigner =
+//       walletType === "keplr"
+//         ? window.getOfflineSignerOnlyAmino &&
+//         window.getOfflineSignerOnlyAmino(config.chainId)
+//         : window?.leap?.getOfflineSignerOnlyAmino &&
+//         window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
+
+//     const client = await SigningStargateClient.connectWithSigner(
+//       config.rpc,
+//       offlineSigner,
+//       {
+//         accountParser: strideAccountParser,
+//       }
+//     );
+
+//     client
+//       .sendIbcTokens(
+//         transaction.msg?.value?.sender,
+//         transaction.msg?.value?.receiver,
+//         transaction.msg?.value?.token,
+//         transaction.msg?.value?.source_port,
+//         transaction.msg?.value?.source_channel,
+//         transaction.msg?.value?.timeout_height,
+//         transaction.msg?.value?.timeout_timestamp,
+//         transaction.fee,
+//         transaction.memo
+//       )
+//       .then((result) => {
+//         if (result?.code !== undefined && result.code !== 0) {
+//           callback(result.log || result.rawLog);
+//         } else {
+//           callback(null, result);
+//         }
+//       })
+//       .catch((error) => {
+//         callback(error?.message);
+//       });
+//   })();
+// };
+
 export const aminoSignIBCTx = (config, transaction, callback) => {
   (async () => {
-    let walletType = localStorage.getItem("loginType");
+    let walletType = localStorage.getItem('loginType');
 
-    (walletType === "keplr" ? await window.keplr : await window.wallet) &&
-      walletType === "keplr"
-      ? window.keplr.enable(config.chainId)
-      : window.leap.enable(config.chainId);
+    if (walletType === "metamask") {
+      const offlineSigner = new CosmjsOfflineSigner(config.chainId);
 
-    const offlineSigner =
-      walletType === "keplr"
-        ? window.getOfflineSignerOnlyAmino &&
-        window.getOfflineSignerOnlyAmino(config.chainId)
-        : window?.leap?.getOfflineSignerOnlyAmino &&
-        window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
-
-    const client = await SigningStargateClient.connectWithSigner(
-      config.rpc,
-      offlineSigner,
-      {
-        accountParser: strideAccountParser,
-      }
-    );
-
-    client
-      .sendIbcTokens(
-        transaction.msg?.value?.sender,
-        transaction.msg?.value?.receiver,
-        transaction.msg?.value?.token,
-        transaction.msg?.value?.source_port,
-        transaction.msg?.value?.source_channel,
-        transaction.msg?.value?.timeout_height,
-        transaction.msg?.value?.timeout_timestamp,
-        transaction.fee,
-        transaction.memo
-      )
-      .then((result) => {
-        if (result?.code !== undefined && result.code !== 0) {
-          callback(result.log || result.rawLog);
-        } else {
-          callback(null, result);
+      const client = await SigningStargateClient.connectWithSigner(
+        config.rpc,
+        offlineSigner,
+        {
+          accountParser: strideAccountParser,
+          preferNoSetFee: true,
         }
-      })
-      .catch((error) => {
-        callback(error?.message);
-      });
+      );
+
+      client
+        .sendIbcTokens(
+          transaction?.msg?.value?.sender,
+          transaction?.msg?.value?.receiver,
+          transaction?.msg?.value?.token,
+          transaction?.msg?.value?.source_port,
+          transaction?.msg?.value?.source_channel,
+          transaction?.msg?.value?.timeout_height,
+          transaction?.msg?.value?.timeout_timestamp,
+          transaction?.fee,
+          transaction?.memo
+        )
+        .then((result) => {
+          if (result?.code !== undefined && result.code !== 0) {
+            callback(result.log || result.rawLog);
+          } else {
+            callback(null, result);
+          }
+        })
+        .catch((error) => {
+          callback(error?.message);
+        });
+
+    } else {
+      (walletType === 'keplr' ? await window.keplr : await window.leap) &&
+        walletType === 'keplr'
+        ? window.keplr.enable(config.chainId)
+        : window.leap.enable(config.chainId);
+
+      const offlineSigner =
+        walletType === 'keplr'
+          ? window.getOfflineSignerOnlyAmino &&
+          window.getOfflineSignerOnlyAmino(config.chainId)
+          : window?.leap?.getOfflineSignerOnlyAmino &&
+          window?.leap?.getOfflineSignerOnlyAmino(config.chainId);
+
+      const client = await SigningStargateClient.connectWithSigner(
+        config.rpc,
+        offlineSigner,
+        {
+          accountParser: strideAccountParser,
+          preferNoSetFee: true,
+        }
+      );
+
+      client
+        .sendIbcTokens(
+          transaction?.msg?.value?.sender,
+          transaction?.msg?.value?.receiver,
+          transaction?.msg?.value?.token,
+          transaction?.msg?.value?.source_port,
+          transaction?.msg?.value?.source_channel,
+          transaction?.msg?.value?.timeout_height,
+          transaction?.msg?.value?.timeout_timestamp,
+          transaction?.fee,
+          transaction?.memo
+        )
+        .then((result) => {
+          if (result?.code !== undefined && result.code !== 0) {
+            callback(result.log || result.rawLog);
+          } else {
+            callback(null, result);
+          }
+        })
+        .catch((error) => {
+          callback(error?.message);
+        });
+    }
   })();
 };
 
