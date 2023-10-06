@@ -22,6 +22,27 @@ const ConnectModal = ({
 }) => {
   const [inProgress, setInProgress] = useState(false);
 
+  // const handleConnectToWallet = (walletType) => {
+  //   setInProgress(true);
+
+  //   initializeChain(walletType, (error, account) => {
+  //     setInProgress(false);
+  //     if (error) {
+  //       message.error(error);
+  //       return;
+  //     }
+
+  //     setAccountAddress(account.address);
+  //     fetchKeplrAccountName().then((name) => {
+  //       setAccountName(name);
+  //     })
+
+  //     localStorage.setItem("ac", encode(account.address));
+  //     localStorage.setItem("loginType", walletType || "keplr")
+  //     showAccountConnectModal(false);
+  //   });
+  // };
+
   const handleConnectToWallet = (walletType) => {
     setInProgress(true);
 
@@ -33,12 +54,16 @@ const ConnectModal = ({
       }
 
       setAccountAddress(account.address);
-      fetchKeplrAccountName().then((name) => {
-        setAccountName(name);
-      })
+      if (walletType === "metamask") {
+        setAccountName("Metamask");
+      } else {
+        fetchKeplrAccountName().then((name) => {
+          setAccountName(name);
+        });
+      }
 
-      localStorage.setItem("ac", encode(account.address));
-      localStorage.setItem("loginType", walletType || "keplr")
+      localStorage.setItem('ac', encode(account.address));
+      localStorage.setItem('loginType', walletType || 'keplr');
       showAccountConnectModal(false);
     });
   };
@@ -57,6 +82,11 @@ const ConnectModal = ({
         <div className="mb-2 ">
           <div className="wallet-links" onClick={() => handleConnectToWallet('leap')}>
             <span>{variables[lang].leap_wallet}</span>{" "}
+          </div>
+        </div>
+        <div className="mb-2 ">
+          <div className="wallet-links" onClick={() => handleConnectToWallet('metamask')}>
+            <span>Metamask</span>{" "}
           </div>
         </div>
         <div className="wallet-links">
