@@ -5,6 +5,8 @@ import {
 } from "@keplr-wallet/stores";
 import { envConfig } from "../config/envConfig";
 import { cmst, comdex, harbor } from "../config/network";
+import { CosmjsOfflineSigner, connectSnap, getKey, getSnap, suggestChain } from '@leapwallet/cosmos-snap-provider';
+
 
 export const contractAddress = envConfig?.harbor?.governanceContractAddress;
 export const lockingContractAddress = envConfig?.harbor?.lockingContractAddress;
@@ -78,15 +80,15 @@ export const getFeeCurrencies = (chain = comdex) => {
         // Adding separate gas steps for eth accounts.
         gasPriceStep: chain?.features?.includes("eth-address-gen")
           ? {
-              low: 1000000000000,
-              average: 1500000000000,
-              high: 2000000000000,
-            }
+            low: 1000000000000,
+            average: 1500000000000,
+            high: 2000000000000,
+          }
           : {
-              low: 0.01,
-              average: 0.025,
-              high: 0.04,
-            },
+            low: 0.01,
+            average: 0.025,
+            high: 0.04,
+          },
       },
     ];
   }
@@ -134,45 +136,120 @@ export const getChainConfig = (chain = comdex) => {
   };
 };
 
+// export const initializeChain = (type, callback) => {
+//   (async () => {
+//     let walletType = type || localStorage.getItem("loginType");
+//     let isNoExtensionExists =
+//       walletType === "keplr"
+//         ? !window.getOfflineSigner || !window.keplr
+//         : !window?.leap?.getOfflineSigner || !window.wallet;
+
+//     if (isNoExtensionExists) {
+//       const error = `Please install ${walletType} wallet extension`;
+//       callback(error);
+//     }
+//     // } 
+//     else {
+//       let suggestChain =
+//         walletType === "keplr"
+//           ? window.keplr.experimentalSuggestChain
+//           : window.leap.experimentalSuggestChain;
+
+//       if (suggestChain) {
+//         try {
+
+//           walletType === "keplr"
+//             ? await window.keplr.experimentalSuggestChain(getChainConfig())
+//             : await window.leap.experimentalSuggestChain(getChainConfig());
+//           const offlineSigner =
+//             walletType === "keplr"
+//               ? window.getOfflineSigner(comdex?.chainId)
+//               : window?.leap?.getOfflineSigner(comdex?.chainId);
+
+//           const accounts = await offlineSigner.getAccounts();
+
+//           callback(null, accounts[0]);
+//         } catch (error) {
+//           callback(error?.message);
+//         }
+//       } else {
+//         const versionError = `Please use the recent version of ${walletType} wallet extension`;
+//         callback(versionError);
+//       }
+//     }
+//   })();
+// };
+
 export const initializeChain = (type, callback) => {
   (async () => {
     let walletType = type || localStorage.getItem("loginType");
-    let isNoExtensionExists =
-      walletType === "keplr"
-        ? !window.getOfflineSigner || !window.keplr
-        : !window?.leap?.getOfflineSigner || !window.wallet;
+    if (walletType === "metamask") {
+      (async () => {
 
-    if (isNoExtensionExists) {
-      const error = `Please install ${walletType} wallet extension`;
-      callback(error);
-    }
-    // } 
-    else {
-      let suggestChain =
+        getSnap()
+          .then(async (res) => {
+            if (!res) {
+              await connectSnap(); // Initiates installation if not already present
+              await suggestChain(getChainConfig());
+              const key = await getKey(comdex?.chainId);
+              callback(null, key);
+            } else {
+              const key = await getKey(comdex?.chainId);
+              callback(null, key);
+            }
+          })
+          .catch((error) => {
+            console.log(error, 'errro');
+            callback(error?.message);
+          });
+
+      })()
+    } else {
+      let isNoExtensionExists =
         walletType === "keplr"
-          ? window.keplr.experimentalSuggestChain
-          : window.leap.experimentalSuggestChain;
+          ? !window.getOfflineSigner || !window.keplr
+          : walletType === "leap"
+            ? !window?.leap?.getOfflineSigner || !window.leap
+            : true; // Add more conditions for other wallet types if needed
 
-      if (suggestChain) {
-        try {
-
-          walletType === "keplr"
-            ? await window.keplr.experimentalSuggestChain(getChainConfig())
-            : await window.leap.experimentalSuggestChain(getChainConfig());
-          const offlineSigner =
-            walletType === "keplr"
-              ? window.getOfflineSigner(comdex?.chainId)
-              : window?.leap?.getOfflineSigner(comdex?.chainId);
-
-          const accounts = await offlineSigner.getAccounts();
-
-          callback(null, accounts[0]);
-        } catch (error) {
-          callback(error?.message);
-        }
+      if (isNoExtensionExists) {
+        const error = `Please install ${walletType} wallet extension`;
+        callback(error);
       } else {
-        const versionError = `Please use the recent version of ${walletType} wallet extension`;
-        callback(versionError);
+        let suggestChain =
+          walletType === "keplr"
+            ? window.keplr.experimentalSuggestChain
+            : walletType === "leap"
+              ? window.leap.experimentalSuggestChain
+              : null; // Add more conditions for other wallet types if needed
+
+        if (suggestChain) {
+          try {
+            if (walletType === "keplr") {
+              await window.keplr.experimentalSuggestChain(getChainConfig());
+            } else if (walletType === "leap") {
+              await window.leap.experimentalSuggestChain(getChainConfig());
+            }
+            const offlineSigner =
+              walletType === "keplr"
+                ? window.getOfflineSigner(comdex?.chainId)
+                : walletType === "leap"
+                  ? window?.leap?.getOfflineSigner(comdex?.chainId)
+                  : null; // Add more conditions for other wallet types if needed
+
+            if (offlineSigner) {
+              const accounts = await offlineSigner.getAccounts();
+              callback(null, accounts[0]);
+            } else {
+              callback("Offline signer not found for the selected wallet type.");
+            }
+          } catch (error) {
+            callback(error?.message);
+          }
+        } else {
+          const versionError = `Please use the recent version of ${walletType} wallet extension`;
+          callback(versionError);
+        }
       }
     }
   })();
@@ -222,45 +299,99 @@ export const magicInitializeChain = (networkChain, callback) => {
 
 };
 
+// export const initializeIBCChain = (config, callback) => {
+//   (async () => {
+//     let walletType = localStorage.getItem("loginType");
+
+//     let isNoExtensionExists =
+//       walletType === "keplr"
+//         ? !window.getOfflineSigner || !window.keplr
+//         : !window?.leap?.getOfflineSigner || !window.wallet;
+
+//     if (isNoExtensionExists) {
+//       const error = `Please install ${walletType} wallet extension`;
+
+//       callback(error);
+//     } else {
+//       let suggestChain =
+//         walletType === "keplr"
+//           ? window.keplr.experimentalSuggestChain
+//           : window.leap.experimentalSuggestChain;
+
+//       if (suggestChain) {
+//         try {
+//           walletType === "keplr"
+//             ? await window.keplr.experimentalSuggestChain(config)
+//             : await window.leap.experimentalSuggestChain(config);
+//           const offlineSigner =
+//             walletType === "keplr"
+//               ? window.getOfflineSigner(config?.chainId)
+//               : window?.leap?.getOfflineSigner(config?.chainId);
+
+//           const accounts = await offlineSigner.getAccounts();
+//           callback(null, accounts[0]);
+//         } catch (error) {
+//           callback(error?.message);
+//         }
+//       } else {
+//         const versionError = "Please use the recent version of keplr extension";
+//         callback(versionError);
+//       }
+//     }
+//   })();
+// };
+
 export const initializeIBCChain = (config, callback) => {
   (async () => {
-    let walletType = localStorage.getItem("loginType");
+    let walletType = localStorage.getItem('loginType');
 
-    let isNoExtensionExists =
-      walletType === "keplr"
-        ? !window.getOfflineSigner || !window.keplr
-        : !window?.leap?.getOfflineSigner || !window.wallet;
+    if (walletType === "metamask") {
+      try {
+        const offlineSigner = new CosmjsOfflineSigner(config?.chainId);
+        const accounts = await offlineSigner.getAccounts();
 
-    if (isNoExtensionExists) {
-      const error = `Please install ${walletType} wallet extension`;
-
-      callback(error);
+        callback(null, accounts[0]);
+      } catch (error) {
+        callback(error?.message);
+      }
     } else {
-      let suggestChain =
-        walletType === "keplr"
-          ? window.keplr.experimentalSuggestChain
-          : window.leap.experimentalSuggestChain;
+      let isNoExtensionExists =
+        walletType === 'keplr'
+          ? !window.getOfflineSigner || !window.keplr
+          : !window?.leap?.getOfflineSigner || !window.leap;
 
-      if (suggestChain) {
-        try {
-          walletType === "keplr"
-            ? await window.keplr.experimentalSuggestChain(config)
-            : await window.leap.experimentalSuggestChain(config);
-          const offlineSigner =
-            walletType === "keplr"
-              ? window.getOfflineSigner(config?.chainId)
-              : window?.leap?.getOfflineSigner(config?.chainId);
-
-          const accounts = await offlineSigner.getAccounts();
-          callback(null, accounts[0]);
-        } catch (error) {
-          callback(error?.message);
-        }
+      if (isNoExtensionExists) {
+        const error = `Please install ${walletType} wallet extension`;
+        callback(error);
       } else {
-        const versionError = "Please use the recent version of keplr extension";
-        callback(versionError);
+        let suggestChain =
+          walletType === 'keplr'
+            ? window.keplr.experimentalSuggestChain
+            : window.leap.experimentalSuggestChain;
+
+        if (suggestChain) {
+          try {
+            walletType === 'keplr'
+              ? await window.keplr.experimentalSuggestChain(config)
+              : await window.leap.experimentalSuggestChain(config);
+            const offlineSigner =
+              walletType === 'keplr'
+                ? window.getOfflineSigner(config?.chainId)
+                : window?.leap?.getOfflineSigner(config?.chainId);
+            const accounts = await offlineSigner.getAccounts();
+
+            callback(null, accounts[0]);
+          } catch (error) {
+            callback(error?.message);
+          }
+        } else {
+          const versionError = 'Please use the recent version of keplr extension';
+          callback(versionError);
+        }
       }
     }
+
+
   })();
 };
 
@@ -291,9 +422,29 @@ export const fetchKeplrAccountName = async () => {
 
   return accountSetBase?.name;
 };
-export const KeplrWallet = async (chainID = comdex?.chainId) => {
-  await window.keplr.enable(chainID);
-  const offlineSigner = await window.getOfflineSignerAuto(chainID);
-  const accounts = await offlineSigner.getAccounts();
-  return [offlineSigner, accounts];
+// export const KeplrWallet = async (chainID = comdex?.chainId) => {
+//   await window.keplr.enable(chainID);
+//   const offlineSigner = await window.getOfflineSignerAuto(chainID);
+//   const accounts = await offlineSigner.getAccounts();
+//   return [offlineSigner, accounts];
+// };
+
+export const KeplrWallet = async (chainID = comdex.chainId) => {
+  let walletType = localStorage.getItem("loginType");
+  if (walletType === "metamask") {
+    const offlineSigner = new CosmjsOfflineSigner(comdex?.chainId);
+    const accounts = await offlineSigner.getAccounts();
+    return [offlineSigner, accounts];
+  } else {
+    walletType === "keplr"
+      ? await window.keplr.enable(chainID)
+      : await window.leap.enable(chainID);
+
+    const offlineSigner =
+      walletType === "keplr"
+        ? await window.getOfflineSignerAuto(chainID)
+        : await window?.leap?.getOfflineSignerAuto(chainID);
+    const accounts = await offlineSigner.getAccounts();
+    return [offlineSigner, accounts];
+  }
 };

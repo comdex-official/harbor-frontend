@@ -34,9 +34,13 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
         return;
       }
 
-      fetchKeplrAccountName().then((name) => {
-        setAccountName(name);
-      });
+      if (walletType === "metamask") {
+        setAccountName("Metamask");
+      } else {
+        fetchKeplrAccountName().then((name) => {
+          setAccountName(name);
+        });
+      }
 
       setAccountAddress(account.address);
       localStorage.setItem("ac", encode(account.address));
