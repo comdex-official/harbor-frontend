@@ -2,6 +2,7 @@ import { comdex, ibcDenoms } from "../config/network";
 import { commaSeparator, getExponent } from "./number";
 import { ibcDenomToDenom, lowercaseFirstLetter } from "./string";
 import AssetList from "../config/ibc_assets.json";
+import Decimal from 'decimal.js';
 
 const getDenomToDisplaySymbolMap = () => {
   let myMap = {};
@@ -17,9 +18,16 @@ const getDenomToDisplaySymbolMap = () => {
 
 let denomToDisplaySymbol = getDenomToDisplaySymbolMap();
 
-export const getAmount = (selectedAmount, coinDecimals) =>
-  // (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
-  (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toLocaleString().replace(/,/g, '');
+// export const getAmount = (selectedAmount, coinDecimals) =>
+//   // (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toFixed(0).toString();
+//   (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toLocaleString().replace(/,/g, '');
+
+export const getAmount = (selectedAmount, coinDecimals) => {
+  const decimalSelectedAmount = new Decimal(selectedAmount);
+  const decimalCoinDecimals = new Decimal(coinDecimals || 10 ** comdex.coinDecimals);
+  const formattedAmount = decimalSelectedAmount.mul(decimalCoinDecimals);
+  return formattedAmount.toString();
+};
 
 export const amountConversionWithComma = (amount, decimals, chainDecimals) => {
 
