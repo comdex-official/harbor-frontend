@@ -1,4 +1,4 @@
-import { Table, Button } from "antd";
+import { Table, Button, message } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
 import { denomConversion, amountConversionWithComma } from "../../../utils/coin";
