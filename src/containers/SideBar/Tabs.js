@@ -71,8 +71,12 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
               }
               value={item.value}
               onClick={() => {
-                navigate("/" + item.path);
-                onClick();
+                if (item.path === "auctions") {
+                  window.open("https://local-auctions.comdex.one", "_blank");
+                } else {
+                  navigate("/" + item.path);
+                  onClick();
+                }
               }}
               {...a11yProps(0)}
             >
