@@ -16,6 +16,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const route = location.pathname && location.pathname.split("/")[1];
+  const auctionURl = process.env.REACT_APP_AUCTION_URL;
 
   window.addEventListener("keplr_keystorechange", () => {
     handleConnectToWallet();
@@ -72,7 +73,7 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
               value={item.value}
               onClick={() => {
                 if (item.path === "auctions") {
-                  window.open("https://local-auctions.comdex.one", "_blank");
+                  window.open(auctionURl, "_blank");
                 } else {
                   navigate("/" + item.path);
                   onClick();
