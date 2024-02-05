@@ -16,7 +16,7 @@ const customFees = {
     },
     exec: {
         amount: [{ amount: "500000", denom: "ucmdx" }],
-        gas: "500000",
+        gas: "200000",
     },
     send: {
         amount: [{ amount: "80000", denom: "ucmdx" }],

@@ -69,7 +69,7 @@ export const abbreviateMessage = (msg) => {
 export const defaultFee = () => {
   return {
     amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-    gas: "500000",
+    gas: "200000",
   };
 };
 
