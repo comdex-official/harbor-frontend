@@ -1,4 +1,4 @@
-import { SigningCosmWasmClient } from "cosmwasm";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { decode } from "js-base64";
 import { comdex } from '../config/network'
 import { contractAddress } from "./keplr";

@@ -1,6 +1,6 @@
-import { SigningCosmWasmClient } from "cosmwasm";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { comdex } from '../config/network'
-import {  lockingContractAddress } from "./keplr";
+import { lockingContractAddress } from "./keplr";
 import { KeplrWallet } from "./helper";
 
 
