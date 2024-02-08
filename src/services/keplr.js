@@ -53,9 +53,12 @@ export const getFeeCurrencies = (chain = comdex) => {
         coinDecimals: chain?.coinDecimals,
         coinGeckoId: chain?.coinGeckoId,
         gasPriceStep: {
-          low: 0.01,
-          average: 0.025,
-          high: 0.04,
+          // low: 0.01,
+          // average: 0.025,
+          // high: 0.04,
+          low: 2,
+          average: 3,
+          high: 4,
         },
       },
       {
@@ -64,9 +67,9 @@ export const getFeeCurrencies = (chain = comdex) => {
         coinDecimals: cmst?.coinDecimals,
         coinGeckoId: chain?.coinGeckoId,
         gasPriceStep: {
-          low: 0.01,
-          average: 0.025,
-          high: 0.04,
+          low: 2,
+          average: 3,
+          high: 4,
         },
       },
     ];
@@ -85,9 +88,9 @@ export const getFeeCurrencies = (chain = comdex) => {
             high: 2000000000000,
           }
           : {
-            low: 0.01,
-            average: 0.025,
-            high: 0.04,
+            low: 2,
+            average: 3,
+            high: 4,
           },
       },
     ];

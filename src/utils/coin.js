@@ -23,7 +23,7 @@ let denomToDisplaySymbol = getDenomToDisplaySymbolMap();
 //   (selectedAmount * (coinDecimals || 10 ** comdex.coinDecimals)).toLocaleString().replace(/,/g, '');
 
 export const getAmount = (selectedAmount, coinDecimals) => {
-  const decimalSelectedAmount = new Decimal(selectedAmount);
+  const decimalSelectedAmount = new Decimal(selectedAmount || 0);
   const decimalCoinDecimals = new Decimal(coinDecimals || 10 ** comdex.coinDecimals);
   const formattedAmount = decimalSelectedAmount.mul(decimalCoinDecimals);
   return formattedAmount.toString();
