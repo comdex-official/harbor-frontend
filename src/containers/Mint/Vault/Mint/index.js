@@ -302,7 +302,7 @@ const Mint = ({
           },
           fee: {
             amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-            gas: "2500000",
+            gas: "400000",
           },
         },
         address,
@@ -352,7 +352,8 @@ const Mint = ({
           },
           fee: {
             amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-            gas: "2500000",
+            // gas: "2500000",
+            gas: "200000",
           },
         },
         address,

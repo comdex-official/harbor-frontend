@@ -1,4 +1,4 @@
-import { SigningCosmWasmClient } from "cosmwasm";
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { decode } from "js-base64";
 import { comdex } from '../config/network'
 import { lockingContractAddress } from "./keplr";
@@ -15,7 +15,7 @@ const customFees = {
     },
     exec: {
         amount: [{ amount: "500000", denom: "ucmdx" }],
-        gas: "5000000",
+        gas: "200000",
     },
     send: {
         amount: [{ amount: "80000", denom: "ucmdx" }],
