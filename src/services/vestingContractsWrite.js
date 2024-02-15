@@ -4,6 +4,8 @@ import { comdex } from '../config/network'
 import { getAmount } from "../utils/coin";
 import { lockingContractAddress } from "./keplr";
 import { KeplrWallet } from "./helper";
+import { DEFAULT_FEE } from "../constants/common";
+import { defaultFee } from "./transaction";
 
 const customFees = {
     upload: {
@@ -16,7 +18,7 @@ const customFees = {
     },
     exec: {
         amount: [{ amount: "500000", denom: "ucmdx" }],
-        gas: "200000",
+        gas: "300000",
     },
     send: {
         amount: [{ amount: "80000", denom: "ucmdx" }],
@@ -63,6 +65,7 @@ export const transactionForCreateVesting = async (address, productId, lockingPer
                     }
                 }],
                 customFees.exec,
+                // defaultFee()
             ).then((response) => {
                 if (!response?.code) {
                     callback(null, response)
