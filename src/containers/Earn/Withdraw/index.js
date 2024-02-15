@@ -222,7 +222,7 @@ const Withdraw = ({
         },
         fee: {
           amount: [{ denom: "ucmdx", amount: DEFAULT_FEE.toString() }],
-          gas: "2500000",
+          gas: "200000",
         },
       },
       address,
