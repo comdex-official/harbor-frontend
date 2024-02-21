@@ -16,7 +16,7 @@ const Footer = () => {
           aria-label="Discord"
           target="_blank"
           rel="noreferrer"
-          href="https://bit.ly/ComdexOfficialDiscord"
+          href="https://discord.gg/comdexofficial"
         >
           <SvgIcon name={localStorage.getItem("isDarkMode") === "false"
             ? "discord-light"
