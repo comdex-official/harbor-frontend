@@ -49,10 +49,10 @@ const routes = [
     path: "/more/earn",
     element: <Earn />,
   },
-  {
-    path: "/auctions",
-    element: <Auctions />,
-  },
+  // {
+  //   path: "/auctions",
+  //   element: <Auctions />,
+  // },
   {
     path: "/more",
     element: <More />,
