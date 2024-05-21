@@ -86,7 +86,7 @@ const ConnectModal = ({
         </div>
         <div className="mb-2 ">
           <div className="wallet-links" onClick={() => handleConnectToWallet('metamask')}>
-            <span>Metamask</span>{" "}
+            <span>MetaMask</span>{" "}
           </div>
         </div>
         <div className="wallet-links">
