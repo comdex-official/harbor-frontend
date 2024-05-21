@@ -72,12 +72,12 @@ const NavTabs = ({ setAccountAddress, lang, setAccountName, onClick }) => {
               }
               value={item.value}
               onClick={() => {
-                // if (item.path === "auctions") {
-                //   window.open(auctionURl, "_blank");
-                // } else {
-                navigate("/" + item.path);
-                onClick();
-                // }
+                if (item.path === "auctions") {
+                  window.open(auctionURl, "_blank");
+                } else {
+                  navigate("/" + item.path);
+                  onClick();
+                }
               }}
               {...a11yProps(0)}
             >
