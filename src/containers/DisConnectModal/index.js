@@ -98,7 +98,8 @@ const DisConnectModal = ({
       <Dropdown menu={{ items }} trigger={["click"]} overlayClassName="dropconnect-overlay">
         <div className="connected_button">
           {" "}
-          <SvgIcon name="wallet" />  {truncateString(address, 6, 6)}
+          {/* <SvgIcon name="wallet" />  {truncateString(address, 6, 6)} */}
+          {truncateString(address, 6, 6)}
         </div>
       </Dropdown>
 
