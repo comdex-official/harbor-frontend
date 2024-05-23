@@ -1,5 +1,5 @@
 import * as PropTypes from "prop-types";
-import { Table, Button } from "antd";
+import { Table, Button, message } from "antd";
 import { SvgIcon } from "../../../components/common";
 import { iconNameFromDenom } from "../../../utils/string";
 import {

@@ -28,6 +28,11 @@ import ConnectModal from "../Modal";
 import { amountConversion } from "../../utils/coin";
 import { encode } from "js-base64";
 
+import { AccountModal } from '@leapwallet/embedded-wallet-sdk-react';
+import '@leapwallet/embedded-wallet-sdk-react/styles.css';
+import { SvgIcon } from "../../components/common";
+
+
 const ConnectButton = ({
   setAccountAddress,
   address,
@@ -49,6 +54,7 @@ const ConnectButton = ({
 }) => {
   const dispatch = useDispatch();
   const [addressFromLocal, setAddressFromLocal] = useState()
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const subscription = {
     "jsonrpc": "2.0",
@@ -288,6 +294,16 @@ const ConnectButton = ({
     <>
       {address ? (
         <div className="connected_div">
+          <div onClick={() => setIsModalOpen(true)} className="snap_wallet_icon"> <SvgIcon name="wallet" /> </div>
+          <AccountModal
+            theme="dark"
+            chainId={comdex?.chainId} 
+            restUrl={comdex?.rest} 
+            address={address}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+
           <DisConnectModal />
         </div>
       ) : (
