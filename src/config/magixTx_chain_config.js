@@ -4,7 +4,7 @@ export const chainNetworks = {
         chainName: "Agoric",
         rpc: "https://airdrop.zenscape.one/agoric-rpc",
         rest: "https://airdrop.zenscape.one/agoric-api",
-        explorerUrlToTx: "https://bigdipper.live/agoric/transactions/{txHash}",
+        explorerUrlToTx: "https://agoric.explorers.guru/transaction/{txHash}",
         coinDenom: "BLD",
         coinMinimalDenom: "ubld",
         coinDecimals: 6,
